@@ -1,10 +1,14 @@
+![GitHub contributors](https://img.shields.io/github/contributors/ThomasHandlag/busify-next)
+![GitHub Issues or Pull Requests](https://img.shields.io/github/issues/ThomasHandlag/busify-next)
+![GitHub License](https://img.shields.io/github/license/ThomasHandlag/busify-next)
+
 # Busify Next - Bus Management System
 
-A modern web application for bus management built with Next.js 15, React 19, and TypeScript. This project is part of the Busify ecosystem that provides comprehensive bus transportation management solutions.
+A modern web application for bus management built with Next.js 15, React 19, and TypeScript. This project is part of the Busify ecosystem that provides comprehensive bus booking and bus management solutions.
 
 ## 🚌 About
 
-Busify Next is the main web interface for the bus management system, providing an intuitive and responsive user experience for managing bus operations, routes, schedules, and passenger services.
+Busify Next is the main web interface for introduce the bus booking system, providing an intuitive and responsive user experience for booking bus ticket, manage bus route, bus management solutions.
 
 ## ✨ Features
 
