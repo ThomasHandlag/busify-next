@@ -49,7 +49,7 @@ const AppPage = () => {
   ];
 
   return (
-    <div className="grid grid-cols-3 gap-4 p-4">
+    <div className="grid lg:grid-cols-3 sm:grid-cols-1 gap-4 p-4">
         {FakeTripsData.map((trip) => (
           <TripItem key={trip.id} trip={trip} />
         ))}

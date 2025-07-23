@@ -1,4 +1,4 @@
-import { Search, Filter, MapPin, Calendar, Clock, Users } from "lucide-react";
+import { Search, Filter } from "lucide-react";
 import {
   Sheet,
   SheetClose,
@@ -25,6 +25,8 @@ import { Slider } from "../ui/slider";
 import { Separator } from "../ui/separator";
 import { Badge } from "../ui/badge";
 import { useEffect, useState } from "react";
+import { FormItem } from "../ui/form";
+import { Calendar28 } from "./date_picker";
 
 const SearchFilter = () => {
   const [windowWidth, setWindowWidth] = useState(
@@ -46,15 +48,6 @@ const SearchFilter = () => {
     }
   }, []);
 
-  const busOperators = [
-    "Green Express",
-    "Comfort Lines",
-    "Budget Travel",
-    "Night Express",
-    "Premium Coach",
-    "City Connect",
-  ];
-
   const busTypes = [
     "Standard",
     "VIP Sleeper",
@@ -71,14 +64,6 @@ const SearchFilter = () => {
     "Nha Trang → Mui Ne",
     "Hanoi → Sapa",
   ];
-
-  const toggleOperator = (operator: string) => {
-    setSelectedOperators((prev) =>
-      prev.includes(operator)
-        ? prev.filter((op) => op !== operator)
-        : [...prev, operator]
-    );
-  };
 
   const toggleBusType = (busType: string) => {
     setSelectedBusTypes((prev) =>
@@ -108,16 +93,14 @@ const SearchFilter = () => {
   return (
     <Sheet>
       <SheetTrigger asChild>
-        <Button
-          variant="ghost"
-        >
+        <Button variant="ghost">
           <Filter className="w-5 h-5 mr-2" />
           Filter
         </Button>
       </SheetTrigger>
       <SheetContent
         side={windowWidth < 640 ? "bottom" : "right"}
-        className="overflow-y-auto p-4 h-11/12 rounded"
+        className="overflow-y-auto p-4 h-full rounded"
       >
         <SheetHeader>
           <SheetTitle className="flex items-center">
@@ -142,6 +125,16 @@ const SearchFilter = () => {
               className="w-full"
             />
           </div>
+
+          {/* Bus Operators */}
+          <div className="grid gap-3">
+            <FormItem>
+              <Label>Bus Operators</Label>
+              <Input placeholder="Search by operator name..." />
+            </FormItem>
+          </div>
+
+          <Separator />
 
           {/* Popular Routes */}
           <div className="grid gap-3">
@@ -183,27 +176,6 @@ const SearchFilter = () => {
 
           <Separator />
 
-          {/* Bus Operators */}
-          <div className="grid gap-3">
-            <Label>Bus Operators</Label>
-            <div className="space-y-2 max-h-32 overflow-y-auto">
-              {busOperators.map((operator) => (
-                <div key={operator} className="flex items-center space-x-2">
-                  <Checkbox
-                    id={operator}
-                    checked={selectedOperators.includes(operator)}
-                    onCheckedChange={() => toggleOperator(operator)}
-                  />
-                  <Label htmlFor={operator} className="text-sm cursor-pointer">
-                    {operator}
-                  </Label>
-                </div>
-              ))}
-            </div>
-          </div>
-
-          <Separator />
-
           {/* Bus Types */}
           <div className="grid gap-3">
             <Label>Bus Types</Label>
@@ -227,21 +199,10 @@ const SearchFilter = () => {
 
           {/* Departure Time */}
           <div className="grid gap-3">
-            <Label>Departure Time</Label>
-            <Select>
-              <SelectTrigger>
-                <SelectValue placeholder="Any time" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="any">Any time</SelectItem>
-                <SelectItem value="morning">Morning (6AM - 12PM)</SelectItem>
-                <SelectItem value="afternoon">
-                  Afternoon (12PM - 6PM)
-                </SelectItem>
-                <SelectItem value="evening">Evening (6PM - 10PM)</SelectItem>
-                <SelectItem value="night">Night (10PM - 6AM)</SelectItem>
-              </SelectContent>
-            </Select>
+            <FormItem>
+              <Label>Departure Time</Label>
+              <Calendar28 onDateChange={(date) => console.log(date)} />
+            </FormItem>
           </div>
 
           {/* Trip Duration */}

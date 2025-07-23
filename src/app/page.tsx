@@ -36,6 +36,7 @@ import {
   Headphones,
   Navigation,
 } from "lucide-react";
+import FadeinWrapper from "@/components/custom/fadein_wrapper";
 
 const Home = () => {
   return (
@@ -48,111 +49,130 @@ const Home = () => {
           className="object-cover w-full h-full absolute opacity-40"
         />
         <div className="z-10 flex flex-col items-center">
-          <h1 className="text-5xl font-bold text-center mb-6">
-            Welcome to Busify
-          </h1>
-          <p className="text-xl text-center mb-8 max-w-2xl px-4">
-            Your trusted platform connecting travelers with reliable bus
-            providers across the nation
-          </p>
-          <div className="flex gap-4">
-            <Button
-              size="lg"
-              className="bg-white text-green-600 hover:bg-green-50"
-            >
-              Book Your Ticket
-            </Button>
-            <Button
-              size="lg"
-              variant="outline"
-              className="border-white bg-transparent text-white hover:bg-white hover:text-green-600"
-            >
-              Become a Partner
-            </Button>
-          </div>
+          <FadeinWrapper effect="animate-fade-in-left">
+            <h1 className="text-5xl font-bold text-center mb-6">
+              Welcome to Busify
+            </h1>
+            <FadeinWrapper effect="animate-fade-in-l300">
+              <p className="text-xl text-center mb-8 max-w-2xl px-4">
+                Your trusted platform connecting travelers with reliable bus
+                providers across the nation
+              </p>
+            </FadeinWrapper>
+          </FadeinWrapper>
+
+          <FadeinWrapper effect="animate-fade-in-l400">
+            <div className="flex gap-4">
+              <Button
+                size="lg"
+                className="bg-white text-green-600 hover:bg-green-50 "
+              >
+                Book Your Ticket
+              </Button>
+              <Button
+                size="lg"
+                variant="outline"
+                className="border-white bg-transparent text-white hover:bg-white hover:text-green-600 "
+              >
+                Become a Partner
+              </Button>
+            </div>
+          </FadeinWrapper>
         </div>
       </section>
       <section className="p-8 shadow-lg bg-white">
-        <h2 className="text-3xl font-bold text-center mt-8 text-green-700 mb-12">
-          Our Mission & Services
-        </h2>
+        <FadeinWrapper effect="animate-fade-in-up">
+          <h2 className="text-3xl font-bold text-center mt-8 text-green-700 mb-12">
+            Our Mission & Services
+          </h2>
+        </FadeinWrapper>
 
         {/* Mission Statement */}
         <div className="max-w-4xl mx-auto mb-16 text-center">
-          <h3 className="text-2xl font-semibold text-green-600 mb-4">
-            Connecting Travelers with Trusted Bus Providers
-          </h3>
-          <p className="text-lg text-gray-700 leading-relaxed">
-            Busify is a comprehensive platform that bridges the gap between
-            travelers seeking convenient bus transportation and reliable bus
-            operators looking to expand their reach. We provide a seamless
-            ticket booking experience while empowering bus providers to grow
-            their business through our partnership program.
-          </p>
+          <FadeinWrapper effect="animate-fade-in-up">
+            <h3 className="text-2xl font-semibold text-green-600 mb-4 animate-fade-in-left">
+              Connecting Travelers with Trusted Bus Providers
+            </h3>
+            <p className="text-lg text-gray-700 leading-relaxed animate-fade-in-left">
+              Busify is a comprehensive platform that bridges the gap between
+              travelers seeking convenient bus transportation and reliable bus
+              operators looking to expand their reach. We provide a seamless
+              ticket booking experience while empowering bus providers to grow
+              their business through our partnership program.
+            </p>
+          </FadeinWrapper>
         </div>
 
         {/* Features Grid */}
         <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8 max-w-6xl mx-auto">
-          <Card className="border-green-200 bg-green-50">
-            <CardHeader>
-              <div className="w-12 h-12 bg-green-600 rounded-lg flex items-center justify-center mb-4">
-                <svg
-                  className="w-6 h-6 text-white"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth="2"
-                    d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"
-                  ></path>
-                </svg>
-              </div>
-              <CardTitle className="text-green-700">
-                Easy Ticket Booking
-              </CardTitle>
-            </CardHeader>
-            <CardContent>
-              <CardDescription className="text-gray-600">
-                Book bus tickets from multiple providers in one convenient
-                platform with real-time availability.
-              </CardDescription>
-            </CardContent>
-          </Card>
+          <FadeinWrapper effect="animate-fade-in-left">
+            <Card className="border-green-200 bg-green-50">
+              <CardHeader>
+                <div className="w-12 h-12 bg-green-600 rounded-lg flex items-center justify-center mb-4">
+                  <svg
+                    className="w-6 h-6 text-white"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth="2"
+                      d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"
+                    ></path>
+                  </svg>
+                </div>
+                <CardTitle className="text-green-700">
+                  Easy Ticket Booking
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                <CardDescription className="text-gray-600">
+                  Book bus tickets from multiple providers in one convenient
+                  platform with real-time availability.
+                </CardDescription>
+              </CardContent>
+            </Card>
+          </FadeinWrapper>
 
-          <Card className="border-green-200 bg-green-50">
-            <CardHeader>
-              <div className="w-12 h-12 bg-green-600 rounded-lg flex items-center justify-center mb-4">
-                <Users className="w-6 h-6 text-white" />
-              </div>
-              <CardTitle className="text-green-700">Partner Network</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <CardDescription className="text-gray-600">
-                Join our growing network of trusted bus operators and expand
-                your business reach.
-              </CardDescription>
-            </CardContent>
-          </Card>
+          <FadeinWrapper effect="animate-fade-in-l300">
+            <Card className="border-green-200 bg-green-50">
+              <CardHeader>
+                <div className="w-12 h-12 bg-green-600 rounded-lg flex items-center justify-center mb-4">
+                  <Users className="w-6 h-6 text-white" />
+                </div>
+                <CardTitle className="text-green-700">
+                  Partner Network
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                <CardDescription className="text-gray-600">
+                  Join our growing network of trusted bus operators and expand
+                  your business reach.
+                </CardDescription>
+              </CardContent>
+            </Card>
+          </FadeinWrapper>
 
-          <Card className="border-green-200 bg-green-50">
-            <CardHeader>
-              <div className="w-12 h-12 bg-green-600 rounded-lg flex items-center justify-center mb-4">
-                <Clock className="w-6 h-6 text-white" />
-              </div>
-              <CardTitle className="text-green-700">
-                Real-time Updates
-              </CardTitle>
-            </CardHeader>
-            <CardContent>
-              <CardDescription className="text-gray-600">
-                Stay informed with live tracking, schedule updates, and instant
-                notifications.
-              </CardDescription>
-            </CardContent>
-          </Card>
+          <FadeinWrapper effect="animate-fade-in-l400">
+            <Card className="border-green-200 bg-green-50">
+              <CardHeader>
+                <div className="w-12 h-12 bg-green-600 rounded-lg flex items-center justify-center mb-4">
+                  <Clock className="w-6 h-6 text-white" />
+                </div>
+                <CardTitle className="text-green-700">
+                  Real-time Updates
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                <CardDescription className="text-gray-600">
+                  Stay informed with live tracking, schedule updates, and
+                  instant notifications.
+                </CardDescription>
+              </CardContent>
+            </Card>
+          </FadeinWrapper>
         </div>
 
         {/* Call to Action for Providers */}
@@ -178,264 +198,280 @@ const Home = () => {
       </section>
 
       {/* How It Works Section */}
-      <section className="bg-gray-50 py-16">
-        <div className="max-w-6xl mx-auto px-4">
-          <h2 className="text-3xl font-bold text-center text-green-700 mb-12">
-            How Busify Works
-          </h2>
+      <FadeinWrapper effect="animate-fade-in-up">
+        <section className="bg-gray-50 py-16">
+          <div className="max-w-6xl mx-auto px-4">
+            <h2 className="text-3xl font-bold text-center text-green-700 mb-12">
+              How Busify Works
+            </h2>
 
-          <Tabs defaultValue="travelers" className="w-full">
-            <TabsList className="grid w-full grid-cols-2 max-w-md mx-auto mb-12">
-              <TabsTrigger value="travelers">For Travelers</TabsTrigger>
-              <TabsTrigger value="providers">For Providers</TabsTrigger>
-            </TabsList>
+            <Tabs defaultValue="travelers" className="w-full">
+              <TabsList className="grid w-full grid-cols-2 max-w-md mx-auto mb-12">
+                <TabsTrigger value="travelers">For Travelers</TabsTrigger>
+                <TabsTrigger value="providers">For Providers</TabsTrigger>
+              </TabsList>
 
-            <TabsContent value="travelers" className="space-y-8">
-              <div className="grid md:grid-cols-3 gap-8">
-                <Card className="text-center">
-                  <CardHeader>
-                    <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                      <span className="text-2xl font-bold text-green-600">
-                        1
-                      </span>
-                    </div>
-                    <CardTitle className="text-green-700">
-                      Search & Compare
-                    </CardTitle>
-                  </CardHeader>
-                  <CardContent>
-                    <CardDescription>
-                      Search for bus routes, compare prices, schedules, and
-                      amenities from multiple providers in one place.
-                    </CardDescription>
-                  </CardContent>
-                </Card>
+              <TabsContent value="travelers" className="space-y-8">
+                <div className="grid md:grid-cols-3 gap-8">
+                  <Card className="text-center">
+                    <CardHeader>
+                      <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                        <span className="text-2xl font-bold text-green-600">
+                          1
+                        </span>
+                      </div>
+                      <CardTitle className="text-green-700">
+                        Search & Compare
+                      </CardTitle>
+                    </CardHeader>
+                    <CardContent>
+                      <CardDescription>
+                        Search for bus routes, compare prices, schedules, and
+                        amenities from multiple providers in one place.
+                      </CardDescription>
+                    </CardContent>
+                  </Card>
 
-                <Card className="text-center">
-                  <CardHeader>
-                    <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                      <span className="text-2xl font-bold text-green-600">
-                        2
-                      </span>
-                    </div>
-                    <CardTitle className="text-green-700">Book & Pay</CardTitle>
-                  </CardHeader>
-                  <CardContent>
-                    <CardDescription>
-                      Select your preferred trip, choose your seats, and
-                      complete secure payment with multiple payment options.
-                    </CardDescription>
-                  </CardContent>
-                </Card>
+                  <Card className="text-center">
+                    <CardHeader>
+                      <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                        <span className="text-2xl font-bold text-green-600">
+                          2
+                        </span>
+                      </div>
+                      <CardTitle className="text-green-700">
+                        Book & Pay
+                      </CardTitle>
+                    </CardHeader>
+                    <CardContent>
+                      <CardDescription>
+                        Select your preferred trip, choose your seats, and
+                        complete secure payment with multiple payment options.
+                      </CardDescription>
+                    </CardContent>
+                  </Card>
 
-                <Card className="text-center">
-                  <CardHeader>
-                    <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                      <span className="text-2xl font-bold text-green-600">
-                        3
-                      </span>
-                    </div>
-                    <CardTitle className="text-green-700">
-                      Travel & Track
-                    </CardTitle>
-                  </CardHeader>
-                  <CardContent>
-                    <CardDescription>
-                      Get your e-ticket, track your bus in real-time, and
-                      receive updates throughout your journey.
-                    </CardDescription>
-                  </CardContent>
-                </Card>
-              </div>
-            </TabsContent>
+                  <Card className="text-center">
+                    <CardHeader>
+                      <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                        <span className="text-2xl font-bold text-green-600">
+                          3
+                        </span>
+                      </div>
+                      <CardTitle className="text-green-700">
+                        Travel & Track
+                      </CardTitle>
+                    </CardHeader>
+                    <CardContent>
+                      <CardDescription>
+                        Get your e-ticket, track your bus in real-time, and
+                        receive updates throughout your journey.
+                      </CardDescription>
+                    </CardContent>
+                  </Card>
+                </div>
+              </TabsContent>
 
-            <TabsContent value="providers" className="space-y-8">
-              <div className="grid md:grid-cols-3 gap-8">
-                <Card className="text-center">
-                  <CardHeader>
-                    <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                      <span className="text-2xl font-bold text-green-600">
-                        1
-                      </span>
-                    </div>
-                    <CardTitle className="text-green-700">
-                      Apply & Verify
-                    </CardTitle>
-                  </CardHeader>
-                  <CardContent>
-                    <CardDescription>
-                      Submit your application with business documents. Our team
-                      verifies your credentials and fleet quality.
-                    </CardDescription>
-                  </CardContent>
-                </Card>
+              <TabsContent value="providers" className="space-y-8">
+                <div className="grid md:grid-cols-3 gap-8">
+                  <Card className="text-center">
+                    <CardHeader>
+                      <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                        <span className="text-2xl font-bold text-green-600">
+                          1
+                        </span>
+                      </div>
+                      <CardTitle className="text-green-700">
+                        Apply & Verify
+                      </CardTitle>
+                    </CardHeader>
+                    <CardContent>
+                      <CardDescription>
+                        Submit your application with business documents. Our
+                        team verifies your credentials and fleet quality.
+                      </CardDescription>
+                    </CardContent>
+                  </Card>
 
-                <Card className="text-center">
-                  <CardHeader>
-                    <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                      <span className="text-2xl font-bold text-green-600">
-                        2
-                      </span>
-                    </div>
-                    <CardTitle className="text-green-700">
-                      Setup & Launch
-                    </CardTitle>
-                  </CardHeader>
-                  <CardContent>
-                    <CardDescription>
-                      Configure your routes, pricing, and schedules. Our team
-                      helps you launch your services on the platform.
-                    </CardDescription>
-                  </CardContent>
-                </Card>
+                  <Card className="text-center">
+                    <CardHeader>
+                      <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                        <span className="text-2xl font-bold text-green-600">
+                          2
+                        </span>
+                      </div>
+                      <CardTitle className="text-green-700">
+                        Setup & Launch
+                      </CardTitle>
+                    </CardHeader>
+                    <CardContent>
+                      <CardDescription>
+                        Configure your routes, pricing, and schedules. Our team
+                        helps you launch your services on the platform.
+                      </CardDescription>
+                    </CardContent>
+                  </Card>
 
-                <Card className="text-center">
-                  <CardHeader>
-                    <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                      <span className="text-2xl font-bold text-green-600">
-                        3
-                      </span>
-                    </div>
-                    <CardTitle className="text-green-700">
-                      Grow & Earn
-                    </CardTitle>
-                  </CardHeader>
-                  <CardContent>
-                    <CardDescription>
-                      Start receiving bookings, manage your fleet, and grow your
-                      business with our marketing and support.
-                    </CardDescription>
-                  </CardContent>
-                </Card>
-              </div>
-            </TabsContent>
-          </Tabs>
-        </div>
-      </section>
+                  <Card className="text-center">
+                    <CardHeader>
+                      <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                        <span className="text-2xl font-bold text-green-600">
+                          3
+                        </span>
+                      </div>
+                      <CardTitle className="text-green-700">
+                        Grow & Earn
+                      </CardTitle>
+                    </CardHeader>
+                    <CardContent>
+                      <CardDescription>
+                        Start receiving bookings, manage your fleet, and grow
+                        your business with our marketing and support.
+                      </CardDescription>
+                    </CardContent>
+                  </Card>
+                </div>
+              </TabsContent>
+            </Tabs>
+          </div>
+        </section>
+      </FadeinWrapper>
 
       {/* Why Choose Busify Section */}
-      <section className="bg-green-600 text-white py-16">
-        <div className="max-w-6xl mx-auto px-4">
-          <h2 className="text-3xl font-bold text-center mb-12">
-            Why Choose Busify?
-          </h2>
-          <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
-            <div className="text-center space-y-4">
-              <Shield className="w-12 h-12 mx-auto text-green-200" />
-              <h3 className="text-xl font-semibold">Secure & Safe</h3>
-              <p className="text-green-100">
-                All our partner buses are verified and meet safety standards
-              </p>
-            </div>
-            <div className="text-center space-y-4">
-              <Award className="w-12 h-12 mx-auto text-green-200" />
-              <h3 className="text-xl font-semibold">Best Prices</h3>
-              <p className="text-green-100">
-                Compare prices across providers and get the best deals
-              </p>
-            </div>
-            <div className="text-center space-y-4">
-              <Zap className="w-12 h-12 mx-auto text-green-200" />
-              <h3 className="text-xl font-semibold">Instant Booking</h3>
-              <p className="text-green-100">
-                Book tickets instantly with immediate confirmation
-              </p>
-            </div>
-            <div className="text-center space-y-4">
-              <CheckCircle className="w-12 h-12 mx-auto text-green-200" />
-              <h3 className="text-xl font-semibold">24/7 Support</h3>
-              <p className="text-green-100">
-                Round-the-clock customer support for any assistance
-              </p>
+      <FadeinWrapper effect="animate-fade-in-up">
+        <section className="bg-green-600 text-white py-16">
+          <div className="max-w-6xl mx-auto px-4">
+            <h2 className="text-3xl font-bold text-center mb-12">
+              Why Choose Busify?
+            </h2>
+            <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
+              <div className="text-center space-y-4">
+                <Shield className="w-12 h-12 mx-auto text-green-200" />
+                <h3 className="text-xl font-semibold">Secure & Safe</h3>
+                <p className="text-green-100">
+                  All our partner buses are verified and meet safety standards
+                </p>
+              </div>
+              <div className="text-center space-y-4">
+                <Award className="w-12 h-12 mx-auto text-green-200" />
+                <h3 className="text-xl font-semibold">Best Prices</h3>
+                <p className="text-green-100">
+                  Compare prices across providers and get the best deals
+                </p>
+              </div>
+              <div className="text-center space-y-4">
+                <Zap className="w-12 h-12 mx-auto text-green-200" />
+                <h3 className="text-xl font-semibold">Instant Booking</h3>
+                <p className="text-green-100">
+                  Book tickets instantly with immediate confirmation
+                </p>
+              </div>
+              <div className="text-center space-y-4">
+                <CheckCircle className="w-12 h-12 mx-auto text-green-200" />
+                <h3 className="text-xl font-semibold">24/7 Support</h3>
+                <p className="text-green-100">
+                  Round-the-clock customer support for any assistance
+                </p>
+              </div>
             </div>
           </div>
-        </div>
-      </section>
+        </section>
+      </FadeinWrapper>
 
       {/* Statistics Section */}
-      <section className="py-16 bg-white">
-        <div className="max-w-6xl mx-auto px-4 text-center">
-          <h2 className="text-3xl font-bold text-green-700 mb-12">
-            Trusted by Thousands
-          </h2>
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
-            <div className="space-y-2">
-              <div className="text-4xl font-bold text-green-600">500+</div>
-              <div className="text-gray-600">Bus Providers</div>
-            </div>
-            <div className="space-y-2">
-              <div className="text-4xl font-bold text-green-600">50,000+</div>
-              <div className="text-gray-600">Happy Travelers</div>
-            </div>
-            <div className="space-y-2">
-              <div className="text-4xl font-bold text-green-600">1,000+</div>
-              <div className="text-gray-600">Routes Available</div>
-            </div>
-            <div className="space-y-2">
-              <div className="text-4xl font-bold text-green-600">24/7</div>
-              <div className="text-gray-600">Customer Support</div>
+      <FadeinWrapper effect="animate-fade-in-up">
+        <section className="py-16 bg-white">
+          <div className="max-w-6xl mx-auto px-4 text-center">
+            <h2 className="text-3xl font-bold text-green-700 mb-12">
+              Trusted by Thousands
+            </h2>
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
+              <div className="space-y-2">
+                <div className="text-4xl font-bold text-green-600">500+</div>
+                <div className="text-gray-600">Bus Providers</div>
+              </div>
+              <div className="space-y-2">
+                <div className="text-4xl font-bold text-green-600">50,000+</div>
+                <div className="text-gray-600">Happy Travelers</div>
+              </div>
+              <div className="space-y-2">
+                <div className="text-4xl font-bold text-green-600">1,000+</div>
+                <div className="text-gray-600">Routes Available</div>
+              </div>
+              <div className="space-y-2">
+                <div className="text-4xl font-bold text-green-600">24/7</div>
+                <div className="text-gray-600">Customer Support</div>
+              </div>
             </div>
           </div>
-        </div>
-      </section>
-
-      
+        </section>
+      </FadeinWrapper>
 
       {/* Business Solutions Section */}
       <section className="py-16 bg-green-50">
         <div className="max-w-6xl mx-auto px-4">
-          <div className="text-center mb-12">
-            <h2 className="text-3xl font-bold text-green-700 mb-4">
-              Business Solutions
-            </h2>
-            <p className="text-lg text-gray-600 max-w-2xl mx-auto">
-              Special services for companies, travel agencies, and organizations
-              looking for group bookings and corporate travel solutions.
-            </p>
-          </div>
+          <FadeinWrapper effect="animate-fade-in-up">
+            <div className="text-center mb-12">
+              <h2 className="text-3xl font-bold text-green-700 mb-4">
+                Business Solutions
+              </h2>
+              <p className="text-lg text-gray-600 max-w-2xl mx-auto">
+                Special services for companies, travel agencies, and
+                organizations looking for group bookings and corporate travel
+                solutions.
+              </p>
+            </div>
+          </FadeinWrapper>
 
           <div className="grid md:grid-cols-3 gap-8">
-            <Card className="border-green-200">
-              <CardHeader>
-                <TrendingUp className="w-12 h-12 text-green-600 mb-4" />
-                <CardTitle className="text-green-700">
-                  Corporate Travel
-                </CardTitle>
-              </CardHeader>
-              <CardContent>
-                <CardDescription className="mb-4">
-                  Streamlined booking for employee business trips with expense
-                  tracking and reporting.
-                </CardDescription>
-                <ul className="space-y-2 text-sm text-gray-600">
-                  <li>• Centralized billing and invoicing</li>
-                  <li>• Travel policy compliance</li>
-                  <li>• Detailed trip reports</li>
-                  <li>• Priority customer support</li>
-                </ul>
-              </CardContent>
-            </Card>
+            <FadeinWrapper effect="animate-fade-in-left">
+              <Card className="border-green-200">
+                <CardHeader>
+                  <TrendingUp className="w-12 h-12 text-green-600 mb-4" />
+                  <CardTitle className="text-green-700">
+                    Corporate Travel
+                  </CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <CardDescription className="mb-4">
+                    Streamlined booking for employee business trips with expense
+                    tracking and reporting.
+                  </CardDescription>
+                  <ul className="space-y-2 text-sm text-gray-600">
+                    <li>• Centralized billing and invoicing</li>
+                    <li>• Travel policy compliance</li>
+                    <li>• Detailed trip reports</li>
+                    <li>• Priority customer support</li>
+                  </ul>
+                </CardContent>
+              </Card>
+            </FadeinWrapper>
 
-            <Card className="border-green-200">
-              <CardHeader>
-                <Users className="w-12 h-12 text-green-600 mb-4" />
-                <CardTitle className="text-green-700">Group Bookings</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <CardDescription className="mb-4">
-                  Special rates and coordinated travel for groups, events, and
-                  tour operators.
-                </CardDescription>
-                <ul className="space-y-2 text-sm text-gray-600">
-                  <li>• Bulk booking discounts</li>
-                  <li>• Seat allocation management</li>
-                  <li>• Flexible payment terms</li>
-                  <li>• Dedicated group coordinator</li>
-                </ul>
-              </CardContent>
-            </Card>
+            <FadeinWrapper effect="animate-fade-in-l300">
+              <Card className="border-green-200">
+                <CardHeader>
+                  <Users className="w-12 h-12 text-green-600 mb-4" />
+                  <CardTitle className="text-green-700">
+                    Group Bookings
+                  </CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <CardDescription className="mb-4">
+                    Special rates and coordinated travel for groups, events, and
+                    tour operators.
+                  </CardDescription>
+                  <ul className="space-y-2 text-sm text-gray-600">
+                    <li>• Bulk booking discounts</li>
+                    <li>• Seat allocation management</li>
+                    <li>• Flexible payment terms</li>
+                    <li>• Dedicated group coordinator</li>
+                  </ul>
+                </CardContent>
+              </Card>
+            </FadeinWrapper>
 
-            <Card className="border-green-200">
+            <FadeinWrapper effect="animate-fade-in-l400">
+              <Card className="border-green-200">
               <CardHeader>
                 <Headphones className="w-12 h-12 text-green-600 mb-4" />
                 <CardTitle className="text-green-700">
@@ -455,6 +491,7 @@ const Home = () => {
                 </ul>
               </CardContent>
             </Card>
+            </FadeinWrapper>
           </div>
 
           <div className="text-center mt-12">
