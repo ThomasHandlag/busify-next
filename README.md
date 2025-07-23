@@ -41,7 +41,7 @@ Before you begin, ensure you have the following installed:
 ### 1. Clone the repository
 
 ```bash
-git clone <repository-url>
+git clone https://github.com/ThomasHandlag/busify-next
 cd bus-manage-system/busify-next
 ```
 
@@ -128,8 +128,8 @@ npm run start
 ## 🤝 Contributing
 
 1. Fork the repository
-2. Create your feature branch (`git checkout -b feature/amazing-feature`)
-3. Commit your changes (`git commit -m 'Add some amazing feature'`)
+2. Create your branch (`git checkout -b amazing-feature`)
+3. Commit your changes (`git commit -m 'feat: some amazing feature'`)
 4. Push to the branch (`git push origin feature/amazing-feature`)
 5. Open a Pull Request
 
