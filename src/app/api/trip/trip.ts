@@ -1,4 +1,4 @@
-import api from "./axios-instance";
+import api from "../auth/axios-instance";
 
 export async function getUpcomingTrips(): Promise<Response> {
   try {

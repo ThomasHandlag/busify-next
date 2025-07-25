@@ -5,6 +5,6 @@ const TripDetailsPage = () => {
       <p className="text-lg">This is the trip details page.</p>
     </div>
   );
-}
+};
 
 export default TripDetailsPage;
