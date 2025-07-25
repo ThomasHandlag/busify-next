@@ -1,4 +1,4 @@
-import { getUpcomingTrips } from "@/app/api/auth/trip";
+import { getUpcomingTrips } from "@/lib/data/trip";
 import TripItem from "@/components/custom/trip_item";
 import { TripItemProps } from "../page";
 
