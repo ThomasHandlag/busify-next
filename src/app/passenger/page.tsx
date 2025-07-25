@@ -24,7 +24,7 @@ import {
 } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
-import { getUpcomingTrips } from "../api/auth/trip";
+import { getUpcomingTrips } from "../../lib/data/trip";
 
 export interface TripItemProps {
   trip_id: number;

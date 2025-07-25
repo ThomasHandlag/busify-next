@@ -1,3 +1,4 @@
+'use server';
 import Footer from "@/components/custom/footer";
 import Image from "next/image";
 import { Button } from "@/components/ui/button";
@@ -41,12 +42,15 @@ import FadeinWrapper from "@/components/custom/fadein_wrapper";
 const Home = () => {
   return (
     <div className="h-full w-full">
-      <section className="bg-gradient-to-br relative from-green-600 to-green-700 h-screen flex flex-col justify-center items-center text-white">
+      <section className="bg-gradient-to-br w-full relative from-green-600 to-green-700 h-screen flex flex-col justify-center items-center text-white">
         <Image
           src="/bus-photo.jpg"
           fill
+          loading="lazy"
+          placeholder="blur"
+          blurDataURL="..."
           alt="Bus"
-          className="object-cover w-full h-full absolute opacity-40"
+          className="object-cover  absolute opacity-40"
         />
         <div className="z-10 flex flex-col items-center">
           <FadeinWrapper effect="animate-fade-in-left">
