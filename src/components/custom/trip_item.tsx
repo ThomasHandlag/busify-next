@@ -91,7 +91,9 @@ const TripItem = ({ trip }: { trip: TripItemProps }) => {
         {/* Price and Action */}
         <div className="flex justify-between items-center">
           <div>
-            <p className="text-2xl font-bold text-green-600">${trip.price}</p>
+            <p className="text-2xl font-bold text-green-600">
+              ${trip.price_per_seat}
+            </p>
             <p className="text-xs text-gray-500">per person</p>
           </div>
           <div className="flex gap-2">
