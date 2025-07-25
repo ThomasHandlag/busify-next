@@ -1,6 +1,11 @@
+"use client";
+
+import BusOperatorItem, {
+  BusOperatorItemProps,
+} from "@/components/custom/bus_operator_item";
 import Footer from "@/components/custom/footer";
 import Tips from "@/components/custom/tips";
-import TripItem from "@/components/custom/trip_item";
+import TripItem, { TripItemProps } from "@/components/custom/trip_item";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -24,23 +29,112 @@ import {
 } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
-import { getUpcomingTrips } from "../api/auth/trip";
 
-export interface TripItemProps {
-  trip_id: number;
-  operator_name: string;
-  route: {
-    start_location: string;
-    end_location: string;
-  };
-  departure_time: string;
-  arrival_time: string;
-  available_seats: number;
-  average_rating: number;
-  price: number;
-}
-const Passenger = async () => {
-  const res = await getUpcomingTrips();
+const FakeData: BusOperatorItemProps[] = [
+  {
+    id: 1,
+    name: "Busify Express",
+    logo: "/logo.png",
+    description: "Fast and reliable bus service across the country.",
+    rate: 4.5,
+    contact: "123-456-7890",
+    numReviews: 120,
+  },
+  {
+    id: 2,
+    name: "Green Travels",
+    logo: "/logo.png",
+    description: "Eco-friendly bus service with comfortable seating.",
+    rate: 4.8,
+    contact: "987-654-3210",
+    numReviews: 95,
+  },
+  {
+    id: 3,
+    name: "City Connect",
+    logo: "/logo.png",
+    description: "Connecting cities with affordable bus services.",
+    rate: 4.2,
+    contact: "555-123-4567",
+    numReviews: 80,
+  },
+  {
+    id: 4,
+    name: "Travel Buddy",
+    logo: "/logo.png",
+    description: "Your travel companion for all bus journeys.",
+    rate: 4.6,
+    contact: "444-987-6543",
+    numReviews: 110,
+  },
+  {
+    id: 5,
+    name: "Comfort Rides",
+    logo: "/logo.png",
+    description: "Luxury bus service with top-notch amenities.",
+    rate: 4.9,
+    contact: "333-456-7890",
+    numReviews: 120,
+  },
+  {
+    id: 6,
+    name: "Speedy Buses",
+    logo: "/logo.png",
+    description: "Fast and efficient bus service for quick travel.",
+    rate: 4.3,
+    contact: "222-654-3210",
+    numReviews: 100,
+  },
+];
+
+const FakeTripsData: TripItemProps[] = [
+  {
+    id: 1,
+    date: "2023-10-01",
+    time: "08:00",
+    duration: "2:10",
+    price: 15,
+    startLocation: "City Center",
+    endLocation: "Downtown",
+    busOperator: "Busify Express",
+    seatsAvailable: 20,
+  },
+  {
+    id: 2,
+    date: "2023-10-01",
+    time: "18:00",
+    duration: "1:30",
+    price: 12,
+    startLocation: "Uptown",
+    endLocation: "Suburbs",
+    busOperator: "Green Travels",
+    seatsAvailable: 15,
+  },
+  {
+    id: 3,
+    date: "2023-10-01",
+    time: "22:00",
+    duration: "3:00",
+    price: 20,
+    startLocation: "Airport",
+    endLocation: "City Center",
+    busOperator: "City Connect",
+    seatsAvailable: 10,
+  },
+  {
+    id: 4,
+    date: "2023-10-02",
+    time: "09:00",
+    duration: "4:00",
+    price: 25,
+    startLocation: "Downtown",
+    endLocation: "Beach Resort",
+    busOperator: "Travel Buddy",
+    seatsAvailable: 30,
+  },
+];
+
+const Passenger = () => {
   return (
     <div className="min-h-screen bg-gray-50">
       {/* Hero Section */}
@@ -360,11 +454,9 @@ const Passenger = async () => {
           </div>
 
           <div className="grid md:grid-cols-2 lg:grid-cols-2 gap-6">
-            {res.result
-              .slice(0, 4)
-              .map((trip: TripItemProps, index: number) => (
-                <TripItem key={index} trip={trip} />
-              ))}
+            {FakeTripsData.slice(0, 4).map((trip) => (
+              <TripItem key={trip.id} trip={trip} />
+            ))}
           </div>
         </div>
       </section>
@@ -384,9 +476,9 @@ const Passenger = async () => {
         </div>
 
         <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {/* {trips.slice(0, 6).map((busOperator) => (
+          {FakeData.slice(0, 6).map((busOperator) => (
             <BusOperatorItem key={busOperator.id} busOperator={busOperator} />
-          ))} */}
+          ))}
         </div>
       </section>
       <Tips />
