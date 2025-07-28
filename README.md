@@ -88,8 +88,11 @@ Open [http://localhost:3000](http://localhost:3000) with your browser to see the
 busify-next/
 ├── src/
 │   ├── app/           # Next.js app directory (routing)
+|   |   ├── api/foldername # this folder is used for define client side api call
 │   ├── components/    # Reusable UI components
 │   └── lib/          # Utility functions and configurations
+|       ├── data/     # server only api
+|       └── something.ts  # util files
 ├── public/           # Static assets
 ├── components.json   # Shadcn/ui components configuration
 └── package.json      # Project dependencies and scripts
