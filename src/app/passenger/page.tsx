@@ -25,6 +25,10 @@ import {
 import Image from "next/image";
 import Link from "next/link";
 import { getUpcomingTrips } from "../../lib/data/trip";
+import { getBusOperatorsRating } from "@/lib/data/bus_operator";
+import BusOperatorItem, {
+  BusOperatorItemProps,
+} from "@/components/custom/bus_operator_item";
 
 export interface TripItemProps {
   trip_id: number;
@@ -401,6 +405,9 @@ const Passenger = async () => {
           {/* {trips.slice(0, 6).map((busOperator) => (
             <BusOperatorItem key={busOperator.id} busOperator={busOperator} />
           ))} */}
+          {busOperators.result.map((operator: BusOperatorItemProps) => (
+            <BusOperatorItem key={operator.id} busOperator={operator} />
+          ))}
         </div>
       </section>
       <Tips />
