@@ -20,7 +20,20 @@ const TripItem = ({ trip }: { trip: TripItemProps }) => {
   };
 
   const departure_time = format(new Date(trip.departure_time), "HH:mm");
+  const departure_date = format(new Date(trip.departure_time), "dd/MM/yyyy");
   const arrival_time = format(new Date(trip.arrival_time), "HH:mm");
+  const arrival_date = format(new Date(trip.arrival_time), "dd/MM/yyyy");
+  // Assuming trip.duration is in minutes by departure time - arrival time
+  const trip_duration_minutes = Math.abs(
+    (new Date(trip.arrival_time).getTime() -
+      new Date(trip.departure_time).getTime()) /
+      60000
+  );
+  const hours = Math.floor(trip_duration_minutes / 60);
+  const minutes = trip_duration_minutes % 60;
+  const trip_duration =
+    minutes === 0 ? `${hours} giờ` : `${hours} giờ ${minutes} phút`;
+
   return (
     <Card className="hover:shadow-lg transition-shadow duration-200 border-l-4 border-l-green-500">
       <CardHeader className="pb-1">
@@ -57,7 +70,7 @@ const TripItem = ({ trip }: { trip: TripItemProps }) => {
             </div>
             <div className="flex items-center justify-center text-xs text-gray-500">
               <Clock className="w-3 h-3 mr-1" />
-              {/* {trip.duration} */}
+              {trip_duration}
             </div>
           </div>
           <div className="text-center">
@@ -73,7 +86,9 @@ const TripItem = ({ trip }: { trip: TripItemProps }) => {
           <div className="flex items-center space-x-4">
             <div className="flex items-center">
               <MapPin className="w-4 h-4 mr-1 text-green-600" />
-              <span className="text-xs">{departure_time}</span>
+              <span className="text-xs">
+                {departure_date} - {arrival_date}
+              </span>
             </div>
             <div className="flex items-center">
               <Users className="w-4 h-4 mr-1 text-green-600" />
@@ -91,7 +106,9 @@ const TripItem = ({ trip }: { trip: TripItemProps }) => {
         {/* Price and Action */}
         <div className="flex justify-between items-center">
           <div>
-            <p className="text-2xl font-bold text-green-600">${trip.price}</p>
+            <p className="text-2xl font-bold text-green-600">
+              {trip.price_per_seat.toLocaleString("vi-VN")} VNĐ
+            </p>
             <p className="text-xs text-gray-500">per person</p>
           </div>
           <div className="flex gap-2">

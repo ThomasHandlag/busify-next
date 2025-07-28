@@ -37,10 +37,17 @@ export interface TripItemProps {
   arrival_time: string;
   available_seats: number;
   average_rating: number;
-  price: number;
+  price_per_seat: number;
 }
+
+let trips: TripItemProps[] = [];
 const Passenger = async () => {
-  const res = await getUpcomingTrips();
+  try {
+    const res = await getUpcomingTrips();
+    trips = res.result || [];
+  } catch (error) {
+    console.log(error);
+  }
   return (
     <div className="min-h-screen bg-gray-50">
       {/* Hero Section */}
@@ -349,7 +356,7 @@ const Passenger = async () => {
         <div className="container mx-auto px-4">
           <div className="flex justify-between items-center mb-8">
             <h2 className="text-2xl font-bold text-gray-900">
-              Popular Trips Today
+              Upcoming Trips Today
             </h2>
             <Button
               variant="outline"
@@ -359,13 +366,20 @@ const Passenger = async () => {
             </Button>
           </div>
 
-          <div className="grid md:grid-cols-2 lg:grid-cols-2 gap-6">
-            {res.result
-              .slice(0, 4)
-              .map((trip: TripItemProps, index: number) => (
+          {trips.length > 0 ? (
+            <div className="grid md:grid-cols-2 lg:grid-cols-2 gap-6">
+              {trips.slice(0, 4).map((trip: TripItemProps, index: number) => (
                 <TripItem key={index} trip={trip} />
               ))}
-          </div>
+            </div>
+          ) : (
+            <div className="text-center py-8 text-gray-500">
+              <p>No trips available at the moment.</p>
+              <p className="text-sm">
+                Please check back later or contact support.
+              </p>
+            </div>
+          )}
         </div>
       </section>
 
