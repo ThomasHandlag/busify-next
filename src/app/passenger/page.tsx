@@ -390,8 +390,8 @@ const Passenger = async () => {
           {/* {trips.slice(0, 6).map((busOperator) => (
             <BusOperatorItem key={busOperator.id} busOperator={busOperator} />
           ))} */}
-          {busOperators.result.map((operator: BusOperatorItemProps, index: number) => (
-            <BusOperatorItem key={index} busOperator={operator} />
+          {busOperators.result.map((operator: BusOperatorItemProps) => (
+            <BusOperatorItem key={operator.id} busOperator={operator} />
           ))}
         </div>
       </section>
