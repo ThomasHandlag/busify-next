@@ -29,7 +29,7 @@ import { getBusOperatorsRating } from "@/lib/data/bus_operator";
 import BusOperatorItem, { BusOperatorItemProps } from "@/components/custom/bus_operator_item";
 
 export interface TripItemProps {
-  trip_id: number;
+  trip_Id: number;
   operator_name: string;
   route: {
     start_location: string;

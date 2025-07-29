@@ -7,7 +7,7 @@ const AppPage = async () => {
   return (
     <div className="grid lg:grid-cols-3 sm:grid-cols-1 gap-4 p-4">
       {trips.result.map((trip: TripItemProps) => (
-        <TripItem key={trip.trip_id} trip={trip} />
+        <TripItem key={trip.trip_Id} trip={trip} />
       ))}
     </div>
   );
