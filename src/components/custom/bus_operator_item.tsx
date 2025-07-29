@@ -14,9 +14,9 @@ export interface BusOperatorItemProps {
   name: string;
   logo: string;
   description: string;
-  rate: number;
-  contact: string;
-  numReviews: number;
+  averageRating: number;
+  hotline: string;
+  totalReviews: number;
 }
 
 const BusOperatorItem = ({
@@ -31,7 +31,7 @@ const BusOperatorItem = ({
           {busOperator.name}
         </CardTitle>
         <CardDescription className="text-sm text-gray-600">
-          Contact: {busOperator.contact}
+          Contact: {busOperator.hotline}
         </CardDescription>
         <CardAction>
           <Button>View Details</Button>
@@ -47,8 +47,8 @@ const BusOperatorItem = ({
             <AvatarFallback>{busOperator.name}</AvatarFallback>
           </Avatar>
           <div className="text-sm text-gray-500">
-            {busOperator.numReviews} reviews
-            <span className="text-yellow-500"> {busOperator.rate}/5⭐</span>
+            {busOperator.totalReviews} reviews
+            <span className="text-yellow-500"> {busOperator.averageRating}/5⭐</span>
           </div>
         </div>
       </CardContent>

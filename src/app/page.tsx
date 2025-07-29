@@ -1,4 +1,3 @@
-'use server';
 import Footer from "@/components/custom/footer";
 import Image from "next/image";
 import { Button } from "@/components/ui/button";
@@ -22,7 +21,6 @@ import { Input } from "@/components/ui/input";
 import { Separator } from "@/components/ui/separator";
 import {
   Star,
-  MapPin,
   Clock,
   Shield,
   Award,
@@ -38,8 +36,30 @@ import {
   Navigation,
 } from "lucide-react";
 import FadeinWrapper from "@/components/custom/fadein_wrapper";
+import BusifyRouteItem from "@/components/custom/busify_route_item";
+import BusifyRoute from "@/lib/types/widget_proptype";
 
-const Home = () => {
+async function getPopularRoutes() {
+  try {
+    const res = await fetch("http://localhost:8080/api/routes/popular-routes", {
+      cache: "no-store", // Ensure fresh data on each request
+    });
+    if (!res.ok) {
+      throw new Error("Failed to fetch popular routes");
+    }
+    const data = await res.json();
+    return data.result as BusifyRoute[];
+  } catch (error) {
+    console.error("Error fetching popular routes:", error);
+    return [];
+  }
+}
+
+export const dynamic = "force-static"; // Ensure this page is statically generated
+
+const Home = async () => {
+  const popularRoutes = await getPopularRoutes();
+
   return (
     <div className="h-full w-full">
       <section className="bg-gradient-to-br w-full relative from-green-600 to-green-700 h-screen flex flex-col justify-center items-center text-white">
@@ -468,7 +488,7 @@ const Home = () => {
                     <li>• Bulk booking discounts</li>
                     <li>• Seat allocation management</li>
                     <li>• Flexible payment terms</li>
-                    <li>• Dedicated group coordinator</li>
+                    <li>• Dedicated group coordinator and support</li>
                   </ul>
                 </CardContent>
               </Card>
@@ -476,25 +496,25 @@ const Home = () => {
 
             <FadeinWrapper effect="animate-fade-in-l400">
               <Card className="border-green-200">
-              <CardHeader>
-                <Headphones className="w-12 h-12 text-green-600 mb-4" />
-                <CardTitle className="text-green-700">
-                  Management Tools
-                </CardTitle>
-              </CardHeader>
-              <CardContent>
-                <CardDescription className="mb-4">
-                  Various tools for management systems, travel agencies, and
-                  corporate platforms to integrate bus booking services.
-                </CardDescription>
-                <ul className="space-y-2 text-sm text-gray-600">
-                  <li>• Comprehensive dashboard for booking management</li>
-                  <li>• Monitoring tools for real-time analytics</li>
-                  <li>• Seamless integration with existing systems</li>
-                  <li>• Resource management tools for efficient operations</li>
-                </ul>
-              </CardContent>
-            </Card>
+                <CardHeader>
+                  <Headphones className="w-12 h-12 text-green-600 mb-4" />
+                  <CardTitle className="text-green-700">
+                    Management Tools
+                  </CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <CardDescription className="mb-4">
+                    Various tools for management systems, travel agencies, and
+                    corporate platforms.
+                  </CardDescription>
+                  <ul className="space-y-2 text-sm text-gray-600">
+                    <li>• Comprehensive dashboard for management</li>
+                    <li>• Monitoring tools for real-time analytics</li>
+                    <li>• Seamless integration with existing systems</li>
+                    <li>• Powerfull resource management tools</li>
+                  </ul>
+                </CardContent>
+              </Card>
             </FadeinWrapper>
           </div>
 
@@ -513,202 +533,9 @@ const Home = () => {
             Popular Routes
           </h2>
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-            <Card className="hover:shadow-lg transition-shadow">
-              <CardHeader className="pb-3">
-                <div className="flex justify-between items-start">
-                  <div>
-                    <CardTitle className="text-lg text-green-700">
-                      Ho Chi Minh → Da Lat
-                    </CardTitle>
-                    <CardDescription className="flex items-center mt-1">
-                      <MapPin className="w-4 h-4 mr-1" />
-                      6-7 hours journey
-                    </CardDescription>
-                  </div>
-                  <Badge
-                    variant="secondary"
-                    className="bg-green-100 text-green-700"
-                  >
-                    Popular
-                  </Badge>
-                </div>
-              </CardHeader>
-              <CardContent>
-                <div className="flex justify-between items-center">
-                  <div>
-                    <p className="text-sm text-gray-600">Starting from</p>
-                    <p className="text-2xl font-bold text-green-600">$15</p>
-                  </div>
-                  <Button size="sm" className="bg-green-600 hover:bg-green-700">
-                    View Routes
-                  </Button>
-                </div>
-              </CardContent>
-            </Card>
-
-            <Card className="hover:shadow-lg transition-shadow">
-              <CardHeader className="pb-3">
-                <div className="flex justify-between items-start">
-                  <div>
-                    <CardTitle className="text-lg text-green-700">
-                      Hanoi → Ha Long Bay
-                    </CardTitle>
-                    <CardDescription className="flex items-center mt-1">
-                      <MapPin className="w-4 h-4 mr-1" />
-                      3-4 hours journey
-                    </CardDescription>
-                  </div>
-                  <Badge
-                    variant="secondary"
-                    className="bg-green-100 text-green-700"
-                  >
-                    Popular
-                  </Badge>
-                </div>
-              </CardHeader>
-              <CardContent>
-                <div className="flex justify-between items-center">
-                  <div>
-                    <p className="text-sm text-gray-600">Starting from</p>
-                    <p className="text-2xl font-bold text-green-600">$12</p>
-                  </div>
-                  <Button size="sm" className="bg-green-600 hover:bg-green-700">
-                    View Routes
-                  </Button>
-                </div>
-              </CardContent>
-            </Card>
-
-            <Card className="hover:shadow-lg transition-shadow">
-              <CardHeader className="pb-3">
-                <div className="flex justify-between items-start">
-                  <div>
-                    <CardTitle className="text-lg text-green-700">
-                      Da Nang → Hoi An
-                    </CardTitle>
-                    <CardDescription className="flex items-center mt-1">
-                      <MapPin className="w-4 h-4 mr-1" />1 hour journey
-                    </CardDescription>
-                  </div>
-                  <Badge
-                    variant="secondary"
-                    className="bg-green-100 text-green-700"
-                  >
-                    Popular
-                  </Badge>
-                </div>
-              </CardHeader>
-              <CardContent>
-                <div className="flex justify-between items-center">
-                  <div>
-                    <p className="text-sm text-gray-600">Starting from</p>
-                    <p className="text-2xl font-bold text-green-600">$3</p>
-                  </div>
-                  <Button size="sm" className="bg-green-600 hover:bg-green-700">
-                    View Routes
-                  </Button>
-                </div>
-              </CardContent>
-            </Card>
-
-            <Card className="hover:shadow-lg transition-shadow">
-              <CardHeader className="pb-3">
-                <div className="flex justify-between items-start">
-                  <div>
-                    <CardTitle className="text-lg text-green-700">
-                      Can Tho → Ho Chi Minh
-                    </CardTitle>
-                    <CardDescription className="flex items-center mt-1">
-                      <MapPin className="w-4 h-4 mr-1" />
-                      4-5 hours journey
-                    </CardDescription>
-                  </div>
-                  <Badge
-                    variant="secondary"
-                    className="bg-green-100 text-green-700"
-                  >
-                    Popular
-                  </Badge>
-                </div>
-              </CardHeader>
-              <CardContent>
-                <div className="flex justify-between items-center">
-                  <div>
-                    <p className="text-sm text-gray-600">Starting from</p>
-                    <p className="text-2xl font-bold text-green-600">$8</p>
-                  </div>
-                  <Button size="sm" className="bg-green-600 hover:bg-green-700">
-                    View Routes
-                  </Button>
-                </div>
-              </CardContent>
-            </Card>
-
-            <Card className="hover:shadow-lg transition-shadow">
-              <CardHeader className="pb-3">
-                <div className="flex justify-between items-start">
-                  <div>
-                    <CardTitle className="text-lg text-green-700">
-                      Nha Trang → Mui Ne
-                    </CardTitle>
-                    <CardDescription className="flex items-center mt-1">
-                      <MapPin className="w-4 h-4 mr-1" />
-                      5-6 hours journey
-                    </CardDescription>
-                  </div>
-                  <Badge
-                    variant="secondary"
-                    className="bg-green-100 text-green-700"
-                  >
-                    Popular
-                  </Badge>
-                </div>
-              </CardHeader>
-              <CardContent>
-                <div className="flex justify-between items-center">
-                  <div>
-                    <p className="text-sm text-gray-600">Starting from</p>
-                    <p className="text-2xl font-bold text-green-600">$10</p>
-                  </div>
-                  <Button size="sm" className="bg-green-600 hover:bg-green-700">
-                    View Routes
-                  </Button>
-                </div>
-              </CardContent>
-            </Card>
-
-            <Card className="hover:shadow-lg transition-shadow">
-              <CardHeader className="pb-3">
-                <div className="flex justify-between items-start">
-                  <div>
-                    <CardTitle className="text-lg text-green-700">
-                      Hanoi → Sapa
-                    </CardTitle>
-                    <CardDescription className="flex items-center mt-1">
-                      <MapPin className="w-4 h-4 mr-1" />
-                      5-6 hours journey
-                    </CardDescription>
-                  </div>
-                  <Badge
-                    variant="secondary"
-                    className="bg-green-100 text-green-700"
-                  >
-                    Popular
-                  </Badge>
-                </div>
-              </CardHeader>
-              <CardContent>
-                <div className="flex justify-between items-center">
-                  <div>
-                    <p className="text-sm text-gray-600">Starting from</p>
-                    <p className="text-2xl font-bold text-green-600">$18</p>
-                  </div>
-                  <Button size="sm" className="bg-green-600 hover:bg-green-700">
-                    View Routes
-                  </Button>
-                </div>
-              </CardContent>
-            </Card>
+            {popularRoutes.slice(0, 6).map((route: BusifyRoute) => (
+              <BusifyRouteItem key={route.routeId} item={route} />
+            ))}
           </div>
           <div className="text-center mt-12">
             <Button
@@ -839,8 +666,8 @@ const Home = () => {
                   ))}
                 </div>
                 <p className="text-gray-600">
-                  &ldquo;Busify has made my business trips so much easier. I can
-                  compare prices and book tickets in minutes!&rdquo;
+                  “Busify has made my business trips so much easier. I can
+                  compare prices and book tickets in minutes!”
                 </p>
               </CardContent>
             </Card>
@@ -868,9 +695,9 @@ const Home = () => {
                   ))}
                 </div>
                 <p className="text-gray-600">
-                  &ldquo;Since joining Busify, our bookings increased by 40%.
+                  “Since joining Busify, our bookings increased by 40%.
                   The platform is easy to use and the support is
-                  excellent.&rdquo;
+                  excellent.”
                 </p>
               </CardContent>
             </Card>
@@ -898,8 +725,8 @@ const Home = () => {
                   ))}
                 </div>
                 <p className="text-gray-600">
-                  &ldquo;Real-time tracking and reliable service. I always know
-                  when my bus will arrive. Highly recommended!&rdquo;
+                  “Real-time tracking and reliable service. I always know
+                  when my bus will arrive. Highly recommended!”
                 </p>
               </CardContent>
             </Card>
@@ -929,7 +756,7 @@ const Home = () => {
                 How can I become a bus provider partner?
               </AccordionTrigger>
               <AccordionContent>
-                Click on &ldquo;Become a Partner&rdquo; and fill out our
+                Click on “Become a Partner” and fill out our
                 application form. We&apos;ll review your credentials, fleet
                 quality, and safety standards. Once approved, our team will help
                 you set up your services on the platform.
