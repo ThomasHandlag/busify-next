@@ -29,8 +29,10 @@ import { getBusOperatorsRating } from "@/lib/data/bus_operator";
 import BusOperatorItem, { BusOperatorItemProps } from "@/components/custom/bus_operator_item";
 
 export interface TripItemProps {
-  trip_Id: number;
+  price_per_seat: number;
+  trip_id: number;
   operator_name: string;
+  duration: string;
   route: {
     start_location: string;
     end_location: string;
@@ -39,7 +41,6 @@ export interface TripItemProps {
   arrival_time: string;
   available_seats: number;
   average_rating: number;
-  price: number;
 }
 const Passenger = async () => {
   const res = await getUpcomingTrips();

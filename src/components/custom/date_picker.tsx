@@ -46,13 +46,21 @@ const Calendar28 = ({
   onCalendarOpen,
   onCalendarClose,
   label = "Subscription Date",
-  placeholder = "June 01, 2025",
-  initialDate = new Date()
+  placeholder = "Select day",
+  initialDate = undefined,
 }: DatePickerProps) => {
   const [open, setOpen] = React.useState(false);
   const [date, setDate] = React.useState<Date | undefined>(initialDate);
   const [month, setMonth] = React.useState<Date | undefined>(initialDate);
   const [value, setValue] = React.useState(formatDate(initialDate));
+
+  React.useEffect(() => {
+    if (initialDate) {
+      setDate(initialDate);
+      setMonth(initialDate);
+      setValue(formatDate(initialDate));
+    }
+  }, [initialDate]);
 
   // Handle opening/closing calendar with events
   const handleOpenChange = (isOpen: boolean) => {
@@ -64,12 +72,11 @@ const Calendar28 = ({
     }
   };
 
-
   // Handle input change with validation and events
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const inputValue = e.target.value;
     setValue(inputValue);
-    
+
     const parsedDate = new Date(inputValue);
     if (isValidDate(parsedDate)) {
       setDate(parsedDate);
@@ -132,6 +139,7 @@ const Calendar28 = ({
                 setDate(date);
                 setValue(formatDate(date));
                 setOpen(false);
+                onDateChange?.(date);
               }}
             />
           </PopoverContent>
