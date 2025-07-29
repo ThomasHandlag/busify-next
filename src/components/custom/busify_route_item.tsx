@@ -13,7 +13,7 @@ import { Button } from "../ui/button";
 const BusifyRouteItem = ({ item }: { item: BusifyRoute }) => {
 
   return (
-    <Card className="hover:shadow-lg transition-shadow">
+    <Card className="hover:shadow-lg transition-shadow flex flex-col justify-between">
       <CardHeader className="pb-3">
         <div className="flex justify-between items-start">
           <div>
