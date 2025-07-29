@@ -40,7 +40,6 @@ const AppPage = () => {
           />
         ))}
       </div>
-    </div>
   );
 };
 
