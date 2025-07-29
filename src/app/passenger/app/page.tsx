@@ -1,30 +1,27 @@
 "use client";
 
-import { useState } from "react";
-import { TripItemProps } from "../page";
-import { filterTrips } from "@/lib/data/trip";
 import TripItem from "@/components/custom/trip_item";
-import SearchFilter from "@/components/custom/search_filter";
+import { useTripFilter } from "@/lib/contexts/TripFilterContext";
 
 const AppPage = () => {
-  const [trips, setTrips] = useState<TripItemProps[]>([]);
+  const { trips, isLoading } = useTripFilter();
 
-  const handleApplyFilters = async (filters: any) => {
-    console.log("Filters to send:", filters); // Debug
-    const result = await filterTrips(filters);
-    console.log("Filtered result:", result); // Debug
-    setTrips(result);
-  };
+  if (isLoading) {
+    return (
+      <div className="flex justify-center items-center p-8">
+        <div className="text-lg">Loading trips...</div>
+      </div>
+    );
+  }
 
   return (
     <div className="grid gap-4 p-4">
-      <SearchFilter onApplyFilters={handleApplyFilters} />
       <div className="grid lg:grid-cols-3 sm:grid-cols-1 gap-4">
         {trips.map((trip, index) => (
           <TripItem
-            key={trip.trip_id || index}
+            key={trip.trip_Id || index}
             trip={{
-              trip_id: trip.trip_id,
+              trip_Id: trip.trip_Id,
               operator_name: trip.operator_name,
               route: {
                 start_location: trip.route.start_location,
@@ -40,6 +37,7 @@ const AppPage = () => {
           />
         ))}
       </div>
+    </div>
   );
 };
 
