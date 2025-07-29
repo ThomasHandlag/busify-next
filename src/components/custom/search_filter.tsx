@@ -9,10 +9,8 @@ import {
   SheetTitle,
   SheetTrigger,
 } from "../ui/sheet";
-
 import { Button } from "../ui/button";
 import { Label } from "../ui/label";
-import { Input } from "../ui/input";
 import {
   Select,
   SelectContent,
@@ -22,20 +20,66 @@ import {
 } from "../ui/select";
 import { Checkbox } from "../ui/checkbox";
 import { Slider } from "../ui/slider";
-import { Separator } from "../ui/separator";
-import { Badge } from "../ui/badge";
 import { useEffect, useState } from "react";
-import { FormItem } from "../ui/form";
 import { Calendar28 } from "./date_picker";
+import { getAllRoutes, Route } from "@/lib/data/route";
+import { getAllBusOperators, BusOperator } from "@/lib/data/bus_operator";
+import { getAllSeatLayouts, SeatLayout } from "@/lib/data/seat_layout";
 
-const SearchFilter = () => {
+type SearchFilterProps = {
+  onApplyFilters: (filters: any) => void;
+};
+
+const SearchFilter = ({ onApplyFilters }: SearchFilterProps) => {
   const [windowWidth, setWindowWidth] = useState(
     typeof window !== "undefined" ? window.innerWidth : 768
   );
-  const [priceRange, setPriceRange] = useState([10, 50]);
-  const [selectedOperators, setSelectedOperators] = useState<string[]>([]);
-  const [searchQuery, setSearchQuery] = useState("");
-  const [selectedBusTypes, setSelectedBusTypes] = useState<string[]>([]);
+
+  const DEFAULT_PRICE_RANGE = [0, 2000000];
+  const [priceRange, setPriceRange] = useState(DEFAULT_PRICE_RANGE);
+  const [selectedDate, setSelectedDate] = useState<Date | undefined>();
+
+  const [selectedRouteId, setSelectedRouteId] = useState<string | undefined>();
+  const [selectedOperatorId, setSelectedOperatorId] = useState<
+    string | undefined
+  >();
+  const [selectedBusTypeIds, setSelectedBusTypeIds] = useState<string[]>([]);
+
+  const [amenities, setAmenities] = useState({
+    wifi: false,
+    // ac: false,
+    // entertainment: false,
+    // charging: false,
+  });
+
+  const [durationFilter, setDurationFilter] = useState<string>("any");
+  const [routes, setRoutes] = useState<Route[]>([]);
+  const [operators, setOperators] = useState<BusOperator[]>([]);
+  const [seatLayouts, setSeatLayouts] = useState<SeatLayout[]>([]);
+
+  useEffect(() => {
+    async function fetchSeatLayouts() {
+      const data = await getAllSeatLayouts();
+      setSeatLayouts(data);
+    }
+    fetchSeatLayouts();
+  }, []);
+
+  useEffect(() => {
+    async function fetchRoutes() {
+      const data = await getAllRoutes();
+      setRoutes(data);
+    }
+    fetchRoutes();
+  }, []);
+
+  useEffect(() => {
+    async function fetchOperators() {
+      const data = await getAllBusOperators();
+      setOperators(data);
+    }
+    fetchOperators();
+  }, []);
 
   useEffect(() => {
     const handleResize = () => {
@@ -48,46 +92,63 @@ const SearchFilter = () => {
     }
   }, []);
 
-  const busTypes = [
-    "Standard",
-    "VIP Sleeper",
-    "Luxury Coach",
-    "Mini Bus",
-    "Double Decker",
-  ];
-
-  const popularRoutes = [
-    "Ho Chi Minh → Da Lat",
-    "Hanoi → Ha Long Bay",
-    "Da Nang → Hoi An",
-    "Can Tho → Ho Chi Minh",
-    "Nha Trang → Mui Ne",
-    "Hanoi → Sapa",
-  ];
-
-  const toggleBusType = (busType: string) => {
-    setSelectedBusTypes((prev) =>
-      prev.includes(busType)
-        ? prev.filter((type) => type !== busType)
-        : [...prev, busType]
+  const toggleBusType = (id: string) => {
+    setSelectedBusTypeIds((prev) =>
+      prev.includes(id) ? prev.filter((type) => type !== id) : [...prev, id]
     );
   };
 
   const clearAllFilters = () => {
-    setSearchQuery("");
-    setSelectedOperators([]);
-    setSelectedBusTypes([]);
-    setPriceRange([10, 50]);
+    setPriceRange(DEFAULT_PRICE_RANGE);
+    setSelectedRouteId(undefined);
+    setSelectedOperatorId(undefined);
+    setSelectedBusTypeIds([]);
+    setSelectedDate(undefined);
+    setAmenities({
+      wifi: false,
+      // ac: false,
+      // entertainment: false,
+      // charging: false,
+    });
+    setDurationFilter("any");
   };
 
   const applyFilters = () => {
-    // Here you would typically call a function to apply filters
-    console.log("Applying filters:", {
-      searchQuery,
-      selectedOperators,
-      selectedBusTypes,
-      priceRange,
-    });
+    let filters = {
+      routeId: selectedRouteId ? Number(selectedRouteId) : undefined,
+      operatorId: selectedOperatorId ? Number(selectedOperatorId) : undefined,
+      minPrice: priceRange[0],
+      maxPrice: priceRange[1],
+      seatLayoutIds:
+        selectedBusTypeIds.length > 0
+          ? selectedBusTypeIds.map((id) => Number(id))
+          : undefined,
+      departureTime: selectedDate
+        ? selectedDate.toLocaleDateString("en-CA")
+        : undefined,
+      durationFilter: durationFilter !== "any" ? durationFilter : undefined,
+      amenities: Object.fromEntries(
+        Object.entries(amenities).filter(([_, v]) => v === true)
+      ),
+    } as any;
+
+    // Xóa key có giá trị là: undefined, null, mảng rỗng, hoặc object rỗng (ví dụ amenities: {})
+    filters = Object.fromEntries(
+      Object.entries(filters).filter(([_, v]) => {
+        if (v === undefined || v === null) return false;
+        if (Array.isArray(v) && v.length === 0) return false;
+        if (
+          typeof v === "object" &&
+          !Array.isArray(v) &&
+          Object.keys(v).length === 0
+        )
+          return false;
+        return true;
+      })
+    );
+
+    console.log("Cleaned filters:", filters);
+    onApplyFilters(filters);
   };
 
   return (
@@ -114,110 +175,104 @@ const SearchFilter = () => {
         </SheetHeader>
 
         <div className="grid flex-1 gap-6 py-6">
-          {/* Search Input */}
+          {/* Route Select */}
           <div className="grid gap-3">
-            <Label htmlFor="search-input">Search Routes</Label>
-            <Input
-              id="search-input"
-              placeholder="Search by route, city, or destination..."
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-              className="w-full"
-            />
+            <Label>Route</Label>
+            <Select value={selectedRouteId} onValueChange={setSelectedRouteId}>
+              <SelectTrigger>
+                <SelectValue placeholder="Select a route" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="any">Any</SelectItem>
+                {routes.map((route) => (
+                  <SelectItem key={route.id} value={route.id.toString()}>
+                    {route.name}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
           </div>
 
-          {/* Bus Operators */}
+          {/* Operator Select */}
           <div className="grid gap-3">
-            <FormItem>
-              <Label>Bus Operators</Label>
-              <Input placeholder="Search by operator name..." />
-            </FormItem>
+            <Label>Bus Operator</Label>
+            <Select
+              value={selectedOperatorId}
+              onValueChange={setSelectedOperatorId}
+            >
+              <SelectTrigger>
+                <SelectValue placeholder="Select operator" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="any">Any</SelectItem>
+                {operators.map((op) => (
+                  <SelectItem key={op.id} value={op.id.toString()}>
+                    {op.name}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
           </div>
-
-          <Separator />
-
-          {/* Popular Routes */}
-          <div className="grid gap-3">
-            <Label>Popular Routes</Label>
-            <div className="flex flex-wrap gap-2">
-              {popularRoutes.map((route, index) => (
-                <Badge
-                  key={index}
-                  variant="outline"
-                  className="cursor-pointer hover:bg-green-50 hover:border-green-300"
-                  onClick={() => setSearchQuery(route)}
-                >
-                  {route}
-                </Badge>
-              ))}
-            </div>
-          </div>
-
-          <Separator />
 
           {/* Price Range */}
           <div className="grid gap-3">
             <Label>
-              Price Range (${priceRange[0]} - ${priceRange[1]})
+              Khoảng giá ({priceRange[0].toLocaleString("vi-VN")}₫ -{" "}
+              {priceRange[1].toLocaleString("vi-VN")}₫)
             </Label>
             <Slider
               value={priceRange}
               onValueChange={setPriceRange}
-              max={100}
-              min={5}
-              step={5}
-              className="w-full"
+              min={0}
+              max={2000000}
+              step={50000}
             />
             <div className="flex justify-between text-sm text-gray-500">
-              <span>$5</span>
-              <span>$100</span>
+              <span>0₫</span>
+              <span>2.000.000₫</span>
             </div>
           </div>
-
-          <Separator />
 
           {/* Bus Types */}
           <div className="grid gap-3">
             <Label>Bus Types</Label>
             <div className="space-y-2">
-              {busTypes.map((busType) => (
-                <div key={busType} className="flex items-center space-x-2">
+              {seatLayouts.map((layout) => (
+                <div key={layout.id} className="flex items-center space-x-2">
                   <Checkbox
-                    id={busType}
-                    checked={selectedBusTypes.includes(busType)}
-                    onCheckedChange={() => toggleBusType(busType)}
+                    id={layout.id.toString()}
+                    checked={selectedBusTypeIds.includes(layout.id.toString())}
+                    onCheckedChange={() => toggleBusType(layout.id.toString())}
                   />
-                  <Label htmlFor={busType} className="text-sm cursor-pointer">
-                    {busType}
-                  </Label>
+                  <Label htmlFor={layout.id.toString()}>{layout.name}</Label>
                 </div>
               ))}
             </div>
           </div>
 
-          <Separator />
-
-          {/* Departure Time */}
+          {/* Departure Date */}
           <div className="grid gap-3">
-            <FormItem>
-              <Label>Departure Time</Label>
-              <Calendar28 onDateChange={(date) => console.log(date)} />
-            </FormItem>
+            <Label>Departure Date</Label>
+            <Calendar28
+              key={selectedDate?.toISOString() ?? "no-date"}
+              initialDate={selectedDate}
+              onDateChange={setSelectedDate}
+            />
           </div>
 
-          {/* Trip Duration */}
+          {/* Duration */}
           <div className="grid gap-3">
-            <Label>Maximum Trip Duration</Label>
-            <Select>
+            <Label>Trip Duration</Label>
+            <Select value={durationFilter} onValueChange={setDurationFilter}>
               <SelectTrigger>
-                <SelectValue placeholder="Any duration" />
+                <SelectValue placeholder="Select duration" />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="any">Any duration</SelectItem>
-                <SelectItem value="short">Under 3 hours</SelectItem>
-                <SelectItem value="medium">3-6 hours</SelectItem>
-                <SelectItem value="long">6-12 hours</SelectItem>
-                <SelectItem value="overnight">Over 12 hours</SelectItem>
+                <SelectItem value="any">Any</SelectItem>
+                <SelectItem value="LESS_THAN_3">Under 3 hours</SelectItem>
+                <SelectItem value="BETWEEN_3_AND_6">3-6 hours</SelectItem>
+                <SelectItem value="BETWEEN_6_AND_12">6-12 hours</SelectItem>
+                <SelectItem value="GREATER_THAN_12">Over 12 hours</SelectItem>
               </SelectContent>
             </Select>
           </div>
@@ -225,35 +280,18 @@ const SearchFilter = () => {
           {/* Amenities */}
           <div className="grid gap-3">
             <Label>Amenities</Label>
-            <div className="space-y-2">
-              <div className="flex items-center space-x-2">
-                <Checkbox id="wifi" />
-                <Label htmlFor="wifi" className="text-sm cursor-pointer">
-                  Wi-Fi
-                </Label>
+            {["wifi"].map((key) => (
+              <div key={key} className="flex items-center space-x-2">
+                <Checkbox
+                  id={key}
+                  checked={amenities[key as keyof typeof amenities]}
+                  onCheckedChange={(val) =>
+                    setAmenities((prev) => ({ ...prev, [key]: val as boolean }))
+                  }
+                />
+                <Label htmlFor={key}>{key.toUpperCase()}</Label>
               </div>
-              <div className="flex items-center space-x-2">
-                <Checkbox id="ac" />
-                <Label htmlFor="ac" className="text-sm cursor-pointer">
-                  Air Conditioning
-                </Label>
-              </div>
-              <div className="flex items-center space-x-2">
-                <Checkbox id="entertainment" />
-                <Label
-                  htmlFor="entertainment"
-                  className="text-sm cursor-pointer"
-                >
-                  Entertainment System
-                </Label>
-              </div>
-              <div className="flex items-center space-x-2">
-                <Checkbox id="charging" />
-                <Label htmlFor="charging" className="text-sm cursor-pointer">
-                  Charging Ports
-                </Label>
-              </div>
-            </div>
+            ))}
           </div>
         </div>
 

@@ -3,10 +3,29 @@ import { Button } from "../ui/button";
 import { Badge } from "../ui/badge";
 import { Separator } from "../ui/separator";
 import { Clock, MapPin, Users, Star, ArrowRight } from "lucide-react";
-import { parse, add, format } from "date-fns";
+import { format } from "date-fns";
+import { toZonedTime } from "date-fns-tz";
 import { TripItemProps } from "@/app/passenger/page";
 
+function formatDuration(durationStr: string) {
+  const duration = Number(durationStr); // ép kiểu string -> number
+  const totalHours = Math.floor(duration / 60);
+  const minutes = duration % 60;
+
+  const days = Math.floor(totalHours / 24);
+  const hours = totalHours % 24;
+
+  let result = "";
+  if (days > 0) result += `${days}d - `;
+  if (hours > 0 || days > 0) result += `${hours}h - `;
+  result += `${minutes}m`;
+
+  return result;
+}
+
 const TripItem = ({ trip }: { trip: TripItemProps }) => {
+  console.log("Rendering trip:", trip);
+
   const getAvailabilityColor = (seats: number) => {
     if (seats <= 5) return "bg-red-100 text-red-700";
     if (seats <= 10) return "bg-yellow-100 text-yellow-700";
@@ -19,8 +38,14 @@ const TripItem = ({ trip }: { trip: TripItemProps }) => {
     return "Available";
   };
 
-  const departure_time = format(new Date(trip.departure_time), "HH:mm");
-  const arrival_time = format(new Date(trip.arrival_time), "HH:mm");
+  const timeZone = "Asia/Ho_Chi_Minh";
+
+  const departureZoned = toZonedTime(trip.departure_time, timeZone);
+  const arrivalZoned = toZonedTime(trip.arrival_time, timeZone);
+
+  const departure_time = format(departureZoned, "HH:mm");
+  const arrival_time = format(arrivalZoned, "HH:mm");
+
   return (
     <Card className="hover:shadow-lg transition-shadow duration-200 border-l-4 border-l-green-500">
       <CardHeader className="pb-1">
@@ -57,7 +82,7 @@ const TripItem = ({ trip }: { trip: TripItemProps }) => {
             </div>
             <div className="flex items-center justify-center text-xs text-gray-500">
               <Clock className="w-3 h-3 mr-1" />
-              {/* {trip.duration} */}
+              {formatDuration(trip.duration)}
             </div>
           </div>
           <div className="text-center">
@@ -91,7 +116,10 @@ const TripItem = ({ trip }: { trip: TripItemProps }) => {
         {/* Price and Action */}
         <div className="flex justify-between items-center">
           <div>
-            <p className="text-2xl font-bold text-green-600">${trip.price}</p>
+            <p className="text-2xl font-bold text-green-600">
+              {new Intl.NumberFormat("vi-VN").format(trip.price_per_seat)}đ
+            </p>
+
             <p className="text-xs text-gray-500">per person</p>
           </div>
           <div className="flex gap-2">

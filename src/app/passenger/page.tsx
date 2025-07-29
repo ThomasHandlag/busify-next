@@ -27,8 +27,10 @@ import Link from "next/link";
 import { getUpcomingTrips } from "../../lib/data/trip";
 
 export interface TripItemProps {
+  price_per_seat: number;
   trip_id: number;
   operator_name: string;
+  duration: string;
   route: {
     start_location: string;
     end_location: string;
@@ -37,7 +39,6 @@ export interface TripItemProps {
   arrival_time: string;
   available_seats: number;
   average_rating: number;
-  price: number;
 }
 const Passenger = async () => {
   const res = await getUpcomingTrips();
