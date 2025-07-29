@@ -27,6 +27,10 @@ import {
 import TripItem from "@/components/custom/trip_item";
 import RouteMap from "@/components/custom/google_map";
 import { Sheet, SheetContent, SheetTitle } from "@/components/ui/sheet";
+import { Dialog, DialogContent, DialogTitle } from "@radix-ui/react-dialog";
+import { DialogHeader } from "@/components/ui/dialog";
+import TripOverviewCard from "@/components/custom/trip_overview_card";
+import ReviewSection from "@/components/custom/review_section";
 
 // Mock data for trip detail
 const mockTripDetail = {
@@ -136,6 +140,9 @@ export default function TripDetailPage({ params }: { params: { id: string } }) {
   const [selectedSeats, setSelectedSeats] = useState<string[]>([]);
   const [isFavorite, setIsFavorite] = useState(mockTripDetail.is_favorite);
   const [showSeatModal, setShowSeatModal] = useState(false);
+  const [showReviewModal, setShowReviewModal] = useState(false);
+  const [reviewText, setReviewTextq] = useState("");
+  const [reviewRating, setReviewRating] = useState(0);
 
   const formatDate = (dateString: string) => {
     const date = new Date(dateString);
@@ -175,7 +182,7 @@ export default function TripDetailPage({ params }: { params: { id: string } }) {
   return (
     <div className="min-h-screen bg-gray-50">
       {/* Hero Section - sticky top */}
-      <div className="bg-white shadow-sm sticky top-0 z-10">
+      <div className="bg-white shadow-sm sticky top-0 z-20">
         <div className="container mx-auto lg:px-4 lg:py-4 md:px-4 md:py-4 px-9 py-0  flex items-center justify-between">
           <div className="flex items-center space-x-3">
             <div className="text-center">
@@ -217,125 +224,7 @@ export default function TripDetailPage({ params }: { params: { id: string } }) {
           {/* Left Column */}
           <div className="lg:col-span-2 space-y-6">
             {/* Tổng quan chuyến */}
-            <Card className="px-4 py-6">
-              <CardHeader className="lg:px-6 md:px-6 px-0 sm:px-4">
-                <CardTitle className="flex items-center space-x-2">
-                  <Bus className="w-5 h-5" />
-                  <span>Thông tin chuyến</span>
-                </CardTitle>
-              </CardHeader>
-              <CardContent className="lg:px-6 md:px-6 px-0 sm:px-4">
-                <div className="grid grid-cols-1 lg:grid-cols-2 md:grid-cols-2 gap-4 mb-6 ">
-                  <div className="flex items-center space-x-2">
-                    <Clock className="w-4 h-4 text-gray-400" />
-                    <div>
-                      <p className="text-sm font-medium">
-                        {formatTime(mockTripDetail.departure_time)}
-                      </p>
-                      <p className="text-xs text-gray-500">
-                        {formatDate(mockTripDetail.departure_time)}
-                      </p>
-                    </div>
-                  </div>
-                  <div className="flex items-center space-x-2">
-                    <Navigation className="w-4 h-4 text-gray-400" />
-                    <div>
-                      <p className="text-sm font-medium">
-                        {mockTripDetail.estimated_duration}
-                      </p>
-                      <p className="text-xs text-gray-500">
-                        Thời gian di chuyển
-                      </p>
-                    </div>
-                  </div>
-                  <div className="flex items-center space-x-2">
-                    <Bus className="w-4 h-4 text-gray-400" />
-                    <div>
-                      <p className="text-sm font-medium">
-                        {mockTripDetail.bus.name}
-                      </p>
-                      <p className="text-xs text-gray-500">Loại xe</p>
-                    </div>
-                  </div>
-                  <div className="flex items-center space-x-2">
-                    <Users className="w-4 h-4 text-gray-400" />
-                    <div>
-                      <p className="text-sm font-medium">
-                        {mockTripDetail.available_seats}/
-                        {mockTripDetail.total_seats}
-                      </p>
-                      <p className="text-xs text-gray-500">Ghế trống</p>
-                    </div>
-                  </div>
-                </div>
-                <Separator />
-                {/* Route map */}
-                <div className="mt-6">
-                  <h3 className="font-semibold mb-4">Bản đồ hành trình</h3>
-                  <RouteMap
-                    startLocation={mockTripDetail.route.start_location}
-                    endLocation={mockTripDetail.route.end_location}
-                    routeStops={mockTripDetail.route_stop}
-                    className="h-80 w-full rounded-lg"
-                  />
-                </div>
-                <Separator />
-                {/* Pickup/Dropoff */}
-                <div className="mt-6">
-                  <h3 className="font-semibold mb-4">Điểm đón/trả</h3>
-                  <div className="space-y-4">
-                    <div className="flex items-start space-x-3">
-                      <div className="w-3 h-3 bg-green-500 rounded-full mt-2"></div>
-                      <div>
-                        <p className="font-medium">Điểm đón</p>
-                        <p className="text-gray-600">
-                          {mockTripDetail.route.start_location.address}
-                        </p>
-                        <p className="text-sm text-gray-500">
-                          {mockTripDetail.route.start_location.city}
-                        </p>
-                      </div>
-                    </div>
-                    <div className="flex items-start space-x-3">
-                      <div className="w-3 h-3 bg-red-500 rounded-full mt-2"></div>
-                      <div>
-                        <p className="font-medium">Điểm trả</p>
-                        <p className="text-gray-600">
-                          {mockTripDetail.route.end_location.address}
-                        </p>
-                        <p className="text-sm text-gray-500">
-                          {mockTripDetail.route.end_location.city}
-                        </p>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-                <Separator />
-                {/* Amenities */}
-                <div className="mt-6">
-                  <h3 className="font-semibold mb-4">Tiện ích</h3>
-                  <div className="flex flex-wrap gap-2">
-                    {mockTripDetail.bus.amenities.map((amenity, index) => (
-                      <Badge key={index} variant="secondary">
-                        {amenity === "Wi-fi" && (
-                          <Wifi className="w-3 h-3 mr-1" />
-                        )}
-                        {amenity === "Nước uống" && (
-                          <Droplets className="w-3 h-3 mr-1" />
-                        )}
-                        {amenity === "Cổng sạc" && (
-                          <Zap className="w-3 h-3 mr-1" />
-                        )}
-                        {amenity === "Điều hòa" && (
-                          <Car className="w-3 h-3 mr-1" />
-                        )}
-                        {amenity}
-                      </Badge>
-                    ))}
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
+            <TripOverviewCard mockTripDetail={mockTripDetail} />
 
             {/* Thông tin nhà xe */}
             <Card>
@@ -382,77 +271,61 @@ export default function TripDetailPage({ params }: { params: { id: string } }) {
             </Card>
 
             {/* Đánh giá */}
-            <Card>
-              <CardHeader>
-                <CardTitle className="flex items-center space-x-2">
-                  <Star className="w-5 h-5 text-yellow-400" />
-                  <span>Đánh giá</span>
-                </CardTitle>
-              </CardHeader>
-              <CardContent>
-                <div className="flex items-center space-x-3 mb-4">
-                  <div className="text-center">
-                    <div className="text-2xl font-bold text-yellow-500">
-                      {mockTripDetail.average_rating}
-                    </div>
-                    <div className="flex items-center space-x-1">
-                      {[1, 2, 3, 4, 5].map((star) => (
-                        <Star
-                          key={star}
-                          className={`w-4 h-4 ${
-                            star <= mockTripDetail.average_rating
-                              ? "text-yellow-400 fill-current"
-                              : "text-gray-300"
-                          }`}
-                        />
-                      ))}
-                    </div>
-                  </div>
-                  <div>
-                    <p className="font-medium">Đánh giá trung bình</p>
-                    <p className="text-sm text-gray-500">
-                      Dựa trên {mockTripDetail.total_reviews} đánh giá
-                    </p>
+            <ReviewSection
+              mockTripDetail={mockTripDetail}
+              mockReviews={mockReviews}
+            />
+            <Button onClick={() => setShowReviewModal(true)}>
+              <MessageSquare className="w-4 h-4 mr-2" />
+              Viết đánh giá
+            </Button>
+            <Dialog open={showReviewModal} onOpenChange={setShowReviewModal}>
+              <DialogContent>
+                <DialogHeader>
+                  <DialogTitle>Viết đánh giá chuyến đi</DialogTitle>
+                </DialogHeader>
+                <div className="mb-3">
+                  <label className="block mb-1 font-medium">Số sao</label>
+                  <div className="flex space-x-1">
+                    {[1, 2, 3, 4, 5].map((star) => (
+                      <Star
+                        key={star}
+                        className={`w-6 h-6 cursor-pointer ${
+                          star <= reviewRating
+                            ? "text-yellow-400 fill-current"
+                            : "text-gray-300"
+                        }`}
+                        onClick={() => setReviewRating(star)}
+                      />
+                    ))}
                   </div>
                 </div>
-                <Button>
-                  <MessageSquare className="w-4 h-4 mr-2" />
-                  Viết đánh giá
+                <div className="mb-3">
+                  <label className="block mb-1 font-medium">
+                    Nội dung đánh giá
+                  </label>
+                  <textarea
+                    className="w-full border rounded p-2"
+                    rows={3}
+                    value={reviewText}
+                    onChange={(e) => setReviewTextq(e.target.value)}
+                    placeholder="Nhập nhận xét của bạn..."
+                  />
+                </div>
+                <Button
+                  className="w-full"
+                  disabled={reviewText.trim() === ""}
+                  onClick={() => {
+                    // Xử lý gửi đánh giá ở đây
+                    setShowReviewModal(false);
+                    setReviewTextq("");
+                    setReviewRating(5);
+                  }}
+                >
+                  Gửi đánh giá
                 </Button>
-                <Separator className="my-4" />
-                <div className="space-y-4">
-                  {mockReviews.map((review) => (
-                    <div
-                      key={review.id}
-                      className="border-b pb-4 last:border-b-0"
-                    >
-                      <div className="flex items-center justify-between mb-2">
-                        <div className="flex items-center space-x-2">
-                          <User className="w-4 h-4 text-gray-400" />
-                          <span className="font-medium">
-                            {review.user_name}
-                          </span>
-                        </div>
-                        <div className="flex items-center space-x-1">
-                          {[1, 2, 3, 4, 5].map((star) => (
-                            <Star
-                              key={star}
-                              className={`w-3 h-3 ${
-                                star <= review.rating
-                                  ? "text-yellow-400 fill-current"
-                                  : "text-gray-300"
-                              }`}
-                            />
-                          ))}
-                        </div>
-                      </div>
-                      <p className="text-gray-600 mb-2">{review.comment}</p>
-                      <p className="text-sm text-gray-500">{review.date}</p>
-                    </div>
-                  ))}
-                </div>
-              </CardContent>
-            </Card>
+              </DialogContent>
+            </Dialog>
           </div>
 
           {/* Right Column - Booking */}
@@ -599,7 +472,7 @@ export default function TripDetailPage({ params }: { params: { id: string } }) {
       </div>
 
       {/* Similar Trips Section */}
-      <div className="container mx-auto lg:px-4 lg:py-4 md:px-4 md:py-4">
+      <div className="container mx-auto lg:px-4 lg:py-4 md:px-4 md:py-4 sm:pb-20">
         <div className="flex items-center justify-between mb-4">
           <h2 className="text-xl font-semibold px-4">Các chuyến đi tương tự</h2>
           <Button variant="outline" size="sm">

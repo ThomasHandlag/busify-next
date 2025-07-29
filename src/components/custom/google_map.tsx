@@ -134,6 +134,8 @@ export default function RouteMap({
           (startLocation.longitude + endLocation.longitude) / 2,
         ]}
         zoom={8}
+        zoomControl={false}
+        scrollWheelZoom={true}
         style={{ height: "100%", width: "100%" }}
         className="rounded-lg shadow-lg z-10"
       >
@@ -198,7 +200,7 @@ export default function RouteMap({
       </MapContainer>
 
       {/* Map Legend */}
-      <div className="absolute top-4 left-4 bg-white rounded-lg shadow-lg p-3 text-sm z-[20]">
+      <div className="absolute top-4 left-4 bg-white rounded-lg shadow-lg p-3 text-sm z-[15]">
         <div className="space-y-2">
           <div className="flex items-center space-x-2">
             <div className="w-3 h-3 bg-green-500 rounded-full"></div>

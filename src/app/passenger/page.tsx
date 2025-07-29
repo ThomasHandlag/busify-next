@@ -52,6 +52,7 @@ const Passenger = async () => {
   } catch (error) {
     console.log(error);
   }
+  const busOperators = await getBusOperatorsRating();
   return (
     <div className="min-h-screen bg-gray-50">
       {/* Hero Section */}
@@ -402,9 +403,6 @@ const Passenger = async () => {
         </div>
 
         <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {/* {trips.slice(0, 6).map((busOperator) => (
-            <BusOperatorItem key={busOperator.id} busOperator={busOperator} />
-          ))} */}
           {busOperators.result.map((operator: BusOperatorItemProps) => (
             <BusOperatorItem key={operator.id} busOperator={operator} />
           ))}

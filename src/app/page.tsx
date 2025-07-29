@@ -1,4 +1,4 @@
-'use server';
+"use server";
 import Footer from "@/components/custom/footer";
 import Image from "next/image";
 import { Button } from "@/components/ui/button";
@@ -38,25 +38,10 @@ import {
   Navigation,
 } from "lucide-react";
 import FadeinWrapper from "@/components/custom/fadein_wrapper";
-
-async function getPopularRoutes() {
-  try {
-    const res = await fetch("http://localhost:8080/api/popular-routes", {
-      cache: "no-store", // Ensure fresh data on each request
-    });
-    if (!res.ok) {
-      throw new Error("Failed to fetch popular routes");
-    }
-    return res.json();
-  } catch (error) {
-    console.error("Error fetching popular routes:", error);
-    return [];
-  }
-}
+import { getPopularRoutes } from "@/lib/data/route_api";
 
 const Home = async () => {
   const popularRoutes = await getPopularRoutes();
-
   return (
     <div className="h-full w-full">
       <section className="bg-gradient-to-br w-full relative from-green-600 to-green-700 h-screen flex flex-col justify-center items-center text-white">
@@ -508,7 +493,9 @@ const Home = async () => {
                     <li>• Comprehensive dashboard for booking management</li>
                     <li>• Monitoring tools for real-time analytics</li>
                     <li>• Seamless integration with existing systems</li>
-                    <li>• Resource management tools for efficient operations</li>
+                    <li>
+                      • Resource management tools for efficient operations
+                    </li>
                   </ul>
                 </CardContent>
               </Card>
@@ -530,8 +517,11 @@ const Home = async () => {
             Popular Routes
           </h2>
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {popularRoutes.slice(0, 6).map((route: any) => (
-              <Card key={route.routeId} className="hover:shadow-lg transition-shadow">
+            {popularRoutes.result.slice(0, 6).map((route: any) => (
+              <Card
+                key={route.routeId}
+                className="hover:shadow-lg transition-shadow"
+              >
                 <CardHeader className="pb-3">
                   <div className="flex justify-between items-start">
                     <div>
@@ -556,10 +546,16 @@ const Home = async () => {
                     <div>
                       <p className="text-sm text-gray-600">Starting from</p>
                       <p className="text-2xl font-bold text-green-600">
-                        {new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(route.startingPrice)}
+                        {new Intl.NumberFormat("vi-VN", {
+                          style: "currency",
+                          currency: "VND",
+                        }).format(route.startingPrice)}
                       </p>
                     </div>
-                    <Button size="sm" className="bg-green-600 hover:bg-green-700">
+                    <Button
+                      size="sm"
+                      className="bg-green-600 hover:bg-green-700"
+                    >
                       View Routes
                     </Button>
                   </div>
@@ -725,9 +721,8 @@ const Home = async () => {
                   ))}
                 </div>
                 <p className="text-gray-600">
-                  “Since joining Busify, our bookings increased by 40%.
-                  The platform is easy to use and the support is
-                  excellent.”
+                  “Since joining Busify, our bookings increased by 40%. The
+                  platform is easy to use and the support is excellent.”
                 </p>
               </CardContent>
             </Card>
@@ -755,8 +750,8 @@ const Home = async () => {
                   ))}
                 </div>
                 <p className="text-gray-600">
-                  “Real-time tracking and reliable service. I always know
-                  when my bus will arrive. Highly recommended!”
+                  “Real-time tracking and reliable service. I always know when
+                  my bus will arrive. Highly recommended!”
                 </p>
               </CardContent>
             </Card>
@@ -786,10 +781,10 @@ const Home = async () => {
                 How can I become a bus provider partner?
               </AccordionTrigger>
               <AccordionContent>
-                Click on “Become a Partner” and fill out our
-                application form. We'll review your credentials, fleet
-                quality, and safety standards. Once approved, our team will help
-                you set up your services on the platform.
+                Click on “Become a Partner” and fill out our application form.
+                We'll review your credentials, fleet quality, and safety
+                standards. Once approved, our team will help you set up your
+                services on the platform.
               </AccordionContent>
             </AccordionItem>
 
@@ -818,10 +813,9 @@ const Home = async () => {
             <AccordionItem value="item-5">
               <AccordionTrigger>What if my bus is delayed?</AccordionTrigger>
               <AccordionContent>
-                You'll receive real-time updates about any delays or
-                changes to your trip. In case of significant delays, you may be
-                eligible for compensation according to our passenger protection
-                policy.
+                You'll receive real-time updates about any delays or changes to
+                your trip. In case of significant delays, you may be eligible
+                for compensation according to our passenger protection policy.
               </AccordionContent>
             </AccordionItem>
           </Accordion>

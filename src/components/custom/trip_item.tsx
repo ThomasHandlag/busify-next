@@ -5,6 +5,7 @@ import { Separator } from "../ui/separator";
 import { Clock, MapPin, Users, Star, ArrowRight } from "lucide-react";
 import { parse, add, format } from "date-fns";
 import { TripItemProps } from "@/app/passenger/page";
+import Link from "next/link";
 
 const TripItem = ({ trip }: { trip: TripItemProps }) => {
   const getAvailabilityColor = (seats: number) => {
@@ -117,7 +118,9 @@ const TripItem = ({ trip }: { trip: TripItemProps }) => {
               size="sm"
               className="border-green-600 text-green-600 hover:bg-green-50"
             >
-              View Details
+              <Link href={`/passenger/app/trip/${trip.trip_id}`}>
+                View Details
+              </Link>
             </Button>
             <Button
               size="sm"

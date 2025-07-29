@@ -6,7 +6,7 @@ import SearchFilter from "./search_filter";
 
 const BottomBar = () => {
   return (
-    <div className="flex items-center justify-center bottom-2 w-full sticky z-20">
+    <div className="flex items-center justify-center bottom-2 w-full fixed z-20">
       <div className="shadow-lg rounded-3xl flex gap-2 items-center justify-center p-2 border bg-background">
         <SearchFilter />
         <Button variant="ghost">
