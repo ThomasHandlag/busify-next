@@ -6,6 +6,7 @@ import { Clock, MapPin, Users, Star, ArrowRight } from "lucide-react";
 import { format } from "date-fns";
 import { toZonedTime } from "date-fns-tz";
 import { TripItemProps } from "@/app/passenger/page";
+import Link from "next/link";
 
 function formatDuration(durationStr: string) {
   const duration = Number(durationStr); // ép kiểu string -> number
@@ -38,13 +39,20 @@ const TripItem = ({ trip }: { trip: TripItemProps }) => {
     return "Available";
   };
 
-  const timeZone = "Asia/Ho_Chi_Minh";
-
-  const departureZoned = toZonedTime(trip.departure_time, timeZone);
-  const arrivalZoned = toZonedTime(trip.arrival_time, timeZone);
-
-  const departure_time = format(departureZoned, "HH:mm");
-  const arrival_time = format(arrivalZoned, "HH:mm");
+  const departure_time = format(new Date(trip.departure_time), "HH:mm");
+  const departure_date = format(new Date(trip.departure_time), "dd/MM/yyyy");
+  const arrival_time = format(new Date(trip.arrival_time), "HH:mm");
+  const arrival_date = format(new Date(trip.arrival_time), "dd/MM/yyyy");
+  // Assuming trip.duration is in minutes by departure time - arrival time
+  const trip_duration_minutes = Math.abs(
+    (new Date(trip.arrival_time).getTime() -
+      new Date(trip.departure_time).getTime()) /
+      60000
+  );
+  const hours = Math.floor(trip_duration_minutes / 60);
+  const minutes = trip_duration_minutes % 60;
+  const duration =
+    minutes === 0 ? `${hours} giờ` : `${hours} giờ ${minutes} phút`;
 
   return (
     <Card className="hover:shadow-lg transition-shadow duration-200 border-l-4 border-l-green-500">
@@ -98,7 +106,9 @@ const TripItem = ({ trip }: { trip: TripItemProps }) => {
           <div className="flex items-center space-x-4">
             <div className="flex items-center">
               <MapPin className="w-4 h-4 mr-1 text-green-600" />
-              <span className="text-xs">{departure_time}</span>
+              <span className="text-xs">
+                {departure_date} - {arrival_date}
+              </span>
             </div>
             <div className="flex items-center">
               <Users className="w-4 h-4 mr-1 text-green-600" />
@@ -128,7 +138,9 @@ const TripItem = ({ trip }: { trip: TripItemProps }) => {
               size="sm"
               className="border-green-600 text-green-600 hover:bg-green-50"
             >
-              View Details
+              <Link href={`/passenger/app/trip/${trip.trip_id}`}>
+                View Details
+              </Link>
             </Button>
             <Button
               size="sm"

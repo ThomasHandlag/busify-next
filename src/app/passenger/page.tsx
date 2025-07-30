@@ -31,7 +31,7 @@ import BusOperatorItem, {
 } from "@/components/custom/bus_operator_item";
 
 export interface TripItemProps {
-  trip_Id: number;
+  trip_id: number;
   operator_name: string;
   route: {
     start_location: string;
@@ -44,8 +44,15 @@ export interface TripItemProps {
   price_per_seat: number;
   duration: string;
 }
+
+let trips: TripItemProps[] = [];
 const Passenger = async () => {
-  const res = await getUpcomingTrips();
+  try {
+    const res = await getUpcomingTrips();
+    trips = res.result || [];
+  } catch (error) {
+    console.log(error);
+  }
   const busOperators = await getBusOperatorsRating();
   return (
     <div className="min-h-screen bg-gray-50">
@@ -355,7 +362,7 @@ const Passenger = async () => {
         <div className="container mx-auto px-4">
           <div className="flex justify-between items-center mb-8">
             <h2 className="text-2xl font-bold text-gray-900">
-              Popular Trips Today
+              Upcoming Trips Today
             </h2>
             <Button
               variant="outline"
@@ -365,13 +372,20 @@ const Passenger = async () => {
             </Button>
           </div>
 
-          <div className="grid md:grid-cols-2 lg:grid-cols-2 gap-6">
-            {res.result
-              .slice(0, 4)
-              .map((trip: TripItemProps, index: number) => (
+          {trips.length > 0 ? (
+            <div className="grid md:grid-cols-2 lg:grid-cols-2 gap-6">
+              {trips.slice(0, 4).map((trip: TripItemProps, index: number) => (
                 <TripItem key={index} trip={trip} />
               ))}
-          </div>
+            </div>
+          ) : (
+            <div className="text-center py-8 text-gray-500">
+              <p>No trips available at the moment.</p>
+              <p className="text-sm">
+                Please check back later or contact support.
+              </p>
+            </div>
+          )}
         </div>
       </section>
 
@@ -390,9 +404,6 @@ const Passenger = async () => {
         </div>
 
         <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {/* {trips.slice(0, 6).map((busOperator) => (
-            <BusOperatorItem key={busOperator.id} busOperator={busOperator} />
-          ))} */}
           {busOperators.result.map((operator: BusOperatorItemProps) => (
             <BusOperatorItem key={operator.id} busOperator={operator} />
           ))}

@@ -19,9 +19,9 @@ const AppPage = () => {
       <div className="grid lg:grid-cols-3 sm:grid-cols-1 gap-4">
         {trips.map((trip, index) => (
           <TripItem
-            key={trip.trip_Id || index}
+            key={trip.trip_id || index}
             trip={{
-              trip_Id: trip.trip_Id,
+              trip_id: trip.trip_id,
               operator_name: trip.operator_name,
               route: {
                 start_location: trip.route.start_location,
