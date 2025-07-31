@@ -203,7 +203,7 @@ export function SeatSelectionCard({
       </CardContent>
       <CardFooter>
         <div className="border-t bg-white p-4 mt-auto flex flex-col justify-center w-full">
-          <div className="bg-blue-50 p-3 rounded-lg mb-2 border border-blue-200 w-ull">
+          <div className="bg-blue-50 p-3 rounded-lg mb-2 border border-blue-200 w-full">
             <div className="flex items-center space-x-2 mb-2">
               <Armchair className="w-4 h-4 text-green-500" />
               <h4 className="font-medium text-blue-900">
