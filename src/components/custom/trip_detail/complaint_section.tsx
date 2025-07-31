@@ -1,23 +1,11 @@
-"use client";
-
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { getComplaintsByTripId } from "@/lib/data/complaints";
+import { Complaint } from "@/lib/types/widget_proptype";
 import { MessageSquareWarning, User } from "lucide-react";
 
-interface Complaint {
-  id: number;
-  title: string;
-  description: string;
-  date: string;
-  user_name: string;
-}
 
-interface ComplaintSectionProps {
-  complaints: Complaint[];
-}
-
-export default function ComplaintSection({
-  complaints,
-}: ComplaintSectionProps) {
+export default async function ComplaintSection({ tripId }: { tripId: number }) {
+  const complaints: Complaint[] = await getComplaintsByTripId(tripId);
   return (
     <Card>
       <CardHeader>
@@ -32,15 +20,15 @@ export default function ComplaintSection({
           <p className="text-sm text-gray-500">Chưa có khiếu nại nào.</p>
         ) : (
           <div className="space-y-4">
-            {complaints.map((complaint, index) => (
+            {complaints.map((complaint) => (
               <div key={complaint.id} className="border-b pb-4 last:border-b-0">
                 <div className="flex items-center justify-between mb-2">
                   <div className="flex items-center space-x-2">
                     <User className="w-4 h-4 text-gray-400" />
-                    <span className="font-medium">{complaint.user_name}</span>
+                    <span className="font-medium">{complaint.customerName}</span>
                   </div>
                   <p className="text-xs text-gray-500">
-                    {new Date(complaint.date).toLocaleDateString()}
+                    {new Date(complaint.createAt).toLocaleDateString()}
                   </p>
                 </div>
                 <p className="font-semibold text-gray-800 mb-1">

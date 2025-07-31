@@ -2,18 +2,24 @@
 
 import { Button } from "@/components/ui/button";
 import { ArrowRight, Heart } from "lucide-react";
+import { useState } from "react";
+import { TripDetailProps } from "../trip_overview_card";
 
 interface TripHeroSectionProps {
-  tripDetail: any;
+  tripDetail: TripDetailProps;
   isFavorite: boolean;
-  onToggleFavorite: () => void;
 }
 
 export function TripHeroSection({
   tripDetail,
   isFavorite,
-  onToggleFavorite,
 }: TripHeroSectionProps) {
+  const [is_favorite, setIsFavorite] = useState(isFavorite);
+
+  const onToggleFavorite = () => {
+    setIsFavorite(!is_favorite);
+  };
+
   return (
     <div className="bg-white shadow-sm sticky top-0 z-20">
       <div className="container mx-auto lg:px-4 lg:py-4 md:px-4 md:py-4 px-9 py-0 flex items-center justify-between">
@@ -41,9 +47,9 @@ export function TripHeroSection({
             variant="ghost"
             size="sm"
             onClick={onToggleFavorite}
-            className={isFavorite ? "text-red-500" : "text-gray-400"}
+            className={is_favorite ? "text-red-500" : "text-gray-400"}
           >
-            <Heart className={`w-5 h-5 ${isFavorite ? "fill-current" : ""}`} />
+            <Heart className={`w-5 h-5 ${is_favorite ? "fill-current" : ""}`} />
           </Button>
         </div>
       </div>

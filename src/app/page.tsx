@@ -493,9 +493,7 @@ const Home = async () => {
                     <li>• Comprehensive dashboard for management</li>
                     <li>• Monitoring tools for real-time analytics</li>
                     <li>• Seamless integration with existing systems</li>
-                    <li>
-                      • Resource management tools for efficient operations
-                    </li>
+                    <li>• Powerfull resource management tools</li>
                   </ul>
                 </CardContent>
               </Card>
@@ -782,7 +780,7 @@ const Home = async () => {
               </AccordionTrigger>
               <AccordionContent>
                 Click on “Become a Partner” and fill out our application form.
-                We'll review your credentials, fleet quality, and safety
+                We&apos;ll review your credentials, fleet quality, and safety
                 standards. Once approved, our team will help you set up your
                 services on the platform.
               </AccordionContent>
@@ -813,9 +811,10 @@ const Home = async () => {
             <AccordionItem value="item-5">
               <AccordionTrigger>What if my bus is delayed?</AccordionTrigger>
               <AccordionContent>
-                You'll receive real-time updates about any delays or changes to
-                your trip. In case of significant delays, you may be eligible
-                for compensation according to our passenger protection policy.
+                You&apos;ll receive real-time updates about any delays or
+                changes to your trip. In case of significant delays, you may be
+                eligible for compensation according to our passenger protection
+                policy.
               </AccordionContent>
             </AccordionItem>
           </Accordion>
