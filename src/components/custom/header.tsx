@@ -1,8 +1,7 @@
-// components/main-nav.tsx
 "use client";
 
 import Link from "next/link";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import {
   Sheet,
@@ -17,7 +16,6 @@ import { SiFacebook, SiZalo, SiDiscord } from "react-icons/si";
 
 const Header = () => {
   const [isOpen, setIsOpen] = useState(false);
-
   const pathname = usePathname();
 
   const isActive = (route: string): boolean => {
@@ -29,23 +27,19 @@ const Header = () => {
   const [lastScrollTop, setLastScrollTop] = useState(0);
   const [isScrollUp, setIsScrollUp] = useState(true);
 
-  window.addEventListener("scroll", () => {
-    if (window.scrollY > 0) {
-      setIsTop(false);
-    } else {
-      setIsTop(true);
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      const handleScroll = () => {
+        const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+        setIsTop(scrollTop === 0);
+        setIsScrollUp(scrollTop <= lastScrollTop);
+        setLastScrollTop(scrollTop <= 0 ? 0 : scrollTop);
+      };
+
+      window.addEventListener("scroll", handleScroll);
+      return () => window.removeEventListener("scroll", handleScroll);
     }
-
-    const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
-
-    if (scrollTop > lastScrollTop) {
-      setIsScrollUp(false);
-    } else {
-      setIsScrollUp(true);
-    }
-
-    setLastScrollTop(scrollTop <= 0 ? 0 : scrollTop); // Avoid negative values
-  });
+  }, [lastScrollTop]);
 
   const linkBaseClass =
     "p-2 transition-colors rounded hover:bg-primary hover:text-background";

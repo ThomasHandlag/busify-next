@@ -1,6 +1,7 @@
+
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect, use } from "react"; // Import 'use' hook from React
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import "leaflet/dist/leaflet.css";
@@ -16,7 +17,7 @@ import { SimilarTripsSection } from "@/components/custom/trip_detail/similar_tri
 import { ReviewModal } from "@/components/custom/trip_detail/review_modal";
 import ComplaintSection from "@/components/custom/trip_detail/complaint_section";
 
-// Bus layouts configuration by ID
+// Bus layouts configuration by ID (kept for other bus details, not for seat generation)
 const busLayouts = {
   1: { rows: 10, columns: 4, floors: 2 },
   2: { rows: 15, columns: 3, floors: 1 },
@@ -73,69 +74,6 @@ const mockTripDetail = {
   average_rating: 4.5,
   total_reviews: 25,
   is_favorite: false,
-};
-
-// Generate seats based on layout ID
-const generateMockSeats = (layoutId: number, totalSeats: number) => {
-  const layout = busLayouts[layoutId as keyof typeof busLayouts];
-  if (!layout) {
-    // Fallback layout if ID not found
-    return Array.from({ length: totalSeats }, (_, i) => ({
-      id: i + 1,
-      seat_number: `${String.fromCharCode(65 + Math.floor(i / 4))}.${
-        (i % 4) + 1
-      }.1`,
-      status: i < 15 ? "booked" : "available",
-      price: 350000,
-      row: Math.floor(i / 4),
-      column: i % 4,
-      floor: 1,
-    }));
-  }
-
-  const seats = [];
-  const floors = layout.floors || 1;
-  let seatId = 1;
-
-  for (let floor = 1; floor <= floors; floor++) {
-    for (let row = 0; row < layout.rows; row++) {
-      for (let col = 0; col < layout.columns; col++) {
-        if (seatId > totalSeats) break;
-
-        const rowLetter = String.fromCharCode(65 + row);
-        const seatNumber = `${rowLetter}.${col + 1}.${floor}`;
-
-        seats.push({
-          id: seatId,
-          seat_number: seatNumber,
-          status: seatId <= 15 ? "booked" : "available", // First 15 seats are booked
-          price: 350000,
-          row,
-          column: col,
-          floor,
-        });
-
-        seatId++;
-      }
-      if (seatId > totalSeats) break;
-    }
-    if (seatId > totalSeats) break;
-  }
-
-  return seats;
-};
-
-// Generate mock seats and get current layout using layout_id
-const mockSeats = generateMockSeats(
-  mockTripDetail.bus.layout_id,
-  mockTripDetail.total_seats
-);
-const currentLayout = busLayouts[
-  mockTripDetail.bus.layout_id as keyof typeof busLayouts
-] || {
-  rows: 8,
-  columns: 4,
-  floors: 1,
 };
 
 // Mock data for similar trips
@@ -213,12 +151,70 @@ const mockComplaints = [
   },
 ];
 
-export default function TripDetailPage({ params }: { params: { id: string } }) {
+// Interface for seat data from API
+interface SeatData {
+  seatNumber: string;
+  status: string;
+  booked: boolean;
+  floor: string;
+  row: string;
+  column: string;
+}
+
+// Interface for seat layout response from API
+interface SeatLayoutResponse {
+  floors: number;
+  rows: number;
+  columns: number;
+  seats: SeatData[];
+}
+
+// Update the type definition for params to expect a Promise
+export default function TripDetailPage({ params }: { params: Promise<{ id: string }> }) {
   const [selectedSeats, setSelectedSeats] = useState<string[]>([]);
   const [totalPrice, setTotalPrice] = useState(0);
   const [isFavorite, setIsFavorite] = useState(mockTripDetail.is_favorite);
   const [showSeatModal, setShowSeatModal] = useState(false);
   const [showReviewModal, setShowReviewModal] = useState(false);
+
+  // State to hold fetched seat layout data
+  const [seatLayout, setSeatLayout] = useState<SeatLayoutResponse | null>(null);
+  const [loadingSeats, setLoadingSeats] = useState(true);
+  const [errorSeats, setErrorSeats] = useState<string | null>(null);
+
+  // Unwrap the params Promise using React.use()
+  const resolvedParams = use(params);
+  const tripId = resolvedParams.id; // Access the id from the resolved object
+
+  // Effect hook to fetch seat layout data from the API
+  useEffect(() => {
+    const fetchSeatLayout = async () => {
+      setLoadingSeats(true);
+      setErrorSeats(null);
+      try {
+        const response = await fetch(`http://localhost:8080/api/trip-seats/${tripId}`);
+        if (!response.ok) {
+          throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        const data = await response.json();
+        if (data.code === 200 && data.result) {
+          setSeatLayout(data.result);
+        } else {
+          throw new Error(data.message || "Failed to fetch seat layout");
+        }
+      } catch (error: any) {
+        console.error("Error fetching seat layout:", error);
+        setErrorSeats(error.message || "Failed to load seat layout.");
+      } finally {
+        setLoadingSeats(false);
+      }
+    };
+
+    // Only fetch if tripId is available
+    if (tripId) {
+      fetchSeatLayout();
+    }
+  }, [tripId]); // Re-fetch when the trip ID changes
 
   const handleToggleFavorite = () => {
     setIsFavorite(!isFavorite);
@@ -234,6 +230,11 @@ export default function TripDetailPage({ params }: { params: { id: string } }) {
     // Handle review submission logic here
     setShowReviewModal(false);
   };
+
+  // Determine current layout based on fetched data or fallback
+  const currentLayout = seatLayout
+    ? { rows: seatLayout.rows, columns: seatLayout.columns, floors: seatLayout.floors }
+    : { rows: 0, columns: 0, floors: 0 }; // Default to 0 if not loaded yet
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -268,12 +269,28 @@ export default function TripDetailPage({ params }: { params: { id: string } }) {
           {/* Right Column - Desktop Booking */}
           <div className="lg:col-span-1 hidden lg:block md:block">
             <div className="sticky top-24 space-y-4">
-              <SeatSelectionCard
-                seats={mockSeats}
-                layout={currentLayout}
-                pricePerSeat={mockTripDetail.price_per_seat}
-                onSeatSelection={handleSeatSelection}
-              />
+              {loadingSeats && (
+                <Card>
+                  <CardContent className="pt-4 text-center text-gray-500">
+                    Đang tải sơ đồ ghế...
+                  </CardContent>
+                </Card>
+              )}
+              {errorSeats && (
+                <Card>
+                  <CardContent className="pt-4 text-center text-red-500">
+                    Lỗi: {errorSeats}
+                  </CardContent>
+                </Card>
+              )}
+              {seatLayout && (
+                <SeatSelectionCard
+                  seats={seatLayout.seats}
+                  layout={currentLayout}
+                  pricePerSeat={mockTripDetail.price_per_seat}
+                  onSeatSelection={handleSeatSelection}
+                />
+              )}
               <Card>
                 <CardContent className="pt-4">
                   <div className="text-sm text-gray-600 space-y-2">
@@ -297,15 +314,29 @@ export default function TripDetailPage({ params }: { params: { id: string } }) {
         onShowSeatModal={setShowSeatModal}
         busType={mockTripDetail.bus.name}
       >
-        <SeatSelectionCard
-          seats={mockSeats}
-          layout={currentLayout}
-          pricePerSeat={mockTripDetail.price_per_seat}
-          onSeatSelection={handleSeatSelection}
-        />
+        {loadingSeats && (
+          <div className="p-4 text-center text-gray-500">
+            Đang tải sơ đồ ghế...
+          </div>
+        )}
+        {errorSeats && (
+          <div className="p-4 text-center text-red-500">
+            Lỗi: {errorSeats}
+          </div>
+        )}
+        {seatLayout && (
+          <SeatSelectionCard
+            seats={seatLayout.seats}
+            layout={currentLayout}
+            pricePerSeat={mockTripDetail.price_per_seat}
+            onSeatSelection={handleSeatSelection}
+          />
+        )}
       </MobileBookingBar>
 
       <SimilarTripsSection trips={mockSimilarTrips} />
     </div>
   );
 }
+
+
