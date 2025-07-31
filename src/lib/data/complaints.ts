@@ -2,10 +2,10 @@ import { Complaint } from "../types/widget_proptype";
 import api from "./axios-instance";
 
 const getComplaintsByOperator = async (
-  operatorId: string
+  operatorId: number
 ): Promise<Complaint[]> => {
   try {
-    const response = await api.get(`/complaints/bus-operator/${operatorId}`);
+    const response = await api.get(`/complaints/bus-operator/${operatorId.toString()}`);
     return response.data.result.complaints;
   } catch (error) {
     return [];
