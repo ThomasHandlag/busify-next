@@ -15,8 +15,12 @@ const getReviewsByOperatorId = async (
 const getReviewsByCustomerId = async (
   customerId: number
 ): Promise<Review[]> => {
-  const response = await api.get(`/reviews/customer/${customerId}`);
-  return response.data.result.reviews;
+  try {
+    const response = await api.get(`/reviews/customer/${customerId}`);
+    return response.data.result.reviews;
+  } catch (error) {
+    return [];
+  }
 };
 
 const getReviewsByTripId = async (tripId: number): Promise<Review[]> => {
