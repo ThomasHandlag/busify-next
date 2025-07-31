@@ -23,4 +23,21 @@ interface Complaint {
   createdAt: string;
 }
 
-export type { Review, BusifyRoute, Complaint };
+
+interface Trip {
+  trip_id: number;
+  operator_name: string;
+  route: {
+    start_location: string;
+    end_location: string;
+  };
+  departure_time: string;
+  arrival_time: string;
+  available_seats: number;
+  average_rating: number;
+  price_per_seat: number;
+  duration: string;
+}
+
+
+export type { Review, BusifyRoute, Complaint, Trip };

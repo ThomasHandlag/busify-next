@@ -1,8 +1,7 @@
-// components/main-nav.tsx
 "use client";
 
 import Link from "next/link";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import {
   Sheet,
@@ -29,23 +28,26 @@ const Header = () => {
   const [lastScrollTop, setLastScrollTop] = useState(0);
   const [isScrollUp, setIsScrollUp] = useState(true);
 
-  window.addEventListener("scroll", () => {
-    if (window.scrollY > 0) {
-      setIsTop(false);
-    } else {
-      setIsTop(true);
-    }
+  useEffect(() => {
+    window.addEventListener("scroll", () => {
+      if (window.scrollY > 0) {
+        setIsTop(false);
+      } else {
+        setIsTop(true);
+      }
 
-    const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+      const scrollTop =
+        window.pageYOffset || document.documentElement.scrollTop;
 
-    if (scrollTop > lastScrollTop) {
-      setIsScrollUp(false);
-    } else {
-      setIsScrollUp(true);
-    }
+      if (scrollTop > lastScrollTop) {
+        setIsScrollUp(false);
+      } else {
+        setIsScrollUp(true);
+      }
 
-    setLastScrollTop(scrollTop <= 0 ? 0 : scrollTop); // Avoid negative values
-  });
+      setLastScrollTop(scrollTop <= 0 ? 0 : scrollTop); // Avoid negative values
+    });
+  }, []);
 
   const linkBaseClass =
     "p-2 transition-colors rounded hover:bg-primary hover:text-background";

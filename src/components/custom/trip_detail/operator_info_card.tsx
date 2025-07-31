@@ -3,9 +3,11 @@
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Bus, Star, Phone, MapPin } from "lucide-react";
+import { TripDetailProps } from "../trip_overview_card";
+import Image from "next/image";
 
 interface OperatorInfoCardProps {
-  tripDetail: any;
+  tripDetail: TripDetailProps;
 }
 
 export function OperatorInfoCard({ tripDetail }: OperatorInfoCardProps) {
@@ -19,9 +21,11 @@ export function OperatorInfoCard({ tripDetail }: OperatorInfoCardProps) {
       </CardHeader>
       <CardContent>
         <div className="flex items-center space-x-4 mb-4">
-          <img
+          <Image
             src={tripDetail.operator_logo}
             alt={tripDetail.operator_name}
+            width={48}
+            height={48}
             className="w-12 h-12 rounded-lg"
           />
           <div>

@@ -2,9 +2,10 @@
 
 import { Button } from "@/components/ui/button";
 import TripItem from "@/components/custom/trip_item";
+import { TripItemProps } from "@/app/passenger/page";
 
 interface SimilarTripsSectionProps {
-  trips: any[];
+  trips: TripItemProps[];
 }
 
 export function SimilarTripsSection({ trips }: SimilarTripsSectionProps) {

@@ -22,12 +22,14 @@ import { Checkbox } from "../ui/checkbox";
 import { Slider } from "../ui/slider";
 import { useEffect, useState } from "react";
 import { Calendar28 } from "./date_picker";
-import { getAllRoutes, Route } from "@/lib/data/route";
+import { getAllRoutes } from "@/lib/data/route_api";
 import { getAllBusOperators, BusOperator } from "@/lib/data/bus_operator";
 import { getAllSeatLayouts, SeatLayout } from "@/lib/data/seat_layout";
+import { TripFilterQuery } from "@/lib/data/trip";
+import { BusifyRoute } from "@/lib/types/widget_proptype";
 
 type SearchFilterProps = {
-  onApplyFilters: (filters: any) => void;
+  onApplyFilters: (filters: TripFilterQuery) => void;
 };
 
 const SearchFilter = ({ onApplyFilters }: SearchFilterProps) => {
@@ -53,7 +55,7 @@ const SearchFilter = ({ onApplyFilters }: SearchFilterProps) => {
   });
 
   const [durationFilter, setDurationFilter] = useState<string>("any");
-  const [routes, setRoutes] = useState<Route[]>([]);
+  const [routes, setRoutes] = useState<BusifyRoute[]>([]);
   const [operators, setOperators] = useState<BusOperator[]>([]);
   const [seatLayouts, setSeatLayouts] = useState<SeatLayout[]>([]);
 
@@ -130,7 +132,7 @@ const SearchFilter = ({ onApplyFilters }: SearchFilterProps) => {
       amenities: Object.fromEntries(
         Object.entries(amenities).filter(([_, v]) => v === true)
       ),
-    } as any;
+    } as TripFilterQuery;
 
     // Xóa key có giá trị là: undefined, null, mảng rỗng, hoặc object rỗng (ví dụ amenities: {})
     filters = Object.fromEntries(
@@ -185,8 +187,8 @@ const SearchFilter = ({ onApplyFilters }: SearchFilterProps) => {
               <SelectContent>
                 <SelectItem value="any">Any</SelectItem>
                 {routes.map((route) => (
-                  <SelectItem key={route.id} value={route.id.toString()}>
-                    {route.name}
+                  <SelectItem key={route.routeId} value={route.routeId.toString()}>
+                    {route.routeName}
                   </SelectItem>
                 ))}
               </SelectContent>

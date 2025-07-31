@@ -39,6 +39,7 @@ import {
 } from "lucide-react";
 import FadeinWrapper from "@/components/custom/fadein_wrapper";
 import { getPopularRoutes } from "@/lib/data/route_api";
+import { BusifyRoute } from "@/lib/types/widget_proptype";
 
 const Home = async () => {
   const popularRoutes = await getPopularRoutes();
@@ -515,7 +516,7 @@ const Home = async () => {
             Popular Routes
           </h2>
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {popularRoutes.result.slice(0, 6).map((route: any) => (
+            {popularRoutes.slice(0, 6).map((route: BusifyRoute) => (
               <Card
                 key={route.routeId}
                 className="hover:shadow-lg transition-shadow"

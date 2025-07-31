@@ -5,6 +5,11 @@ import api from "./axios-instance";
 export interface BusOperator {
   id: number;
   name: string;
+  logo: string;
+  description: string;
+  averageRating: number;
+  hotline: string;
+  totalReviews: number;
 }
 
 export async function getAllBusOperators(): Promise<BusOperator[]> {
@@ -17,10 +22,12 @@ export async function getAllBusOperators(): Promise<BusOperator[]> {
   }
 }
 
-export async function getBusOperatorsRating(limit = 10): Promise<Response> {
+export async function getBusOperatorsRating(
+  limit = 10
+): Promise<BusOperator[]> {
   try {
     const res = await api.get(`api/bus-operators/rating?limit=${limit}`);
-    return res.data;
+    return res.data.result as BusOperator[];
   } catch (error) {
     console.error("Error fetching bus operators rating:", error);
     throw error;
