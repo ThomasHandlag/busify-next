@@ -2,10 +2,17 @@
 
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 import { Armchair } from "lucide-react";
 
-interface Seat {
+export interface Seat {
   id: number;
   seat_number: string;
   status: string;
@@ -15,7 +22,7 @@ interface Seat {
   floor?: number; // For multi-floor buses
 }
 
-interface BusLayout {
+export interface BusLayout {
   rows: number;
   columns: number;
   floors?: number;
@@ -160,12 +167,17 @@ export function SeatSelectionCard({
   };
 
   return (
-    <Card className="overflow-y-auto max-h-[70vh] scrollbar-hide">
+    <Card className="overflow-y-auto max-h-[80vh] scrollbar-hide">
       <CardHeader>
         <CardTitle className="flex items-center space-x-2">
           <Armchair className="w-5 h-5" />
           <span>Chọn ghế</span>
         </CardTitle>
+        <CardDescription>
+          <p className="text-sm text-gray-500">
+            Chọn ghế của bạn từ sơ đồ ghế bên dưới. Nhấn vào ghế để chọn hoặc bỏ chọn.
+          </p>
+        </CardDescription>
       </CardHeader>
       <CardContent>
         {/* Legend */}
@@ -188,10 +200,10 @@ export function SeatSelectionCard({
         <div className="border rounded-lg p-4 bg-gray-50 mb-4">
           {Array.from({ length: floors }, (_, i) => renderFloorSeats(i + 1))}
         </div>
-
-        {/* Selection Summary */}
-        {selectedSeats.length > 0 && (
-          <div className="bg-blue-50 p-3 rounded-lg mb-2 border border-blue-200">
+      </CardContent>
+      <CardFooter>
+        <div className="border-t bg-white p-4 mt-auto flex flex-col justify-center w-full">
+          <div className="bg-blue-50 p-3 rounded-lg mb-2 border border-blue-200 w-full">
             <div className="flex items-center space-x-2 mb-2">
               <Armchair className="w-4 h-4 text-green-500" />
               <h4 className="font-medium text-blue-900">
@@ -202,13 +214,12 @@ export function SeatSelectionCard({
               Tổng tiền: {totalPrice.toLocaleString("vi-VN")}đ
             </p>
           </div>
-        )}
-
-        <Button className="w-full mt-2" disabled={selectedSeats.length === 0}>
-          <Armchair className="w-4 h-4 mr-2" />
-          Đặt vé ({selectedSeats.length} ghế)
-        </Button>
-      </CardContent>
+          <Button className="w-full">
+            <Armchair className="w-4 h-4 mr-2" />
+            Đặt vé ({selectedSeats.length} ghế)
+          </Button>
+        </div>
+      </CardFooter>
 
       <style jsx global>{`
         .scrollbar-hide {

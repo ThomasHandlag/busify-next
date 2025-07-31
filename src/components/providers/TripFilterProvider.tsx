@@ -1,7 +1,7 @@
 "use client";
 
 import { ReactNode, useState } from "react";
-import { filterTrips } from "@/lib/data/trip";
+import { filterTrips, TripFilterQuery } from "@/lib/data/trip";
 import { TripItemProps } from "@/app/passenger/page";
 import TripFilterContext from "../../lib/contexts/TripFilterContext";
 
@@ -13,7 +13,7 @@ export const TripFilterProvider = ({ children }: TripFilterProviderProps) => {
   const [trips, setTrips] = useState<TripItemProps[]>([]);
   const [isLoading, setIsLoading] = useState(false);
 
-  const handleApplyFilters = async (filters: any) => {
+  const handleApplyFilters = async (filters: TripFilterQuery) => {
     setIsLoading(true);
     try {
       console.log("Filters to send:", filters);

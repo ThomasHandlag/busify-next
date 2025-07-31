@@ -2,10 +2,11 @@
 
 import { createContext, useContext } from "react";
 import { TripItemProps } from "@/app/passenger/page";
+import { TripFilterQuery } from "../data/trip";
 
 interface TripFilterContextType {
   trips: TripItemProps[];
-  handleApplyFilters: (filters: any) => Promise<void>;
+  handleApplyFilters: (filters: TripFilterQuery) => Promise<void>;
   isLoading: boolean;
 }
 

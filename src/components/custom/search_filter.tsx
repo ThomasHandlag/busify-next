@@ -22,12 +22,14 @@ import { Checkbox } from "../ui/checkbox";
 import { Slider } from "../ui/slider";
 import { useEffect, useState } from "react";
 import { Calendar28 } from "./date_picker";
-import { getAllRoutes, Route } from "@/lib/data/route";
+import { getAllRoutes } from "@/lib/data/route_api";
 import { getAllBusOperators, BusOperator } from "@/lib/data/bus_operator";
 import { getAllSeatLayouts, SeatLayout } from "@/lib/data/seat_layout";
+import { TripFilterQuery } from "@/lib/data/trip";
+import { BusifyRoute } from "@/lib/types/widget_proptype";
 
 type SearchFilterProps = {
-  onApplyFilters: (filters: any) => void;
+  onApplyFilters: (filters: TripFilterQuery) => void;
 };
 
 const SearchFilter = ({ onApplyFilters }: SearchFilterProps) => {
@@ -62,7 +64,7 @@ const SearchFilter = ({ onApplyFilters }: SearchFilterProps) => {
   });
 
   const [durationFilter, setDurationFilter] = useState<string>("any");
-  const [routes, setRoutes] = useState<Route[]>([]);
+  const [routes, setRoutes] = useState<BusifyRoute[]>([]);
   const [operators, setOperators] = useState<BusOperator[]>([]);
   const [seatLayouts, setSeatLayouts] = useState<SeatLayout[]>([]);
 
@@ -159,7 +161,7 @@ const SearchFilter = ({ onApplyFilters }: SearchFilterProps) => {
       amenities: Object.fromEntries(
         Object.entries(amenities).filter(([_, v]) => v === true)
       ),
-    } as any;
+    } as TripFilterQuery;
 
     // Xóa key có giá trị là: undefined, null, mảng rỗng, hoặc object rỗng (ví dụ amenities: {})
     filters = Object.fromEntries(
@@ -222,25 +224,27 @@ const SearchFilter = ({ onApplyFilters }: SearchFilterProps) => {
               <ul className="absolute top-full left-0 right-0 mt-1 bg-white border border-gray-300 rounded shadow z-10 max-h-40 overflow-y-auto">
                 {routes
                   .filter((route) =>
-                    route.name
+                    route.routeName
                       .toLowerCase()
                       .includes(debouncedRouteInput.toLowerCase())
                   )
                   .map((route) => (
                     <li
-                      key={route.id}
+                      key={route.routeId}
                       className="px-3 py-2 hover:bg-gray-100 cursor-pointer"
                       onClick={() => {
-                        setSelectedRouteId(route.id.toString());
-                        setRouteInput(route.name);
+                        setSelectedRouteId(route.routeId.toString());
+                        setRouteInput(route.routeName);
                         setShowSuggestions(false);
                       }}
                     >
-                      {route.name}
+                      {route.routeName}
                     </li>
                   ))}
                 {routes.filter((route) =>
-                  route.name.toLowerCase().includes(routeInput.toLowerCase())
+                  route.routeName
+                    .toLowerCase()
+                    .includes(routeInput.toLowerCase())
                 ).length === 0 && (
                   <li className="px-3 py-2 text-gray-400 italic">
                     No match found

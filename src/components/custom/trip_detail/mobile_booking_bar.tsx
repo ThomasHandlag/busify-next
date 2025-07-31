@@ -1,61 +1,62 @@
 "use client";
 
 import { Button } from "@/components/ui/button";
-import { Sheet, SheetContent, SheetTitle } from "@/components/ui/sheet";
+import {
+  Sheet,
+  SheetContent,
+  SheetFooter,
+  SheetTitle,
+  SheetTrigger,
+} from "@/components/ui/sheet";
 import { Armchair } from "lucide-react";
+import { useState } from "react";
+import { BusLayout, Seat, SeatSelectionCard } from "./seat_selection_card";
 
 interface MobileBookingBarProps {
-  selectedSeats: string[];
-  totalPrice: number;
-  showSeatModal: boolean;
-  onShowSeatModal: (show: boolean) => void;
-  children: React.ReactNode; // Seat selection content
+  seats: Seat[];
+  layout: BusLayout;
+  pricePerSeat: number;
+  operatorName?: string; // Add operator name for display
   busType?: string; // Add bus type for display
 }
 
 export function MobileBookingBar({
-  selectedSeats,
-  totalPrice,
-  showSeatModal,
-  onShowSeatModal,
-  children,
   busType,
+  seats,
+  layout,
+  pricePerSeat,
+  operatorName,
 }: MobileBookingBarProps) {
-  return (
-    <div className="block lg:hidden md:hidden">
-      <div className="fixed bottom-0 left-0 right-0 bg-white border-t p-4 z-50 shadow-lg">
-        <div className="flex justify-between items-center">
-          <div className="flex items-center gap-3">
-            <div className="flex items-center gap-1">
-              <Armchair className="w-5 h-5 text-blue-600" />
-              <span className="text-sm text-gray-500">
-                {selectedSeats.length} ghế
-              </span>
-            </div>
-            <div>
-              <p className="font-bold text-green-600">
-                {totalPrice.toLocaleString("vi-VN")}đ
-              </p>
-            </div>
-          </div>
-          <Button
-            onClick={() => onShowSeatModal(true)}
-            className="flex items-center gap-2"
-          >
-            <Armchair className="w-4 h-4" />
-            Chọn ghế
-          </Button>
-        </div>
-      </div>
+  const [selectedSeats, setSelectedSeats] = useState<string[]>([]);
+  const [totalPrice, setTotalPrice] = useState<number>(0);
 
-      <Sheet open={showSeatModal} onOpenChange={onShowSeatModal}>
-        <SheetContent side="bottom" className="h-[85vh]">
-          <div className="flex flex-col h-full">
-            <div className="flex items-center justify-between mb-4 px-4 pt-6">
+  const children = SeatSelectionCard({
+    seats,
+    layout,
+    pricePerSeat,
+    onSeatSelection: (seats, price) => {
+      setSelectedSeats(seats);
+      setTotalPrice(price);
+    },
+  });
+
+  return (
+    <div className="block">
+      <div className="hidden lg:block md:block">{children}</div>
+      <div className="block lg:hidden md:hidden">
+        <Sheet>
+          <SheetTrigger asChild>
+            <Button className="flex items-center gap-2 ml-2 lg:inset-0">
+              <Armchair className="w-4 h-4" />
+              Chọn ghế
+            </Button>
+          </SheetTrigger>
+          <SheetContent side="bottom" className="h-full">
+            <div className="flex flex-col h-full mb-4 px-2 lg:px-2 pt-6 gap-2">
               <SheetTitle className="font-semibold text-lg flex items-center gap-2">
                 <Armchair className="w-5 h-5" />
                 <div className="flex flex-col">
-                  <span>Chọn ghế</span>
+                  <span>{operatorName}</span>
                   {busType && (
                     <span className="text-sm font-normal text-gray-500">
                       {busType}
@@ -63,37 +64,27 @@ export function MobileBookingBar({
                   )}
                 </div>
               </SheetTitle>
-              <Button variant="ghost" onClick={() => onShowSeatModal(false)}>
-                Đóng
-              </Button>
+
+              <div className="flex-1 overflow-y-auto px-2 lg:px-4">{children}</div>
             </div>
-
-            {/* Scrollable seat selection area */}
-            <div className="flex-1 overflow-y-auto px-4">{children}</div>
-
-            {/* Fixed bottom summary */}
-            {selectedSeats.length > 0 && (
-              <div className="border-t bg-white p-4 mt-auto">
-                <div className="flex justify-between items-center mb-3">
-                  <div className="flex items-center gap-2">
-                    <Armchair className="w-4 h-4 text-green-500" />
-                    <span className="text-sm font-medium">
-                      Ghế: {selectedSeats.join(", ")}
-                    </span>
-                  </div>
-                  <div className="font-bold text-green-600">
-                    {totalPrice.toLocaleString("vi-VN")}đ
-                  </div>
+            <SheetFooter>
+              <div className="flex items-center justify-between gap-3">
+                <div className="flex items-center gap-1">
+                  <Armchair className="w-5 h-5" />
+                  <span className="text-sm text-gray-500">
+                    {selectedSeats.length} ghế
+                  </span>
                 </div>
-                <Button className="w-full">
-                  <Armchair className="w-4 h-4 mr-2" />
-                  Đặt vé ({selectedSeats.length} ghế)
-                </Button>
+                <div>
+                  <p className="font-bold text-xl text-green-600">
+                    {totalPrice.toLocaleString("vi-VN")}đ
+                  </p>
+                </div>
               </div>
-            )}
-          </div>
-        </SheetContent>
-      </Sheet>
+            </SheetFooter>
+          </SheetContent>
+        </Sheet>
+      </div>
     </div>
   );
 }

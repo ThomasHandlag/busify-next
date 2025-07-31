@@ -1,20 +1,15 @@
-"use client";
-
-import { useState } from "react";
-import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import "leaflet/dist/leaflet.css";
 import "leaflet-routing-machine/dist/leaflet-routing-machine.css";
-import { MessageSquare } from "lucide-react";
 import TripOverviewCard from "@/components/custom/trip_overview_card";
 import ReviewSection from "@/components/custom/review_section";
 import { TripHeroSection } from "@/components/custom/trip_detail/trip_hero_section";
 import { OperatorInfoCard } from "@/components/custom/trip_detail/operator_info_card";
-import { SeatSelectionCard } from "@/components/custom/trip_detail/seat_selection_card";
 import { MobileBookingBar } from "@/components/custom/trip_detail/mobile_booking_bar";
 import { SimilarTripsSection } from "@/components/custom/trip_detail/similar_trip_section";
 import { ReviewModal } from "@/components/custom/trip_detail/review_modal";
 import ComplaintSection from "@/components/custom/trip_detail/complaint_section";
+import { Trip } from "@/lib/types/widget_proptype";
 
 // Bus layouts configuration by ID
 const busLayouts = {
@@ -53,8 +48,8 @@ const mockTripDetail = {
     {
       address: "Bến xe Đà Lạt",
       city: "Đà Lạt",
-      longitude: 100.4419,
-      latitude: 6.9404,
+      longitude: 108.4455188,
+      latitude: 11.9267344,
       time_offset_from_start: 120,
     },
   ],
@@ -139,7 +134,7 @@ const currentLayout = busLayouts[
 };
 
 // Mock data for similar trips
-const mockSimilarTrips = [
+const mockSimilarTrips: Trip[] = [
   {
     trip_id: 2,
     operator_name: "Thành Bưởi",
@@ -152,7 +147,7 @@ const mockSimilarTrips = [
     available_seats: 8,
     price_per_seat: 320000,
     average_rating: 4.3,
-    duration: 120,
+    duration: "6 giờ",
   },
   {
     trip_id: 3,
@@ -166,114 +161,44 @@ const mockSimilarTrips = [
     available_seats: 12,
     price_per_seat: 380000,
     average_rating: 4.7,
-    duration: 180,
+    duration: "6 giờ",
   },
 ];
 
-// Mock data for reviews
-const mockReviews = [
-  {
-    id: 1,
-    user_name: "Nguyễn Văn A",
-    rating: 5,
-    comment: "Chuyến đi rất thoải mái, tài xế lái xe an toàn, xe sạch sẽ.",
-    date: "2025-07-15",
-  },
-  {
-    id: 2,
-    user_name: "Trần Thị B",
-    rating: 4,
-    comment: "Đúng giờ, phục vụ tốt. Chỉ hơi ồn một chút.",
-    date: "2025-07-10",
-  },
-  {
-    id: 3,
-    user_name: "Võ Văn C",
-    rating: 4,
-    comment: "Dịch vụ tốt, xe sạch sẽ và đúng giờ.",
-    date: "2025-07-10",
-  },
-];
-
-// Mock data for complaints
-const mockComplaints = [
-  {
-    id: 1,
-    user_name: "Trần Thị B",
-    title: "Trễ chuyến",
-    description: "Xe đến trễ hơn 1 tiếng so với lịch hẹn.",
-    date: "2025-07-20",
-  },
-  {
-    id: 2,
-    user_name: "Võ Văn C",
-    title: "Thiết bị hư hại",
-    description: "Điều hòa không hoạt động trong suốt chuyến đi.",
-    date: "2025-07-18",
-  },
-];
-
-export default function TripDetailPage({ params }: { params: { id: string } }) {
-  const [selectedSeats, setSelectedSeats] = useState<string[]>([]);
-  const [totalPrice, setTotalPrice] = useState(0);
-  const [isFavorite, setIsFavorite] = useState(mockTripDetail.is_favorite);
-  const [showSeatModal, setShowSeatModal] = useState(false);
-  const [showReviewModal, setShowReviewModal] = useState(false);
-
-  const handleToggleFavorite = () => {
-    setIsFavorite(!isFavorite);
-  };
-
-  const handleSeatSelection = (seats: string[], price: number) => {
-    setSelectedSeats(seats);
-    setTotalPrice(price);
-  };
-
-  const handleSubmitReview = (rating: number, text: string) => {
-    console.log("Review submitted:", { rating, text });
-    // Handle review submission logic here
-    setShowReviewModal(false);
-  };
-
+export default function TripDetailPage({
+  params,
+}: {
+  params: Promise<{ id: string }>;
+}) {
+  const bookingBar = (
+    <MobileBookingBar
+      layout={currentLayout}
+      seats={mockSeats}
+      pricePerSeat={mockTripDetail.price_per_seat}
+      busType={mockTripDetail.bus.name}
+      operatorName={mockTripDetail.operator_name}
+    />
+  );
   return (
     <div className="min-h-screen bg-gray-50">
-      <TripHeroSection
-        tripDetail={mockTripDetail}
-        isFavorite={isFavorite}
-        onToggleFavorite={handleToggleFavorite}
-      />
+      <TripHeroSection isFavorite={false} tripDetail={mockTripDetail} />
 
       <div className="container mx-auto lg:px-4 lg:py-4 md:px-4 md:py-4">
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
           {/* Left Column */}
           <div className="lg:col-span-2 space-y-6">
             <TripOverviewCard mockTripDetail={mockTripDetail} />
+            <div className="lg:hidden md:hidden block">{bookingBar}</div>
             <OperatorInfoCard tripDetail={mockTripDetail} />
-            <Button onClick={() => setShowReviewModal(true)}>
-              <MessageSquare className="w-4 h-4 mr-2" />
-              Viết đánh giá
-            </Button>
-            <ReviewSection
-              mockTripDetail={mockTripDetail}
-              mockReviews={mockReviews}
-            />
-            <ComplaintSection complaints={mockComplaints} />
-            <ReviewModal
-              isOpen={showReviewModal}
-              onClose={() => setShowReviewModal(false)}
-              onSubmitReview={handleSubmitReview}
-            />
+            <ReviewModal />
+            <ReviewSection mockTripDetail={mockTripDetail} />
+            <ComplaintSection tripId={mockTripDetail.trip_id} />
           </div>
 
           {/* Right Column - Desktop Booking */}
           <div className="lg:col-span-1 hidden lg:block md:block">
             <div className="sticky top-24 space-y-4">
-              <SeatSelectionCard
-                seats={mockSeats}
-                layout={currentLayout}
-                pricePerSeat={mockTripDetail.price_per_seat}
-                onSeatSelection={handleSeatSelection}
-              />
+              {bookingBar}
               <Card>
                 <CardContent className="pt-4">
                   <div className="text-sm text-gray-600 space-y-2">
@@ -288,23 +213,6 @@ export default function TripDetailPage({ params }: { params: { id: string } }) {
           </div>
         </div>
       </div>
-
-      {/* Mobile Components */}
-      <MobileBookingBar
-        selectedSeats={selectedSeats}
-        totalPrice={totalPrice}
-        showSeatModal={showSeatModal}
-        onShowSeatModal={setShowSeatModal}
-        busType={mockTripDetail.bus.name}
-      >
-        <SeatSelectionCard
-          seats={mockSeats}
-          layout={currentLayout}
-          pricePerSeat={mockTripDetail.price_per_seat}
-          onSeatSelection={handleSeatSelection}
-        />
-      </MobileBookingBar>
-
       <SimilarTripsSection trips={mockSimilarTrips} />
     </div>
   );

@@ -7,35 +7,28 @@ import {
   DialogContent,
   DialogTitle,
   DialogOverlay,
+  DialogTrigger,
 } from "@radix-ui/react-dialog";
 import { Star } from "lucide-react";
 import { DialogHeader } from "@/components/ui/dialog";
 
-interface ReviewModalProps {
-  isOpen: boolean;
-  onClose: () => void;
-  onSubmitReview?: (rating: number, text: string) => void;
-}
-
-export function ReviewModal({
-  isOpen,
-  onClose,
-  onSubmitReview,
-}: ReviewModalProps) {
+export function ReviewModal() {
   const [reviewText, setReviewText] = useState("");
   const [reviewRating, setReviewRating] = useState(5);
 
   const handleSubmit = () => {
     if (reviewText.trim() === "") return;
 
-    onSubmitReview?.(reviewRating, reviewText);
-    onClose();
+    // call api to submit review
     setReviewText("");
     setReviewRating(5);
   };
 
   return (
-    <Dialog open={isOpen} onOpenChange={onClose}>
+    <Dialog>
+      <DialogTrigger type="button" className="bg-primary text-white px-4 py-2 rounded-md ml-2 lg:inset-0">
+          Viết đánh giá
+      </DialogTrigger>
       <DialogOverlay className="fixed h-screen inset-0 bg-black/50 z-40" />
       <DialogContent className="fixed top-1/2 left-1/2 z-50 w-full max-w-md p-6 bg-white rounded-md shadow-lg transform -translate-x-1/2 -translate-y-1/2">
         <DialogHeader>
