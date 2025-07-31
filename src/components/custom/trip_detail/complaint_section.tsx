@@ -38,7 +38,7 @@ const ComplaintItem = ({ complaint }: { complaint: Complaint }) => {
           <span className="font-medium">{complaint.customerName}</span>
         </div>
         <p className="text-xs text-gray-500">
-          {new Date(complaint.createAt).toLocaleDateString()}
+          {new Date(complaint.createdAt).toLocaleDateString()}
         </p>
       </div>
       <p className="font-semibold text-gray-800 mb-1">{complaint.title}</p>

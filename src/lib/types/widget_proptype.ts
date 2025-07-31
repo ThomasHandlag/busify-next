@@ -20,7 +20,7 @@ interface Complaint {
   title: string;
   description: string;
   customerName: string;
-  createAt: string;
+  createdAt: string;
 }
 
 export type { Review, BusifyRoute, Complaint };

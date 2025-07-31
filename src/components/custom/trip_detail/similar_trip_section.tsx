@@ -11,6 +11,7 @@ export function SimilarTripsSection({ trips }: SimilarTripsSectionProps) {
   return (
     <div className="container mb-10 mx-auto lg:px-4 lg:py-4 md:px-4 md:py-4 sm:pb-20">
       <div className="flex items-center justify-between p-2">
+
         <h2 className="text-xl font-semibold px-4">Các chuyến đi tương tự</h2>
         <Button variant="link" size="sm">
           Xem tất cả
