@@ -45,14 +45,8 @@ export interface TripItemProps {
   duration: string;
 }
 
-let trips: TripItemProps[] = [];
 const Passenger = async () => {
-  try {
-    const res = await getUpcomingTrips();
-    trips = res.result || [];
-  } catch (error) {
-    console.log(error);
-  }
+  const trips: TripItemProps[] = await getUpcomingTrips();
   const busOperators = await getBusOperatorsRating();
   return (
     <div className="min-h-screen bg-gray-50">
@@ -404,7 +398,7 @@ const Passenger = async () => {
         </div>
 
         <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {busOperators.result.map((operator: BusOperatorItemProps) => (
+          {busOperators.map((operator: BusOperatorItemProps) => (
             <BusOperatorItem key={operator.id} busOperator={operator} />
           ))}
         </div>

@@ -9,6 +9,7 @@ import { MobileBookingBar } from "@/components/custom/trip_detail/mobile_booking
 import { SimilarTripsSection } from "@/components/custom/trip_detail/similar_trip_section";
 import { ReviewModal } from "@/components/custom/trip_detail/review_modal";
 import ComplaintSection from "@/components/custom/trip_detail/complaint_section";
+import { Trip } from "@/lib/types/widget_proptype";
 
 // Bus layouts configuration by ID
 const busLayouts = {
@@ -133,7 +134,7 @@ const currentLayout = busLayouts[
 };
 
 // Mock data for similar trips
-const mockSimilarTrips = [
+const mockSimilarTrips: Trip[] = [
   {
     trip_id: 2,
     operator_name: "Thành Bưởi",
@@ -146,7 +147,7 @@ const mockSimilarTrips = [
     available_seats: 8,
     price_per_seat: 320000,
     average_rating: 4.3,
-    duration: 120,
+    duration: "6 giờ",
   },
   {
     trip_id: 3,
@@ -160,11 +161,15 @@ const mockSimilarTrips = [
     available_seats: 12,
     price_per_seat: 380000,
     average_rating: 4.7,
-    duration: 180,
+    duration: "6 giờ",
   },
 ];
 
-export default function TripDetailPage({ params }: { params: { id: string } }) {
+export default function TripDetailPage({
+  params,
+}: {
+  params: Promise<{ id: string }>;
+}) {
   const bookingBar = (
     <MobileBookingBar
       layout={currentLayout}
@@ -183,9 +188,7 @@ export default function TripDetailPage({ params }: { params: { id: string } }) {
           {/* Left Column */}
           <div className="lg:col-span-2 space-y-6">
             <TripOverviewCard mockTripDetail={mockTripDetail} />
-            <div className="lg:hidden md:hidden block">
-              {bookingBar}
-            </div>
+            <div className="lg:hidden md:hidden block">{bookingBar}</div>
             <OperatorInfoCard tripDetail={mockTripDetail} />
             <ReviewModal />
             <ReviewSection mockTripDetail={mockTripDetail} />

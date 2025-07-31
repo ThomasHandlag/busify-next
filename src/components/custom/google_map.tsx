@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useEffect } from "react";
 import dynamic from "next/dynamic";
 import L from "leaflet"; // Import trực tiếp
 import "leaflet/dist/leaflet.css";
@@ -10,7 +10,7 @@ import { useMap } from "react-leaflet";
 
 // Ghi chú: Sửa lỗi icon mặc định, nên đặt ở một file khởi tạo hoặc đầu component
 // Đoạn này vẫn hữu ích nếu bạn dùng marker mặc định ở đâu đó.
-// @ts-ignore
+// @ts-expect-error may not exist in some versions
 delete L.Icon.Default.prototype._getIconUrl;
 L.Icon.Default.mergeOptions({
   iconRetinaUrl: "/leaflet/marker-icon-2x.png",
