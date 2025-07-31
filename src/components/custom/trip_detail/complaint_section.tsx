@@ -3,7 +3,6 @@ import { getComplaintsByTripId } from "@/lib/data/complaints";
 import { Complaint } from "@/lib/types/widget_proptype";
 import { MessageSquareWarning, User } from "lucide-react";
 
-
 export default async function ComplaintSection({ tripId }: { tripId: number }) {
   const complaints: Complaint[] = await getComplaintsByTripId(tripId);
   return (
@@ -21,21 +20,7 @@ export default async function ComplaintSection({ tripId }: { tripId: number }) {
         ) : (
           <div className="space-y-4">
             {complaints.map((complaint) => (
-              <div key={complaint.id} className="border-b pb-4 last:border-b-0">
-                <div className="flex items-center justify-between mb-2">
-                  <div className="flex items-center space-x-2">
-                    <User className="w-4 h-4 text-gray-400" />
-                    <span className="font-medium">{complaint.customerName}</span>
-                  </div>
-                  <p className="text-xs text-gray-500">
-                    {new Date(complaint.createAt).toLocaleDateString()}
-                  </p>
-                </div>
-                <p className="font-semibold text-gray-800 mb-1">
-                  {complaint.title}
-                </p>
-                <p className="text-gray-600 text-sm">{complaint.description}</p>
-              </div>
+              <ComplaintItem key={complaint.id} complaint={complaint} />
             ))}
           </div>
         )}
@@ -43,3 +28,23 @@ export default async function ComplaintSection({ tripId }: { tripId: number }) {
     </Card>
   );
 }
+
+const ComplaintItem = ({ complaint }: { complaint: Complaint }) => {
+  return (
+    <div key={complaint.id} className="border-b pb-4 last:border-b-0">
+      <div className="flex items-center justify-between mb-2">
+        <div className="flex items-center space-x-2">
+          <User className="w-4 h-4 text-gray-400" />
+          <span className="font-medium">{complaint.customerName}</span>
+        </div>
+        <p className="text-xs text-gray-500">
+          {new Date(complaint.createAt).toLocaleDateString()}
+        </p>
+      </div>
+      <p className="font-semibold text-gray-800 mb-1">{complaint.title}</p>
+      <p className="text-gray-600 text-sm">{complaint.description}</p>
+    </div>
+  );
+};
+
+export { ComplaintItem };
