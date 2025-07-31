@@ -15,8 +15,8 @@ const AppPage = () => {
   }
 
   return (
-    <div className="grid gap-4 p-4">
-      <div className="grid lg:grid-cols-3 sm:grid-cols-1 gap-4">
+    <div className="grid gap-4 p-4 mb-14">
+      <div className="grid lg:grid-cols-3 md:grid-cols-2 sm:grid-cols-1 gap-4">
         {trips.map((trip, index) => (
           <TripItem
             key={trip.trip_id || index}

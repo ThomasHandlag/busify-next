@@ -40,16 +40,25 @@ const SearchFilter = ({ onApplyFilters }: SearchFilterProps) => {
   const [selectedDate, setSelectedDate] = useState<Date | undefined>();
 
   const [selectedRouteId, setSelectedRouteId] = useState<string | undefined>();
+  const [routeInput, setRouteInput] = useState("");
+  const [showSuggestions, setShowSuggestions] = useState(false);
+
   const [selectedOperatorId, setSelectedOperatorId] = useState<
     string | undefined
   >();
+  const [operatorInput, setOperatorInput] = useState("");
+  const [showOperatorSuggestions, setShowOperatorSuggestions] = useState(false);
+
+  const [debouncedRouteInput, setDebouncedRouteInput] = useState("");
+  const [debouncedOperatorInput, setDebouncedOperatorInput] = useState("");
+
   const [selectedBusTypeIds, setSelectedBusTypeIds] = useState<string[]>([]);
 
   const [amenities, setAmenities] = useState({
     wifi: false,
-    // ac: false,
-    // entertainment: false,
-    // charging: false,
+    water: false,
+    charger: false,
+    "air conditioner": false,
   });
 
   const [durationFilter, setDurationFilter] = useState<string>("any");
@@ -74,12 +83,32 @@ const SearchFilter = ({ onApplyFilters }: SearchFilterProps) => {
   }, []);
 
   useEffect(() => {
+    const handler = setTimeout(() => {
+      setDebouncedRouteInput(routeInput);
+    }, 1000);
+
+    return () => {
+      clearTimeout(handler);
+    };
+  }, [routeInput]);
+
+  useEffect(() => {
     async function fetchOperators() {
       const data = await getAllBusOperators();
       setOperators(data);
     }
     fetchOperators();
   }, []);
+
+  useEffect(() => {
+    const handler = setTimeout(() => {
+      setDebouncedOperatorInput(operatorInput);
+    }, 1000);
+
+    return () => {
+      clearTimeout(handler);
+    };
+  }, [operatorInput]);
 
   useEffect(() => {
     const handleResize = () => {
@@ -100,15 +129,15 @@ const SearchFilter = ({ onApplyFilters }: SearchFilterProps) => {
 
   const clearAllFilters = () => {
     setPriceRange(DEFAULT_PRICE_RANGE);
-    setSelectedRouteId(undefined);
-    setSelectedOperatorId(undefined);
+    setRouteInput("");
+    setOperatorInput("");
     setSelectedBusTypeIds([]);
     setSelectedDate(undefined);
     setAmenities({
       wifi: false,
-      // ac: false,
-      // entertainment: false,
-      // charging: false,
+      water: false,
+      charger: false,
+      "air conditioner": false,
     });
     setDurationFilter("any");
   };
@@ -175,43 +204,98 @@ const SearchFilter = ({ onApplyFilters }: SearchFilterProps) => {
         </SheetHeader>
 
         <div className="grid flex-1 gap-6 py-6">
-          {/* Route Select */}
-          <div className="grid gap-3">
-            <Label>Route</Label>
-            <Select value={selectedRouteId} onValueChange={setSelectedRouteId}>
-              <SelectTrigger>
-                <SelectValue placeholder="Select a route" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="any">Any</SelectItem>
-                {routes.map((route) => (
-                  <SelectItem key={route.id} value={route.id.toString()}>
-                    {route.name}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
+          {/* Route Autocomplete Input */}
+          <div className="grid gap-3 relative">
+            <Label htmlFor="route">Route</Label>
+            <input
+              type="text"
+              placeholder="Search route..."
+              value={routeInput}
+              id="route"
+              onChange={(e) => {
+                setRouteInput(e.target.value);
+                setShowSuggestions(true);
+              }}
+              className="border border-gray-300 rounded px-3 py-2"
+            />
+            {showSuggestions && routeInput.trim() !== "" && (
+              <ul className="absolute top-full left-0 right-0 mt-1 bg-white border border-gray-300 rounded shadow z-10 max-h-40 overflow-y-auto">
+                {routes
+                  .filter((route) =>
+                    route.name
+                      .toLowerCase()
+                      .includes(debouncedRouteInput.toLowerCase())
+                  )
+                  .map((route) => (
+                    <li
+                      key={route.id}
+                      className="px-3 py-2 hover:bg-gray-100 cursor-pointer"
+                      onClick={() => {
+                        setSelectedRouteId(route.id.toString());
+                        setRouteInput(route.name);
+                        setShowSuggestions(false);
+                      }}
+                    >
+                      {route.name}
+                    </li>
+                  ))}
+                {routes.filter((route) =>
+                  route.name.toLowerCase().includes(routeInput.toLowerCase())
+                ).length === 0 && (
+                  <li className="px-3 py-2 text-gray-400 italic">
+                    No match found
+                  </li>
+                )}
+              </ul>
+            )}
           </div>
 
-          {/* Operator Select */}
-          <div className="grid gap-3">
-            <Label>Bus Operator</Label>
-            <Select
-              value={selectedOperatorId}
-              onValueChange={setSelectedOperatorId}
-            >
-              <SelectTrigger>
-                <SelectValue placeholder="Select operator" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="any">Any</SelectItem>
-                {operators.map((op) => (
-                  <SelectItem key={op.id} value={op.id.toString()}>
-                    {op.name}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
+          {/* Operator Autocomplete Input */}
+          <div className="grid gap-3 relative">
+            <Label htmlFor="operator">Operator</Label>
+            <input
+              id="operator"
+              type="text"
+              placeholder="Search operator..."
+              value={operatorInput}
+              onChange={(e) => {
+                setOperatorInput(e.target.value);
+                setShowOperatorSuggestions(true);
+              }}
+              className="border border-gray-300 rounded px-3 py-2"
+            />
+            {showOperatorSuggestions && operatorInput.trim() !== "" && (
+              <ul className="absolute top-full left-0 right-0 mt-1 bg-white border border-gray-300 rounded shadow z-10 max-h-40 overflow-y-auto">
+                {operators
+                  .filter((operator) =>
+                    operator.name
+                      .toLowerCase()
+                      .includes(debouncedOperatorInput.toLowerCase())
+                  )
+                  .map((operator) => (
+                    <li
+                      key={operator.id}
+                      className="px-3 py-2 hover:bg-gray-100 cursor-pointer"
+                      onClick={() => {
+                        setSelectedOperatorId(operator.id.toString());
+                        setOperatorInput(operator.name);
+                        setShowOperatorSuggestions(false);
+                      }}
+                    >
+                      {operator.name}
+                    </li>
+                  ))}
+                {operators.filter((operator) =>
+                  operator.name
+                    .toLowerCase()
+                    .includes(operatorInput.toLowerCase())
+                ).length === 0 && (
+                  <li className="px-3 py-2 text-gray-400 italic">
+                    No match found
+                  </li>
+                )}
+              </ul>
+            )}
           </div>
 
           {/* Price Range */}
@@ -280,7 +364,7 @@ const SearchFilter = ({ onApplyFilters }: SearchFilterProps) => {
           {/* Amenities */}
           <div className="grid gap-3">
             <Label>Amenities</Label>
-            {["wifi"].map((key) => (
+            {["wifi", "water", "charger", "air conditioner"].map((key) => (
               <div key={key} className="flex items-center space-x-2">
                 <Checkbox
                   id={key}
