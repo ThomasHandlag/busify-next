@@ -27,6 +27,7 @@ import { getAllBusOperators, BusOperator } from "@/lib/data/bus_operator";
 import { getAllSeatLayouts, SeatLayout } from "@/lib/data/seat_layout";
 import { TripFilterQuery } from "@/lib/data/trip";
 import { BusifyRoute } from "@/lib/types/widget_proptype";
+import { se } from "date-fns/locale";
 
 type SearchFilterProps = {
   onApplyFilters: (filters: TripFilterQuery) => void;
@@ -132,7 +133,9 @@ const SearchFilter = ({ onApplyFilters }: SearchFilterProps) => {
   const clearAllFilters = () => {
     setPriceRange(DEFAULT_PRICE_RANGE);
     setRouteInput("");
+    setSelectedRouteId(undefined);
     setOperatorInput("");
+    setSelectedOperatorId(undefined);
     setSelectedBusTypeIds([]);
     setSelectedDate(undefined);
     setAmenities({
