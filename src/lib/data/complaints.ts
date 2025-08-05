@@ -13,7 +13,7 @@ const getComplaintsByOperator = async (
   operatorId: number
 ): Promise<Complaint[]> => {
   try {
-    const response = await api.get(`/complaints/bus-operator/${operatorId.toString()}`);
+    const response = await api.get(`api/complaints/bus-operator/${operatorId.toString()}`);
     return response.data.result.complaints;
   } catch (error) {
     return [];
@@ -22,7 +22,7 @@ const getComplaintsByOperator = async (
 
 const getComplaintsByTripId = async (tripId: number): Promise<Complaint[]> => {
   try {
-    const response = await api.get(`/complaints/trip/${tripId}`);
+    const response = await api.get(`api/complaints/trip/${tripId}`);
     return response.data.result.complaints;
   } catch (error) {
     return [];

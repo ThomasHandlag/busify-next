@@ -119,7 +119,7 @@ export default async function TripDetailPage({
             <TripOverviewCard tripDetail={tripDetail} />
             <div className="lg:hidden md:hidden block">{bookingBar}</div>
             <OperatorInfoCard id={tripDetail.operator.id} />
-            <ReviewModal />
+            <ReviewModal tripId={tripDetail.id} />
             <ReviewSection mockTripDetail={tripDetail} />
             <ComplaintSection tripId={tripDetail.id} />
           </div>
