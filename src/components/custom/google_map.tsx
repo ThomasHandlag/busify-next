@@ -58,9 +58,9 @@ const RoutingMachine = ({
     if (!map) return;
 
     const waypoints = [
-      L.latLng(startLocation.latitude, startLocation.longtitude),
-      ...routeStops.map((stop) => L.latLng(stop.latitude, stop.longtitude)),
-      L.latLng(endLocation.latitude, endLocation.longtitude),
+      L.latLng(startLocation.latitude, startLocation.longitude),
+      ...routeStops.map((stop) => L.latLng(stop.latitude, stop.longitude)),
+      L.latLng(endLocation.latitude, endLocation.longitude),
     ];
 
     const routingControl = L.Routing.control({
@@ -127,7 +127,7 @@ export default function RouteMap({
       <MapContainer
         center={[
           (startLocation.latitude + endLocation.latitude) / 2,
-          (startLocation.longtitude + endLocation.longtitude) / 2,
+          (startLocation.longitude + endLocation.longitude) / 2,
         ]}
         zoom={8}
         zoomControl={false}
@@ -142,7 +142,7 @@ export default function RouteMap({
 
         {/* Start Marker */}
         <Marker
-          position={[startLocation.latitude, startLocation.longtitude]}
+          position={[startLocation.latitude, startLocation.longitude]}
           icon={startIcon}
         >
           <Popup>
@@ -158,7 +158,7 @@ export default function RouteMap({
         {routeStops.map((stop, index) => (
           <Marker
             key={index}
-            position={[stop.latitude, stop.longtitude]}
+            position={[stop.latitude, stop.longitude]}
             icon={stopIcon}
           >
             <Popup>
@@ -175,7 +175,7 @@ export default function RouteMap({
 
         {/* End Marker */}
         <Marker
-          position={[endLocation.latitude, endLocation.longtitude]}
+          position={[endLocation.latitude, endLocation.longitude]}
           icon={endIcon}
         >
           <Popup>

@@ -54,7 +54,7 @@ const generateSeats = ({
         // Find status from trip seats data if available
         const seatStatus =
           tripSeatsStatus?.seatsStatus.find((s) => s.seatNumber === seatName)
-            ?.status || "available";
+            ?.status || "booked";
 
         seats.push({
           id: seatId,
@@ -94,7 +94,7 @@ export default async function TripDetailPage({
   // Generate seats with fallback handling
   const busSeats = generateSeats({
     busLayout,
-    pricePS: tripDetail.price_per_seat,
+    pricePS: tripDetail.pricePerSeat,
     tripSeatsStatus: tripSeatsData,
   });
   console.log("Generated bus seats:", busSeats.length);
@@ -103,7 +103,7 @@ export default async function TripDetailPage({
     <MobileBookingBar
       layout={busLayout}
       seats={busSeats}
-      pricePerSeat={tripDetail.price_per_seat}
+      pricePerSeat={tripDetail.pricePerSeat}
       busType={tripDetail.bus.name}
       operatorName={tripDetail.operator.name}
     />

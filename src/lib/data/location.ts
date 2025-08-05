@@ -3,6 +3,6 @@ export interface Location {
   city: string;
   latitude: number;
   name: string;
-  longtitude: number;
+  longitude: number;
   time_offset_from_start: number | null;
 }

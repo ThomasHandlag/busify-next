@@ -3,22 +3,26 @@ import api from "./axios-instance";
 import { Location } from "./location";
 
 export interface TripDetail {
+  id: number;
   departureTime: string;
+  arrivalTime: string;
+  availableSeats: number;
+  averageRating: number;
+  totalReviews: number;
   bus: {
     id: number;
     licensePlate: string;
     name: string;
-    seats: number;
+    totalSeats: number;
     amenities: string[];
   };
-  price_per_seat: number;
+  pricePerSeat: number;
   route: {
     id: number;
     startLocation: Location;
-    estimatedDuration: number;
+    estimatedDuration: string;
     endLocation: Location;
   };
-  id: number;
   operator: {
     name: string;
     id: number;

@@ -72,7 +72,7 @@ const TripOverviewCard = ({
             <Navigation className="w-4 h-4 text-gray-400" />
             <div>
               <p className="text-sm font-medium">
-                {tripDetail.route.estimatedDuration / 60} giờ
+                {tripDetail.route.estimatedDuration}
               </p>
               <p className="text-xs text-gray-500">Thời gian di chuyển</p>
             </div>
@@ -88,7 +88,7 @@ const TripOverviewCard = ({
             <Users className="w-4 h-4 text-gray-400" />
             <div>
               <p className="text-sm font-medium">
-                {12}/{tripDetail.bus.seats}
+                {tripDetail.availableSeats}/{tripDetail.bus.totalSeats}
               </p>
               <p className="text-xs text-gray-500">Ghế trống</p>
             </div>
