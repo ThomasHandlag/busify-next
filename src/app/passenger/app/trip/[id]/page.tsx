@@ -1,4 +1,3 @@
-
 "use client";
 
 import { useState, useEffect, use } from "react"; // Import 'use' hook from React
@@ -170,7 +169,11 @@ interface SeatLayoutResponse {
 }
 
 // Update the type definition for params to expect a Promise
-export default function TripDetailPage({ params }: { params: Promise<{ id: string }> }) {
+export default function TripDetailPage({
+  params,
+}: {
+  params: Promise<{ id: string }>;
+}) {
   const [selectedSeats, setSelectedSeats] = useState<string[]>([]);
   const [totalPrice, setTotalPrice] = useState(0);
   const [isFavorite, setIsFavorite] = useState(mockTripDetail.is_favorite);
@@ -192,7 +195,9 @@ export default function TripDetailPage({ params }: { params: Promise<{ id: strin
       setLoadingSeats(true);
       setErrorSeats(null);
       try {
-        const response = await fetch(`http://localhost:8080/api/trip-seats/${tripId}`);
+        const response = await fetch(
+          `http://localhost:8080/api/trip-seats/${tripId}`
+        );
         if (!response.ok) {
           throw new Error(`HTTP error! status: ${response.status}`);
         }
@@ -233,7 +238,11 @@ export default function TripDetailPage({ params }: { params: Promise<{ id: strin
 
   // Determine current layout based on fetched data or fallback
   const currentLayout = seatLayout
-    ? { rows: seatLayout.rows, columns: seatLayout.columns, floors: seatLayout.floors }
+    ? {
+        rows: seatLayout.rows,
+        columns: seatLayout.columns,
+        floors: seatLayout.floors,
+      }
     : { rows: 0, columns: 0, floors: 0 }; // Default to 0 if not loaded yet
 
   return (
@@ -285,6 +294,7 @@ export default function TripDetailPage({ params }: { params: Promise<{ id: strin
               )}
               {seatLayout && (
                 <SeatSelectionCard
+                tripId={tripId}
                   seats={seatLayout.seats}
                   layout={currentLayout}
                   pricePerSeat={mockTripDetail.price_per_seat}
@@ -320,12 +330,11 @@ export default function TripDetailPage({ params }: { params: Promise<{ id: strin
           </div>
         )}
         {errorSeats && (
-          <div className="p-4 text-center text-red-500">
-            Lỗi: {errorSeats}
-          </div>
+          <div className="p-4 text-center text-red-500">Lỗi: {errorSeats}</div>
         )}
         {seatLayout && (
           <SeatSelectionCard
+          tripId={tripId}
             seats={seatLayout.seats}
             layout={currentLayout}
             pricePerSeat={mockTripDetail.price_per_seat}
@@ -338,5 +347,3 @@ export default function TripDetailPage({ params }: { params: Promise<{ id: strin
     </div>
   );
 }
-
-
