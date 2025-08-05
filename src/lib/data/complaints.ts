@@ -1,5 +1,13 @@
-import { Complaint } from "../types/widget_proptype";
 import api from "./axios-instance";
+
+export interface Complaint {
+  id: number;
+  title: string;
+  description: string;
+  customerName: string;
+  createdAt: string;
+}
+
 
 const getComplaintsByOperator = async (
   operatorId: number

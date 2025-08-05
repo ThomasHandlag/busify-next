@@ -12,6 +12,7 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
+import { ControllerRenderProps } from "react-hook-form";
 interface DatePickerProps {
   onDateChange?: (date: Date | undefined) => void;
   onDateSelect?: (date: Date | undefined) => void;
@@ -42,59 +43,56 @@ function isValidDate(date: Date | undefined) {
 }
 
 const Calendar28 = ({
-  onDateChange,
-  onCalendarOpen,
-  onCalendarClose,
-  label = "Subscription Date",
-  placeholder = "Select day",
-  initialDate = undefined,
-}: DatePickerProps) => {
+  picker,
+  field,
+}: {
+  picker?: DatePickerProps;
+  field: ControllerRenderProps;
+}) => {
   const [open, setOpen] = React.useState(false);
-  const [date, setDate] = React.useState<Date | undefined>(initialDate);
-  const [month, setMonth] = React.useState<Date | undefined>(initialDate);
-  const [value, setValue] = React.useState(formatDate(initialDate));
+  const [date, setDate] = React.useState<Date | undefined>(picker?.initialDate);
+  const [month, setMonth] = React.useState<Date | undefined>(
+    picker?.initialDate
+  );
 
   React.useEffect(() => {
-    if (initialDate) {
-      setDate(initialDate);
-      setMonth(initialDate);
-      setValue(formatDate(initialDate));
+    if (picker?.initialDate) {
+      setDate(picker.initialDate);
+      setMonth(picker.initialDate);
     }
-  }, [initialDate]);
+  }, [picker?.initialDate]);
 
   // Handle opening/closing calendar with events
   const handleOpenChange = (isOpen: boolean) => {
     setOpen(isOpen);
     if (isOpen) {
-      onCalendarOpen?.();
+      picker?.onCalendarOpen?.();
     } else {
-      onCalendarClose?.();
+      picker?.onCalendarClose?.();
     }
   };
 
   // Handle input change with validation and events
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const inputValue = e.target.value;
-    setValue(inputValue);
-
     const parsedDate = new Date(inputValue);
     if (isValidDate(parsedDate)) {
       setDate(parsedDate);
       setMonth(parsedDate);
-      onDateChange?.(parsedDate);
+      picker?.onDateChange?.(parsedDate);
     }
   };
 
   return (
     <div className="flex flex-col gap-3">
       <Label htmlFor="date" className="px-1">
-        {label}
+        {picker?.label}
       </Label>
       <div className="relative flex gap-2">
         <Input
           id="date"
-          value={value}
-          placeholder={placeholder}
+          {...field}
+          placeholder={picker?.placeholder}
           className="bg-background pr-10"
           onChange={handleInputChange}
           onKeyDown={(e) => {
@@ -137,9 +135,9 @@ const Calendar28 = ({
               onMonthChange={setMonth}
               onSelect={(date) => {
                 setDate(date);
-                setValue(formatDate(date));
                 setOpen(false);
-                onDateChange?.(date);
+                picker?.onDateChange?.(date);
+                field.onChange(formatDate(date));
               }}
             />
           </PopoverContent>

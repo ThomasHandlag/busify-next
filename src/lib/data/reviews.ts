@@ -1,5 +1,12 @@
-import { Review } from "../types/widget_proptype";
 import api from "./axios-instance";
+
+export interface Review {
+  reviewId: number;
+  customerName: string;
+  rating: number;
+  comment: string;
+  createdAt: string;
+}
 
 const getReviewsByOperatorId = async (
   operatorId: number

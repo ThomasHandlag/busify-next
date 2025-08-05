@@ -7,6 +7,7 @@ import "leaflet/dist/leaflet.css";
 import "leaflet-routing-machine"; // Import plugin
 import "leaflet-routing-machine/dist/leaflet-routing-machine.css";
 import { useMap } from "react-leaflet";
+import { Location } from "@/lib/data/location";
 
 // Ghi chú: Sửa lỗi icon mặc định, nên đặt ở một file khởi tạo hoặc đầu component
 // Đoạn này vẫn hữu ích nếu bạn dùng marker mặc định ở đâu đó.
@@ -36,12 +37,7 @@ const Popup = dynamic(() => import("react-leaflet").then((mod) => mod.Popup), {
 });
 
 // Định nghĩa interface rõ ràng
-interface Location {
-  latitude: number;
-  longitude: number;
-  address: string;
-  city: string;
-}
+
 
 interface RouteMapProps {
   startLocation: Location;
@@ -62,9 +58,9 @@ const RoutingMachine = ({
     if (!map) return;
 
     const waypoints = [
-      L.latLng(startLocation.latitude, startLocation.longitude),
-      ...routeStops.map((stop) => L.latLng(stop.latitude, stop.longitude)),
-      L.latLng(endLocation.latitude, endLocation.longitude),
+      L.latLng(startLocation.latitude, startLocation.longtitude),
+      ...routeStops.map((stop) => L.latLng(stop.latitude, stop.longtitude)),
+      L.latLng(endLocation.latitude, endLocation.longtitude),
     ];
 
     const routingControl = L.Routing.control({
@@ -131,7 +127,7 @@ export default function RouteMap({
       <MapContainer
         center={[
           (startLocation.latitude + endLocation.latitude) / 2,
-          (startLocation.longitude + endLocation.longitude) / 2,
+          (startLocation.longtitude + endLocation.longtitude) / 2,
         ]}
         zoom={8}
         zoomControl={false}
@@ -146,7 +142,7 @@ export default function RouteMap({
 
         {/* Start Marker */}
         <Marker
-          position={[startLocation.latitude, startLocation.longitude]}
+          position={[startLocation.latitude, startLocation.longtitude]}
           icon={startIcon}
         >
           <Popup>
@@ -162,7 +158,7 @@ export default function RouteMap({
         {routeStops.map((stop, index) => (
           <Marker
             key={index}
-            position={[stop.latitude, stop.longitude]}
+            position={[stop.latitude, stop.longtitude]}
             icon={stopIcon}
           >
             <Popup>
@@ -179,7 +175,7 @@ export default function RouteMap({
 
         {/* End Marker */}
         <Marker
-          position={[endLocation.latitude, endLocation.longitude]}
+          position={[endLocation.latitude, endLocation.longtitude]}
           icon={endIcon}
         >
           <Popup>

@@ -1,16 +1,54 @@
 import { TripItemProps } from "@/app/passenger/page";
 import api from "./axios-instance";
+import { Location } from "./location";
+
+export interface TripDetail {
+  departureTime: string;
+  bus: {
+    id: number;
+    licensePlate: string;
+    name: string;
+    seats: number;
+    amenities: string[];
+  };
+  price_per_seat: number;
+  route: {
+    id: number;
+    startLocation: Location;
+    estimatedDuration: number;
+    endLocation: Location;
+  };
+  id: number;
+  operator: {
+    name: string;
+    id: number;
+  };
+  route_stop: Location[];
+}
+
+export interface Trip {
+  trip_id: number;
+  operator_name: string;
+  route: {
+    start_location: string;
+    end_location: string;
+  };
+  departure_time: string;
+  arrival_time: string;
+  available_seats: number;
+  average_rating: number;
+  price_per_seat: number;
+  duration: string;
+}
 
 export interface TripFilterQuery {
+  routeId?: string;
+  busOperatorIds?: string[];
   departureDate?: string;
-  departureTime?: string;
-  arrivalDate?: string;
-  arrivalTime?: string;
-  fromLocation?: string;
-  toLocation?: string;
-  busOperatorId?: number;
-  minPrice?: number;
-  maxPrice?: number;
+  busModel?: string[];
+  untilTime?: string;
+  availableSeats?: number;
+  amenities?: string[];
 }
 
 export async function getUpcomingTrips(): Promise<TripItemProps[]> {
@@ -23,7 +61,9 @@ export async function getUpcomingTrips(): Promise<TripItemProps[]> {
   }
 }
 
-export async function filterTrips(filters: TripFilterQuery): Promise<TripItemProps[]> {
+export async function filterTrips(
+  filters: TripFilterQuery
+): Promise<TripItemProps[]> {
   try {
     const res = await api.post("api/trips/filter", filters);
     console.log("Calling API with filters:", filters);
@@ -34,3 +74,48 @@ export async function filterTrips(filters: TripFilterQuery): Promise<TripItemPro
   }
 }
 
+export async function filterTripsClient(
+  filters: TripFilterQuery
+): Promise<TripItemProps[]> {
+  try {
+    const res = await fetch("/api/filter", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(filters),
+    });
+
+    if (!res.ok) {
+      throw new Error("Failed to filter trips");
+    }
+
+    const data = await res.json();
+    return data.result as TripItemProps[];
+  } catch (error) {
+    console.error("Error filtering trips client:", error);
+    return [];
+  }
+}
+
+export async function getTripDetail(tripId: number): Promise<TripDetail> {
+  try {
+    const res = await api.get(`api/trips/${tripId}`);
+    return res.data.result as TripDetail;
+  } catch (error) {
+    console.error("Error fetching trip detail:", error);
+    throw error;
+  }
+}
+
+export async function getSimilarTrips(
+  routeId: number
+): Promise<TripItemProps[]> {
+  try {
+    const res = await api.get(`api/trips/similar?routeId=${routeId}`);
+    return res.data.result as TripItemProps[];
+  } catch (error) {
+    console.error("Error fetching similar trips:", error);
+    throw error;
+  }
+}
