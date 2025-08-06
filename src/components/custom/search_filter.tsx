@@ -186,11 +186,16 @@ const SearchFilter = ({ onApplyFilters }: SearchFilterProps) => {
               </SelectTrigger>
               <SelectContent>
                 <SelectItem value="any">Any</SelectItem>
-                {routes.map((route) => (
-                  <SelectItem key={route.routeId} value={route.routeId.toString()}>
-                    {route.routeName}
-                  </SelectItem>
-                ))}
+                {routes
+                  .filter((route) => route && route.routeId != null)
+                  .map((route) => (
+                    <SelectItem
+                      key={route.routeId}
+                      value={route.routeId.toString()}
+                    >
+                      {route.routeName}
+                    </SelectItem>
+                  ))}
               </SelectContent>
             </Select>
           </div>
@@ -207,11 +212,13 @@ const SearchFilter = ({ onApplyFilters }: SearchFilterProps) => {
               </SelectTrigger>
               <SelectContent>
                 <SelectItem value="any">Any</SelectItem>
-                {operators.map((op) => (
-                  <SelectItem key={op.id} value={op.id.toString()}>
-                    {op.name}
-                  </SelectItem>
-                ))}
+                {operators
+                  .filter((op) => op && op.id != null)
+                  .map((op) => (
+                    <SelectItem key={op.id} value={op.id.toString()}>
+                      {op.name}
+                    </SelectItem>
+                  ))}
               </SelectContent>
             </Select>
           </div>
@@ -239,16 +246,22 @@ const SearchFilter = ({ onApplyFilters }: SearchFilterProps) => {
           <div className="grid gap-3">
             <Label>Bus Types</Label>
             <div className="space-y-2">
-              {seatLayouts.map((layout) => (
-                <div key={layout.id} className="flex items-center space-x-2">
-                  <Checkbox
-                    id={layout.id.toString()}
-                    checked={selectedBusTypeIds.includes(layout.id.toString())}
-                    onCheckedChange={() => toggleBusType(layout.id.toString())}
-                  />
-                  <Label htmlFor={layout.id.toString()}>{layout.name}</Label>
-                </div>
-              ))}
+              {seatLayouts
+                .filter((layout) => layout && layout.id != null)
+                .map((layout) => (
+                  <div key={layout.id} className="flex items-center space-x-2">
+                    <Checkbox
+                      id={layout.id.toString()}
+                      checked={selectedBusTypeIds.includes(
+                        layout.id.toString()
+                      )}
+                      onCheckedChange={() =>
+                        toggleBusType(layout.id.toString())
+                      }
+                    />
+                    <Label htmlFor={layout.id.toString()}>{layout.name}</Label>
+                  </div>
+                ))}
             </div>
           </div>
 

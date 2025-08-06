@@ -1,3 +1,5 @@
+"use client";
+
 import React from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "../ui/card";
 import {
@@ -11,8 +13,14 @@ import {
   Zap,
 } from "lucide-react";
 import { Separator } from "@radix-ui/react-separator";
-import RouteMap from "./google_map";
+import dynamic from "next/dynamic";
 import { Badge } from "../ui/badge";
+import { TripDetail } from "@/lib/types/widget_proptype";
+
+const RouteMap = dynamic(() => import("./google_map"), {
+  ssr: false,
+  loading: () => <div className="h-80 w-full bg-gray-200 animate-pulse" />,
+});
 
 export interface Location {
   address: string;
@@ -31,32 +39,10 @@ export interface BusProps {
   amenities: string[];
 }
 
-export interface TripDetailProps {
-  trip_id: number;
-  operator_name: string;
-  operator_logo: string;
-
-  route: {
-    start_location: Location;
-    end_location: Location;
-  };
-  route_stop?: RouteStop[];
-  departure_time: string;
-  arrival_time: string;
-  estimated_duration: string;
-  available_seats: number;
-  total_seats: number;
-  price_per_seat: number;
-  bus: BusProps;
-  average_rating: number;
-  total_reviews: number;
-  is_favorite: boolean;
-}
-
 const TripOverviewCard = ({
   mockTripDetail,
 }: {
-  mockTripDetail: TripDetailProps;
+  mockTripDetail: TripDetail;
 }) => {
   const formatTime = (dateString: string) => {
     const date = new Date(dateString);

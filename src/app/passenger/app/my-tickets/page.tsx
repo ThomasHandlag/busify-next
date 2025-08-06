@@ -104,7 +104,7 @@ export default function MyTicketsPage() {
 
   const handleViewDetails = async (booking: BookingData) => {
     const detailedBooking = await getMockBookingDetailResponse(
-      booking.booking_id
+      booking.booking_code
     );
     setSelectedBookingDetail(detailedBooking);
     setIsDetailSheetOpen(true);

@@ -40,6 +40,9 @@ export async function filterTrips(
 export async function getTripDetail(tripId: number): Promise<TripDetail> {
   try {
     const res = await api.get(`api/trips/${tripId}`);
+    if (!res.data.result.operator_logo) {
+      res.data.result.operator_logo = "/default_logo.png";
+    }
     return res.data.result as TripDetail;
   } catch (error) {
     console.error("Error fetching trip detail:", error);
@@ -70,6 +73,9 @@ export async function getSimilarTrips(
   try {
     const res = await api.get(`api/trips/similar?routeId=${tripId}`);
     const trips = res.data.result as Trip[];
+    if (!trips || trips.length === 0) {
+      return [];
+    }
     return trips.map(convertTripToTripItemProps);
   } catch (error) {
     console.error("Error fetching similar trips:", error);

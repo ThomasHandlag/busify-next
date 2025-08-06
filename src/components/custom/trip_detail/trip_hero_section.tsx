@@ -3,10 +3,10 @@
 import { Button } from "@/components/ui/button";
 import { ArrowRight, Heart } from "lucide-react";
 import { useState } from "react";
-import { TripDetailProps } from "../trip_overview_card";
+import { TripDetail } from "@/lib/types/widget_proptype";
 
 interface TripHeroSectionProps {
-  tripDetail: TripDetailProps;
+  tripDetail: TripDetail;
   isFavorite: boolean;
 }
 

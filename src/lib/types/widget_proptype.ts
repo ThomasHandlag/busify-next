@@ -70,24 +70,27 @@ interface RouteStop {
 
 interface TripDetail {
   trip_id: number;
+  departure_time: string;
+  arrival_time: string;
+  available_seats: number;
+  price_per_seat: number;
+  average_rating: number;
+  total_reviews: number;
+  total_seats: number;
+  estimated_duration: string;
   operator_name: string;
-  operator_logo: string;
+  bus: {
+    amenities: string[];
+    license_plate: string;
+    name: string;
+    layout_id: number;
+  };
   route: {
     route_id: number;
     start_location: Location;
     end_location: Location;
   };
   route_stop: RouteStop[];
-  departure_time: string;
-  arrival_time: string;
-  estimated_duration: string;
-  available_seats: number;
-  total_seats: number;
-  price_per_seat: number;
-  bus: Bus;
-  average_rating: number;
-  total_reviews: number;
-  is_favorite: boolean;
 }
 
 interface BookingData {

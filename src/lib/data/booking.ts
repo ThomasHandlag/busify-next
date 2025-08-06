@@ -193,9 +193,9 @@ export async function getBookingHistory(
 }
 
 export async function getBookingDetails(
-  bookingId: string
+  bookingCode: string
 ): Promise<BookingDetailResponse> {
-  const response = await api.get(`/api/bookings/${bookingId}`);
-  return response.data.result;
+  const response = await api.get(`/api/bookings/${bookingCode}`);
+  return response.data.result[0];
   // return mockBookingDetailResponse;
 }
