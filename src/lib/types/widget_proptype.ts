@@ -90,6 +90,94 @@ interface TripDetail {
   is_favorite: boolean;
 }
 
+interface BookingData {
+  booking_id: string;
+  booking_code: string;
+  route_name: string;
+  departure_address: string;
+  arrival_address: string;
+  departure_time: string;
+  arrival_time: string;
+  status:
+    | "confirmed"
+    | "pending"
+    | "completed"
+    | "canceled_by_operator"
+    | "canceled_by_user";
+  booking_date: string;
+  passenger_count: number;
+  payment_method: string;
+  total_amount: number;
+}
 
-export type { Review, BusifyRoute, Complaint, Trip, TripDetail, Location, Bus, Operator, RouteStop };
+interface BookingResponse {
+  result: BookingData[];
+  pageNumber: number;
+  pageSize: number;
+  totalRecords: number;
+  totalPages: number;
+  hasNext: boolean;
+  hasPrevious: boolean;
+}
 
+interface RouteLocation {
+  name: string;
+  address: string;
+  city: string;
+}
+
+interface BusInfo {
+  model: string;
+  license_plate: string;
+}
+
+interface TicketInfo {
+  seat_number: string;
+  ticket_code: string;
+}
+
+interface PaymentInfo {
+  amount: number;
+  method: string;
+  timestamp: string;
+}
+
+interface BookingDetailResponse {
+  passenger_name: string;
+  phone: string;
+  email: string;
+  booking_id: string;
+  route_start: RouteLocation;
+  route_end: RouteLocation;
+  operator_name: string;
+  departure_time: string;
+  arrival_estimate_time: string;
+  bus: BusInfo;
+  tickets: TicketInfo[];
+  status:
+    | "pending"
+    | "confirmed"
+    | "completed"
+    | "canceled_by_user"
+    | "canceled_by_operator";
+  payment_info: PaymentInfo;
+}
+
+export type {
+  Review,
+  BusifyRoute,
+  Complaint,
+  Trip,
+  TripDetail,
+  Location,
+  Bus,
+  Operator,
+  RouteStop,
+  BookingData,
+  BookingResponse,
+  RouteLocation,
+  BusInfo,
+  TicketInfo,
+  PaymentInfo,
+  BookingDetailResponse,
+};

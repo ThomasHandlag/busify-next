@@ -1,6 +1,6 @@
 import { TripItemProps } from "@/app/passenger/page";
 import api from "./axios-instance";
-import { Trip, TripDetail } from "../types/widget_proptype";
+import {Trip, TripDetail } from "../types/widget_proptype";
 
 export interface TripFilterQuery {
   departureDate?: string;
@@ -63,7 +63,6 @@ function convertTripToTripItemProps(trip: Trip): TripItemProps {
     average_rating: trip.average_rating || 0,
   };
 }
-
 
 export async function getSimilarTrips(
   tripId: number
