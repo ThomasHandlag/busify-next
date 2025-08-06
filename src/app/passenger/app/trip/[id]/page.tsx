@@ -89,7 +89,6 @@ export default async function TripDetailPage({
   const tripSeatsData = await getTripSeatById(Number(tripId));
 
   const busLayout = await getBusSeatsLayout(tripDetail.bus.id);
-  console.log("Retrieved bus layout:", busLayout);
 
   // Generate seats with fallback handling
   const busSeats = generateSeats({
@@ -97,7 +96,6 @@ export default async function TripDetailPage({
     pricePS: tripDetail.pricePerSeat,
     tripSeatsStatus: tripSeatsData,
   });
-  console.log("Generated bus seats:", busSeats.length);
 
   const bookingBar = (
     <MobileBookingBar

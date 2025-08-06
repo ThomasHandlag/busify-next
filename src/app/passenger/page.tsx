@@ -375,9 +375,6 @@ const Passenger = async () => {
           ) : (
             <div className="text-center py-8 text-gray-500">
               <p>No trips available at the moment.</p>
-              <p className="text-sm">
-                Please check back later or contact support.
-              </p>
             </div>
           )}
         </div>

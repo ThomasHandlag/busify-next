@@ -27,7 +27,7 @@ export interface TripDetail {
     name: string;
     id: number;
   };
-  route_stop: Location[];
+  routeStops: Location[];
 }
 
 export interface Trip {
@@ -105,6 +105,7 @@ export async function filterTripsClient(
 export async function getTripDetail(tripId: number): Promise<TripDetail> {
   try {
     const res = await api.get(`api/trips/${tripId}`);
+    console.log("Trip detail response:", res.data.result.routeStops);
     return res.data.result as TripDetail;
   } catch (error) {
     console.error("Error fetching trip detail:", error);
