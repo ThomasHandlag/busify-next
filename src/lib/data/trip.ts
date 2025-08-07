@@ -1,49 +1,6 @@
 import { TripItemProps } from "@/app/passenger/page";
 import api from "./axios-instance";
-import { Location } from "./location";
-
-export interface TripDetail {
-  id: number;
-  departureTime: string;
-  arrivalTime: string;
-  availableSeats: number;
-  averageRating: number;
-  totalReviews: number;
-  bus: {
-    id: number;
-    licensePlate: string;
-    name: string;
-    totalSeats: number;
-    amenities: string[];
-  };
-  pricePerSeat: number;
-  route: {
-    id: number;
-    startLocation: Location;
-    estimatedDuration: string;
-    endLocation: Location;
-  };
-  operator: {
-    name: string;
-    id: number;
-  };
-  route_stop: Location[];
-}
-
-export interface Trip {
-  trip_id: number;
-  operator_name: string;
-  route: {
-    start_location: string;
-    end_location: string;
-  };
-  departure_time: string;
-  arrival_time: string;
-  available_seats: number;
-  average_rating: number;
-  price_per_seat: number;
-  duration: string;
-}
+import { TripDetail } from "../types/widget_proptype";
 
 export interface TripFilterQuery {
   routeId?: string;
@@ -120,6 +77,6 @@ export async function getSimilarTrips(
     return res.data.result as TripItemProps[];
   } catch (error) {
     console.error("Error fetching similar trips:", error);
-    throw error;
+    return [];
   }
 }

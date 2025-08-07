@@ -1,6 +1,6 @@
 "use client";
 
-import { History, User } from "lucide-react";
+import { History, User, Ticket } from "lucide-react";
 import { Button } from "../ui/button";
 import SearchFilter from "./search_filter";
 import { useTripFilter } from "@/lib/contexts/TripFilterContext";
@@ -19,6 +19,10 @@ const BottomBar = () => {
         <Button variant="ghost">
           <History className="w-5 h-5 mr-2" />
           History
+        </Button>
+        <Button variant="ghost">
+          <Ticket className="w-5 h-5 mr-2" />
+          Tickets
         </Button>
       </div>
     </div>
