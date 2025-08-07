@@ -22,15 +22,14 @@ import {
 } from "@/components/ui/select";
 import Link from "next/link";
 import {
-  BookingData,
   BookingResponse,
   BookingDetailResponse,
-} from "@/lib/types/widget_proptype";
+  BookingData,
+} from "@/lib/data/booking";
 import { TicketCard } from "../../../../components/custom/my_tickets/ticket_card";
 import { getBookingDetails, getBookingHistory } from "@/lib/data/booking";
 import { BookingDetailSheet } from "@/components/custom/my_tickets/booking_detail_sheet";
 
-// Mock detailed booking data for the sheet
 const getMockBookingDetailResponse = async (
   booking: string
 ): Promise<BookingDetailResponse> => {

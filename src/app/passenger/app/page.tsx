@@ -2,6 +2,7 @@
 
 import TripItem from "@/components/custom/trip_item";
 import { useTripFilter } from "@/lib/contexts/TripFilterContext";
+import { Loader2 } from "lucide-react";
 
 const AppPage = () => {
   const { trips, isLoading } = useTripFilter();
@@ -9,7 +10,7 @@ const AppPage = () => {
   if (isLoading) {
     return (
       <div className="flex justify-center items-center p-8">
-        <div className="text-lg">Loading trips...</div>
+        <Loader2 className="animate-spin" />
       </div>
     );
   }
@@ -40,7 +41,6 @@ const AppPage = () => {
               available_seats: trip.available_seats || 20,
               average_rating: trip.average_rating,
               price_per_seat: trip.price_per_seat,
-              duration: trip.duration,
             }}
           />
         ))}

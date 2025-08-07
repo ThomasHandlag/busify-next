@@ -15,7 +15,7 @@ import {
 import { Separator } from "@radix-ui/react-separator";
 import dynamic from "next/dynamic";
 import { Badge } from "../ui/badge";
-import { TripDetail } from "@/lib/types/widget_proptype";
+import { TripDetail } from "@/lib/data/trip";
 
 const RouteMap = dynamic(() => import("./google_map"), {
   ssr: false,
@@ -75,7 +75,7 @@ const TripOverviewCard = ({
             <Navigation className="w-4 h-4 text-gray-400" />
             <div>
               <p className="text-sm font-medium">
-                {tripDetail.estimated_duration}
+                {tripDetail.route.estimated_duration}
               </p>
               <p className="text-xs text-gray-500">Thời gian di chuyển</p>
             </div>
@@ -91,7 +91,7 @@ const TripOverviewCard = ({
             <Users className="w-4 h-4 text-gray-400" />
             <div>
               <p className="text-sm font-medium">
-                {tripDetail.available_seats}/{tripDetail.total_seats}
+                {tripDetail.available_seats}/{tripDetail.bus.total_seats}
               </p>
               <p className="text-xs text-gray-500">Ghế trống</p>
             </div>
@@ -104,7 +104,7 @@ const TripOverviewCard = ({
           <RouteMap
             startLocation={tripDetail.route.start_location}
             endLocation={tripDetail.route.end_location}
-            routeStops={tripDetail.route_stop || []}
+            routeStops={tripDetail.route_stops || []}
             className="h-80 w-full rounded-lg"
           />
         </div>

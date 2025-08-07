@@ -15,7 +15,7 @@ import {
   CreditCard,
   Download,
 } from "lucide-react";
-import { BookingData } from "@/lib/types/widget_proptype";
+import { BookingData } from "@/lib/data/booking";
 
 const getStatusInfo = (status: BookingData["status"]) => {
   switch (status) {

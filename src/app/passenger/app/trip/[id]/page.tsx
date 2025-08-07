@@ -40,12 +40,6 @@ const generateSeats = ({
     return seats;
   }
 
-  console.log("Generating seats with layout:", {
-    rows: busLayout.rows,
-    cols: busLayout.cols,
-    floors: busLayout.floors,
-  });
-
   for (let floor = 1; floor <= busLayout.floors; floor++) {
     for (let row = 1; row <= busLayout.rows; row++) {
       for (let col = 0; col < busLayout.cols; col++) {
@@ -72,11 +66,6 @@ const generateSeats = ({
         });
       }
     }
-    console.log(`Total seats generated: ${seats.length}`);
-    console.log(
-      `Generated seats for floor ${floor}:`,
-      seats.filter((s) => s.floor === floor)
-    );
   }
 
   return seats;
@@ -94,7 +83,6 @@ export default async function TripDetailPage({
   const tripSeatsData = await getTripSeatById(Number(tripId));
 
   const busLayout = await getBusSeatsLayout(tripDetail.bus.bus_id);
-  console.log("Retrieved bus layout:", busLayout);
 
   // Generate seats with fallback handling
   const busSeats = generateSeats({
@@ -102,7 +90,6 @@ export default async function TripDetailPage({
     pricePS: tripDetail.price_per_seat,
     tripSeatsStatus: tripSeatsData,
   });
-  console.log("Generated bus seats:", busSeats.length);
 
   const bookingBar = (
     <MobileBookingBar

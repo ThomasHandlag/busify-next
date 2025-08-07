@@ -27,7 +27,7 @@ import {
   CheckCircle,
   XCircle,
 } from "lucide-react";
-import { BookingDetailResponse } from "@/lib/types/widget_proptype";
+import { BookingDetailResponse } from "@/lib/data/booking";
 import {
   formatDate,
   formatTime,

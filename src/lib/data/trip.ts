@@ -1,6 +1,47 @@
 import { TripItemProps } from "@/app/passenger/page";
 import api from "./axios-instance";
-import { TripDetail } from "../types/widget_proptype";
+import { Location } from "./location";
+
+export interface TripDetail {
+  trip_id: number;
+  departure_time: string;
+  arrival_time: string;
+  available_seats: number;
+  average_rating: number;
+  total_reviews: number;
+  bus: {
+    bus_id: number;
+    license_plate: string;
+    name: string;
+    total_seats: number;
+    amenities: string[];
+  };
+  price_per_seat: number;
+  route: {
+    route_id: number;
+    start_location: Location;
+    estimated_duration: string;
+    end_location: Location;
+  };
+  operator_name: string;
+  operator_id: number;
+  route_stops: Location[];
+}
+
+export interface Trip {
+  trip_id: number;
+  operator_name: string;
+  route: {
+    start_location: string;
+    end_location: string;
+  };
+  departure_time: string;
+  arrival_time: string;
+  available_seats: number;
+  average_rating: number;
+  price_per_seat: number;
+  duration: string;
+}
 
 export interface TripFilterQuery {
   routeId?: string;
@@ -62,6 +103,7 @@ export async function filterTripsClient(
 export async function getTripDetail(tripId: number): Promise<TripDetail> {
   try {
     const res = await api.get(`api/trips/${tripId}`);
+    console.log("Trip detail response:", res.data.result.routeStops);
     return res.data.result as TripDetail;
   } catch (error) {
     console.error("Error fetching trip detail:", error);
