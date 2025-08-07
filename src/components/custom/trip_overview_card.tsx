@@ -40,7 +40,7 @@ export interface BusProps {
 }
 
 const TripOverviewCard = ({
-  mockTripDetail,
+  tripDetail
 }: {
   mockTripDetail: TripDetail;
 }) => {
@@ -60,6 +60,7 @@ const TripOverviewCard = ({
       year: "numeric",
     });
   };
+
   return (
     <Card className="px-4 py-6">
       <CardHeader className="lg:px-6 md:px-6 px-0 sm:px-4">
@@ -74,10 +75,10 @@ const TripOverviewCard = ({
             <Clock className="w-4 h-4 text-gray-400" />
             <div>
               <p className="text-sm font-medium">
-                {formatTime(mockTripDetail.departure_time)}
+                {formatTime(tripDetail.departureTime)}
               </p>
               <p className="text-xs text-gray-500">
-                {formatDate(mockTripDetail.departure_time)}
+                {formatDate(tripDetail.departureTime)}
               </p>
             </div>
           </div>
@@ -85,7 +86,7 @@ const TripOverviewCard = ({
             <Navigation className="w-4 h-4 text-gray-400" />
             <div>
               <p className="text-sm font-medium">
-                {mockTripDetail.estimated_duration}
+                {tripDetail.route.estimatedDuration}
               </p>
               <p className="text-xs text-gray-500">Thời gian di chuyển</p>
             </div>
@@ -93,7 +94,7 @@ const TripOverviewCard = ({
           <div className="flex items-center space-x-2">
             <Bus className="w-4 h-4 text-gray-400" />
             <div>
-              <p className="text-sm font-medium">{mockTripDetail.bus.name}</p>
+              <p className="text-sm font-medium">{tripDetail.bus.name}</p>
               <p className="text-xs text-gray-500">Loại xe</p>
             </div>
           </div>
@@ -101,7 +102,7 @@ const TripOverviewCard = ({
             <Users className="w-4 h-4 text-gray-400" />
             <div>
               <p className="text-sm font-medium">
-                {mockTripDetail.available_seats}/{mockTripDetail.total_seats}
+                {tripDetail.availableSeats}/{tripDetail.bus.totalSeats}
               </p>
               <p className="text-xs text-gray-500">Ghế trống</p>
             </div>
@@ -112,9 +113,9 @@ const TripOverviewCard = ({
         <div className="mt-6">
           <h3 className="font-semibold mb-4">Bản đồ hành trình</h3>
           <RouteMap
-            startLocation={mockTripDetail.route.start_location}
-            endLocation={mockTripDetail.route.end_location}
-            routeStops={mockTripDetail.route_stop || []}
+            startLocation={tripDetail.route.startLocation}
+            endLocation={tripDetail.route.endLocation}
+            routeStops={tripDetail.route_stop || []}
             className="h-80 w-full rounded-lg"
           />
         </div>
@@ -128,10 +129,10 @@ const TripOverviewCard = ({
               <div>
                 <p className="font-medium">Điểm đón</p>
                 <p className="text-gray-600">
-                  {mockTripDetail.route.start_location.address}
+                  {tripDetail.route.startLocation.address}
                 </p>
                 <p className="text-sm text-gray-500">
-                  {mockTripDetail.route.start_location.city}
+                  {tripDetail.route.startLocation.city}
                 </p>
               </div>
             </div>
@@ -140,10 +141,10 @@ const TripOverviewCard = ({
               <div>
                 <p className="font-medium">Điểm trả</p>
                 <p className="text-gray-600">
-                  {mockTripDetail.route.end_location.address}
+                  {tripDetail.route.endLocation.address}
                 </p>
                 <p className="text-sm text-gray-500">
-                  {mockTripDetail.route.end_location.city}
+                  {tripDetail.route.endLocation.city}
                 </p>
               </div>
             </div>
@@ -154,7 +155,7 @@ const TripOverviewCard = ({
         <div className="mt-6">
           <h3 className="font-semibold mb-4">Tiện ích</h3>
           <div className="flex flex-wrap gap-2">
-            {mockTripDetail.bus.amenities.map((amenity, index) => (
+            {tripDetail.bus.amenities.map((amenity, index) => (
               <Badge key={index} variant="secondary">
                 {amenity === "Wi-fi" && <Wifi className="w-3 h-3 mr-1" />}
                 {amenity === "Nước uống" && (

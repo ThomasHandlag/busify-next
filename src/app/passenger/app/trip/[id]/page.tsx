@@ -104,27 +104,27 @@ export default async function TripDetailPage({
 
   const bookingBar = (
     <MobileBookingBar
-      layout={currentLayout}
-      seats={mockSeats}
-      pricePerSeat={mockTripDetail.price_per_seat}
-      busType={mockTripDetail.bus.name}
-      operatorName={mockTripDetail.operator_name}
+      layout={busLayout}
+      seats={busSeats}
+      pricePerSeat={tripDetail.pricePerSeat}
+      busType={tripDetail.bus.name}
+      operatorName={tripDetail.operator.name}
     />
   );
   return (
     <div className="min-h-screen bg-gray-50">
-      <TripHeroSection isFavorite={false} tripDetail={mockTripDetail} />
+      <TripHeroSection isFavorite={false} tripDetail={tripDetail} />
 
       <div className="container mx-auto lg:px-4 lg:py-4 md:px-4 md:py-4">
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
           {/* Left Column */}
           <div className="lg:col-span-2 space-y-6">
-            <TripOverviewCard mockTripDetail={mockTripDetail} />
+            <TripOverviewCard tripDetail={tripDetail} />
             <div className="lg:hidden md:hidden block">{bookingBar}</div>
-            <OperatorInfoCard tripDetail={mockTripDetail} />
-            <ReviewModal />
-            <ReviewSection mockTripDetail={mockTripDetail} />
-            <ComplaintSection tripId={mockTripDetail.trip_id} />
+            <OperatorInfoCard id={tripDetail.operator.id} />
+            <ReviewModal tripId={tripDetail.id} />
+            <ReviewSection mockTripDetail={tripDetail} />
+            <ComplaintSection tripId={tripDetail.id} />
           </div>
 
           {/* Right Column - Desktop Booking */}
@@ -145,7 +145,7 @@ export default async function TripDetailPage({
           </div>
         </div>
       </div>
-      <SimilarTripsSection trips={mockSimilarTrips} />
+      <SimilarTripsSection routeId={tripDetail.route.id} />
     </div>
   );
 }

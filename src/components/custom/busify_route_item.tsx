@@ -1,4 +1,4 @@
-import {BusifyRoute} from "@/lib/types/widget_proptype";
+import {BusifyRoute} from "@/lib/data/route_api";
 import {
   Card,
   CardContent,

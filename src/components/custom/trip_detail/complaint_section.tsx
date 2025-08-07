@@ -1,6 +1,5 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { getComplaintsByTripId } from "@/lib/data/complaints";
-import { Complaint } from "@/lib/types/widget_proptype";
+import { Complaint, getComplaintsByTripId } from "@/lib/data/complaints";
 import { MessageSquareWarning, User } from "lucide-react";
 
 export default async function ComplaintSection({ tripId }: { tripId: number }) {

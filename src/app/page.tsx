@@ -39,7 +39,7 @@ import {
 } from "lucide-react";
 import FadeinWrapper from "@/components/custom/fadein_wrapper";
 import { getPopularRoutes } from "@/lib/data/route_api";
-import { BusifyRoute } from "@/lib/types/widget_proptype";
+import { BusifyRoute } from "@/lib/data/route_api";
 
 const Home = async () => {
   const popularRoutes = await getPopularRoutes();

@@ -3,15 +3,13 @@ import api from "./axios-instance";
 import {Trip, TripDetail } from "../types/widget_proptype";
 
 export interface TripFilterQuery {
+  routeId?: string;
+  busOperatorIds?: string[];
   departureDate?: string;
-  departureTime?: string;
-  arrivalDate?: string;
-  arrivalTime?: string;
-  fromLocation?: string;
-  toLocation?: string;
-  busOperatorId?: number;
-  minPrice?: number;
-  maxPrice?: number;
+  busModel?: string[];
+  untilTime?: string;
+  availableSeats?: number;
+  amenities?: string[];
 }
 
 export async function getUpcomingTrips(): Promise<TripItemProps[]> {
@@ -25,7 +23,9 @@ export async function getUpcomingTrips(): Promise<TripItemProps[]> {
 }
 
 export async function filterTrips(
+  
   filters: TripFilterQuery
+
 ): Promise<TripItemProps[]> {
   try {
     const res = await api.post("api/trips/filter", filters);
