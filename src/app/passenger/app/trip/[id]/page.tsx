@@ -9,21 +9,77 @@ import { MobileBookingBar } from "@/components/custom/trip_detail/mobile_booking
 import { SimilarTripsSection } from "@/components/custom/trip_detail/similar_trip_section";
 import { ReviewModal } from "@/components/custom/trip_detail/review_modal";
 import ComplaintSection from "@/components/custom/trip_detail/complaint_section";
-import { TripItemProps } from "@/app/passenger/page";
-import { getSimilarTrips, getTripDetail } from "@/lib/data/trip";
+import { getTripDetail } from "@/lib/data/trip";
+import { getTripSeatById, Seat, TripSeatsStatus } from "@/lib/data/trip_seats";
+import { BusLayout, getBusSeatsLayout } from "@/lib/data/bus";
 
-// Bus layouts configuration by ID
-const busLayouts = {
-  1: { rows: 10, columns: 4, floors: 2 },
-  2: { rows: 15, columns: 3, floors: 1 },
-  3: { rows: 3, columns: 3, floors: 1 },
-  4: { rows: 9, columns: 4, floors: 2 },
-  5: { rows: 10, columns: 3, floors: 1 },
-  6: { rows: 4, columns: 3, floors: 1 },
-  7: { rows: 6, columns: 2, floors: 2 },
-  8: { rows: 4, columns: 4, floors: 1 },
-  9: { rows: 5, columns: 4, floors: 2 },
-  10: { rows: 6, columns: 3, floors: 1 },
+const generateSeats = ({
+  busLayout,
+  pricePS,
+  tripSeatsStatus,
+}: {
+  busLayout: BusLayout | null;
+  pricePS: number;
+  tripSeatsStatus: TripSeatsStatus | null;
+}) => {
+  const seats: Seat[] = [];
+
+  // Return empty array if layout is null or invalid
+  if (!busLayout || (!busLayout.rows && !busLayout.cols && !busLayout.floors)) {
+    console.log("Bus layout is null or invalid:", busLayout);
+    return seats;
+  }
+
+  // Additional validation to prevent infinite loops
+  if (busLayout.rows <= 0 || busLayout.cols <= 0 || busLayout.floors <= 0) {
+    console.log("Bus layout has invalid dimensions:", {
+      rows: busLayout.rows,
+      cols: busLayout.cols,
+      floors: busLayout.floors,
+    });
+    return seats;
+  }
+
+  console.log("Generating seats with layout:", {
+    rows: busLayout.rows,
+    cols: busLayout.cols,
+    floors: busLayout.floors,
+  });
+
+  for (let floor = 1; floor <= busLayout.floors; floor++) {
+    for (let row = 1; row <= busLayout.rows; row++) {
+      for (let col = 0; col < busLayout.cols; col++) {
+        const seatId =
+          (floor - 1) * busLayout.rows * busLayout.cols +
+          (row - 1) * busLayout.cols +
+          col +
+          1;
+        const seatName = `${String.fromCharCode(65 + col)}.${row}.${floor}`;
+
+        // Find status from trip seats data if available
+        const seatStatus =
+          tripSeatsStatus?.seatsStatus.find((s) => s.seatNumber === seatName)
+            ?.status || "booked";
+
+        seats.push({
+          id: seatId,
+          seat_number: seatName,
+          status: seatStatus,
+          price: pricePS,
+          row: row - 1,
+          column: col,
+          floor,
+        });
+      }
+    }
+    console.log(`Total seats generated: ${seats.length}`);
+    console.log(
+      `Generated seats for floor ${floor}:`,
+      seats.filter((s) => s.floor === floor)
+    );
+  }
+
+  return seats;
 };
 
 export default async function TripDetailPage({
@@ -31,84 +87,30 @@ export default async function TripDetailPage({
 }: {
   params: Promise<{ id: string }>;
 }) {
-  // Mock data for trip detail
-  const mockTripDetail = await getTripDetail(
-    parseInt((await params).id)
-  );
+  const tripId = (await params).id;
 
-  // Generate seats based on layout ID
-  const generateMockSeats = (layoutId: number, totalSeats: number) => {
-    const layout = busLayouts[layoutId as keyof typeof busLayouts];
-    if (!layout) {
-      // Fallback layout if ID not found
-      return Array.from({ length: totalSeats }, (_, i) => ({
-        id: i + 1,
-        seat_number: `${String.fromCharCode(65 + Math.floor(i / 4))}.${
-          (i % 4) + 1
-        }.1`,
-        status: i < 15 ? "booked" : "available",
-        price: 350000,
-        row: Math.floor(i / 4),
-        column: i % 4,
-        floor: 1,
-      }));
-    }
+  const tripDetail = await getTripDetail(Number(tripId));
 
-    const seats = [];
-    const floors = layout.floors || 1;
-    let seatId = 1;
+  const tripSeatsData = await getTripSeatById(Number(tripId));
 
-    for (let floor = 1; floor <= floors; floor++) {
-      for (let row = 0; row < layout.rows; row++) {
-        for (let col = 0; col < layout.columns; col++) {
-          if (seatId > totalSeats) break;
+  const busLayout = await getBusSeatsLayout(tripDetail.bus.bus_id);
+  console.log("Retrieved bus layout:", busLayout);
 
-          const rowLetter = String.fromCharCode(65 + row);
-          const seatNumber = `${rowLetter}.${col + 1}.${floor}`;
-
-          seats.push({
-            id: seatId,
-            seat_number: seatNumber,
-            status: seatId <= 15 ? "booked" : "available", // First 15 seats are booked
-            price: 350000,
-            row,
-            column: col,
-            floor,
-          });
-
-          seatId++;
-        }
-        if (seatId > totalSeats) break;
-      }
-      if (seatId > totalSeats) break;
-    }
-
-    return seats;
-  };
-
-  // Generate mock seats and get current layout using layout_id
-  const mockSeats = generateMockSeats(
-    mockTripDetail.bus.layout_id,
-    mockTripDetail.total_seats
-  );
-  const currentLayout = busLayouts[
-    mockTripDetail.bus.layout_id as keyof typeof busLayouts
-  ] || {
-    rows: 8,
-    columns: 4,
-    floors: 1,
-  };
-  const mockSimilarTrips: TripItemProps[] = await getSimilarTrips(
-    mockTripDetail.route.route_id
-  );
+  // Generate seats with fallback handling
+  const busSeats = generateSeats({
+    busLayout,
+    pricePS: tripDetail.price_per_seat,
+    tripSeatsStatus: tripSeatsData,
+  });
+  console.log("Generated bus seats:", busSeats.length);
 
   const bookingBar = (
     <MobileBookingBar
       layout={busLayout}
       seats={busSeats}
-      pricePerSeat={tripDetail.pricePerSeat}
+      pricePerSeat={tripDetail.price_per_seat}
       busType={tripDetail.bus.name}
-      operatorName={tripDetail.operator.name}
+      operatorName={tripDetail.operator_name}
     />
   );
   return (
@@ -121,10 +123,10 @@ export default async function TripDetailPage({
           <div className="lg:col-span-2 space-y-6">
             <TripOverviewCard tripDetail={tripDetail} />
             <div className="lg:hidden md:hidden block">{bookingBar}</div>
-            <OperatorInfoCard id={tripDetail.operator.id} />
-            <ReviewModal tripId={tripDetail.id} />
+            <OperatorInfoCard id={tripDetail.operator_id} />
+            <ReviewModal tripId={tripDetail.trip_id} />
             <ReviewSection mockTripDetail={tripDetail} />
-            <ComplaintSection tripId={tripDetail.id} />
+            <ComplaintSection tripId={tripDetail.trip_id} />
           </div>
 
           {/* Right Column - Desktop Booking */}
@@ -145,7 +147,7 @@ export default async function TripDetailPage({
           </div>
         </div>
       </div>
-      <SimilarTripsSection routeId={tripDetail.route.id} />
+      <SimilarTripsSection routeId={tripDetail.route.route_id} />
     </div>
   );
 }

@@ -22,17 +22,6 @@ const RouteMap = dynamic(() => import("./google_map"), {
   loading: () => <div className="h-80 w-full bg-gray-200 animate-pulse" />,
 });
 
-export interface Location {
-  address: string;
-  latitude: number;
-  longitude: number;
-  city: string;
-}
-
-export interface RouteStop extends Location {
-  time_offset_from_start?: number;
-}
-
 export interface BusProps {
   name: string;
   license_plate: string;
@@ -42,7 +31,7 @@ export interface BusProps {
 const TripOverviewCard = ({
   tripDetail
 }: {
-  mockTripDetail: TripDetail;
+  tripDetail: TripDetail;
 }) => {
   const formatTime = (dateString: string) => {
     const date = new Date(dateString);
@@ -75,10 +64,10 @@ const TripOverviewCard = ({
             <Clock className="w-4 h-4 text-gray-400" />
             <div>
               <p className="text-sm font-medium">
-                {formatTime(tripDetail.departureTime)}
+                {formatTime(tripDetail.departure_time)}
               </p>
               <p className="text-xs text-gray-500">
-                {formatDate(tripDetail.departureTime)}
+                {formatDate(tripDetail.departure_time)}
               </p>
             </div>
           </div>
@@ -86,7 +75,7 @@ const TripOverviewCard = ({
             <Navigation className="w-4 h-4 text-gray-400" />
             <div>
               <p className="text-sm font-medium">
-                {tripDetail.route.estimatedDuration}
+                {tripDetail.estimated_duration}
               </p>
               <p className="text-xs text-gray-500">Thời gian di chuyển</p>
             </div>
@@ -102,7 +91,7 @@ const TripOverviewCard = ({
             <Users className="w-4 h-4 text-gray-400" />
             <div>
               <p className="text-sm font-medium">
-                {tripDetail.availableSeats}/{tripDetail.bus.totalSeats}
+                {tripDetail.available_seats}/{tripDetail.total_seats}
               </p>
               <p className="text-xs text-gray-500">Ghế trống</p>
             </div>
@@ -113,8 +102,8 @@ const TripOverviewCard = ({
         <div className="mt-6">
           <h3 className="font-semibold mb-4">Bản đồ hành trình</h3>
           <RouteMap
-            startLocation={tripDetail.route.startLocation}
-            endLocation={tripDetail.route.endLocation}
+            startLocation={tripDetail.route.start_location}
+            endLocation={tripDetail.route.end_location}
             routeStops={tripDetail.route_stop || []}
             className="h-80 w-full rounded-lg"
           />
@@ -129,10 +118,10 @@ const TripOverviewCard = ({
               <div>
                 <p className="font-medium">Điểm đón</p>
                 <p className="text-gray-600">
-                  {tripDetail.route.startLocation.address}
+                  {tripDetail.route.start_location.address}
                 </p>
                 <p className="text-sm text-gray-500">
-                  {tripDetail.route.startLocation.city}
+                  {tripDetail.route.start_location.city}
                 </p>
               </div>
             </div>
@@ -141,10 +130,10 @@ const TripOverviewCard = ({
               <div>
                 <p className="font-medium">Điểm trả</p>
                 <p className="text-gray-600">
-                  {tripDetail.route.endLocation.address}
+                  {tripDetail.route.end_location.address}
                 </p>
                 <p className="text-sm text-gray-500">
-                  {tripDetail.route.endLocation.city}
+                  {tripDetail.route.end_location.city}
                 </p>
               </div>
             </div>

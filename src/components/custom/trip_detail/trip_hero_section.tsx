@@ -1,13 +1,11 @@
 "use client";
 
 import { Button } from "@/components/ui/button";
-import { TripDetail } from "@/lib/data/trip";
 import { ArrowRight, Heart } from "lucide-react";
 import { useState } from "react";
 import { TripDetail } from "@/lib/types/widget_proptype";
 
 interface TripHeroSectionProps {
-  tripDetail: TripDetail;
   tripDetail: TripDetail;
   isFavorite: boolean;
 }
@@ -28,19 +26,19 @@ export function TripHeroSection({
         <div className="flex items-center space-x-3">
           <div className="text-center">
             <h2 className="text-lg font-semibold text-gray-900">
-              {tripDetail.route.startLocation.city}
+              {tripDetail.route.start_location.city}
             </h2>
             <p className="text-sm text-gray-500">
-              {tripDetail.route.startLocation.address}
+              {tripDetail.route.start_location.address}
             </p>
           </div>
           <ArrowRight className="w-6 h-6 text-green-600" />
           <div className="text-center">
             <h2 className="text-lg font-semibold text-gray-900">
-              {tripDetail.route.endLocation.city}
+              {tripDetail.route.end_location.city}
             </h2>
             <p className="text-sm text-gray-500">
-              {tripDetail.route.endLocation.address}
+              {tripDetail.route.end_location.address}
             </p>
           </div>
         </div>

@@ -79,7 +79,9 @@ interface TripDetail {
   total_seats: number;
   estimated_duration: string;
   operator_name: string;
+  operator_id: number;
   bus: {
+    bus_id: number;
     amenities: string[];
     license_plate: string;
     name: string;

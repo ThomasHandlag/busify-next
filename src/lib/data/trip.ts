@@ -1,6 +1,6 @@
 import { TripItemProps } from "@/app/passenger/page";
 import api from "./axios-instance";
-import {Trip, TripDetail } from "../types/widget_proptype";
+import { TripDetail } from "../types/widget_proptype";
 
 export interface TripFilterQuery {
   routeId?: string;
@@ -23,9 +23,7 @@ export async function getUpcomingTrips(): Promise<TripItemProps[]> {
 }
 
 export async function filterTrips(
-  
   filters: TripFilterQuery
-
 ): Promise<TripItemProps[]> {
   try {
     const res = await api.post("api/trips/filter", filters);
@@ -37,12 +35,33 @@ export async function filterTrips(
   }
 }
 
+export async function filterTripsClient(
+  filters: TripFilterQuery
+): Promise<TripItemProps[]> {
+  try {
+    const res = await fetch("/api/filter", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(filters),
+    });
+
+    if (!res.ok) {
+      throw new Error("Failed to filter trips");
+    }
+
+    const data = await res.json();
+    return data.result as TripItemProps[];
+  } catch (error) {
+    console.error("Error filtering trips client:", error);
+    return [];
+  }
+}
+
 export async function getTripDetail(tripId: number): Promise<TripDetail> {
   try {
     const res = await api.get(`api/trips/${tripId}`);
-    if (!res.data.result.operator_logo) {
-      res.data.result.operator_logo = "/default_logo.png";
-    }
     return res.data.result as TripDetail;
   } catch (error) {
     console.error("Error fetching trip detail:", error);
@@ -50,33 +69,12 @@ export async function getTripDetail(tripId: number): Promise<TripDetail> {
   }
 }
 
-function convertTripToTripItemProps(trip: Trip): TripItemProps {
-  return {
-    trip_id: trip.trip_id,
-    operator_name: trip.operator_name || "Unknown Operator",
-    route: {
-      start_location: trip.route?.start_location || "Unknown",
-      end_location: trip.route?.end_location || "Unknown",
-    },
-    departure_time: trip.departure_time || new Date().toISOString(),
-    arrival_time: trip.arrival_time || new Date().toISOString(),
-    duration: trip.duration || "0",
-    available_seats: trip.available_seats || 0,
-    price_per_seat: trip.price_per_seat || 0,
-    average_rating: trip.average_rating || 0,
-  };
-}
-
 export async function getSimilarTrips(
-  tripId: number
+  routeId: number
 ): Promise<TripItemProps[]> {
   try {
-    const res = await api.get(`api/trips/similar?routeId=${tripId}`);
-    const trips = res.data.result as Trip[];
-    if (!trips || trips.length === 0) {
-      return [];
-    }
-    return trips.map(convertTripToTripItemProps);
+    const res = await api.get(`api/trips/similar?routeId=${routeId}`);
+    return res.data.result as TripItemProps[];
   } catch (error) {
     console.error("Error fetching similar trips:", error);
     return [];
