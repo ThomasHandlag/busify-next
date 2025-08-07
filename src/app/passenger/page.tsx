@@ -367,8 +367,10 @@ const Passenger = async () => {
 
           {trips.length > 0 ? (
             <div className="grid md:grid-cols-2 lg:grid-cols-2 gap-6">
-              {trips.slice(0, 4).map((trip: TripItemProps, index: number) => (
-                <TripItem key={index} trip={trip} />
+              {trips.slice(0, 4).map((trip: TripItemProps) => (
+                <Link key={trip.trip_id} href={`/app/trip/${trip.trip_id}`}>
+                  <TripItem trip={trip} />
+                </Link>
               ))}
             </div>
           ) : (

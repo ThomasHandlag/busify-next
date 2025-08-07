@@ -3,31 +3,29 @@ import api from "./axios-instance";
 import { Location } from "./location";
 
 export interface TripDetail {
-  id: number;
-  departureTime: string;
-  arrivalTime: string;
-  availableSeats: number;
-  averageRating: number;
-  totalReviews: number;
+  trip_id: number;
+  departure_time: string;
+  arrival_time: string;
+  available_seats: number;
+  average_rating: number;
+  total_reviews: number;
   bus: {
-    id: number;
-    licensePlate: string;
+    bus_id: number;
+    license_plate: string;
     name: string;
-    totalSeats: number;
+    total_seats: number;
     amenities: string[];
   };
-  pricePerSeat: number;
+  price_per_seat: number;
   route: {
-    id: number;
-    startLocation: Location;
-    estimatedDuration: string;
-    endLocation: Location;
+    route_id: number;
+    start_location: Location;
+    estimated_duration: string;
+    end_location: Location;
   };
-  operator: {
-    name: string;
-    id: number;
-  };
-  routeStops: Location[];
+  operator_name: string;
+  operator_id: number;
+  route_stops: Location[];
 }
 
 export interface Trip {
@@ -121,6 +119,6 @@ export async function getSimilarTrips(
     return res.data.result as TripItemProps[];
   } catch (error) {
     console.error("Error fetching similar trips:", error);
-    throw error;
+    return [];
   }
 }
