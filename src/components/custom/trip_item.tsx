@@ -8,7 +8,6 @@ import { TripItemProps } from "@/app/passenger/page";
 import Link from "next/link";
 
 const TripItem = ({ trip }: { trip: TripItemProps }) => {
-  console.log("Rendering trip:", trip);
 
   const getAvailabilityColor = (seats: number) => {
     if (seats <= 5) return "bg-red-100 text-red-700";
@@ -22,18 +21,25 @@ const TripItem = ({ trip }: { trip: TripItemProps }) => {
     return "Available";
   };
 
-  const departure_time = format(new Date(trip.departure_time), "HH:mm");
-  const arrival_time = format(new Date(trip.arrival_time), "HH:mm");
+  // Parse ISO 8601 format dates properly
+  const departureDateObj = new Date(trip.departure_time);
+  const arrivalDateObj = new Date(trip.arrival_time);
+  
+  // Format the times
+  const departure_time = format(departureDateObj, "HH:MM");
+  const arrival_time = format(arrivalDateObj, "HH:MM");
+
+  // Calculate duration correctly
   const trip_duration_minutes = Math.abs(
-    (new Date(trip.arrival_time).getTime() -
-      new Date(trip.departure_time).getTime()) /
-      60000
+    (arrivalDateObj.getTime() - departureDateObj.getTime()) / 60000
   );
   const hours = Math.floor(trip_duration_minutes / 60);
-  const minutes = trip_duration_minutes % 60;
+  const minutes = Math.round(trip_duration_minutes % 60);
   const duration =
     minutes === 0 ? `${hours} giờ` : `${hours} giờ ${minutes} phút`;
-  const departureDate = format(new Date(trip.departure_time), "dd/MM/yyyy");
+  
+  // Format the dates
+  const departureDate = format(departureDateObj, "dd/MM/yyyy");
 
   return (
     <Card className="hover:shadow-lg transition-shadow duration-200 border-l-4 border-l-green-500">
@@ -47,7 +53,7 @@ const TripItem = ({ trip }: { trip: TripItemProps }) => {
           <Badge
             className={`${getAvailabilityColor(trip.available_seats)} border-0`}
           >
-            {getAvailabilityText(trip.available_seats)}
+            {getAvailabilityText(trip.available_seats)} left
           </Badge>
         </div>
       </CardHeader>

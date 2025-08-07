@@ -42,7 +42,6 @@ export interface TripItemProps {
   available_seats: number;
   average_rating: number;
   price_per_seat: number;
-  duration: string;
 }
 
 const Passenger = async () => {
@@ -368,16 +367,15 @@ const Passenger = async () => {
 
           {trips.length > 0 ? (
             <div className="grid md:grid-cols-2 lg:grid-cols-2 gap-6">
-              {trips.slice(0, 4).map((trip: TripItemProps, index: number) => (
-                <TripItem key={index} trip={trip} />
+              {trips.slice(0, 4).map((trip: TripItemProps) => (
+                <Link key={trip.trip_id} href={`/app/trip/${trip.trip_id}`}>
+                  <TripItem trip={trip} />
+                </Link>
               ))}
             </div>
           ) : (
             <div className="text-center py-8 text-gray-500">
               <p>No trips available at the moment.</p>
-              <p className="text-sm">
-                Please check back later or contact support.
-              </p>
             </div>
           )}
         </div>

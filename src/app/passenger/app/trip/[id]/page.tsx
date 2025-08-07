@@ -13,7 +13,6 @@ import { getTripDetail } from "@/lib/data/trip";
 import { getTripSeatById, Seat, TripSeatsStatus } from "@/lib/data/trip_seats";
 import { BusLayout, getBusSeatsLayout } from "@/lib/data/bus";
 
-
 const generateSeats = ({
   busLayout,
   pricePS,
@@ -33,13 +32,13 @@ const generateSeats = ({
 
   // Additional validation to prevent infinite loops
   if (busLayout.rows <= 0 || busLayout.cols <= 0 || busLayout.floors <= 0) {
-    console.log("Bus layout has invalid dimensions:", 
-      { rows: busLayout.rows, cols: busLayout.cols, floors: busLayout.floors });
+    console.log("Bus layout has invalid dimensions:", {
+      rows: busLayout.rows,
+      cols: busLayout.cols,
+      floors: busLayout.floors,
+    });
     return seats;
   }
-  
-  console.log("Generating seats with layout:", 
-    { rows: busLayout.rows, cols: busLayout.cols, floors: busLayout.floors });
 
   for (let floor = 1; floor <= busLayout.floors; floor++) {
     for (let row = 1; row <= busLayout.rows; row++) {
@@ -67,11 +66,6 @@ const generateSeats = ({
         });
       }
     }
-    console.log(`Total seats generated: ${seats.length}`);
-    console.log(
-      `Generated seats for floor ${floor}:`,
-      seats.filter((s) => s.floor === floor)
-    );
   }
 
   return seats;
@@ -88,24 +82,22 @@ export default async function TripDetailPage({
 
   const tripSeatsData = await getTripSeatById(Number(tripId));
 
-  const busLayout = await getBusSeatsLayout(tripDetail.bus.id);
-  console.log("Retrieved bus layout:", busLayout);
+  const busLayout = await getBusSeatsLayout(tripDetail.bus.bus_id);
 
   // Generate seats with fallback handling
   const busSeats = generateSeats({
     busLayout,
-    pricePS: tripDetail.pricePerSeat,
+    pricePS: tripDetail.price_per_seat,
     tripSeatsStatus: tripSeatsData,
   });
-  console.log("Generated bus seats:", busSeats.length);
 
   const bookingBar = (
     <MobileBookingBar
       layout={busLayout}
       seats={busSeats}
-      pricePerSeat={tripDetail.pricePerSeat}
+      pricePerSeat={tripDetail.price_per_seat}
       busType={tripDetail.bus.name}
-      operatorName={tripDetail.operator.name}
+      operatorName={tripDetail.operator_name}
     />
   );
   return (
@@ -118,10 +110,10 @@ export default async function TripDetailPage({
           <div className="lg:col-span-2 space-y-6">
             <TripOverviewCard tripDetail={tripDetail} />
             <div className="lg:hidden md:hidden block">{bookingBar}</div>
-            <OperatorInfoCard id={tripDetail.operator.id} />
-            <ReviewModal tripId={tripDetail.id} />
+            <OperatorInfoCard id={tripDetail.operator_id} />
+            <ReviewModal tripId={tripDetail.trip_id} />
             <ReviewSection mockTripDetail={tripDetail} />
-            <ComplaintSection tripId={tripDetail.id} />
+            <ComplaintSection tripId={tripDetail.trip_id} />
           </div>
 
           {/* Right Column - Desktop Booking */}
@@ -142,7 +134,7 @@ export default async function TripDetailPage({
           </div>
         </div>
       </div>
-      <SimilarTripsSection routeId={tripDetail.route.id} />
+      <SimilarTripsSection routeId={tripDetail.route.route_id} />
     </div>
   );
 }
