@@ -40,7 +40,6 @@ const AppPage = () => {
               available_seats: trip.available_seats || 20,
               average_rating: trip.average_rating,
               price_per_seat: trip.price_per_seat,
-              duration: trip.duration,
             }}
           />
         ))}

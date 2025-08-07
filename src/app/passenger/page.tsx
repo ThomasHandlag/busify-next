@@ -42,7 +42,6 @@ export interface TripItemProps {
   available_seats: number;
   average_rating: number;
   price_per_seat: number;
-  duration: string;
 }
 
 const Passenger = async () => {
