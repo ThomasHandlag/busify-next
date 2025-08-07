@@ -11,26 +11,12 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { Armchair } from "lucide-react";
-
-export interface Seat {
-  id: number;
-  seat_number: string;
-  status: string;
-  price: number;
-  row: number;
-  column: number;
-  floor?: number; // For multi-floor buses
-}
-
-export interface BusLayout {
-  rows: number;
-  columns: number;
-  floors?: number;
-}
+import { Seat } from "@/lib/data/trip_seats";
+import { BusLayout } from "@/lib/data/bus";
 
 interface SeatSelectionCardProps {
   seats: Seat[];
-  layout: BusLayout;
+  layout: BusLayout | null;
   pricePerSeat: number;
   onSeatSelection?: (selectedSeats: string[], totalPrice: number) => void;
 }
@@ -43,36 +29,36 @@ export function SeatSelectionCard({
 }: SeatSelectionCardProps) {
   const [selectedSeats, setSelectedSeats] = useState<string[]>([]);
 
-  // Generate seat name based on row, column, and floor
-  const generateSeatName = (row: number, column: number, floor: number = 1) => {
-    const rowLetter = String.fromCharCode(65 + row); // A, B, C, D...
-    return `${rowLetter}.${column + 1}.${floor}`;
-  };
-
   // Generate seats based on layout
   const generateSeatsFromLayout = () => {
     const generatedSeats: Seat[] = [];
-    const floors = layout.floors || 1;
 
-    for (let floor = 1; floor <= floors; floor++) {
-      for (let row = 0; row < layout.rows; row++) {
-        for (let col = 0; col < layout.columns; col++) {
+    // Return the provided seats if layout is null
+    if (!layout) {
+      return seats;
+    }
+
+    for (let floor = 1; floor <= layout.floors; floor++) {
+      for (let row = 1; row <= layout.rows; row++) {
+        for (let col = 0; col < layout.cols; col++) {
           const seatId =
-            (floor - 1) * layout.rows * layout.columns +
-            row * layout.columns +
+            (floor - 1) * layout.rows * layout.cols +
+            (row - 1) * layout.cols +
             col +
             1;
-          const seatName = generateSeatName(row, col, floor);
+          const seatName = `${String.fromCharCode(65 + col)}.${row}.${floor}`;
 
-          // Find existing seat data or create new one
-          const existingSeat = seats.find((s) => s.id === seatId);
+          // Find status from trip seats data if available
+          const seatStatus =
+            seats?.find((s) => s.seat_number === seatName)?.status ||
+            "available";
 
           generatedSeats.push({
             id: seatId,
             seat_number: seatName,
-            status: existingSeat?.status || "available",
-            price: existingSeat?.price || pricePerSeat,
-            row,
+            status: seatStatus,
+            price: pricePerSeat,
+            row: row - 1,
             column: col,
             floor,
           });
@@ -104,7 +90,23 @@ export function SeatSelectionCard({
   };
 
   const totalPrice = selectedSeats.length * pricePerSeat;
+
+  // Handle null layout
+  if (!layout) {
+    return (
+      <Card className="overflow-y-auto max-h-[80vh] scrollbar-hide">
+        <CardContent>
+          <div className="p-4 text-center">
+            <p className="text-gray-500">Không có thông tin sơ đồ ghế</p>
+          </div>
+        </CardContent>
+      </Card>
+    );
+  }
+
   const floors = layout.floors || 1;
+  const rows = layout.rows || 0;
+  const cols = layout.cols || 0;
 
   // Render seats for a specific floor
   const renderFloorSeats = (floorNumber: number) => {
@@ -123,13 +125,13 @@ export function SeatSelectionCard({
         <div
           className="grid gap-2 justify-center"
           style={{
-            gridTemplateColumns: `repeat(${layout.columns}, minmax(0, 1fr))`,
-            maxWidth: `${layout.columns * 60}px`,
+            gridTemplateColumns: `repeat(${cols}, minmax(0, 1fr))`,
+            maxWidth: `${cols * 60}px`,
             margin: "0 auto",
           }}
         >
-          {Array.from({ length: layout.rows }, (_, rowIndex) =>
-            Array.from({ length: layout.columns }, (_, colIndex) => {
+          {Array.from({ length: rows }, (_, rowIndex) =>
+            Array.from({ length: cols }, (_, colIndex) => {
               const seat = floorSeats.find(
                 (s) => s.row === rowIndex && s.column === colIndex
               );
@@ -175,7 +177,8 @@ export function SeatSelectionCard({
         </CardTitle>
         <CardDescription>
           <p className="text-sm text-gray-500">
-            Chọn ghế của bạn từ sơ đồ ghế bên dưới. Nhấn vào ghế để chọn hoặc bỏ chọn.
+            Chọn ghế của bạn từ sơ đồ ghế bên dưới. Nhấn vào ghế để chọn hoặc bỏ
+            chọn.
           </p>
         </CardDescription>
       </CardHeader>
@@ -198,7 +201,9 @@ export function SeatSelectionCard({
 
         {/* Bus Layout */}
         <div className="border rounded-lg p-4 bg-gray-50 mb-4">
-          {Array.from({ length: floors }, (_, i) => renderFloorSeats(i + 1))}
+          {Array.from({ length: layout?.floors || 1 }, (_, i) =>
+            renderFloorSeats(i + 1)
+          )}
         </div>
       </CardContent>
       <CardFooter>

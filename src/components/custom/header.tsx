@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import {
   Sheet,
@@ -28,7 +28,7 @@ const Header = () => {
   const [lastScrollTop, setLastScrollTop] = useState(0);
   const [isScrollUp, setIsScrollUp] = useState(true);
 
-  useEffect(() => {
+  if (typeof window !== "undefined") {
     window.addEventListener("scroll", () => {
       if (window.scrollY > 0) {
         setIsTop(false);
@@ -47,7 +47,7 @@ const Header = () => {
 
       setLastScrollTop(scrollTop <= 0 ? 0 : scrollTop); // Avoid negative values
     });
-  }, []);
+  }
 
   const linkBaseClass =
     "p-2 transition-colors rounded hover:bg-primary hover:text-background";

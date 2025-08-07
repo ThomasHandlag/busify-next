@@ -14,6 +14,14 @@ const AppPage = () => {
     );
   }
 
+  if (!trips || trips.length === 0) {
+    return (
+      <div className="flex justify-center items-center p-8">
+        <div className="text-lg">No trips found.</div>
+      </div>
+    );
+  }
+
   return (
     <div className="grid gap-4 p-4 mb-14">
       <div className="grid lg:grid-cols-3 md:grid-cols-2 sm:grid-cols-1 gap-4">
