@@ -19,7 +19,7 @@ export const POST = async (req: Request) => {
     );
   } catch (error) {
     return new Response(
-      JSON.stringify({ error: "An error occurred during login." }),
+      JSON.stringify({ error: "An error occurred during login.",  detail: error }),
       { status: 500 }
     );
   }

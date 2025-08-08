@@ -2,9 +2,9 @@ import React from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "../ui/card";
 import { Star, User } from "lucide-react";
 import { Separator } from "@radix-ui/react-separator";
-import { TripDetailProps } from "./trip_overview_card";
 import { getReviewsByTripId } from "@/lib/data/reviews";
-import { Review } from "@/lib/types/widget_proptype";
+import { Review } from "@/lib/data/reviews";
+import { TripDetail } from "@/lib/data/trip";
 
 export interface ReviewProps {
   id: number;
@@ -23,7 +23,7 @@ const tripAvgRating = (reviews: Review[]) => {
 const ReviewSection = async ({
   mockTripDetail,
 }: {
-  mockTripDetail: TripDetailProps;
+  mockTripDetail: TripDetail;
 }) => {
   const reviews = await getReviewsByTripId(mockTripDetail.trip_id);
   return (
