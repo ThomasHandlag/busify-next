@@ -27,19 +27,26 @@ const Header = () => {
   const [lastScrollTop, setLastScrollTop] = useState(0);
   const [isScrollUp, setIsScrollUp] = useState(true);
 
-  useEffect(() => {
-    if (typeof window !== "undefined") {
-      const handleScroll = () => {
-        const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
-        setIsTop(scrollTop === 0);
-        setIsScrollUp(scrollTop <= lastScrollTop);
-        setLastScrollTop(scrollTop <= 0 ? 0 : scrollTop);
-      };
+  if (typeof window !== "undefined") {
+    window.addEventListener("scroll", () => {
+      if (window.scrollY > 0) {
+        setIsTop(false);
+      } else {
+        setIsTop(true);
+      }
 
-      window.addEventListener("scroll", handleScroll);
-      return () => window.removeEventListener("scroll", handleScroll);
-    }
-  }, [lastScrollTop]);
+      const scrollTop =
+        window.pageYOffset || document.documentElement.scrollTop;
+
+      if (scrollTop > lastScrollTop) {
+        setIsScrollUp(false);
+      } else {
+        setIsScrollUp(true);
+      }
+
+      setLastScrollTop(scrollTop <= 0 ? 0 : scrollTop); // Avoid negative values
+    });
+  }
 
   const linkBaseClass =
     "p-2 transition-colors rounded hover:bg-primary hover:text-background";

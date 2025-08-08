@@ -2,32 +2,27 @@
 
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 import { Armchair } from "lucide-react";
-import { PassengerInfoForm, PassengerInfo } from "./PassengerInfoForm";
-import { useRouter } from "next/navigation"; // Update to use next/navigation
+import { Seat } from "@/lib/data/trip_seats";
+import { BusLayout } from "@/lib/data/bus";
+import { PassengerInfo, PassengerInfoForm } from "@/components/custom/trip_detail/PassengerInfoForm";
+import { useRouter } from "next/navigation";
+import form from "antd/es/form";
+import { FormInstance } from "antd";
 import { toast } from "sonner";
-
-// Updated Seat interface to match API response
-interface Seat {
-  seatNumber: string;
-  status: string; // "booked", "available", "locked"
-  booked: boolean;
-  row: string;
-  column: string;
-  floor: string;
-}
-
-interface BusLayout {
-  rows: number;
-  columns: number;
-  floors: number; // Optional for multi-floor buses
-}
 
 interface SeatSelectionCardProps {
   tripId: string;
-  seats: Seat[]; // Now directly uses the API Seat interface
-  layout: BusLayout; // Contains rows and columns from the API
+  seats: Seat[];
+  layout: BusLayout | null;
   pricePerSeat: number;
   onSeatSelection?: (selectedSeats: string[], totalPrice: number) => void;
 }
@@ -40,20 +35,51 @@ export function SeatSelectionCard({
   onSeatSelection,
 }: SeatSelectionCardProps) {
   const [selectedSeats, setSelectedSeats] = useState<string[]>([]);
-  const [passengerInfo, setPassengerInfo] = useState<PassengerInfo | null>(
-    null
-  );
-  const router = useRouter(); // Use useRouter from next/navigation
+  const router = useRouter();
+  const [formInstance, setFormInstance] = useState<FormInstance | null>(null);
+  // Generate seats based on layout
+  const generateSeatsFromLayout = () => {
+    const generatedSeats: Seat[] = [];
 
-  // Handle passenger info submission
-  const handlePassengerInfoSubmit = (info: PassengerInfo) => {
-    console.log("Received passenger info:", info); // Debug log
-    setPassengerInfo(info);
+    if (!layout) {
+      return seats;
+    }
+
+    for (let floor = 1; floor <= layout.floors; floor++) {
+      for (let row = 1; row <= layout.rows; row++) {
+        for (let col = 0; col < layout.cols; col++) {
+          const seatId =
+            (floor - 1) * layout.rows * layout.cols +
+            (row - 1) * layout.cols +
+            col +
+            1;
+          const seatName = `${String.fromCharCode(65 + col)}.${row}.${floor}`;
+
+          const seatStatus =
+            seats.find((s) => s.seat_number === seatName)?.status ||
+            "available";
+
+          generatedSeats.push({
+            id: seatId,
+            seat_number: seatName,
+            status: seatStatus,
+            price: pricePerSeat,
+            row: row - 1,
+            column: col,
+            floor,
+          });
+        }
+      }
+    }
+
+    console.log("Generated seats with status:", generatedSeats);
+    return generatedSeats;
   };
 
+  const allSeats = generateSeatsFromLayout();
+
   const handleSeatClick = (seatNumber: string, status: string) => {
-    // Prevent selection if status is "booked" or "locked"
-    if (status === "booked" || status === "locked") return;
+    if (status === "booked") return;
 
     const newSelectedSeats = selectedSeats.includes(seatNumber)
       ? selectedSeats.filter((seat) => seat !== seatNumber)
@@ -64,156 +90,127 @@ export function SeatSelectionCard({
     onSeatSelection?.(newSelectedSeats, totalPrice);
   };
 
-  const handleBookTicket = () => {
-    console.log("Selected seats:", selectedSeats);
-    console.log("Passenger info:", passengerInfo);
-
-    if (selectedSeats.length === 0) {
-      toast.error("Vui lòng chọn ít nhất một ghế!");
-      return;
-    }
-
-    if (
-      !passengerInfo ||
-      !passengerInfo.fullName.trim() ||
-      !passengerInfo.phone.trim() ||
-      !passengerInfo.email.trim()
-    ) {
-      toast.error("Vui lòng điền đầy đủ thông tin hành khách!");
-      return;
-    }
-
-    // Navigate to confirmation page with data
-    router.push(
-      `/booking/confirmation/${tripId}?seats=${selectedSeats.join(
-        ","
-      )}&fullName=${passengerInfo.fullName}&phone=${
-        passengerInfo.phone
-      }&email=${passengerInfo.email}`
-    );
-  };
-
   const getSeatStatusColor = (status: string, seatNumber: string) => {
     if (selectedSeats.includes(seatNumber)) return "text-green-500";
-    if (status === "booked" || status === "locked")
-      return "text-gray-400 cursor-not-allowed";
+    if (status === "booked") return "text-gray-400 cursor-not-allowed";
     return "text-blue-500 hover:text-blue-600 cursor-pointer";
   };
 
   const totalPrice = selectedSeats.length * pricePerSeat;
 
-  // Render seats based on rows and columns from layout and the provided seats array
-  const renderSeats = () => {
-    // Create a 2D grid representation for rendering
-    const seatsByFloor: { [key: string]: Seat[] } = {};
-    for (let i = 1; i <= layout.floors; i++) {
-      seatsByFloor[String(i)] = seats.filter(
-        (seat) => seat.floor === String(i)
-      );
-    }
+  if (!layout) {
+    return (
+      <Card className="overflow-y-auto max-h-[80vh] scrollbar-hide">
+        <CardContent>
+          <div className="p-4 text-center">
+            <p className="text-gray-500">Không có thông tin sơ đồ ghế</p>
+          </div>
+        </CardContent>
+      </Card>
+    );
+  }
+
+  const floors = layout.floors || 1;
+  const rows = layout.rows || 0;
+  const cols = layout.cols || 0;
+
+  const renderFloorSeats = (floorNumber: number) => {
+    const floorSeats = allSeats.filter(
+      (seat) => (seat.floor || 1) === floorNumber
+    );
 
     return (
-      <div className="space-y-6">
-        {Array.from({ length: layout.floors }, (_, floorIndex) => {
-          const floor = String(floorIndex + 1);
-          const floorSeats = seatsByFloor[floor];
-          if (!floorSeats || floorSeats.length === 0) return null;
+      <div key={floorNumber} className="mb-6">
+        {floors > 1 && (
+          <h3 className="text-sm font-medium text-gray-700 mb-3 text-center">
+            Tầng {floorNumber}
+          </h3>
+        )}
 
-          // Create a 2D grid for this floor
-          const seatGrid: (Seat | null)[][] = Array.from(
-            { length: layout.rows },
-            () => Array(layout.columns).fill(null)
-          );
+        <div
+          className="grid gap-2 justify-center"
+          style={{
+            gridTemplateColumns: `repeat(${cols}, minmax(0, 1fr))`,
+            maxWidth: `${cols * 60}px`,
+            margin: "0 auto",
+          }}
+        >
+          {Array.from({ length: rows }, (_, rowIndex) =>
+            Array.from({ length: cols }, (_, colIndex) => {
+              const seat = floorSeats.find(
+                (s) => s.row === rowIndex && s.column === colIndex
+              );
 
-          // Populate the grid with seats based on row and column
-          floorSeats.forEach((seat) => {
-            const rowIndex = parseInt(seat.row) - 1; // API returns 1-based row
-            const colIndex = parseInt(seat.column) - 1; // API returns 1-based column
-            if (rowIndex < layout.rows && colIndex < layout.columns) {
-              seatGrid[rowIndex][colIndex] = seat;
-            }
-          });
+              if (!seat) return null;
 
-          return (
-            <div key={`floor-${floor}`} className="mb-6">
-              <h3 className="text-lg font-semibold mb-2">Tầng {floor}</h3>
-              <div
-                className="grid gap-2 justify-center"
-                style={{
-                  gridTemplateColumns: `repeat(${layout.columns}, minmax(0, 1fr))`,
-                  maxWidth: `${layout.columns * 60}px`,
-                  margin: "0 auto",
-                }}
-              >
-                {seatGrid.map((row, rowIndex) =>
-                  row.map((seat, colIndex) => {
-                    if (!seat) {
-                      return (
-                        <div
-                          key={`empty-${floor}-${rowIndex}-${colIndex}`}
-                          className="min-h-[50px]"
-                        ></div>
-                      );
-                    }
-                    return (
-                      <button
-                        key={seat.seatNumber}
-                        onClick={() =>
-                          handleSeatClick(seat.seatNumber, seat.status)
-                        }
-                        disabled={
-                          seat.status === "booked" || seat.status === "locked"
-                        }
-                        className="relative p-2 transition-all duration-200 flex flex-col items-center justify-center min-h-[50px]"
-                      >
-                        <Armchair
-                          className={`w-5 h-5 mb-1 ${getSeatStatusColor(
-                            seat.status,
-                            seat.seatNumber
-                          )}`}
-                        />
-                        <span
-                          className={`text-[10px] font-medium ${getSeatStatusColor(
-                            seat.status,
-                            seat.seatNumber
-                          )}`}
-                        >
-                          {seat.seatNumber}
-                        </span>
-                      </button>
-                    );
-                  })
-                )}
-              </div>
-            </div>
-          );
-        })}
+              return (
+                <button
+                  key={seat.id}
+                  onClick={() => handleSeatClick(seat.seat_number, seat.status)}
+                  disabled={seat.status === "booked"}
+                  className="relative p-2 transition-all duration-200 flex flex-col items-center justify-center min-h-[50px]"
+                >
+                  <Armchair
+                    className={`w-5 h-5 mb-1 ${getSeatStatusColor(
+                      seat.status,
+                      seat.seat_number
+                    )}`}
+                  />
+                  <span
+                    className={`text-[10px] font-medium ${getSeatStatusColor(
+                      seat.status,
+                      seat.seat_number
+                    )}`}
+                  >
+                    {seat.seat_number}
+                  </span>
+                </button>
+              );
+            })
+          )}
+        </div>
       </div>
     );
   };
 
-  // Check if the button should be disabled
-  const isButtonDisabled =
-    selectedSeats.length === 0 ||
-    !passengerInfo ||
-    !passengerInfo.fullName.trim() ||
-    !passengerInfo.phone.trim() ||
-    !passengerInfo.email.trim();
+  const handleFormSubmit = (values: PassengerInfo) => {
+    if (selectedSeats.length === 0) {
+      toast.error("Vui lòng chọn ít nhất một ghế!");
+      return;
+    }
+
+    // Chuyển sang trang booking-confirmation
+    router.push(
+      `/booking/confirmation/${tripId}?` +
+      new URLSearchParams({
+        seats: selectedSeats.join(","),
+        totalPrice: totalPrice.toString(),
+        fullName: values.fullName,
+        phone: values.phone,
+        email: values.email
+      }).toString()
+    );
+  };
 
   return (
-    <Card className="overflow-y-auto max-h-[70vh] scrollbar-hide">
+    <Card className="overflow-y-auto max-h-[80vh] scrollbar-hide">
       <CardHeader>
         <CardTitle className="flex items-center space-x-2">
           <Armchair className="w-5 h-5" />
           <span>Chọn ghế</span>
         </CardTitle>
+        <CardDescription>
+          <p className="text-sm text-gray-500">
+            Chọn ghế của bạn từ sơ đồ ghế bên dưới. Nhấn vào ghế để chọn hoặc bỏ
+            chọn.
+          </p>
+        </CardDescription>
       </CardHeader>
       <CardContent>
-        {/* Legend */}
         <div className="flex items-center justify-center space-x-4 mb-4">
           <div className="flex items-center space-x-1">
             <Armchair className="w-4 h-4 text-gray-400" />
-            <span className="text-xs text-gray-600">Đã đặt / Đã khóa</span>
+            <span className="text-xs text-gray-600">Đã đặt</span>
           </div>
           <div className="flex items-center space-x-1">
             <Armchair className="w-4 h-4 text-blue-500" />
@@ -225,14 +222,15 @@ export function SeatSelectionCard({
           </div>
         </div>
 
-        {/* Bus Layout */}
         <div className="border rounded-lg p-4 bg-gray-50 mb-4">
-          {renderSeats()}
+          {Array.from({ length: layout?.floors || 1 }, (_, i) =>
+            renderFloorSeats(i + 1)
+          )}
         </div>
-
-        {/* Selection Summary */}
-        {selectedSeats.length > 0 && (
-          <div className="bg-blue-50 p-3 rounded-lg mb-2 border border-blue-200">
+      </CardContent>
+      <CardFooter>
+        <div className="border-t bg-white p-4 mt-auto flex flex-col justify-center w-full">
+          <div className="bg-blue-50 p-3 rounded-lg mb-4 border border-blue-200 w-full">
             <div className="flex items-center space-x-2 mb-2">
               <Armchair className="w-4 h-4 text-green-500" />
               <h4 className="font-medium text-blue-900">
@@ -243,26 +241,31 @@ export function SeatSelectionCard({
               Tổng tiền: {totalPrice.toLocaleString("vi-VN")}đ
             </p>
           </div>
-        )}
-        <PassengerInfoForm onInfoSubmit={handlePassengerInfoSubmit} />
 
-        <Button
-          onClick={handleBookTicket}
-          className="w-full mt-2"
-          disabled={isButtonDisabled}
-        >
-          <Armchair className="w-4 h-4 mr-2" />
-          Đặt vé ({selectedSeats.length} ghế)
-        </Button>
-      </CardContent>
+          <PassengerInfoForm
+            selectedSeats={selectedSeats}
+            totalPrice={totalPrice}
+            onFinishAction={handleFormSubmit}
+            onFormInstance={setFormInstance}
+          />
+
+          <Button
+            className="w-full bg-blue-600 hover:bg-blue-700 text-white mt-4"
+            disabled={selectedSeats.length === 0}
+            onClick={() => formInstance?.submit()}
+          >
+            Đặt vé ({selectedSeats.length} ghế)
+          </Button>
+        </div>
+      </CardFooter>
 
       <style jsx global>{`
         .scrollbar-hide {
-          -ms-overflow-style: none; /* Internet Explorer 10+ */
-          scrollbar-width: none; /* Firefox */
+          -ms-overflow-style: none;
+          scrollbar-width: none;
         }
         .scrollbar-hide::-webkit-scrollbar {
-          display: none; /* Safari and Chrome */
+          display: none;
         }
       `}</style>
     </Card>

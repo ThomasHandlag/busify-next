@@ -1,7 +1,11 @@
 "use client";
 
-import { ReactNode, useState } from "react";
-import { filterTrips } from "@/lib/data/trip";
+import { ReactNode, useEffect, useState } from "react";
+import {
+  filterTripsClient,
+  getUpcomingTrips,
+  TripFilterQuery,
+} from "@/lib/data/trip";
 import { TripItemProps } from "@/app/passenger/page";
 import TripFilterContext from "../../lib/contexts/TripFilterContext";
 
@@ -12,20 +16,41 @@ interface TripFilterProviderProps {
 export const TripFilterProvider = ({ children }: TripFilterProviderProps) => {
   const [trips, setTrips] = useState<TripItemProps[]>([]);
   const [isLoading, setIsLoading] = useState(false);
+  const [query, setQuery] = useState<TripFilterQuery | null>(null);
 
-  const handleApplyFilters = async (filters: any) => {
-    setIsLoading(true);
-    try {
-      console.log("Filters to send:", filters);
-      const result = await filterTrips(filters);
-      console.log("Filtered result:", result);
-      setTrips(result);
-    } catch (error) {
-      console.error("Error applying filters:", error);
-    } finally {
-      setIsLoading(false);
-    }
+  const handleApplyFilters = async (filters: TripFilterQuery| null) => {
+    setQuery(filters);
   };
+
+  useEffect(() => {
+    if (query) {
+      const fetchedTrips = async () => {
+        setIsLoading(true);
+        try {
+          const filteredTrips = await filterTripsClient(query);
+          setTrips(filteredTrips);
+        } catch (error) {
+          console.error("Error filtering trips:", error);
+        } finally {
+          setIsLoading(false);
+        }
+      };
+      fetchedTrips();
+    } else {
+      const fetchInitialTrips = async () => {
+        setIsLoading(true);
+        try {
+          const initialTrips = await getUpcomingTrips();
+          setTrips(initialTrips);
+        } catch (error) {
+          console.error("Error fetching initial trips:", error);
+        } finally {
+          setIsLoading(false);
+        }
+      };
+      fetchInitialTrips();
+    }
+  }, [query]);
 
   const value = {
     trips,

@@ -1,16 +1,17 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useEffect } from "react";
 import dynamic from "next/dynamic";
 import L from "leaflet"; // Import trực tiếp
 import "leaflet/dist/leaflet.css";
 import "leaflet-routing-machine"; // Import plugin
 import "leaflet-routing-machine/dist/leaflet-routing-machine.css";
 import { useMap } from "react-leaflet";
+import { Location } from "@/lib/data/location";
 
 // Ghi chú: Sửa lỗi icon mặc định, nên đặt ở một file khởi tạo hoặc đầu component
 // Đoạn này vẫn hữu ích nếu bạn dùng marker mặc định ở đâu đó.
-// @ts-ignore
+// @ts-expect-error may not exist in some versions
 delete L.Icon.Default.prototype._getIconUrl;
 L.Icon.Default.mergeOptions({
   iconRetinaUrl: "/leaflet/marker-icon-2x.png",
@@ -36,12 +37,7 @@ const Popup = dynamic(() => import("react-leaflet").then((mod) => mod.Popup), {
 });
 
 // Định nghĩa interface rõ ràng
-interface Location {
-  latitude: number;
-  longitude: number;
-  address: string;
-  city: string;
-}
+
 
 interface RouteMapProps {
   startLocation: Location;

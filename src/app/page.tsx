@@ -39,6 +39,7 @@ import {
 } from "lucide-react";
 import FadeinWrapper from "@/components/custom/fadein_wrapper";
 import { getPopularRoutes } from "@/lib/data/route_api";
+import { BusifyRoute } from "@/lib/data/route_api";
 
 const Home = async () => {
   const popularRoutes = await getPopularRoutes();
@@ -493,9 +494,7 @@ const Home = async () => {
                     <li>• Comprehensive dashboard for management</li>
                     <li>• Monitoring tools for real-time analytics</li>
                     <li>• Seamless integration with existing systems</li>
-                    <li>
-                      • Resource management tools for efficient operations
-                    </li>
+                    <li>• Powerfull resource management tools</li>
                   </ul>
                 </CardContent>
               </Card>
@@ -517,7 +516,7 @@ const Home = async () => {
             Popular Routes
           </h2>
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {popularRoutes.result.slice(0, 6).map((route: any) => (
+            {popularRoutes.slice(0, 6).map((route: BusifyRoute) => (
               <Card
                 key={route.routeId}
                 className="hover:shadow-lg transition-shadow"
@@ -782,7 +781,7 @@ const Home = async () => {
               </AccordionTrigger>
               <AccordionContent>
                 Click on “Become a Partner” and fill out our application form.
-                We'll review your credentials, fleet quality, and safety
+                We&apos;ll review your credentials, fleet quality, and safety
                 standards. Once approved, our team will help you set up your
                 services on the platform.
               </AccordionContent>
@@ -813,9 +812,10 @@ const Home = async () => {
             <AccordionItem value="item-5">
               <AccordionTrigger>What if my bus is delayed?</AccordionTrigger>
               <AccordionContent>
-                You'll receive real-time updates about any delays or changes to
-                your trip. In case of significant delays, you may be eligible
-                for compensation according to our passenger protection policy.
+                You&apos;ll receive real-time updates about any delays or
+                changes to your trip. In case of significant delays, you may be
+                eligible for compensation according to our passenger protection
+                policy.
               </AccordionContent>
             </AccordionItem>
           </Accordion>
