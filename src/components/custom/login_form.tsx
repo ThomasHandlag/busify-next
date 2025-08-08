@@ -11,27 +11,27 @@ import React, { FormEvent } from "react";
 import Link from "next/link";
 import { signIn } from "next-auth/react";
 import { useRouter } from "next/navigation";
-import { toast } from "sonner";
-import { Loader2 } from "lucide-react";
+import { BASE_URL } from "@/lib/constants/constants";
 
 const LoginForm = () => {
   const [showPassword, setShowPassword] = React.useState(false);
   const [isGoogleLoading, setIsGoogleLoading] = React.useState(false);
   const [showResendModal, setShowResendModal] = React.useState(false);
-  const [loginLoading, setLoginLoading] = React.useState(false);
   const [resendEmail, setResendEmail] = React.useState("");
   const [resendStatus, setResendStatus] = React.useState<
     "idle" | "loading" | "success" | "error"
   >("idle");
   const [resendMessage, setResendMessage] = React.useState("");
+  const [isMounted, setIsMounted] = React.useState(false);
+
+  React.useEffect(() => {
+    setIsMounted(true);
+  }, []);
 
   const router = useRouter();
   const formSchema = z.object({
-    email: z.email("Invalid email address").min(2).max(50),
-    password: z
-      .string()
-      .min(6, "Password must be at least 6 characters")
-      .max(100),
+    email: z.string().email("Địa chỉ email không hợp lệ").min(2).max(50),
+    password: z.string().min(6, "Mật khẩu phải có ít nhất 6 ký tự").max(100),
   });
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -43,7 +43,6 @@ const LoginForm = () => {
   });
 
   const handleSubmit = async (e: FormEvent) => {
-    setLoginLoading(true);
     e.preventDefault();
 
     try {
@@ -61,23 +60,27 @@ const LoginForm = () => {
       } else {
         console.error("Login failed:", result?.error);
         // Sử dụng form.setError thay vì alert
-        toast.error("Invalid email or password");
+        form.setError("email", {
+          type: "manual",
+          message: "Invalid email or password",
+        });
       }
     } catch (error) {
       console.error("Login error:", error);
-      toast.error("An error occurred during login");
-    } finally {
-      setLoginLoading(false);
+      form.setError("email", {
+        type: "manual",
+        message: "An error occurred while logging in",
+      });
     }
   };
 
   const handleGoogleLogin = async () => {
+    if (!isMounted) return;
+
     try {
       setIsGoogleLoading(true);
 
-      // Redirect trực tiếp tới backend Google OAuth
-      // Backend sẽ set cookies và redirect về /api/google-callback
-      const googleOAuthUrl = `http://localhost:8080/api/auth/login/google`;
+      const googleOAuthUrl = `${BASE_URL}api/auth/login/google`;
       window.location.href = googleOAuthUrl;
     } catch (error) {
       console.error("Google login error:", error);
@@ -147,6 +150,8 @@ const LoginForm = () => {
           </p>
         </div>
 
+        {/* Social Login Buttons */}
+
         {/* Login Form */}
         <Form {...form}>
           <form onSubmit={handleSubmit} className="space-y-4 sm:space-y-5">
@@ -212,20 +217,18 @@ const LoginForm = () => {
                 />
                 <span className="ml-2 text-sm text-gray-600">Remember me</span>
               </label>
-              <a
-                href="#"
+              <Link
+                href="/forgot-password"
                 className="text-sm text-green-600 hover:text-green-700 font-medium"
               >
                 Forgot password?
-              </a>
+              </Link>
             </div>
 
             <Button
               type="submit"
-              disabled={loginLoading}
               className="w-full h-12 bg-gradient-to-r from-green-600 to-green-700 hover:from-green-700 hover:to-green-800 text-white font-semibold rounded-xl transition-all duration-200 transform hover:scale-[1.02] shadow-lg"
             >
-              {loginLoading && <Loader2 className="animate-spin" />}
               Sign In
             </Button>
           </form>
@@ -233,10 +236,10 @@ const LoginForm = () => {
         <div className="grid grid-cols-3 gap-2 sm:gap-3 mt-4">
           <button
             onClick={handleGoogleLogin}
-            disabled={isGoogleLoading}
+            disabled={isGoogleLoading || !isMounted}
             className="flex items-center justify-center py-3 px-2 sm:px-4 border border-gray-200 rounded-xl hover:bg-gray-50 transition-colors duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
           >
-            {isGoogleLoading ? (
+            {isMounted && isGoogleLoading ? (
               <div className="w-4 h-4 sm:w-5 sm:h-5 border-2 border-gray-300 border-t-green-600 rounded-full animate-spin"></div>
             ) : (
               <FcGoogle size={20} />
@@ -260,7 +263,7 @@ const LoginForm = () => {
               href="/signup"
               className="text-green-600 hover:text-green-700 font-semibold"
             >
-              Sign up for free
+              Sign up
             </Link>
           </p>
           <p className="text-sm text-gray-600 mt-2">
