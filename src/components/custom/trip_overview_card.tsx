@@ -101,7 +101,7 @@ const TripOverviewCard = ({
           <RouteMap
             startLocation={tripDetail.route.startLocation}
             endLocation={tripDetail.route.endLocation}
-            routeStops={tripDetail.route_stop || []}
+            routeStops={tripDetail.routeStop || []}
             className="h-80 w-full rounded-lg"
           />
         </div>

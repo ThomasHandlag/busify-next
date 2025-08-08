@@ -1,8 +1,8 @@
 "use client";
 
-import { Form, Input } from "antd";
+import { Form, Input, FormInstance } from "antd";
 import { Card, CardContent } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
+import { useEffect } from "react";
 
 export interface PassengerInfo {
   phone: string;
@@ -11,14 +11,31 @@ export interface PassengerInfo {
 }
 
 interface PassengerInfoFormProps {
-  onInfoSubmit: (info: PassengerInfo) => void;
+  selectedSeats: string[];
+  totalPrice: number;
+  onFinishAction: (values: {
+    fullName: string;
+    phone: string;
+    email: string;
+  }) => void;
+  onFormInstance?: (form: FormInstance) => void; // Thêm onFormInstance với kiểu FormInstance
 }
 
-export function PassengerInfoForm({ onInfoSubmit }: PassengerInfoFormProps) {
+export function PassengerInfoForm({
+  onFinishAction,
+  onFormInstance,
+}: PassengerInfoFormProps) {
   const [form] = Form.useForm();
 
+  useEffect(() => {
+    if (onFormInstance) {
+      onFormInstance(form);
+    }
+  }, [form, onFormInstance]);
+
   const handleSubmit = async (values: PassengerInfo) => {
-    onInfoSubmit(values);
+    console.log("Form submitted with values:", values);
+    onFinishAction(values);
   };
 
   return (
@@ -28,7 +45,7 @@ export function PassengerInfoForm({ onInfoSubmit }: PassengerInfoFormProps) {
           form={form}
           layout="vertical"
           onFinish={handleSubmit}
-          validateTrigger="onBlur"
+          validateTrigger={["onBlur", "onChange"]}
         >
           <Form.Item
             label="Số điện thoại"
@@ -42,7 +59,6 @@ export function PassengerInfoForm({ onInfoSubmit }: PassengerInfoFormProps) {
               maxLength={10}
               placeholder="Nhập số điện thoại"
               className="rounded-md"
-              onChange={() => form.validateFields(["phone"]).then(() => form.submit())}
             />
           </Form.Item>
 
@@ -54,11 +70,7 @@ export function PassengerInfoForm({ onInfoSubmit }: PassengerInfoFormProps) {
               { min: 2, message: "Họ và tên ít nhất 2 ký tự" },
             ]}
           >
-            <Input
-              placeholder="Nhập họ và tên"
-              className="rounded-md"
-              onChange={() => form.validateFields(["fullName"]).then(() => form.submit())}
-            />
+            <Input placeholder="Nhập họ và tên" className="rounded-md" />
           </Form.Item>
 
           <Form.Item
@@ -69,11 +81,7 @@ export function PassengerInfoForm({ onInfoSubmit }: PassengerInfoFormProps) {
               { type: "email", message: "Email không đúng định dạng" },
             ]}
           >
-            <Input
-              placeholder="Nhập email"
-              className="rounded-md"
-              onChange={() => form.validateFields(["email"]).then(() => form.submit())}
-            />
+            <Input placeholder="Nhập email" className="rounded-md" />
           </Form.Item>
         </Form>
       </CardContent>

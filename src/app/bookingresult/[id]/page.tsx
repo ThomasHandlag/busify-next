@@ -1,146 +1,181 @@
+
+
+
+// "use client";
+
+// import { useEffect, useState } from "react";
+// import { useParams } from "next/navigation";
+// import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+
+// interface PaymentDetails {
+//   paymentId: number;
+//   amount: number;
+//   transactionCode: string;
+//   paymentMethod: string;
+//   bookingDetails: {
+//     bookingId: number;
+//     bookingCode: string;
+//     departureName: string;
+//     arrivalName: string;
+//     departureTime: string;
+//     arrivalTime: string;
+//     status: string;
+//   };
+//   customerName: string;
+//   customerEmail: string;
+//   customerPhone: string;
+//   status: string;
+//   paidAt: string | null;
+// }
+
+// export default function BookingResult() {
+//   const { id } = useParams();
+//   const [paymentDetails, setPaymentDetails] = useState<PaymentDetails | null>(null);
+//   const [error, setError] = useState<string | null>(null);
+
+//   useEffect(() => {
+//     const fetchPaymentDetails = async () => {
+//       try {
+//         const response = await fetch(`http://localhost:8080/api/payments/${id}`, {
+//           method: "GET",
+//           headers: { "Content-Type": "application/json" },
+//         });
+
+//         if (!response.ok) {
+//           throw new Error("Không thể lấy chi tiết thanh toán");
+//         }
+
+//         const result = await response.json();
+//         console.log("Payment details response:", result);
+//         setPaymentDetails(result.result);
+//       } catch (err: any) {
+//         console.error("Error fetching payment details:", err);
+//         setError("Không thể tải chi tiết đặt vé. Vui lòng thử lại.");
+//       }
+//     };
+
+//     fetchPaymentDetails();
+//   }, [id]);
+
+//   if (error) {
+//     return (
+//       <div className="flex items-center justify-center min-h-screen">
+//         <p className="text-red-500">{error}</p>
+//       </div>
+//     );
+//   }
+
+//   if (!paymentDetails) {
+//     return (
+//       <div className="flex items-center justify-center min-h-screen">
+//         <p>Đang tải...</p>
+//       </div>
+//     );
+//   }
+
+//   return (
+//     <div className="container mx-auto p-4">
+//       <Card>
+//         <CardHeader>
+//           <CardTitle>Chi tiết đặt vé</CardTitle>
+//         </CardHeader>
+//         <CardContent>
+//           <div className="space-y-4">
+//             <p><strong>Mã thanh toán:</strong> {paymentDetails.paymentId}</p>
+//             <p><strong>Mã đặt vé:</strong> {paymentDetails.bookingDetails.bookingCode}</p>
+//             <p><strong>Tên khách hàng:</strong> {paymentDetails.customerName}</p>
+//             <p><strong>Email:</strong> {paymentDetails.customerEmail}</p>
+//             <p><strong>Số điện thoại:</strong> {paymentDetails.customerPhone}</p>
+//             <p><strong>Điểm đi:</strong> {paymentDetails.bookingDetails.departureName}</p>
+//             <p><strong>Điểm đến:</strong> {paymentDetails.bookingDetails.arrivalName}</p>
+//             <p><strong>Thời gian khởi hành:</strong> {paymentDetails.bookingDetails.departureTime}</p>
+//             <p><strong>Thời gian đến:</strong> {paymentDetails.bookingDetails.arrivalTime}</p>
+//             <p><strong>Số tiền:</strong> {paymentDetails.amount.toLocaleString("vi-VN")}đ</p>
+//             <p><strong>Phương thức thanh toán:</strong> {paymentDetails.paymentMethod}</p>
+//             <p><strong>Trạng thái:</strong> {paymentDetails.status}</p>
+//             {paymentDetails.paidAt && (
+//               <p><strong>Thời gian thanh toán:</strong> {new Date(paymentDetails.paidAt).toLocaleString("vi-VN")}</p>
+//             )}
+//           </div>
+//         </CardContent>
+//       </Card>
+//     </div>
+//   );
+// }
+
 "use client";
 
-import { useState, useEffect } from "react";
+import { useEffect, useState } from "react";
+import { useParams } from "next/navigation";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
-import {
-  CheckCircle,
-  Clock,
-  Mail,
-  MessageSquare,
-  Copy,
-  Calendar,
-  AlertCircle,
-  ArrowRight,
-} from "lucide-react";
+import { CheckCircle, Clock, Mail, MessageSquare, Copy, Calendar, AlertCircle, ArrowRight, CreditCard, Banknote, MapPin, User, Phone } from 'lucide-react';
 import Link from "next/link";
 
-interface BookingResult {
-  bookingCode: string;
-  status: "pending" | "confirmed";
-  trip: {
-    route: string;
-    operator: string;
+interface PaymentDetails {
+  paymentId: number;
+  amount: number;
+  transactionCode: string;
+  paymentMethod: string;
+  bookingDetails: {
+    bookingId: number;
+    bookingCode: string;
+    departureName: string;
+    arrivalName: string;
     departureTime: string;
-    date: string;
+    arrivalTime: string;
+    status: string;
   };
-  passenger: {
-    name: string;
-    phone: string;
-    email: string;
-  };
-  payment: {
-    totalAmount: number;
-    paidAmount: number;
-    remainingAmount: number;
-    paymentDeadline?: string;
-  };
-  seats: string[];
-  notifications: {
-    email: boolean;
-    sms: boolean;
-  };
+  customerName: string;
+  customerEmail: string;
+  customerPhone: string;
+  status: string;
+  paidAt: string | null;
 }
 
-interface PageProps {
-  params: {
-    id: string; // booking_id from URL
-  };
-}
-
-export default function BookingSuccess({ params }: PageProps) {
+export default function BookingResult() {
+  const { id } = useParams();
+  const [paymentDetails, setPaymentDetails] = useState<PaymentDetails | null>(null);
+  const [error, setError] = useState<string | null>(null);
+  const [loading, setLoading] = useState(true);
   const [copied, setCopied] = useState(false);
-  const [timeLeft, setTimeLeft] = useState("");
-  const bookingId = params.id; // Lấy booking_id từ URL
 
-  // Dữ liệu mock tĩnh để test giao diện
-  const mockBookingResult =
-    bookingId === "1"
-      ? {
-          bookingCode: "BUS240801001",
-          status: "pending",
-          trip: {
-            route: "TP.HCM → Đà Lạt",
-            operator: "Liên Hưng",
-            departureTime: "08:00",
-            date: "01/08/2025",
-          },
-          passenger: {
-            name: "Nguyễn Văn A",
-            phone: "0123456789",
-            email: "nguyenvana@email.com",
-          },
-          payment: {
-            totalAmount: 500000,
-            paidAmount: 100000,
-            remainingAmount: 400000,
-            paymentDeadline: "01/08/2025 06:00",
-          },
-          seats: ["A01", "A02"],
-          notifications: {
-            email: true,
-            sms: true,
-          },
+  useEffect(() => {
+    const fetchPaymentDetails = async () => {
+      try {
+        setLoading(true);
+        const response = await fetch(`http://localhost:8080/api/payments/${id}`, {
+          method: "GET",
+          headers: { "Content-Type": "application/json" },
+        });
+        
+        if (!response.ok) {
+          throw new Error("Không thể lấy chi tiết thanh toán");
         }
-      : bookingId === "2"
-      ? {
-          bookingCode: "BUS240802002",
-          status: "confirmed",
-          trip: {
-            route: "Đà Nẵng → Huế",
-            operator: "Mai Linh",
-            departureTime: "14:00",
-            date: "02/08/2025",
-          },
-          passenger: {
-            name: "Trần Thị B",
-            phone: "0987654321",
-            email: "tranthib@email.com",
-          },
-          payment: {
-            totalAmount: 300000,
-            paidAmount: 300000,
-            remainingAmount: 0,
-          },
-          seats: ["B01"],
-          notifications: {
-            email: false,
-            sms: true,
-          },
-        }
-      : {
-          bookingCode: "BUS240803003",
-          status: "pending",
-          trip: {
-            route: "Hà Nội → Vinh",
-            operator: "Hoàng Long",
-            departureTime: "09:00",
-            date: "03/08/2025",
-          },
-          passenger: {
-            name: "Lê Văn C",
-            phone: "0912345678",
-            email: "levanc@email.com",
-          },
-          payment: {
-            totalAmount: 400000,
-            paidAmount: 0,
-            remainingAmount: 400000,
-            paymentDeadline: "02/08/2025 23:00",
-          },
-          seats: ["C01", "C02"],
-          notifications: {
-            email: true,
-            sms: false,
-          },
-        };
+        
+        const result = await response.json();
+        console.log("Payment details response:", result);
+        setPaymentDetails(result.result);
+      } catch (err: any) {
+        console.error("Error fetching payment details:", err);
+        setError("Không thể tải chi tiết đặt vé. Vui lòng thanh toán! :).");
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    if (id) {
+      fetchPaymentDetails();
+    }
+  }, [id]);
 
   // Copy booking code to clipboard
   const copyBookingCode = async () => {
+    if (!paymentDetails) return;
     try {
-      await navigator.clipboard.writeText(mockBookingResult.bookingCode);
+      await navigator.clipboard.writeText(paymentDetails.bookingDetails.bookingCode);
       setCopied(true);
       setTimeout(() => setCopied(false), 2000);
     } catch (err) {
@@ -148,35 +183,114 @@ export default function BookingSuccess({ params }: PageProps) {
     }
   };
 
-  // Calculate time remaining for payment
-  useEffect(() => {
-    if (
-      mockBookingResult.status === "pending" &&
-      mockBookingResult.payment.paymentDeadline
-    ) {
-      const updateTimeLeft = () => {
-        const deadline = new Date(mockBookingResult.payment.paymentDeadline!);
-        const now = new Date("2025-08-02T16:36:00+07:00"); // Current time for testing
-        const diff = deadline.getTime() - now.getTime();
+  // Format currency
+  const formatCurrency = (amount: number) => {
+    return new Intl.NumberFormat("vi-VN", {
+      style: "currency",
+      currency: "VND",
+    }).format(amount);
+  };
 
-        if (diff > 0) {
-          const hours = Math.floor(diff / (1000 * 60 * 60));
-          const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
-          setTimeLeft(`${hours}h ${minutes}m`);
-        } else {
-          setTimeLeft("Đã hết hạn");
-        }
-      };
+  // Format date time
+  const formatDateTime = (dateString: string) => {
+    return new Date(dateString).toLocaleString("vi-VN", {
+      day: "2-digit",
+      month: "2-digit", 
+      year: "numeric",
+      hour: "2-digit",
+      minute: "2-digit",
+    });
+  };
 
-      updateTimeLeft();
-      const interval = setInterval(updateTimeLeft, 60000); // Update every minute
+  // Format time only
+  const formatTime = (dateString: string) => {
+    return new Date(dateString).toLocaleTimeString("vi-VN", {
+      hour: "2-digit",
+      minute: "2-digit",
+    });
+  };
 
-      return () => clearInterval(interval);
+  // Format date only
+  const formatDate = (dateString: string) => {
+    return new Date(dateString).toLocaleDateString("vi-VN", {
+      day: "2-digit",
+      month: "2-digit",
+      year: "numeric",
+    });
+  };
+
+  // Get status badge props
+  const getStatusBadgeProps = (status: string) => {
+    switch (status.toLowerCase()) {
+      case "confirmed":
+      case "success":
+      case "completed":
+        return {
+          className: "bg-green-500 text-white",
+          text: "Đã xác nhận",
+        };
+      case "pending":
+        return {
+          className: "bg-yellow-500 text-white",
+          text: "Đang chờ",
+        };
+      case "cancelled":
+        return {
+          className: "bg-red-500 text-white",
+          text: "Đã hủy",
+        };
+      default:
+        return {
+          className: "bg-gray-500 text-white",
+          text: status,
+        };
     }
-  }, [mockBookingResult.status, mockBookingResult.payment.paymentDeadline]);
+  };
+
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-gray-50 flex items-center justify-center w-full">
+        <Card>
+          <CardContent className="p-6 text-center">
+            <div className="flex flex-col items-center space-y-4">
+              <Clock className="w-8 h-8 text-blue-600 animate-spin" />
+              <p className="text-gray-600">Đang tải thông tin đặt vé...</p>
+            </div>
+          </CardContent>
+        </Card>
+      </div>
+    );
+  }
+
+  if (error || !paymentDetails) {
+    return (
+      <div className="min-h-screen bg-gray-50 flex items-center justify-center w-full">
+        <Card className="border-red-200 bg-red-50">
+          <CardContent className="p-6 text-center">
+            <div className="flex flex-col items-center space-y-4">
+              <AlertCircle className="w-8 h-8 text-red-600" />
+              <p className="text-red-700">{error || "Không tìm thấy thông tin đặt vé."}</p>
+              <Button 
+                onClick={() => window.location.reload()} 
+                variant="outline"
+                className="border-red-300 text-red-700 hover:bg-red-100"
+              >
+                Thử lại
+              </Button>
+            </div>
+          </CardContent>
+        </Card>
+      </div>
+    );
+  }
+
+  const statusBadgeProps = getStatusBadgeProps(paymentDetails.status);
+  const isSuccess = paymentDetails.status.toLowerCase() === 'success' || 
+                   paymentDetails.status.toLowerCase() === 'completed' ||
+                   paymentDetails.status.toLowerCase() === 'confirmed';
 
   return (
-    <div className="min-h-screen bg-gray-50 w-full ">
+    <div className="min-h-screen bg-gray-50 w-full">
       {/* Header */}
       <div className="bg-white shadow-sm border-b">
         <div className="px-4 py-4 w-full">
@@ -188,20 +302,26 @@ export default function BookingSuccess({ params }: PageProps) {
 
       <div className="px-4 py-8 w-full">
         <div className="space-y-6">
-          {/* Success Message */}
-          <Card className="border-green-200 bg-green-50">
+          {/* Success/Status Message */}
+          <Card className={isSuccess ? "border-green-200 bg-green-50" : "border-yellow-200 bg-yellow-50"}>
             <CardContent className="p-6 text-center">
               <div className="flex flex-col items-center space-y-4">
-                <div className="w-16 h-16 bg-green-500 rounded-full flex items-center justify-center">
-                  <CheckCircle className="w-8 h-8 text-white" />
+                <div className={`w-16 h-16 ${isSuccess ? 'bg-green-500' : 'bg-yellow-500'} rounded-full flex items-center justify-center`}>
+                  {isSuccess ? (
+                    <CheckCircle className="w-8 h-8 text-white" />
+                  ) : (
+                    <Clock className="w-8 h-8 text-white" />
+                  )}
                 </div>
                 <div>
-                  <h1 className="text-2xl font-bold text-green-800 mb-2">
-                    Đặt vé thành công!
+                  <h1 className={`text-2xl font-bold ${isSuccess ? 'text-green-800' : 'text-yellow-800'} mb-2` }>
+                    {isSuccess ? 'Đặt vé thành công!' : 'Đặt vé đang xử lý!'}
                   </h1>
-                  <p className="text-green-700">
-                    Cảm ơn bạn đã sử dụng dịch vụ của BUSIFY. Thông tin đặt vé
-                    đã được xác nhận.
+                  <p className={isSuccess ? 'text-green-700' : 'text-yellow-700'}>
+                    {isSuccess 
+                      ? 'Cảm ơn bạn đã sử dụng dịch vụ của BUSIFY. Thông tin đặt vé đã được xác nhận.'
+                      : 'Đặt vé của bạn đang được xử lý. Vui lòng chờ xác nhận.'
+                    }
                   </p>
                 </div>
               </div>
@@ -221,7 +341,7 @@ export default function BookingSuccess({ params }: PageProps) {
                   <div className="flex items-center justify-between p-4 bg-gray-50 rounded-lg">
                     <div>
                       <p className="text-2xl font-bold text-green-600">
-                        {mockBookingResult.bookingCode}
+                        {paymentDetails.bookingDetails.bookingCode}
                       </p>
                       <p className="text-sm text-gray-500">
                         Vui lòng lưu mã này để tra cứu
@@ -243,47 +363,48 @@ export default function BookingSuccess({ params }: PageProps) {
               {/* Trip Info */}
               <Card>
                 <CardHeader>
-                  <CardTitle>Thông tin chuyến đi</CardTitle>
+                  <CardTitle className="flex items-center gap-2">
+                    <MapPin className="w-5 h-5 text-blue-600" />
+                    Thông tin chuyến đi
+                  </CardTitle>
                 </CardHeader>
-                <CardContent className="space-y-3">
-                  <div>
-                    <p className="text-sm text-gray-500">Tuyến đường</p>
-                    <p className="font-semibold">
-                      {mockBookingResult.trip.route}
-                    </p>
+                <CardContent className="space-y-4">
+                  <div className="flex items-center justify-between p-3 bg-blue-50 rounded-lg">
+                    <div className="text-center">
+                      <p className="text-sm text-gray-500">Điểm đi</p>
+                      <p className="font-semibold text-blue-800">
+                        {paymentDetails.bookingDetails.departureName}
+                      </p>
+                      <p className="text-sm text-blue-600">
+                        {formatTime(paymentDetails.bookingDetails.departureTime)}
+                      </p>
+                    </div>
+                    <div className="flex-1 flex justify-center">
+                      <ArrowRight className="w-6 h-6 text-blue-600" />
+                    </div>
+                    <div className="text-center">
+                      <p className="text-sm text-gray-500">Điểm đến</p>
+                      <p className="font-semibold text-blue-800">
+                        {paymentDetails.bookingDetails.arrivalName}
+                      </p>
+                      <p className="text-sm text-blue-600">
+                        {formatTime(paymentDetails.bookingDetails.arrivalTime)}
+                      </p>
+                    </div>
                   </div>
-                  <div>
-                    <p className="text-sm text-gray-500">Nhà xe</p>
-                    <p className="font-semibold">
-                      {mockBookingResult.trip.operator}
-                    </p>
-                  </div>
+
                   <div className="grid grid-cols-2 gap-4">
                     <div>
-                      <p className="text-sm text-gray-500">Khởi hành</p>
+                      <p className="text-sm text-gray-500">Ngày khởi hành</p>
                       <p className="font-semibold">
-                        {mockBookingResult.trip.departureTime}
+                        {formatDate(paymentDetails.bookingDetails.departureTime)}
                       </p>
                     </div>
                     <div>
-                      <p className="text-sm text-gray-500">Ngày đi</p>
+                      <p className="text-sm text-gray-500">Ngày đến</p>
                       <p className="font-semibold">
-                        {mockBookingResult.trip.date}
+                        {formatDate(paymentDetails.bookingDetails.arrivalTime)}
                       </p>
-                    </div>
-                  </div>
-                  <div>
-                    <p className="text-sm text-gray-500">Ghế đã đặt</p>
-                    <div className="flex gap-2 mt-1">
-                      {mockBookingResult.seats.map((seat) => (
-                        <Badge
-                          key={seat}
-                          variant="secondary"
-                          className="bg-green-100 text-green-700"
-                        >
-                          {seat}
-                        </Badge>
-                      ))}
                     </div>
                   </div>
                 </CardContent>
@@ -292,125 +413,113 @@ export default function BookingSuccess({ params }: PageProps) {
 
             {/* Right Column */}
             <div className="space-y-6">
-              {/* Status & Payment */}
+              {/* Status */}
               <Card>
                 <CardHeader>
                   <CardTitle className="flex items-center gap-2">
-                    <Calendar className="w-5 h-5 text-green-600" />
-                    Trạng thái vé
+                    <CheckCircle className="w-5 h-5 text-green-600" />
+                    Trạng thái đặt vé
+                  </CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <div className="flex items-center justify-between">
+                    <span>Trạng thái</span>
+                    <Badge className={statusBadgeProps.className}>
+                      {statusBadgeProps.text}
+                    </Badge>
+                  </div>
+                </CardContent>
+              </Card>
+
+              {/* Payment Information */}
+              <Card>
+                <CardHeader>
+                  <CardTitle className="flex items-center gap-2">
+                    <CreditCard className="w-5 h-5 text-blue-600" />
+                    Thông tin thanh toán
                   </CardTitle>
                 </CardHeader>
                 <CardContent className="space-y-4">
-                  <div className="flex items-center justify-between">
-                    <span>Trạng thái</span>
-                    <Badge
-                      variant={
-                        mockBookingResult.status === "confirmed"
-                          ? "default"
-                          : "secondary"
-                      }
-                      className={
-                        mockBookingResult.status === "confirmed"
-                          ? "bg-green-500 text-white"
-                          : "bg-yellow-100 text-yellow-800"
-                      }
-                    >
-                      {mockBookingResult.status === "confirmed"
-                        ? "Đã xác nhận"
-                        : "Chờ thanh toán"}
-                    </Badge>
-                  </div>
-
-                  <Separator />
-
-                  <div className="space-y-2">
-                    <div className="flex justify-between">
-                      <span>Tổng tiền</span>
-                      <span className="font-semibold">
-                        {mockBookingResult.payment.totalAmount.toLocaleString(
-                          "vi-VN"
-                        )}
-                        đ
-                      </span>
-                    </div>
-                    <div className="flex justify-between">
-                      <span>Đã thanh toán</span>
-                      <span className="text-green-600 font-semibold">
-                        {mockBookingResult.payment.paidAmount.toLocaleString(
-                          "vi-VN"
-                        )}
-                        đ
-                      </span>
-                    </div>
-                    {mockBookingResult.payment.remainingAmount > 0 && (
-                      <div className="flex justify-between">
-                        <span>Còn lại</span>
-                        <span className="text-orange-600 font-semibold">
-                          {mockBookingResult.payment.remainingAmount.toLocaleString(
-                            "vi-VN"
-                          )}
-                          đ
+                  <div className="space-y-3">
+                    <div>
+                      <p className="text-sm text-gray-500">Phương thức thanh toán</p>
+                      <div className="flex items-center gap-2 mt-1">
+                        <Banknote className="w-4 h-4 text-blue-600" />
+                        <span className="font-semibold">
+                          {paymentDetails.paymentMethod}
                         </span>
                       </div>
+                    </div>
+
+                    <div>
+                      <p className="text-sm text-gray-500">Số tiền đã thanh toán</p>
+                      <p className="font-semibold text-green-600 text-lg">
+                        {formatCurrency(paymentDetails.amount)}
+                      </p>
+                    </div>
+
+                    {paymentDetails.paidAt && (
+                      <div>
+                        <p className="text-sm text-gray-500">Ngày thanh toán</p>
+                        <p className="font-semibold">
+                          {formatDateTime(paymentDetails.paidAt)}
+                        </p>
+                      </div>
                     )}
+
+                    <div>
+                      <p className="text-sm text-gray-500">Mã giao dịch</p>
+                      <p className="font-semibold text-blue-600">
+                        {paymentDetails.transactionCode}
+                      </p>
+                    </div>
                   </div>
 
-                  {/* Payment Reminder */}
-                  {mockBookingResult.status === "pending" && (
-                    <Card className="bg-orange-50 border-orange-200">
-                      <CardContent className="p-4">
-                        <div className="flex items-start gap-2">
-                          <AlertCircle className="w-4 h-4 text-orange-600 mt-0.5" />
-                          <div className="space-y-2 text-sm">
-                            <p className="font-medium text-orange-800">
-                              Nhắc nhở thanh toán:
-                            </p>
-                            <ul className="space-y-1 text-orange-700">
-                              <li>
-                                • Hạn thanh toán:{" "}
-                                {mockBookingResult.payment.paymentDeadline}
-                              </li>
-                              <li>
-                                • Thời gian còn lại:{" "}
-                                <span className="font-semibold">
-                                  {timeLeft}
-                                </span>
-                              </li>
-                              <li>
-                                • Vé sẽ bị hủy nếu không thanh toán đúng hạn
-                              </li>
-                            </ul>
-                          </div>
-                        </div>
-                      </CardContent>
-                    </Card>
+                  {isSuccess && (
+                    <div className="mt-4 p-3 bg-green-50 rounded-lg border border-green-200">
+                      <div className="flex items-center gap-2">
+                        <CheckCircle className="w-4 h-4 text-green-600" />
+                        <span className="text-sm font-medium text-green-800">
+                          Thanh toán thành công
+                        </span>
+                      </div>
+                    </div>
                   )}
                 </CardContent>
               </Card>
 
-              {/* Passenger Info */}
+              {/* Customer Info */}
               <Card>
                 <CardHeader>
-                  <CardTitle>Thông tin hành khách</CardTitle>
+                  <CardTitle className="flex items-center gap-2">
+                    <User className="w-5 h-5 text-purple-600" />
+                    Thông tin khách hàng
+                  </CardTitle>
                 </CardHeader>
                 <CardContent className="space-y-3">
                   <div>
                     <p className="text-sm text-gray-500">Họ và tên</p>
                     <p className="font-semibold">
-                      {mockBookingResult.passenger.name}
+                      {paymentDetails.customerName}
                     </p>
                   </div>
                   <div>
                     <p className="text-sm text-gray-500">Số điện thoại</p>
-                    <p className="font-semibold">
-                      {mockBookingResult.passenger.phone}
-                    </p>
+                    <div className="flex items-center gap-2">
+                      <Phone className="w-4 h-4 text-gray-400" />
+                      <p className="font-semibold">
+                        {paymentDetails.customerPhone}
+                      </p>
+                    </div>
                   </div>
                   <div>
                     <p className="text-sm text-gray-500">Email</p>
-                    <p className="font-semibold">
-                      {mockBookingResult.passenger.email}
-                    </p>
+                    <div className="flex items-center gap-2">
+                      <Mail className="w-4 h-4 text-gray-400" />
+                      <p className="font-semibold">
+                        {paymentDetails.customerEmail}
+                      </p>
+                    </div>
                   </div>
                 </CardContent>
               </Card>
@@ -418,37 +527,35 @@ export default function BookingSuccess({ params }: PageProps) {
           </div>
 
           {/* Notifications */}
-          <Card>
-            <CardHeader>
-              <CardTitle>Thông báo xác nhận</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div className="grid md:grid-cols-2 gap-4">
-                <div className="flex items-center gap-3 p-4 bg-blue-50 rounded-lg">
-                  <Mail className="w-5 h-5 text-blue-600" />
-                  <div>
-                    <p className="font-medium text-blue-800">Email xác nhận</p>
-                    <p className="text-sm text-blue-600">
-                      {mockBookingResult.notifications.email
-                        ? `Đã gửi đến ${mockBookingResult.passenger.email}`
-                        : "Chưa gửi"}
-                    </p>
+          {isSuccess && (
+            <Card>
+              <CardHeader>
+                <CardTitle>Thông báo xác nhận</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="grid md:grid-cols-2 gap-4">
+                  <div className="flex items-center gap-3 p-4 bg-blue-50 rounded-lg">
+                    <Mail className="w-5 h-5 text-blue-600" />
+                    <div>
+                      <p className="font-medium text-blue-800">Email xác nhận</p>
+                      <p className="text-sm text-blue-600">
+                        Đã gửi đến {paymentDetails.customerEmail}
+                      </p>
+                    </div>
+                  </div>
+                  <div className="flex items-center gap-3 p-4 bg-green-50 rounded-lg">
+                    <MessageSquare className="w-5 h-5 text-green-600" />
+                    <div>
+                      <p className="font-medium text-green-800">SMS xác nhận</p>
+                      <p className="text-sm text-green-600">
+                        Đã gửi đến {paymentDetails.customerPhone}
+                      </p>
+                    </div>
                   </div>
                 </div>
-                <div className="flex items-center gap-3 p-4 bg-green-50 rounded-lg">
-                  <MessageSquare className="w-5 h-5 text-green-600" />
-                  <div>
-                    <p className="font-medium text-green-800">SMS xác nhận</p>
-                    <p className="text-sm text-green-600">
-                      {mockBookingResult.notifications.sms
-                        ? `Đã gửi đến ${mockBookingResult.passenger.phone}`
-                        : "Chưa gửi"}
-                    </p>
-                  </div>
-                </div>
-              </div>
-            </CardContent>
-          </Card>
+              </CardContent>
+            </Card>
+          )}
 
           {/* Actions */}
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
@@ -459,17 +566,15 @@ export default function BookingSuccess({ params }: PageProps) {
                 <ArrowRight className="w-4 h-4" />
               </Button>
             </Link>
-
-            {mockBookingResult.status === "pending" && (
-              <Link href={`/booking/payment/${mockBookingResult.bookingCode}`}>
-                <Button
-                  variant="outline"
-                  className="border-orange-500 text-orange-600 hover:bg-orange-50 bg-transparent"
-                >
-                  <Clock className="w-4 h-4 mr-2" />
-                  Thanh toán ngay
-                </Button>
-              </Link>
+            {!isSuccess && (
+              <Button 
+                onClick={() => window.location.reload()} 
+                variant="outline"
+                className="flex items-center gap-2"
+              >
+                <Clock className="w-4 h-4" />
+                Kiểm tra lại
+              </Button>
             )}
           </div>
 
