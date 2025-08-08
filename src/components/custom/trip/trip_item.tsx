@@ -1,14 +1,16 @@
-import { Card, CardContent, CardHeader, CardTitle } from "../ui/card";
-import { Button } from "../ui/button";
-import { Badge } from "../ui/badge";
-import { Separator } from "../ui/separator";
+"use client";
+
+import { Card, CardContent, CardHeader, CardTitle } from "../../ui/card";
+import { Button } from "../../ui/button";
+import { Badge } from "../../ui/badge";
+import { Separator } from "../../ui/separator";
 import { Clock, MapPin, Users, Star, ArrowRight } from "lucide-react";
 import { format } from "date-fns";
-import { TripItemProps } from "@/app/passenger/page";
+import { TripItemProps } from "@/lib/data/trip";
+import { redirect } from "next/navigation";
 import Link from "next/link";
 
 const TripItem = ({ trip }: { trip: TripItemProps }) => {
-
   const getAvailabilityColor = (seats: number) => {
     if (seats <= 5) return "bg-red-100 text-red-700";
     if (seats <= 10) return "bg-yellow-100 text-yellow-700";
@@ -24,7 +26,7 @@ const TripItem = ({ trip }: { trip: TripItemProps }) => {
   // Parse ISO 8601 format dates properly
   const departureDateObj = new Date(trip.departure_time);
   const arrivalDateObj = new Date(trip.arrival_time);
-  
+
   // Format the times
   const departure_time = format(departureDateObj, "HH:MM");
   const arrival_time = format(arrivalDateObj, "HH:MM");
@@ -37,12 +39,17 @@ const TripItem = ({ trip }: { trip: TripItemProps }) => {
   const minutes = Math.round(trip_duration_minutes % 60);
   const duration =
     minutes === 0 ? `${hours} giờ` : `${hours} giờ ${minutes} phút`;
-  
+
   // Format the dates
   const departureDate = format(departureDateObj, "dd/MM/yyyy");
 
   return (
-    <Card className="hover:shadow-lg transition-shadow duration-200 border-l-4 border-l-green-500">
+    <Card
+      className="hover:shadow-lg transition-shadow duration-200 border-l-4 border-l-green-500"
+      onClick={() => {
+        redirect(`/trips/${trip.trip_id}`);
+      }}
+    >
       <CardHeader className="pb-1">
         <div className="flex justify-between items-start">
           <div className="flex-1">
@@ -118,15 +125,16 @@ const TripItem = ({ trip }: { trip: TripItemProps }) => {
             <p className="text-xs text-gray-500">vé</p>
           </div>
           <div className="flex gap-2">
-            <Button
-              variant="outline"
-              size="sm"
-              className="border-green-600 text-green-600 hover:bg-green-50"
-            >
-              <Link href={`/passenger/app/trip/${trip.trip_id}`}>
+            <Link href={`/trips/${trip.trip_id}`} className="hidden lg:block">
+              <Button
+                variant="outline"
+                size="sm"
+                className="border-green-600 text-green-600 hover:bg-green-50"
+              >
                 View Details
-              </Link>
-            </Button>
+              </Button>
+            </Link>
+
             <Button
               size="sm"
               className="bg-green-600 hover:bg-green-700 text-white"

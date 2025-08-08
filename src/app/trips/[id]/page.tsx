@@ -1,7 +1,7 @@
 import { Card, CardContent } from "@/components/ui/card";
 import "leaflet/dist/leaflet.css";
 import "leaflet-routing-machine/dist/leaflet-routing-machine.css";
-import TripOverviewCard from "@/components/custom/trip_overview_card";
+import TripOverviewCard from "@/components/custom/trip/trip_overview_card";
 import ReviewSection from "@/components/custom/review_section";
 import { TripHeroSection } from "@/components/custom/trip_detail/trip_hero_section";
 import { OperatorInfoCard } from "@/components/custom/trip_detail/operator_info_card";

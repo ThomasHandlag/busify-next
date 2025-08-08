@@ -1,7 +1,7 @@
 "use client";
 
 import React from "react";
-import { Card, CardContent, CardHeader, CardTitle } from "../ui/card";
+import { Card, CardContent, CardHeader, CardTitle } from "../../ui/card";
 import {
   Bus,
   Car,
@@ -14,10 +14,10 @@ import {
 } from "lucide-react";
 import { Separator } from "@radix-ui/react-separator";
 import dynamic from "next/dynamic";
-import { Badge } from "../ui/badge";
+import { Badge } from "../../ui/badge";
 import { TripDetail } from "@/lib/data/trip";
 
-const RouteMap = dynamic(() => import("./google_map"), {
+const RouteMap = dynamic(() => import("../google_map"), {
   ssr: false,
   loading: () => <div className="h-80 w-full bg-gray-200 animate-pulse" />,
 });

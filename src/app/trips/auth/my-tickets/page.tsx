@@ -161,7 +161,7 @@ export default function MyTicketsPage() {
   );
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-gray-50 w-full">
       {/* Header */}
       <div className="bg-white shadow-sm border-b">
         <div className="container mx-auto px-3 sm:px-4 lg:px-6 py-4 sm:py-6">

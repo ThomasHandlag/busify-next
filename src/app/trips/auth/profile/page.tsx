@@ -23,7 +23,7 @@ const ProfilePage = async () => {
       </div>
 
       <Card className="mb-6">
-        <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-6">
+        <CardHeader className="flex flex-col lg:flex-row items-center justify-between space-y-0 pb-6">
           <div className="flex items-center space-x-4">
             <Avatar className="h-20 w-20">
               <AvatarFallback className="bg-green-100 text-green-700 text-xl">

@@ -1,6 +1,6 @@
 import Footer from "@/components/custom/footer";
 import Tips from "@/components/custom/tips";
-import TripItem from "@/components/custom/trip_item";
+import TripItem from "@/components/custom/trip/trip_item";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -24,31 +24,17 @@ import {
 } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
-import { getUpcomingTrips } from "../../lib/data/trip";
+import { getUpcomingTrips, TripItemProps } from "@/lib/data/trip";
 import { getBusOperatorsRating } from "@/lib/data/bus_operator";
 import BusOperatorItem, {
   BusOperatorItemProps,
-} from "@/components/custom/bus_operator_item";
+} from "@/components/custom/bus_operator/bus_operator_item";
 
-export interface TripItemProps {
-  trip_id: number;
-  operator_name: string;
-  route: {
-    start_location: string;
-    end_location: string;
-  };
-  departure_time: string;
-  arrival_time: string;
-  available_seats: number;
-  average_rating: number;
-  price_per_seat: number;
-}
-
-const Passenger = async () => {
+const PassengerPage = async () => {
   const trips: TripItemProps[] = await getUpcomingTrips();
   const busOperators = await getBusOperatorsRating();
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-gray-50 items-start w-full">
       {/* Hero Section */}
       <div className="bg-gradient-to-br from-green-600 to-green-700 text-white flex items-center">
         <div className="container mx-auto px-4 py-8">
@@ -368,9 +354,7 @@ const Passenger = async () => {
           {trips.length > 0 ? (
             <div className="grid md:grid-cols-2 lg:grid-cols-2 gap-6">
               {trips.slice(0, 4).map((trip: TripItemProps) => (
-                <Link key={trip.trip_id} href={`/app/trip/${trip.trip_id}`}>
-                  <TripItem trip={trip} />
-                </Link>
+                <TripItem trip={trip} key={trip.trip_id} />
               ))}
             </div>
           ) : (
@@ -407,4 +391,4 @@ const Passenger = async () => {
   );
 };
 
-export default Passenger;
+export default PassengerPage;

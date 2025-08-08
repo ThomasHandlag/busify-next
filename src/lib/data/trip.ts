@@ -1,7 +1,21 @@
-import { TripItemProps } from "@/app/passenger/page";
 import api from "./axios-instance";
 import { Location } from "./location";
 
+export interface TripItemProps {
+  trip_id: number;
+  operator_name: string;
+  route: {
+    start_location: string;
+    end_location: string;
+  };
+  departure_time: string;
+  arrival_time: string;
+  available_seats: number;
+  average_rating: number;
+  price_per_seat: number;
+  status: string;
+  duration: string;
+}
 export interface TripDetail {
   trip_id: number;
   departure_time: string;
