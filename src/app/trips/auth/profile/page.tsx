@@ -1,4 +1,4 @@
-import { getUserProfile } from "@/lib/data/users";
+import { getUserProfileByEmail } from "@/lib/data/users";
 import {
   Card,
   CardContent,
@@ -9,11 +9,18 @@ import {
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Mail, Phone, MapPin, Calendar, User } from "lucide-react";
 import UpdateProfileDialog from "@/components/custom/profile/update_profile";
+import { getSession } from "next-auth/react";
+import { getServerSession } from "next-auth";
 
 export const dynamic = "force-static";
 
 const ProfilePage = async () => {
-  const userProfile = await getUserProfile(1);
+
+  const session = await getServerSession();
+
+  console.log("Server session: ",session);
+
+  const userProfile = await getUserProfileByEmail(session?.user?.email ?? "");
 
   return (
     <div className="container mx-auto p-6 max-w-4xl mb-10">

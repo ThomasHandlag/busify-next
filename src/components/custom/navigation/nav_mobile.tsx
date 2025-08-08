@@ -10,6 +10,7 @@ import {
 } from "@/components/ui/sheet";
 
 import { MenuIcon, Bus, Users, User, Building2 } from "lucide-react";
+import { signOut, useSession } from "next-auth/react";
 
 const NavMobile = ({
   isPassenger,
@@ -20,7 +21,7 @@ const NavMobile = ({
   isActive,
 }: NavDataProps) => {
   const [isOpen, setIsOpen] = useState(false);
-
+  const session = useSession();
   return (
     <div className="lg:hidden flex justify-between items-center w-full">
       <Sheet open={isOpen} onOpenChange={setIsOpen}>
@@ -189,7 +190,7 @@ const NavMobile = ({
             </div>
 
             <div className="p-6 border-t border-gray-200 space-y-3">
-              {true ? (
+              {session.status !== "authenticated" ? (
                 <>
                   <Button
                     variant="outline"
@@ -217,10 +218,13 @@ const NavMobile = ({
                   className="w-full justify-start"
                   asChild
                 >
-                  <Link href="/auth/signin" className="flex items-center space-x-2">
+                  <Button
+                    onClick={() => signOut()}
+                    className="flex items-center space-x-2"
+                  >
                     <User className="w-4 h-4" />
                     <span>Log out</span>
-                  </Link>
+                  </Button>
                 </Button>
               )}
             </div>

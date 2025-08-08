@@ -48,7 +48,7 @@ const PassengerPage = async () => {
             className="bg-white text-green-600 hover:bg-green-50"
           >
             <ShoppingCart className="mr-2 w-5 h-5" />
-            <Link href="/passenger/app">Start Booking Now</Link>
+            <Link href="/trips">Start Booking Now</Link>
           </Button>
         </div>
         <div className="sm::hidden mr-20">

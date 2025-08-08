@@ -14,6 +14,7 @@ import {
 } from "@/components/ui/navigation-menu";
 import { Badge } from "@/components/ui/badge";
 import { Bus, Users, User, Building2 } from "lucide-react";
+import { signOut, useSession } from "next-auth/react";
 
 const NavDesktop = ({
   isPassenger,
@@ -23,6 +24,8 @@ const NavDesktop = ({
   aboutMenuItems,
   isActive,
 }: NavDataProps) => {
+  const session = useSession();
+
   return (
     <div className="hidden lg:flex gap-6 w-full items-center justify-between">
       <div className="flex items-center space-x-3">
@@ -226,7 +229,7 @@ const NavDesktop = ({
         </NavigationMenuList>
       </NavigationMenu>
       {/* If authenticated hide this part */}
-      {true ? (
+      {session.status !== "authenticated" ? (
         <div className="flex items-center space-x-4">
           <Button variant="outline" size="sm" asChild>
             <Link href="/login" className="flex items-center space-x-2">
@@ -239,7 +242,7 @@ const NavDesktop = ({
           </Button>
         </div>
       ) : (
-        <Button>Log out</Button>
+        <Button onClick={() => signOut()}>Log out</Button>
       )}
     </div>
   );
