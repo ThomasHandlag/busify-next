@@ -2,6 +2,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { getBusOperatorById } from "@/lib/data/bus_operator";
 import { Bus, Star, Phone, MapPin } from "lucide-react";
+
 import Image from "next/image";
 
 export async function OperatorInfoCard({ id }: { id: number }) {
@@ -27,6 +28,7 @@ export async function OperatorInfoCard({ id }: { id: number }) {
       </CardHeader>
       <CardContent>
         <div className="flex items-center space-x-4 mb-4">
+
           <Image
             src={operatorDetail.logoUrl}
             alt={operatorDetail.name}

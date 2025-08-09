@@ -1,4 +1,5 @@
 import { Button } from "@/components/ui/button";
+
 import TripItem from "@/components/custom/trip/trip_item";
 import { TripItemProps } from "@/lib/data/trip";
 import { getSimilarTrips } from "@/lib/data/trip";

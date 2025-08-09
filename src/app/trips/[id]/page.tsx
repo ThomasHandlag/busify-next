@@ -93,6 +93,7 @@ export default async function TripDetailPage({
 
   const bookingBar = (
     <MobileBookingBar
+      tripId={tripId}
       layout={busLayout}
       seats={busSeats}
       pricePerSeat={tripDetail.price_per_seat}
