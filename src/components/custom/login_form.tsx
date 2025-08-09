@@ -12,6 +12,7 @@ import Link from "next/link";
 import { signIn } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import { BASE_URL } from "@/lib/constants/constants";
+import { toast } from "sonner";
 
 const LoginForm = () => {
   const [showPassword, setShowPassword] = React.useState(false);
@@ -59,18 +60,11 @@ const LoginForm = () => {
         router.push("/");
       } else {
         console.error("Login failed:", result?.error);
-        // Sử dụng form.setError thay vì alert
-        form.setError("email", {
-          type: "manual",
-          message: "Invalid email or password",
-        });
+        toast.error("Invalid email or password");
       }
     } catch (error) {
       console.error("Login error:", error);
-      form.setError("email", {
-        type: "manual",
-        message: "An error occurred while logging in",
-      });
+      toast.error("An error occurred during login");
     }
   };
 
