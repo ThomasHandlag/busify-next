@@ -31,20 +31,17 @@ export const RegisterForm = () => {
   // Define the form schema using Zod
   const formSchema = z
     .object({
-      fullName: z.string().min(2, "Full name is required").max(50),
-      email: z.string().email("Invalid email address").min(2).max(50),
+      fullName: z.string().min(2, "Họ và tên là bắt buộc").max(50),
+      email: z.string().email("Địa chỉ email không hợp lệ").min(2).max(50),
       phone: z.string().optional(),
-      password: z
-        .string()
-        .min(6, "Password must be at least 6 characters")
-        .max(100),
+      password: z.string().min(6, "Mật khẩu phải có ít nhất 6 ký tự").max(100),
       confirmPassword: z
         .string()
-        .min(6, "Confirm Password must be at least 6 characters")
+        .min(6, "Xác nhận mật khẩu phải có ít nhất 6 ký tự")
         .max(100),
     })
     .refine((data) => data.password === data.confirmPassword, {
-      message: "Passwords do not match",
+      message: "Mật khẩu không khớp nhau",
       path: ["confirmPassword"],
     });
   const form = useForm<z.infer<typeof formSchema>>({
@@ -74,9 +71,7 @@ export const RegisterForm = () => {
         setRegistrationSuccess(true);
       } else {
         // Handle error
-        toast.error(
-          response.message || "Registration failed. Please try again."
-        );
+        toast.error((response.message as string) || "Registration failed");
       }
     } catch (error) {
       console.error("Registration error:", error);
@@ -96,11 +91,12 @@ export const RegisterForm = () => {
     };
 
     const unmetRequirements = [];
-    if (!requirements.length) unmetRequirements.push("At least 6 characters");
-    if (!requirements.uppercase) unmetRequirements.push("One uppercase letter");
-    if (!requirements.lowercase) unmetRequirements.push("One lowercase letter");
-    if (!requirements.number) unmetRequirements.push("One number");
-    if (!requirements.special) unmetRequirements.push("One special character");
+    if (!requirements.length) unmetRequirements.push("Ít nhất 6 ký tự");
+    if (!requirements.uppercase) unmetRequirements.push("Một chữ cái viết hoa");
+    if (!requirements.lowercase)
+      unmetRequirements.push("Một chữ cái viết thường");
+    if (!requirements.number) unmetRequirements.push("Một chữ số");
+    if (!requirements.special) unmetRequirements.push("Một ký tự đặc biệt");
 
     const strength = Object.values(requirements).filter(Boolean).length;
 
@@ -233,29 +229,32 @@ export const RegisterForm = () => {
                         </button>
                       </div>
                       {field.value && (
-                        <div className="mt-2 space-y-1">
-                          {passwordRequirements.unmetRequirements.length > 0 ? (
-                            passwordRequirements.unmetRequirements.map(
-                              (requirement, index) => (
-                                <div
-                                  key={index}
-                                  className="flex items-center space-x-2"
-                                >
-                                  <span className="w-1.5 h-1.5 bg-red-400 rounded-full"></span>
-                                  <span className="text-xs text-red-600">
-                                    {requirement}
-                                  </span>
-                                </div>
-                              )
-                            )
-                          ) : (
-                            <div className="flex items-center space-x-2">
-                              <FaCheck className="w-3 h-3 text-green-500" />
-                              <span className="text-xs text-green-600">
-                                Password meets all requirements
+                        <div className="mt-2">
+                          <p className="text-xs">
+                            {passwordRequirements.strength >= 3 ? (
+                              <span className="text-green-600">
+                                Mật khẩu đủ mạnh
                               </span>
-                            </div>
-                          )}
+                            ) : (
+                              <span className="text-red-500">
+                                Cần:{" "}
+                                {[
+                                  !passwordRequirements.requirements.length &&
+                                    "6+ ký tự",
+                                  !passwordRequirements.requirements
+                                    .uppercase && "chữ hoa",
+                                  !passwordRequirements.requirements
+                                    .lowercase && "chữ thường",
+                                  !passwordRequirements.requirements.number &&
+                                    "số",
+                                  !passwordRequirements.requirements.special &&
+                                    "ký tự đặc biệt",
+                                ]
+                                  .filter(Boolean)
+                                  .join(", ")}
+                              </span>
+                            )}
+                          </p>
                         </div>
                       )}
                     </FormItem>
@@ -359,7 +358,7 @@ export const RegisterForm = () => {
                   href="/login"
                   className="text-green-600 hover:text-green-700 font-semibold"
                 >
-                  Sign in here
+                  Sign in
                 </Link>
               </p>
             </div>
