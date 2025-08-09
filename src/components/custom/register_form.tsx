@@ -9,6 +9,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { register } from "@/lib/data/auth";
 import React from "react";
 import Link from "next/link";
+import { toast } from "sonner";
 export const RegisterForm = () => {
   const [showPassword, setShowPassword] = React.useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = React.useState(false);
@@ -70,17 +71,11 @@ export const RegisterForm = () => {
         setRegistrationSuccess(true);
       } else {
         // Handle error
-        form.setError("email", {
-          type: "manual",
-          message: (response.message as string) || "Registration failed",
-        });
+        toast.error((response.message as string) || "Registration failed");
       }
     } catch (error) {
       console.error("Registration error:", error);
-      form.setError("email", {
-        type: "manual",
-        message: "An error occurred during registration",
-      });
+      toast.error("An error occurred during registration");
     } finally {
       setIsSubmitting(false);
     }
