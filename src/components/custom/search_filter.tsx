@@ -27,7 +27,9 @@ import { TripFilterQuery } from "@/lib/data/trip";
 import { useForm } from "react-hook-form";
 import { Form, FormField, FormItem, FormLabel } from "../ui/form";
 import { Input } from "../ui/input";
-import { OperatorMultiSelect } from "./operator_multi_select";
+
+import { OperatorMultiSelect } from "./bus_operator/operator_multi_select";
+
 
 type SearchFilterProps = {
   onApplyFilters: (filters: TripFilterQuery | null) => void;

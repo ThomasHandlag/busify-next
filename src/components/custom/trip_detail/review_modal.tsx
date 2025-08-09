@@ -20,7 +20,8 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
-import { addReviewClient, Review } from "@/lib/data/reviews";
+
+import { addReviewClient } from "@/lib/data/reviews";
 import { toast } from "sonner";
 
 type ReviewFormValues = {
@@ -134,7 +135,8 @@ export function ReviewModal({ tripId }: { tripId: number }) {
             <Button
               type="submit"
               className="w-full"
-              disabled={form.getValues().comment.trim() === ""}
+
+              disabled={form.getValues().comment.trim() === "" || loading}
             >
               {loading && <Loader2 className="animate-spin mr-2" />}
               Gửi đánh giá

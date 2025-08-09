@@ -13,11 +13,14 @@ import {
 import { Armchair } from "lucide-react";
 import { Seat } from "@/lib/data/trip_seats";
 import { BusLayout } from "@/lib/data/bus";
+
 import { PassengerInfo, PassengerInfoForm } from "@/components/custom/trip_detail/PassengerInfoForm";
 import { useRouter } from "next/navigation";
 import form from "antd/es/form";
 import { FormInstance } from "antd";
 import { toast } from "sonner";
+
+
 
 interface SeatSelectionCardProps {
   tripId: string;
@@ -35,11 +38,18 @@ export function SeatSelectionCard({
   onSeatSelection,
 }: SeatSelectionCardProps) {
   const [selectedSeats, setSelectedSeats] = useState<string[]>([]);
+
   const router = useRouter();
   const [formInstance, setFormInstance] = useState<FormInstance | null>(null);
+
+
+
   // Generate seats based on layout
   const generateSeatsFromLayout = () => {
     const generatedSeats: Seat[] = [];
+
+
+    // Return the provided seats if layout is null
 
     if (!layout) {
       return seats;
@@ -55,8 +65,12 @@ export function SeatSelectionCard({
             1;
           const seatName = `${String.fromCharCode(65 + col)}.${row}.${floor}`;
 
+
+       
+
+          // Find status from trip seats data if available
           const seatStatus =
-            seats.find((s) => s.seat_number === seatName)?.status ||
+            seats?.find((s) => s.seat_number === seatName)?.status ||
             "available";
 
           generatedSeats.push({
@@ -98,6 +112,8 @@ export function SeatSelectionCard({
 
   const totalPrice = selectedSeats.length * pricePerSeat;
 
+
+  // Handle null layout
   if (!layout) {
     return (
       <Card className="overflow-y-auto max-h-[80vh] scrollbar-hide">
@@ -113,6 +129,9 @@ export function SeatSelectionCard({
   const floors = layout.floors || 1;
   const rows = layout.rows || 0;
   const cols = layout.cols || 0;
+
+
+  
 
   const renderFloorSeats = (floorNumber: number) => {
     const floorSeats = allSeats.filter(
@@ -230,7 +249,8 @@ export function SeatSelectionCard({
       </CardContent>
       <CardFooter>
         <div className="border-t bg-white p-4 mt-auto flex flex-col justify-center w-full">
-          <div className="bg-blue-50 p-3 rounded-lg mb-4 border border-blue-200 w-full">
+          
+          <div className="bg-blue-50 p-3 rounded-lg mb-2 border border-blue-200 w-full">
             <div className="flex items-center space-x-2 mb-2">
               <Armchair className="w-4 h-4 text-green-500" />
               <h4 className="font-medium text-blue-900">
@@ -253,9 +273,12 @@ export function SeatSelectionCard({
             className="w-full bg-blue-600 hover:bg-blue-700 text-white mt-4"
             disabled={selectedSeats.length === 0}
             onClick={() => formInstance?.submit()}
-          >
+          > Đặt vé
+            </Button>
+          {/* <Button className="w-full">
+            <Armchair className="w-4 h-4 mr-2" />
             Đặt vé ({selectedSeats.length} ghế)
-          </Button>
+          </Button> */}
         </div>
       </CardFooter>
 

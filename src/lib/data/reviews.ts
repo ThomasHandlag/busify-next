@@ -1,5 +1,7 @@
 import api from "./axios-instance";
 
+import ResponseError, { printError } from "./response_error";
+
 export interface Review {
   reviewId: number;
   customerName: string;
@@ -16,6 +18,9 @@ const getReviewsByOperatorId = async (
     const response = await api.get(`api/reviews/bus-operator/${operatorId}`);
     return response.data.result.reviews;
   } catch (error) {
+
+    const errorMessage = error as ResponseError;
+    printError(errorMessage);
     return [];
   }
 };
@@ -27,6 +32,9 @@ const getReviewsByCustomerId = async (
     const response = await api.get(`api/reviews/customer/${customerId}`);
     return response.data.result.reviews;
   } catch (error) {
+
+    const errorMessage = error as ResponseError;
+    printError(errorMessage);
     return [];
   }
 };
@@ -36,6 +44,9 @@ const getReviewsByTripId = async (tripId: number): Promise<Review[]> => {
     const response = await api.get(`api/reviews/trip/${tripId}`);
     return response.data.result.reviews;
   } catch (error) {
+
+    const errorMessage = error as ResponseError;
+    printError(errorMessage);
     return [];
   }
 };
@@ -50,6 +61,9 @@ const addReview = async (review: {
     const response = await api.post(`api/reviews/trip`, review);
     return response.data.result;
   } catch (error) {
+
+    const errorMessage = error as ResponseError;
+    printError(errorMessage);
     return null;
   }
 };

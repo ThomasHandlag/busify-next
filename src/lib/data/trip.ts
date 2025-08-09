@@ -1,33 +1,47 @@
-import { TripItemProps } from "@/app/passenger/page";
 import api from "./axios-instance";
 import { Location } from "./location";
 
+
+export interface TripItemProps {
+  trip_id: number;
+  operator_name: string;
+  route: {
+    start_location: string;
+    end_location: string;
+  };
+  departure_time: string;
+  arrival_time: string;
+  available_seats: number;
+  average_rating: number;
+  price_per_seat: number;
+  status: string;
+  duration: string;
+}
 export interface TripDetail {
-  id: number;
-  departureTime: string;
-  arrivalTime: string;
-  availableSeats: number;
-  averageRating: number;
-  totalReviews: number;
+  trip_id: number;
+  departure_time: string;
+  arrival_time: string;
+  available_seats: number;
+  average_rating: number;
+  total_reviews: number;
   bus: {
-    id: number;
-    licensePlate: string;
+    bus_id: number;
+    license_plate: string;
     name: string;
-    totalSeats: number;
+    total_seats: number;
     amenities: string[];
   };
-  pricePerSeat: number;
+  price_per_seat: number;
   route: {
-    id: number;
-    startLocation: Location;
-    estimatedDuration: string;
-    endLocation: Location;
+    route_id: number;
+    start_location: Location;
+    estimated_duration: string;
+    end_location: Location;
   };
-  operator: {
-    name: string;
-    id: number;
-  };
-  routeStop: Location[];
+  operator_name: string;
+  operator_id: number;
+  route_stops: Location[];
+
 }
 
 export interface Trip {
@@ -105,8 +119,10 @@ export async function filterTripsClient(
 export async function getTripDetail(tripId: number): Promise<TripDetail> {
   try {
     const res = await api.get(`api/trips/${tripId}`);
-    console.log("API response for trip detail:", res.data); // Thêm log
-    return res.data.result;
+
+    console.log("Trip detail response:", res.data.result.routeStops);
+    return res.data.result as TripDetail;
+
   } catch (error) {
     console.error("Error fetching trip detail:", error);
     throw error;
@@ -121,6 +137,8 @@ export async function getSimilarTrips(
     return res.data.result as TripItemProps[];
   } catch (error) {
     console.error("Error fetching similar trips:", error);
-    throw error;
+
+
+    return [];
   }
 }

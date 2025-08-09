@@ -1,304 +1,3 @@
-// "use client";
-
-// import { useSearchParams } from "next/navigation";
-// import { useEffect, useState, useMemo } from "react";
-// import BookingInteractiveSection from "@/components/custom/booking/BookingInteractiveSection";
-// import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-// import { Badge } from "@/components/ui/badge";
-// import { MapPin, Clock, User } from "lucide-react";
-// import { Label } from "@radix-ui/react-label";
-// import React from "react";
-
-// interface TripApiResponse {
-//   code: number;
-//   message: string;
-//   result: {
-//     departureTime: string;
-//     bus: {
-//       licensePlate: string;
-//       name: string;
-//       seats: number;
-//     };
-//     pricePerSeat: number;
-//     route: {
-//       startLocation: {
-//         address: string;
-//         city: string;
-//         latitude: number;
-//         name: string;
-//         longtitude: number;
-//       };
-//       estimatedDuration: string; // Đổi thành string để khớp với API
-//       endLocation: {
-//         address: string;
-//         city: string;
-//         latitude: number;
-//         name: string;
-//         longtitude: number;
-//       };
-//     };
-//     id: number;
-//     operator: {
-//       name: string;
-//       id: number;
-//     };
-//     routeStop: Array<{
-//       address: string;
-//       city: string;
-//       latitude: number;
-//       longtitude: number;
-//       time_offset_from_start: number;
-//     }>;
-//   };
-// }
-
-// interface BookingData {
-//   trip: {
-//     route: string;
-//     operator: string;
-//     departureTime: string;
-//     arrivalTime: string;
-//     date: string;
-//     duration: string;
-//   };
-//   selectedSeats: string[];
-//   passenger: {
-//     fullName: string;
-//     phone: string;
-//     email: string;
-//   };
-//   pricing: {
-//     basePrice: number;
-//     totalPrice: number;
-//   };
-// }
-
-// interface PageProps {
-//   params: Promise<{ id: string }>;
-// }
-
-// export default function BookingConfirmation({ params }: PageProps) {
-//   const { id: tripId } = React.use(params);
-//   const searchParams = useSearchParams();
-
-//   // Lấy dữ liệu từ query params
-//   const selectedSeatsFromParams = useMemo(
-//     () => searchParams.get("seats")?.split(",") || [],
-//     [searchParams]
-//   );
-//   const fullName = searchParams.get("fullName") || "";
-//   const phone = searchParams.get("phone") || "";
-//   const email = searchParams.get("email") || "";
-//   const totalPriceFromParams = Number(searchParams.get("totalPrice")) || 0;
-
-//   // State để lưu dữ liệu
-//   const [tripData, setTripData] = useState<TripApiResponse | null>(null);
-//   const [bookingData, setBookingData] = useState<BookingData | null>(null);
-//   const [loading, setLoading] = useState(true);
-//   const [error, setError] = useState<string | null>(null);
-
-//   useEffect(() => {
-//     // Kiểm tra query params
-//     if (!selectedSeatsFromParams.length || !fullName || !phone || !email) {
-//       setError("Thông tin đặt vé không đầy đủ. Vui lòng kiểm tra lại.");
-//       setLoading(false);
-//       return;
-//     }
-
-//     const fetchTripData = async () => {
-//       setLoading(true);
-//       try {
-//         const response = await fetch(`http://localhost:8080/api/trips/${tripId}`, {
-//           cache: "no-store",
-//         });
-//         if (!response.ok) {
-//           if (response.status === 404) {
-//             throw new Error("Chuyến đi không tồn tại.");
-//           }
-//           throw new Error(`Lỗi khi gọi API: ${response.status}`);
-//         }
-//         const data: TripApiResponse = await response.json();
-//         setTripData(data);
-
-//         // Chuyển đổi estimatedDuration từ chuỗi sang số phút
-//         const durationMatch = data.result.route.estimatedDuration.match(/(\d+)\s*giờ\s*(\d+)\s*phút|(\d+)\s*giờ|(\d+)\s*phút/);
-//         let totalMinutes = 0;
-//         if (durationMatch) {
-//           const hours = Number(durationMatch[1]) || Number(durationMatch[3]) || 0;
-//           const minutes = Number(durationMatch[2]) || Number(durationMatch[4]) || 0;
-//           totalMinutes = hours * 60 + minutes;
-//         } else {
-//           console.warn("Định dạng estimatedDuration không hợp lệ:", data.result.route.estimatedDuration);
-//           totalMinutes = 0; // Giá trị mặc định nếu không parse được
-//         }
-
-//         // Chuyển đổi dữ liệu
-//         const departureTime = new Date(data.result.departureTime).toLocaleTimeString("vi-VN", {
-//           hour: "2-digit",
-//           minute: "2-digit",
-//         });
-//         const durationHours = Math.floor(totalMinutes / 60);
-//         const durationMinutes = totalMinutes % 60;
-//         const durationString = `${durationHours} giờ${durationMinutes > 0 ? ` ${durationMinutes} phút` : ""}`;
-
-//         const departureDateTime = new Date(data.result.departureTime);
-//         if (isNaN(departureDateTime.getTime())) {
-//           throw new Error("Thời gian khởi hành không hợp lệ từ API.");
-//         }
-//         const arrivalDateTime = new Date(departureDateTime.getTime() + totalMinutes * 60000);
-//         const arrivalTime = arrivalDateTime.toLocaleTimeString("vi-VN", {
-//           hour: "2-digit",
-//           minute: "2-digit",
-//         });
-
-//         setBookingData({
-//           trip: {
-//             route: `${data.result.route.startLocation.city} → ${data.result.route.endLocation.city}`,
-//             operator: data.result.operator.name,
-//             departureTime: departureTime,
-//             arrivalTime: arrivalTime,
-//             date: new Date(data.result.departureTime).toLocaleDateString("vi-VN"),
-//             duration: durationString,
-//           },
-//           selectedSeats: selectedSeatsFromParams,
-//           passenger: {
-//             fullName: decodeURIComponent(fullName),
-//             phone: decodeURIComponent(phone),
-//             email: decodeURIComponent(email),
-//           },
-//           pricing: {
-//             basePrice: data.result.pricePerSeat,
-//             totalPrice: totalPriceFromParams || (data.result.pricePerSeat * selectedSeatsFromParams.length),
-//           },
-//         });
-//       } catch (error: any) {
-//         console.error("Lỗi fetch API:", error.message);
-//         setError(error.message || "Không thể tải thông tin chuyến đi. Vui lòng thử lại sau.");
-//       } finally {
-//         setLoading(false);
-//       }
-//     };
-
-//     fetchTripData();
-//   }, [tripId, searchParams]);
-
-//   if (loading) return <div className="text-center py-8">Đang tải...</div>;
-//   if (error) return <div className="text-red-500 text-center py-8">{error}</div>;
-//   if (!bookingData) return <div className="text-center py-8">Không có dữ liệu để hiển thị</div>;
-
-//   return (
-//     <div className="min-h-screen bg-gray-50 w-full">
-//       <div className="bg-white shadow-sm border-b w-full">
-//         <div className="px-4 py-4">
-//           <div className="flex items-center gap-4">
-//             <span className="text-gray-600">Xác nhận thông tin đặt vé</span>
-//           </div>
-//         </div>
-//       </div>
-
-//       <div className="px-4 py-8">
-//         <div className="grid lg:grid-cols-3 gap-8">
-//           <div className="lg:col-span-2 space-y-6">
-//             <Card>
-//               <CardHeader>
-//                 <CardTitle className="flex items-center gap-2">
-//                   <MapPin className="w-5 h-5 text-green-600" />
-//                   Chi tiết chuyến đi
-//                 </CardTitle>
-//               </CardHeader>
-//               <CardContent className="space-y-4">
-//                 <div className="flex items-center justify-between">
-//                   <div>
-//                     <h3 className="font-semibold text-lg">
-//                       {bookingData.trip.route}
-//                     </h3>
-//                     <p className="text-gray-600">{bookingData.trip.operator}</p>
-//                   </div>
-//                   <Badge
-//                     variant="outline"
-//                     className="text-green-600 border-green-600"
-//                   >
-//                     {bookingData.trip.duration}
-//                   </Badge>
-//                 </div>
-//                 <div className="grid md:grid-cols-2 gap-4">
-//                   <div className="flex items-center gap-3">
-//                     <Clock className="w-4 h-4 text-gray-500" />
-//                     <div>
-//                       <p className="text-sm text-gray-500">Khởi hành</p>
-//                       <p className="font-medium">
-//                         {bookingData.trip.departureTime} -
-//                         {bookingData.trip.date}
-//                       </p>
-//                     </div>
-//                   </div>
-//                   <div className="flex items-center gap-3">
-//                     <Clock className="w-4 h-4 text-gray-500" />
-//                     <div>
-//                       <p className="text-sm text-gray-500">Dự kiến đến</p>
-//                       <p className="font-medium">
-//                         {bookingData.trip.arrivalTime} - {bookingData.trip.date}
-//                       </p>
-//                     </div>
-//                   </div>
-//                 </div>
-//               </CardContent>
-//             </Card>
-
-//             <Card>
-//               <CardHeader>
-//                 <CardTitle>Ghế đã chọn</CardTitle>
-//               </CardHeader>
-//               <CardContent>
-//                 <div className="flex gap-2">
-//                   {bookingData.selectedSeats.map((seat) => (
-//                     <Badge
-//                       key={seat}
-//                       variant="secondary"
-//                       className="bg-green-100 text-green-700"
-//                     >
-//                       Ghế {seat}
-//                     </Badge>
-//                   ))}
-//                 </div>
-//               </CardContent>
-//             </Card>
-
-//             <Card>
-//               <CardHeader>
-//                 <CardTitle className="flex items-center gap-2">
-//                   <User className="w-5 h-5 text-green-600" />
-//                   Thông tin hành khách
-//                 </CardTitle>
-//               </CardHeader>
-//               <CardContent className="space-y-3">
-//                 <div>
-//                   <Label className="text-sm text-gray-500">Họ và tên</Label>
-//                   <p className="font-medium">{bookingData.passenger.fullName}</p>
-//                 </div>
-//                 <div>
-//                   <Label className="text-sm text-gray-500">Số điện thoại</Label>
-//                   <p className="font-medium">{bookingData.passenger.phone}</p>
-//                 </div>
-//                 <div>
-//                   <Label className="text-sm text-gray-500">Email</Label>
-//                   <p className="font-medium">{bookingData.passenger.email}</p>
-//                 </div>
-//               </CardContent>
-//             </Card>
-//           </div>
-//           <div className="space-y-6">
-//             <BookingInteractiveSection
-//               initialTotalPrice={bookingData.pricing.totalPrice}
-//               mockData={bookingData}
-//             />
-//           </div>
-//         </div>
-//       </div>
-//     </div>
-//   );
-// }
-
 
 "use client";
 
@@ -315,23 +14,23 @@ interface TripApiResponse {
   code: number;
   message: string;
   result: {
-    departureTime: string;
+    departure_time: string;
     bus: {
-      licensePlate: string;
+      license_plate: string;
       name: string;
       seats: number;
     };
     pricePerSeat: number;
     route: {
-      startLocation: {
+      start_location: {
         address: string;
         city: string;
         latitude: number;
         name: string;
         longtitude: number;
       };
-      estimatedDuration: string;
-      endLocation: {
+      estimated_duration: string;
+      end_location: {
         address: string;
         city: string;
         latitude: number;
@@ -340,10 +39,8 @@ interface TripApiResponse {
       };
     };
     id: number;
-    operator: {
-      name: string;
-      id: number;
-    };
+    operator_name: string;
+    operator_id: number;
     routeStop: Array<{
       address: string;
       city: string;
@@ -424,19 +121,19 @@ export default function BookingConfirmation({ params }: PageProps) {
         setTripData(data);
 
         // Chuyển đổi estimatedDuration từ chuỗi sang số phút
-        const durationMatch = data.result.route.estimatedDuration.match(/(\d+)\s*giờ\s*(\d+)\s*phút|(\d+)\s*giờ|(\d+)\s*phút/);
+        const durationMatch = data.result.route.estimated_duration.match(/(\d+)\s*giờ\s*(\d+)\s*phút|(\d+)\s*giờ|(\d+)\s*phút/);
         let totalMinutes = 0;
         if (durationMatch) {
           const hours = Number(durationMatch[1]) || Number(durationMatch[3]) || 0;
           const minutes = Number(durationMatch[2]) || Number(durationMatch[4]) || 0;
           totalMinutes = hours * 60 + minutes;
         } else {
-          console.warn("Định dạng estimatedDuration không hợp lệ:", data.result.route.estimatedDuration);
+          console.warn("Định dạng estimatedDuration không hợp lệ:", data.result.route.estimated_duration);
           totalMinutes = 0;
         }
 
         // Chuyển đổi dữ liệu
-        const departureDateTime = new Date(data.result.departureTime);
+        const departureDateTime = new Date(data.result.departure_time);
         if (isNaN(departureDateTime.getTime())) {
           throw new Error("Thời gian khởi hành không hợp lệ từ API.");
         }
@@ -455,8 +152,8 @@ export default function BookingConfirmation({ params }: PageProps) {
 
         setBookingData({
           trip: {
-            route: `${data.result.route.startLocation.city} → ${data.result.route.endLocation.city}`,
-            operator: data.result.operator.name,
+            route: `${data.result.route.start_location.city} → ${data.result.route.end_location.city}`,
+            operator: data.result.operator_name,
             departureTime: departureTime,
             arrivalTime: arrivalTime,
             date: departureDateTime.toLocaleDateString("vi-VN"),

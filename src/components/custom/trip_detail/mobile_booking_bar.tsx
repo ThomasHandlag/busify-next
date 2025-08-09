@@ -15,6 +15,7 @@ import { Seat } from "@/lib/data/trip_seats";
 import { BusLayout } from "@/lib/data/bus";
 
 interface MobileBookingBarProps {
+
   tripId: string; // Thêm tripId
   layout: BusLayout | null;
   seats: Seat[];
@@ -23,8 +24,9 @@ interface MobileBookingBarProps {
   operatorName?: string; // Optional
 }
 
+
 export function MobileBookingBar({
-  tripId,
+tripId,
   busType,
   seats,
   layout,
@@ -36,7 +38,9 @@ export function MobileBookingBar({
 
   const children = layout ? (
     SeatSelectionCard({
+
       tripId,// Truyền tripId
+
       seats,
       layout,
       pricePerSeat,

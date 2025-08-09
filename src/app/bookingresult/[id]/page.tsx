@@ -160,7 +160,7 @@ export default function BookingResult() {
         setPaymentDetails(result.result);
       } catch (err: any) {
         console.error("Error fetching payment details:", err);
-        setError("Không thể tải chi tiết đặt vé. Vui lòng thanh toán! :).");
+        setError("Giao dịch không tồn tại hoặc chưa thanh toán !");
       } finally {
         setLoading(false);
       }

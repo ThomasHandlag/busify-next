@@ -25,7 +25,8 @@ const ReviewSection = async ({
 }: {
   mockTripDetail: TripDetail;
 }) => {
-  const reviews = await getReviewsByTripId(mockTripDetail.id);
+
+  const reviews = await getReviewsByTripId(mockTripDetail.trip_id);
   return (
     <Card>
       <CardHeader>

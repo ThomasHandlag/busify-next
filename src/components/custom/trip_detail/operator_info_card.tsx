@@ -2,31 +2,11 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { getBusOperatorById } from "@/lib/data/bus_operator";
 import { Bus, Star, Phone, MapPin } from "lucide-react";
-import { ImageWithFallback } from "@/components/custom/trip_detail/ImageWithFallback"; // Import Client Component
 
-export async function OperatorInfoCard({ id, name }: { id: number; name?: string }) {
-  let operatorDetail;
+import Image from "next/image";
 
-  try {
-    operatorDetail = await getBusOperatorById(id);
-    console.log("Fetched operator detail:", operatorDetail); // Thêm log
-  } catch (error) {
-    console.error("Error fetching operator detail:", error);
-  }
-
-  // Nếu không tìm thấy operatorDetail bằng id, sử dụng name làm fallback (nếu có)
-  if (!operatorDetail && name) {
-    console.log("Using fallback name:", name);
-    operatorDetail = {
-      id: 1, // Giá trị tạm thời
-      name,
-      logoUrl: "/placeholder-logo.png", // Giá trị mặc định
-      rating: 0,
-      totalReviews: 0,
-      hotline: "Chưa có thông tin",
-      address: "Chưa có thông tin",
-    } as const;
-  }
+export async function OperatorInfoCard({ id }: { id: number }) {
+  const operatorDetail = await getBusOperatorById(id);
 
   if (!operatorDetail) {
     return (
@@ -48,7 +28,8 @@ export async function OperatorInfoCard({ id, name }: { id: number; name?: string
       </CardHeader>
       <CardContent>
         <div className="flex items-center space-x-4 mb-4">
-          <ImageWithFallback
+
+          <Image
             src={operatorDetail.logoUrl}
             alt={operatorDetail.name}
             width={48}
