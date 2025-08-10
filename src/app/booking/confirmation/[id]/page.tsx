@@ -1,7 +1,6 @@
-
 "use client";
 
-import { useSearchParams, useRouter } from "next/navigation";
+import { useSearchParams } from "next/navigation";
 import { useEffect, useState, useMemo } from "react";
 import BookingInteractiveSection from "@/components/custom/booking/BookingInteractiveSection";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -9,6 +8,7 @@ import { Badge } from "@/components/ui/badge";
 import { MapPin, Clock, User } from "lucide-react";
 import { Label } from "@radix-ui/react-label";
 import React from "react";
+import { toast } from "sonner";
 
 interface TripApiResponse {
   code: number;
@@ -79,7 +79,6 @@ interface PageProps {
 export default function BookingConfirmation({ params }: PageProps) {
   const { id: tripId } = React.use(params);
   const searchParams = useSearchParams();
-  const router = useRouter();
 
   // Lấy dữ liệu từ query params
   const selectedSeatsFromParams = useMemo(
@@ -95,12 +94,11 @@ export default function BookingConfirmation({ params }: PageProps) {
   const [tripData, setTripData] = useState<TripApiResponse | null>(null);
   const [bookingData, setBookingData] = useState<BookingData | null>(null);
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     // Kiểm tra query params
     if (!selectedSeatsFromParams.length || !fullName || !phone || !email) {
-      setError("Thông tin đặt vé không đầy đủ. Vui lòng kiểm tra lại.");
+      toast.error("Thông tin đặt vé không đầy đủ. Vui lòng kiểm tra lại.");
       setLoading(false);
       return;
     }
@@ -108,9 +106,12 @@ export default function BookingConfirmation({ params }: PageProps) {
     const fetchTripData = async () => {
       setLoading(true);
       try {
-        const response = await fetch(`http://localhost:8080/api/trips/${tripId}`, {
-          cache: "no-store",
-        });
+        const response = await fetch(
+          `http://localhost:8080/api/trips/${tripId}`,
+          {
+            cache: "no-store",
+          }
+        );
         if (!response.ok) {
           if (response.status === 404) {
             throw new Error("Chuyến đi không tồn tại.");
@@ -121,14 +122,21 @@ export default function BookingConfirmation({ params }: PageProps) {
         setTripData(data);
 
         // Chuyển đổi estimatedDuration từ chuỗi sang số phút
-        const durationMatch = data.result.route.estimated_duration.match(/(\d+)\s*giờ\s*(\d+)\s*phút|(\d+)\s*giờ|(\d+)\s*phút/);
+        const durationMatch = data.result.route.estimated_duration.match(
+          /(\d+)\s*giờ\s*(\d+)\s*phút|(\d+)\s*giờ|(\d+)\s*phút/
+        );
         let totalMinutes = 0;
         if (durationMatch) {
-          const hours = Number(durationMatch[1]) || Number(durationMatch[3]) || 0;
-          const minutes = Number(durationMatch[2]) || Number(durationMatch[4]) || 0;
+          const hours =
+            Number(durationMatch[1]) || Number(durationMatch[3]) || 0;
+          const minutes =
+            Number(durationMatch[2]) || Number(durationMatch[4]) || 0;
           totalMinutes = hours * 60 + minutes;
         } else {
-          console.warn("Định dạng estimatedDuration không hợp lệ:", data.result.route.estimated_duration);
+          console.warn(
+            "Định dạng estimatedDuration không hợp lệ:",
+            data.result.route.estimated_duration
+          );
           totalMinutes = 0;
         }
 
@@ -141,14 +149,18 @@ export default function BookingConfirmation({ params }: PageProps) {
           hour: "2-digit",
           minute: "2-digit",
         });
-        const arrivalDateTime = new Date(departureDateTime.getTime() + totalMinutes * 60000);
+        const arrivalDateTime = new Date(
+          departureDateTime.getTime() + totalMinutes * 60000
+        );
         const arrivalTime = arrivalDateTime.toLocaleTimeString("vi-VN", {
           hour: "2-digit",
           minute: "2-digit",
         });
         const durationHours = Math.floor(totalMinutes / 60);
         const durationMinutes = totalMinutes % 60;
-        const durationString = `${durationHours} giờ${durationMinutes > 0 ? ` ${durationMinutes} phút` : ""}`;
+        const durationString = `${durationHours} giờ${
+          durationMinutes > 0 ? ` ${durationMinutes} phút` : ""
+        }`;
 
         setBookingData({
           trip: {
@@ -167,12 +179,14 @@ export default function BookingConfirmation({ params }: PageProps) {
           },
           pricing: {
             basePrice: data.result.pricePerSeat,
-            totalPrice: totalPriceFromParams || (data.result.pricePerSeat * selectedSeatsFromParams.length),
+            totalPrice:
+              totalPriceFromParams ||
+              data.result.pricePerSeat * selectedSeatsFromParams.length,
           },
         });
-      } catch (error: any) {
-        console.error("Lỗi fetch API:", error.message);
-        setError(error.message || "Không thể tải thông tin chuyến đi. Vui lòng thử lại sau.");
+      } catch (error) {
+        const errMessage = error as Error;
+        toast.error(`${errMessage.message ?? "Không tìm thấy thông tin."}`);
       } finally {
         setLoading(false);
       }
@@ -182,8 +196,8 @@ export default function BookingConfirmation({ params }: PageProps) {
   }, [tripId, searchParams]);
 
   if (loading) return <div className="text-center py-8">Đang tải...</div>;
-  if (error) return <div className="text-red-500 text-center py-8">{error}</div>;
-  if (!bookingData) return <div className="text-center py-8">Không có dữ liệu để hiển thị</div>;
+  if (!bookingData)
+    return <div className="text-center py-8">Không có dữ liệu để hiển thị</div>;
 
   return (
     <div className="min-h-screen bg-gray-50 w-full">
@@ -273,7 +287,9 @@ export default function BookingConfirmation({ params }: PageProps) {
               <CardContent className="space-y-3">
                 <div>
                   <Label className="text-sm text-gray-500">Họ và tên</Label>
-                  <p className="font-medium">{bookingData.passenger.fullName}</p>
+                  <p className="font-medium">
+                    {bookingData.passenger.fullName}
+                  </p>
                 </div>
                 <div>
                   <Label className="text-sm text-gray-500">Số điện thoại</Label>

@@ -198,7 +198,7 @@ const NavMobile = ({
                     asChild
                   >
                     <Link
-                      href="/auth/signin"
+                      href="/login"
                       className="flex items-center space-x-2"
                     >
                       <User className="w-4 h-4" />
@@ -215,16 +215,11 @@ const NavMobile = ({
               ) : (
                 <Button
                   variant="outline"
-                  className="w-full justify-start"
-                  asChild
+                  onClick={() => signOut()}
+                  className="flex items-center space-x-2"
                 >
-                  <Button
-                    onClick={() => signOut()}
-                    className="flex items-center space-x-2"
-                  >
-                    <User className="w-4 h-4" />
-                    <span>Log out</span>
-                  </Button>
+                  <User className="w-4 h-4" />
+                  <span>Log out</span>
                 </Button>
               )}
             </div>
@@ -237,11 +232,17 @@ const NavMobile = ({
         <span className="text-xl font-bold text-gray-900">Busify</span>
       </div>
 
-      <Button variant="ghost" size="sm" asChild>
-        <Link href="/signin">
-          <User className="w-5 h-5" />
-        </Link>
-      </Button>
+      {session.status === "authenticated" ? (
+        <Button variant="ghost" size="sm" asChild>
+          <Link href={`/trips/auth/profile/${session.data?.user?.email}`}>
+            <User className="w-5 h-5" />
+          </Link>
+        </Button>
+      ) : (
+        <Button variant="ghost" size="sm" asChild>
+          <Link href="/login">Log in</Link>
+        </Button>
+      )}
     </div>
   );
 };
