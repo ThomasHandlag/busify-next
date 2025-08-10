@@ -1,14 +1,12 @@
 "use client";
 
-import { Card, CardContent } from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
+import Image from "next/image";
 
 export default function PaymentMethods({
   paymentMethod,
   onPaymentMethodChange,
-
-  mockData,
 }: {
   paymentMethod: string;
   onPaymentMethodChange: (value: string) => void;
@@ -29,10 +27,11 @@ export default function PaymentMethods({
               htmlFor="momo"
               className="flex items-center gap-2 cursor-pointer"
             >
-              <div className="w-6 h-6 rounded flex items-center justify-center">
-                <img
+              <div className="w-6 h-6 rounded flex items-center justify-center relative">
+                <Image
                   src="https://cdn.haitrieu.com/wp-content/uploads/2022/10/Logo-MoMo-Circle.png"
                   alt="MoMo Logo"
+                  fill
                   className="w-4 h-4"
                 />
               </div>
@@ -46,11 +45,10 @@ export default function PaymentMethods({
               htmlFor="zalopay"
               className="flex items-center gap-2 cursor-pointer"
             >
-              <div className="w-6 h-6 rounded flex items-center justify-center">
-                <img
+              <div className="w-6 h-6 rounded flex items-center justify-center relative">
+                <Image
                   src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRwPynD27LbXlPsbofv1AX-5ZXDn_XMGo-1TA&s"
-                  width="500"
-                  height="500"
+                  fill
                   alt="ZaloPay"
                   className="w-4 h-4"
                 />
@@ -65,10 +63,11 @@ export default function PaymentMethods({
               htmlFor="viettelmoney"
               className="flex items-center gap-2 cursor-pointer"
             >
-              <div className="w-6 h-6 rounded flex items-center justify-center">
-                <img
+              <div className="w-6 h-6 rounded flex items-center justify-center relative">
+                <Image
                   src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSg4HNMFnJLLavO19NsgZZucD9GEVqPG-uG4Q&s"
                   alt="ViettelMoney"
+                  fill
                   className="w-4 h-4"
                 />
               </div>
@@ -82,11 +81,12 @@ export default function PaymentMethods({
               htmlFor="vnpay"
               className="flex items-center gap-2 cursor-pointer"
             >
-              <div className="w-6 h-6 rounded flex items-center justify-center">
-                <img
+              <div className="w-6 h-6 rounded flex items-center justify-center relative">
+                <Image
                   src="https://cdn-new.topcv.vn/unsafe/150x/https://static.topcv.vn/company_logos/cong-ty-cp-giai-phap-thanh-toan-viet-nam-vnpay-6194ba1fa3d66.jpg"
                   alt="VNPAY"
                   className="w-4 h-4"
+                  fill
                 />
               </div>
               <span className="text-sm font-medium">VNPay</span>
@@ -99,10 +99,11 @@ export default function PaymentMethods({
               htmlFor="shopeepay"
               className="flex items-center gap-2 cursor-pointer"
             >
-              <div className="w-6 h-6 rounded flex items-center justify-center">
-                <img
+              <div className="w-6 h-6 rounded flex items-center justify-center relative">
+                <Image
                   src="https://cdn.haitrieu.com/wp-content/uploads/2022/10/Logo-ShopeePay-V.png"
                   alt="SPAY"
+                  fill
                   className="w-4 h-4"
                 />
               </div>
@@ -116,8 +117,9 @@ export default function PaymentMethods({
               htmlFor="vietcombank"
               className="flex items-center gap-2 cursor-pointer"
             >
-              <div className="w-6 h-6 rounded flex items-center justify-center">
-                <img
+              <div className="w-6 h-6 rounded flex items-center justify-center relative">
+                <Image
+                  fill
                   src="https://hienlaptop.com/wp-content/uploads/2024/12/logo-vietcombank-vector-13.png"
                   alt="VCB"
                   className="w-4 h-4"
@@ -128,8 +130,6 @@ export default function PaymentMethods({
           </div>
         </div>
       </RadioGroup>
-
-     
     </div>
   );
 }

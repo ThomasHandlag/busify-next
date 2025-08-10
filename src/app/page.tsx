@@ -44,6 +44,7 @@ import { FadeinWrapper } from "@/components/custom/animation/fadein_wrapper";
 import { getPopularRoutes } from "@/lib/data/route_api";
 import { BusifyRoute } from "@/lib/data/route_api";
 import Link from "next/link";
+import BusifyRouteItem from "@/components/custom/route/busify_route_item";
 
 const Home = async () => {
   const popularRoutes = await getPopularRoutes();
@@ -628,49 +629,7 @@ const Home = async () => {
           </h2>
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
             {popularRoutes.slice(0, 6).map((route: BusifyRoute) => (
-              <Card
-                key={route.routeId}
-                className="hover:shadow-lg transition-shadow"
-              >
-                <CardHeader className="pb-3">
-                  <div className="flex justify-between items-start">
-                    <div>
-                      <CardTitle className="text-lg text-green-700">
-                        {route.routeName}
-                      </CardTitle>
-                      <CardDescription className="flex items-center mt-1">
-                        <MapPin className="w-4 h-4 mr-1" />
-                        {route.durationHours} journey
-                      </CardDescription>
-                    </div>
-                    <Badge
-                      variant="secondary"
-                      className="bg-green-100 text-green-700"
-                    >
-                      Popular
-                    </Badge>
-                  </div>
-                </CardHeader>
-                <CardContent>
-                  <div className="flex justify-between items-center">
-                    <div>
-                      <p className="text-sm text-gray-600">Starting from</p>
-                      <p className="text-2xl font-bold text-green-600">
-                        {new Intl.NumberFormat("vi-VN", {
-                          style: "currency",
-                          currency: "VND",
-                        }).format(route.startingPrice)}
-                      </p>
-                    </div>
-                    <Button
-                      size="sm"
-                      className="bg-green-600 hover:bg-green-700"
-                    >
-                      View Routes
-                    </Button>
-                  </div>
-                </CardContent>
-              </Card>
+              <BusifyRouteItem key={route.routeId} item={route} />
             ))}
           </div>
           <div className="text-center mt-12">

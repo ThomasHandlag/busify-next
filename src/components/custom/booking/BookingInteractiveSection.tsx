@@ -1,5 +1,3 @@
-
-
 "use client";
 
 import { useState } from "react";
@@ -9,7 +7,6 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
 import { CreditCard } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { useRouter } from "next/navigation";
 
 interface BookingData {
   trip: { route: string };
@@ -54,7 +51,6 @@ export default function BookingInteractiveSection({
   const [paymentLoading, setPaymentLoading] = useState(false);
   const [paymentError, setPaymentError] = useState<string | null>(null);
   const [paymentLink, setPaymentLink] = useState<string | null>(null);
-  const router = useRouter();
 
   const finalAmount = initialTotalPrice - discount;
 
@@ -65,7 +61,11 @@ export default function BookingInteractiveSection({
       setPaymentError("Vui lòng chọn ít nhất một ghế.");
       return;
     }
-    if (!mockData.passenger.fullName || !mockData.passenger.email || !mockData.passenger.phone) {
+    if (
+      !mockData.passenger.fullName ||
+      !mockData.passenger.email ||
+      !mockData.passenger.phone
+    ) {
       setPaymentError("Thông tin hành khách không đầy đủ.");
       return;
     }
@@ -93,17 +93,22 @@ export default function BookingInteractiveSection({
 
       console.log("Sending booking request:", bookingRequest);
 
-      const bookingResponse = await fetch("http://localhost:8080/api/bookings", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(bookingRequest),
-      });
+      const bookingResponse = await fetch(
+        "http://localhost:8080/api/bookings",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(bookingRequest),
+        }
+      );
 
       if (!bookingResponse.ok) {
         const errorData = await bookingResponse.json().catch(() => null);
-        const errorMessage = errorData?.message || `Lỗi khi gửi yêu cầu đặt vé: ${bookingResponse.status}`;
+        const errorMessage =
+          errorData?.message ||
+          `Lỗi khi gửi yêu cầu đặt vé: ${bookingResponse.status}`;
         console.error("Booking API error response:", errorData);
         throw new Error(errorMessage);
       }
@@ -123,17 +128,22 @@ export default function BookingInteractiveSection({
 
       console.log("Sending payment request:", paymentRequest);
 
-      const paymentResponse = await fetch("http://localhost:8080/api/payments/create", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(paymentRequest),
-      });
+      const paymentResponse = await fetch(
+        "http://localhost:8080/api/payments/create",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(paymentRequest),
+        }
+      );
 
       if (!paymentResponse.ok) {
         const errorData = await paymentResponse.json().catch(() => null);
-        const errorMessage = errorData?.message || `Lỗi khi tạo thanh toán: ${paymentResponse.status}`;
+        const errorMessage =
+          errorData?.message ||
+          `Lỗi khi tạo thanh toán: ${paymentResponse.status}`;
         console.error("Payment API error response:", errorData);
         throw new Error(errorMessage);
       }
@@ -150,11 +160,14 @@ export default function BookingInteractiveSection({
 
       // Không chuyển hướng ngay, để người dùng nhấp vào link thanh toán
       // router.push(`/booking/success/${bookingId}`);
-    } catch (error: any) {
+    } catch (e) {
+      const error = e as Error;
       console.error("Lỗi khi xử lý thanh toán:", error.message);
-      let userFriendlyMessage = "Không thể xác nhận thanh toán. Vui lòng thử lại.";
+      let userFriendlyMessage =
+        "Không thể xác nhận thanh toán. Vui lòng thử lại.";
       if (error.message.includes("409")) {
-        userFriendlyMessage = "Ghế đã được đặt hoặc thông tin không hợp lệ. Vui lòng chọn ghế khác hoặc kiểm tra lại.";
+        userFriendlyMessage =
+          "Ghế đã được đặt hoặc thông tin không hợp lệ. Vui lòng chọn ghế khác hoặc kiểm tra lại.";
       }
       setPaymentError(userFriendlyMessage);
     } finally {
@@ -222,9 +235,7 @@ export default function BookingInteractiveSection({
             disabled={paymentLoading || !!paymentLink}
           >
             {paymentLoading ? "Đang xử lý..." : "Xác nhận và thanh toán"} •
-            <span className="ml-2">
-              {finalAmount.toLocaleString("vi-VN")}đ
-            </span>
+            <span className="ml-2">{finalAmount.toLocaleString("vi-VN")}đ</span>
           </Button>
 
           {paymentLink && (

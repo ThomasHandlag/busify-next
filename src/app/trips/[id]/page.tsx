@@ -26,17 +26,11 @@ const generateSeats = ({
 
   // Return empty array if layout is null or invalid
   if (!busLayout || (!busLayout.rows && !busLayout.cols && !busLayout.floors)) {
-    console.log("Bus layout is null or invalid:", busLayout);
     return seats;
   }
 
   // Additional validation to prevent infinite loops
   if (busLayout.rows <= 0 || busLayout.cols <= 0 || busLayout.floors <= 0) {
-    console.log("Bus layout has invalid dimensions:", {
-      rows: busLayout.rows,
-      cols: busLayout.cols,
-      floors: busLayout.floors,
-    });
     return seats;
   }
 

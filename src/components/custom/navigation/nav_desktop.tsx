@@ -242,7 +242,35 @@ const NavDesktop = ({
           </Button>
         </div>
       ) : (
-        <Button onClick={() => signOut()}>Log out</Button>
+        <NavigationMenu>
+          <NavigationMenuList>
+            <NavigationMenuItem>
+              <NavigationMenuTrigger className="flex items-center space-x-2 hover:bg-gray-50">
+                <User className="w-4 h-4" />
+                <span>{session.data?.user?.email || "User"}</span>
+              </NavigationMenuTrigger>
+              <NavigationMenuContent>
+                <div className="w-48 p-2">
+                  <div className="space-y-1">
+                    <Link
+                      href={`/trips/auth/profile/${session.data?.user?.email}`}
+                      className="block px-3 py-2 text-sm rounded-lg hover:bg-gray-100 transition-colors"
+                    >
+                      Profile
+                    </Link>
+                    <hr className="my-1" />
+                    <button
+                      onClick={() => signOut()}
+                      className="w-full text-left px-3 py-2 text-sm rounded-lg hover:bg-gray-100 transition-colors text-red-600"
+                    >
+                      Sign Out
+                    </button>
+                  </div>
+                </div>
+              </NavigationMenuContent>
+            </NavigationMenuItem>
+          </NavigationMenuList>
+        </NavigationMenu>
       )}
     </div>
   );

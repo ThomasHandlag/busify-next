@@ -20,6 +20,7 @@ import { usePathname } from "next/navigation";
 import { SiFacebook, SiZalo, SiDiscord } from "react-icons/si";
 import NavMobile from "./nav_mobile";
 import NavDesktop from "./nav_desktop";
+import { useSession } from "next-auth/react";
 
 export interface NavItemData {
   href: string;
@@ -151,56 +152,6 @@ const operatorMenuItems: MenuItemData[] = [
   },
 ];
 
-// Passenger portal navigation
-const passengerMenuItems: MenuItemData[] = [
-  {
-    title: "Book & Travel",
-    items: [
-      {
-        href: "/trips",
-        label: "Search Trips",
-        icon: () => <Search className="w-4 h-4" />,
-        description: "Find and book your next journey",
-      },
-      {
-        href: "/trips/auth/my-tickets",
-        label: "My Bookings",
-        icon: () => <Ticket className="w-4 h-4" />,
-        description: "View and manage your tickets",
-      },
-      {
-        href: "/trips/auth/redeem",
-        label: "Travel History",
-        icon: () => <Calendar className="w-4 h-4" />,
-        description: "Your past trips and experiences",
-      },
-    ],
-  },
-  {
-    title: "Account",
-    items: [
-      {
-        href: `/trips/auth/profile`,
-        label: "Profile",
-        icon: () => <User className="w-4 h-4" />,
-        description: "Manage your personal information",
-      },
-      {
-        href: "/trips/auth/payments",
-        label: "Payment Methods",
-        icon: () => <CreditCard className="w-4 h-4" />,
-        description: "Saved cards and payment history",
-      },
-      {
-        href: "/trips/auth/preferences",
-        label: "Preferences",
-        icon: () => <Settings className="w-4 h-4" />,
-        description: "Travel preferences and notifications",
-      },
-    ],
-  },
-];
-
 const Header = () => {
   const [isTop, setIsTop] = useState(true);
   const [lastScrollTop, setLastScrollTop] = useState(0);
@@ -211,6 +162,58 @@ const Header = () => {
   const isActive = (route: string): boolean => {
     return pathname === route || pathname.startsWith(route + "/");
   };
+
+  const session = useSession();
+
+  // Passenger portal navigation
+  const passengerMenuItems: MenuItemData[] = [
+    {
+      title: "Book & Travel",
+      items: [
+        {
+          href: "/trips",
+          label: "Search Trips",
+          icon: () => <Search className="w-4 h-4" />,
+          description: "Find and book your next journey",
+        },
+        {
+          href: "/trips/auth/my-tickets",
+          label: "My Bookings",
+          icon: () => <Ticket className="w-4 h-4" />,
+          description: "View and manage your tickets",
+        },
+        {
+          href: "/trips/auth/redeem",
+          label: "Travel History",
+          icon: () => <Calendar className="w-4 h-4" />,
+          description: "Your past trips and experiences",
+        },
+      ],
+    },
+    {
+      title: "Account",
+      items: [
+        {
+          href: `/trips/auth/profile/${session.data?.user?.email}`,
+          label: "Profile",
+          icon: () => <User className="w-4 h-4" />,
+          description: "Manage your personal information",
+        },
+        {
+          href: "/trips/auth/payments",
+          label: "Payment Methods",
+          icon: () => <CreditCard className="w-4 h-4" />,
+          description: "Saved cards and payment history",
+        },
+        {
+          href: "/trips/auth/preferences",
+          label: "Preferences",
+          icon: () => <Settings className="w-4 h-4" />,
+          description: "Travel preferences and notifications",
+        },
+      ],
+    },
+  ];
 
   useEffect(() => {
     const handleScroll = () => {
