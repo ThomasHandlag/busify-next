@@ -63,7 +63,8 @@ const TripOverviewCard = ({
           <div className="flex items-center space-x-2">
             <Clock className="w-4 h-4 text-gray-400" />
             <div>
-              <p className="text-sm font-medium">
+             
+              <p className="text-xs text-gray-500">
                 {formatTime(tripDetail.departure_time)}
               </p>
               <p className="text-xs text-gray-500">
@@ -102,6 +103,7 @@ const TripOverviewCard = ({
         <div className="mt-6">
           <h3 className="font-semibold mb-4">Bản đồ hành trình</h3>
           <RouteMap
+
             startLocation={tripDetail.route.start_location}
             endLocation={tripDetail.route.end_location}
             routeStops={tripDetail.route_stops || []}
@@ -118,6 +120,7 @@ const TripOverviewCard = ({
               <div>
                 <p className="font-medium">Điểm đón</p>
                 <p className="text-gray-600">
+
                   {tripDetail.route.start_location.address}
                 </p>
                 <p className="text-sm text-gray-500">
@@ -130,6 +133,7 @@ const TripOverviewCard = ({
               <div>
                 <p className="font-medium">Điểm trả</p>
                 <p className="text-gray-600">
+
                   {tripDetail.route.end_location.address}
                 </p>
                 <p className="text-sm text-gray-500">

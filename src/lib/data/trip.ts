@@ -1,6 +1,7 @@
 import api from "./axios-instance";
 import { Location } from "./location";
 
+
 export interface TripItemProps {
   trip_id: number;
   operator_name: string;
@@ -40,6 +41,7 @@ export interface TripDetail {
   operator_name: string;
   operator_id: number;
   route_stops: Location[];
+
 }
 
 export interface Trip {
@@ -117,8 +119,10 @@ export async function filterTripsClient(
 export async function getTripDetail(tripId: number): Promise<TripDetail> {
   try {
     const res = await api.get(`api/trips/${tripId}`);
+
     console.log("Trip detail response:", res.data.result.routeStops);
     return res.data.result as TripDetail;
+
   } catch (error) {
     console.error("Error fetching trip detail:", error);
     throw error;
@@ -133,6 +137,8 @@ export async function getSimilarTrips(
     return res.data.result as TripItemProps[];
   } catch (error) {
     console.error("Error fetching similar trips:", error);
+
+
     return [];
   }
 }
