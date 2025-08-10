@@ -3,6 +3,7 @@
 import { Button } from "@/components/ui/button";
 import { ArrowRight, Heart } from "lucide-react";
 import { useState } from "react";
+
 import { TripDetail } from "@/lib/data/trip";
 
 interface TripHeroSectionProps {

@@ -9,6 +9,7 @@ const api = axios.create({
   },
 });
 
+
 api.interceptors.request.use(
   (
     config: InternalAxiosRequestConfig<unknown>
@@ -29,5 +30,6 @@ api.interceptors.response.use(
     return Promise.reject(error);
   }
 );
+
 
 export default api;

@@ -6,6 +6,7 @@ import { Badge } from "../../ui/badge";
 import { Separator } from "../../ui/separator";
 import { Clock, MapPin, Users, Star, ArrowRight } from "lucide-react";
 import { format } from "date-fns";
+
 import { TripItemProps } from "@/lib/data/trip";
 import { redirect } from "next/navigation";
 import Link from "next/link";
@@ -22,6 +23,7 @@ const TripItem = ({ trip }: { trip: TripItemProps }) => {
     if (seats <= 10) return "Limited seats";
     return "Available";
   };
+
 
   // Parse ISO 8601 format dates properly
   const departureDateObj = new Date(trip.departure_time);
