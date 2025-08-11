@@ -1,8 +1,8 @@
 "use client";
 
 import { createContext, useContext } from "react";
-import { TripItemProps } from "@/app/passenger/page";
-import { TripFilterQuery } from "../data/trip";
+
+import { TripFilterQuery, TripItemProps } from "../data/trip";
 
 interface TripFilterContextType {
   trips: TripItemProps[];

@@ -6,7 +6,8 @@ import {
   getUpcomingTrips,
   TripFilterQuery,
 } from "@/lib/data/trip";
-import { TripItemProps } from "@/app/passenger/page";
+
+import { TripItemProps } from "@/lib/data/trip";
 import TripFilterContext from "../../lib/contexts/TripFilterContext";
 
 interface TripFilterProviderProps {

@@ -12,6 +12,18 @@ export interface UserProfileResponse {
   roleName: string;
 }
 
+export async function getUserProfileByEmail(
+  email: string
+): Promise<UserProfileResponse | null | undefined> {
+  try {
+    const response = await api.get(`api/users/email/${email}`);
+    return response.data.result;
+  } catch (error) {
+    console.error("Error fetching user profile by email:", error);
+    return null;
+  }
+}
+
 export async function getUserProfile(
   userId: number
 ): Promise<UserProfileResponse | null | undefined> {

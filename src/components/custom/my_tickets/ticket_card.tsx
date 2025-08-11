@@ -89,8 +89,8 @@ export const TicketCard = ({
   const statusInfo = getStatusInfo(booking.status);
   const StatusIcon = statusInfo.icon;
 
-  const isUpcoming =
-    booking.status === "confirmed" || booking.status === "pending";
+  // const isUpcoming =
+  //   booking.status === "confirmed" || booking.status === "pending";
   const isPast = new Date(booking.departure_time) < new Date();
 
   return (

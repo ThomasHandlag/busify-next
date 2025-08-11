@@ -1,5 +1,17 @@
 "use client";
 
+import { Input } from "@/components/ui/input";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import * as z from "zod";
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from "@/components/ui/form";
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import {
@@ -14,7 +26,17 @@ import { Armchair } from "lucide-react";
 import { Seat } from "@/lib/data/trip_seats";
 import { BusLayout } from "@/lib/data/bus";
 
+import { useRouter } from "next/navigation";
+import { toast } from "sonner";
+
+interface PassengerInfo {
+  phone: string;
+  fullName: string;
+  email: string;
+}
+
 interface SeatSelectionCardProps {
+  tripId: string;
   seats: Seat[];
   layout: BusLayout | null;
   pricePerSeat: number;
@@ -22,12 +44,15 @@ interface SeatSelectionCardProps {
 }
 
 export function SeatSelectionCard({
+  tripId,
   seats,
   layout,
   pricePerSeat,
   onSeatSelection,
 }: SeatSelectionCardProps) {
   const [selectedSeats, setSelectedSeats] = useState<string[]>([]);
+
+  const router = useRouter();
 
   // Generate seats based on layout
   const generateSeatsFromLayout = () => {
@@ -69,6 +94,27 @@ export function SeatSelectionCard({
     return generatedSeats;
   };
 
+  const passengerSchema = z.object({
+    phone: z
+      .string()
+      .min(1, "Vui lòng nhập số điện thoại")
+      .regex(/^\d{10}$/, "Số điện thoại phải gồm 10 số"),
+    fullName: z
+      .string()
+      .min(1, "Vui lòng nhập họ và tên")
+      .min(2, "Họ và tên ít nhất 2 ký tự"),
+    email: z.email("Email không đúng định dạng"),
+  });
+
+  const form = useForm<PassengerInfo>({
+    resolver: zodResolver(passengerSchema),
+    defaultValues: {
+      phone: "",
+      fullName: "",
+      email: "",
+    },
+  });
+
   const allSeats = generateSeatsFromLayout();
 
   const handleSeatClick = (seatNumber: string, status: string) => {
@@ -108,7 +154,6 @@ export function SeatSelectionCard({
   const rows = layout.rows || 0;
   const cols = layout.cols || 0;
 
-  // Render seats for a specific floor
   const renderFloorSeats = (floorNumber: number) => {
     const floorSeats = allSeats.filter(
       (seat) => (seat.floor || 1) === floorNumber
@@ -168,6 +213,25 @@ export function SeatSelectionCard({
     );
   };
 
+  const handleFormSubmit = (values: PassengerInfo) => {
+    if (selectedSeats.length === 0) {
+      toast.error("Vui lòng chọn ít nhất một ghế!");
+      return;
+    }
+
+    // Chuyển sang trang booking-confirmation
+    router.push(
+      `/booking/confirmation/${tripId}?` +
+        new URLSearchParams({
+          seats: selectedSeats.join(","),
+          totalPrice: totalPrice.toString(),
+          fullName: values.fullName,
+          phone: values.phone,
+          email: values.email,
+        }).toString()
+    );
+  };
+
   return (
     <Card className="overflow-y-auto max-h-[80vh] scrollbar-hide">
       <CardHeader>
@@ -183,7 +247,6 @@ export function SeatSelectionCard({
         </CardDescription>
       </CardHeader>
       <CardContent>
-        {/* Legend */}
         <div className="flex items-center justify-center space-x-4 mb-4">
           <div className="flex items-center space-x-1">
             <Armchair className="w-4 h-4 text-gray-400" />
@@ -199,7 +262,6 @@ export function SeatSelectionCard({
           </div>
         </div>
 
-        {/* Bus Layout */}
         <div className="border rounded-lg p-4 bg-gray-50 mb-4">
           {Array.from({ length: layout?.floors || 1 }, (_, i) =>
             renderFloorSeats(i + 1)
@@ -219,20 +281,80 @@ export function SeatSelectionCard({
               Tổng tiền: {totalPrice.toLocaleString("vi-VN")}đ
             </p>
           </div>
-          <Button className="w-full">
-            <Armchair className="w-4 h-4 mr-2" />
-            Đặt vé ({selectedSeats.length} ghế)
-          </Button>
+
+          <Card className="mt-4">
+            <CardContent>
+              <Form {...form}>
+                <form
+                  className="space-y-4"
+                  onSubmit={form.handleSubmit(handleFormSubmit)}
+                >
+                  <FormField
+                    control={form.control}
+                    name="phone"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Số điện thoại</FormLabel>
+                        <FormControl>
+                          <Input
+                            placeholder="Nhập số điện thoại"
+                            maxLength={10}
+                            {...field}
+                          />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+
+                  <FormField
+                    control={form.control}
+                    name="fullName"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Họ và tên</FormLabel>
+                        <FormControl>
+                          <Input placeholder="Nhập họ và tên" {...field} />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+
+                  <FormField
+                    control={form.control}
+                    name="email"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Email</FormLabel>
+                        <FormControl>
+                          <Input
+                            placeholder="Nhập email"
+                            type="email"
+                            {...field}
+                          />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                  <Button type="submit" disabled={selectedSeats.length === 0}>
+                    Đặt vé
+                  </Button>
+                </form>
+              </Form>
+            </CardContent>
+          </Card>
         </div>
       </CardFooter>
 
       <style jsx global>{`
         .scrollbar-hide {
-          -ms-overflow-style: none; /* Internet Explorer 10+ */
-          scrollbar-width: none; /* Firefox */
+          -ms-overflow-style: none;
+          scrollbar-width: none;
         }
         .scrollbar-hide::-webkit-scrollbar {
-          display: none; /* Safari and Chrome */
+          display: none;
         }
       `}</style>
     </Card>
