@@ -26,7 +26,7 @@ import {
   BookingDetailResponse,
   BookingData,
 } from "@/lib/data/booking";
-import { TicketCard } from "../../../../components/custom/my_tickets/ticket_card";
+import { TicketCard } from "../../../components/custom/my_tickets/ticket_card";
 import { getBookingDetails, getBookingHistory } from "@/lib/data/booking";
 import { BookingDetailSheet } from "@/components/custom/my_tickets/booking_detail_sheet";
 

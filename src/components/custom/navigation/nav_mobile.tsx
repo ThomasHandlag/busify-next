@@ -209,7 +209,7 @@ const NavMobile = ({
                     className="w-full bg-green-600 hover:bg-green-700"
                     asChild
                   >
-                    <Link href="/auth/signup">Get Started</Link>
+                    <Link href="/signup">Get Started</Link>
                   </Button>
                 </>
               ) : (
@@ -234,7 +234,7 @@ const NavMobile = ({
 
       {session.status === "authenticated" ? (
         <Button variant="ghost" size="sm" asChild>
-          <Link href={`/trips/auth/profile/${session.data?.user?.email}`}>
+          <Link href={`/user/profile`}>
             <User className="w-5 h-5" />
           </Link>
         </Button>

@@ -11,19 +11,25 @@ export default withAuth(
       request.cookies.get("next-auth.session-token")?.value ||
       request.cookies.get("__Secure-next-auth.session-token")?.value;
 
-    // Protect /trips/auth/** routes - require authentication
-    if (pathname.startsWith("/trips/auth/")) {
+    // Protect /user/** routes - require authentication
+    if (pathname.startsWith("/user/")) {
       if (!request.nextauth.token) {
-        console.log("Unauthorized access to protected route, redirecting to login");
+        console.log(
+          "Unauthorized access to protected route, redirecting to login"
+        );
         return NextResponse.redirect(new URL("/login", request.url));
       }
     }
 
     // Nếu có accessToken từ Google OAuth nhưng chưa có NextAuth session
-    if (accessToken && !nextAuthToken && pathname !== "/auth/google-auto-login") {
+    if (
+      accessToken &&
+      !nextAuthToken &&
+      pathname !== "/auth/google-auto-login"
+    ) {
       console.log("Redirecting to auto-login");
       return NextResponse.redirect(
-        new URL("/auth/google-auto-login", request.url)
+        new URL("/google-login-handler?accessToken=" + accessToken, request.url)
       );
     }
 
@@ -41,5 +47,5 @@ export default withAuth(
 );
 
 export const config = {
-  matcher: ["/((?!api|_next/static|_next/image|favicon.ico).*)", "/trips/auth/(.*)"],
+  matcher: ["/((?!api|_next/static|_next/image|favicon.ico).*)", "/user/(.*)"],
 };

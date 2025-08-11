@@ -253,7 +253,7 @@ const NavDesktop = ({
                 <div className="w-48 p-2">
                   <div className="space-y-1">
                     <Link
-                      href={`/trips/auth/profile/${session.data?.user?.email}`}
+                      href={`/user/profile`}
                       className="block px-3 py-2 text-sm rounded-lg hover:bg-gray-100 transition-colors"
                     >
                       Profile

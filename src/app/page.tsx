@@ -57,7 +57,7 @@ const Home = async () => {
           fill
           loading="lazy"
           placeholder="blur"
-          blurDataURL="..."
+          blurDataURL="/place-holder.png"
           alt="Bus"
           className="object-cover absolute h-sceen w-full opacity-50"
         />
