@@ -5,7 +5,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { useEffect } from "react";
 
 export interface PassengerInfo {
-  phone: string;
+  phoneNumber: string;
   fullName: string;
   email: string;
 }
@@ -14,16 +14,18 @@ interface PassengerInfoFormProps {
   selectedSeats: string[];
   totalPrice: number;
   onFinishAction: (values: {
+    phoneNumber: string;
     fullName: string;
-    phone: string;
     email: string;
   }) => void;
   onFormInstance?: (form: FormInstance) => void; // Thêm onFormInstance với kiểu FormInstance
+  initialData?: PassengerInfo; // Add initialData prop for default values
 }
 
 export function PassengerInfoForm({
   onFinishAction,
   onFormInstance,
+  initialData,
 }: PassengerInfoFormProps) {
   const [form] = Form.useForm();
 
@@ -46,10 +48,11 @@ export function PassengerInfoForm({
           layout="vertical"
           onFinish={handleSubmit}
           validateTrigger={["onBlur", "onChange"]}
+          initialValues={initialData || { phoneNumber: "", fullName: "", email: "" }}
         >
           <Form.Item
             label="Số điện thoại"
-            name="phone"
+            name="phoneNumber"
             rules={[
               { required: true, message: "Vui lòng nhập số điện thoại" },
               { pattern: /^\d{10}$/, message: "Số điện thoại phải gồm 10 số" },
@@ -65,6 +68,7 @@ export function PassengerInfoForm({
           <Form.Item
             label="Họ và tên"
             name="fullName"
+            
             rules={[
               { required: true, message: "Vui lòng nhập họ và tên" },
               { min: 2, message: "Họ và tên ít nhất 2 ký tự" },
@@ -72,7 +76,6 @@ export function PassengerInfoForm({
           >
             <Input placeholder="Nhập họ và tên" className="rounded-md" />
           </Form.Item>
-
           <Form.Item
             label="Email"
             name="email"
@@ -88,3 +91,4 @@ export function PassengerInfoForm({
     </Card>
   );
 }
+
