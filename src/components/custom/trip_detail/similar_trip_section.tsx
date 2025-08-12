@@ -23,7 +23,7 @@ export async function SimilarTripsSection({ routeId }: { routeId: number }) {
       <div className="flex items-center justify-between p-2">
         <h2 className="text-xl font-semibold px-4">Các chuyến đi tương tự</h2>
         <Button variant="link" size="sm">
-          <Link href="/trips">Xem tất cả</Link>
+          <Link aria-label="Xem tất cả" href="/trips">Xem tất cả</Link>
         </Button>
       </div>
       <div className="grid lg:grid-cols-3 md:grid-cols-2 sm:grid-cols-1 gap-4 overflow-x-auto pb-4">

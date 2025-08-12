@@ -199,7 +199,7 @@ function VerifyEmailContent() {
               >
                 Try Again
               </Button>
-              <Link href="/login">
+              <Link aria-label="Login" href="/login">
                 <Button
                   variant="outline"
                   className="w-full text-green-600 border-green-600 hover:bg-green-50 font-semibold py-3 rounded-xl"
@@ -259,7 +259,7 @@ function VerifyEmailContent() {
                   {resendMessage}
                 </div>
               )}
-              <Link href="/login">
+              <Link aria-label="Back to Sign In" href="/login">
                 <Button
                   variant="outline"
                   className="w-full text-green-600 border-green-600 hover:bg-green-50 font-semibold py-3 rounded-xl"

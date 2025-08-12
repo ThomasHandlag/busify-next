@@ -103,6 +103,7 @@ const ForgotPasswordForm = () => {
           {/* Back button */}
           <div className="flex justify-start mb-4">
             <Link
+              aria-label="Back to login"
               href="/login"
               className="flex items-center text-gray-600 hover:text-gray-800 transition-colors duration-200"
             >
@@ -244,6 +245,7 @@ const ForgotPasswordForm = () => {
           <p className="text-sm text-gray-600">
             Nhớ mật khẩu rồi?{" "}
             <Link
+              aria-label="Back to login"
               href="/login"
               className="text-orange-600 hover:text-orange-700 font-semibold"
             >

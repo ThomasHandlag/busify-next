@@ -31,7 +31,7 @@ export async function OperatorInfoCard({ id }: { id: number }) {
 
           <Image
             src={operatorDetail.logoUrl}
-            alt={operatorDetail.name}
+            alt={operatorDetail.name ?? "Logo"}
             width={48}
             height={48}
             className="w-12 h-12 rounded-lg"

@@ -57,8 +57,8 @@ const Home = async () => {
           fill
           loading="lazy"
           placeholder="blur"
-          blurDataURL="/place-holder.png"
-          alt="Bus"
+          blurDataURL="..."
+          alt="Bus platform logo"
           className="object-cover absolute h-sceen w-full opacity-50"
         />
         <div className="z-10 flex flex-col items-center">
@@ -82,7 +82,7 @@ const Home = async () => {
                 className="bg-white text-green-600 hover:bg-green-50 flex items-center space-x-2"
                 asChild
               >
-                <Link href="/trips">
+                <Link aria-label="Book Your Journey" href="/trips">
                   <Ticket className="w-5 h-5" />
                   <span>Book Your Journey</span>
                 </Link>
@@ -197,7 +197,7 @@ const Home = async () => {
                     className="w-full bg-green-600 hover:bg-green-700"
                     asChild
                   >
-                    <Link href="/trips">Explore Passenger Portal</Link>
+                    <Link aria-label="Explore Passenger Portal" href="/trips">Explore Passenger Portal</Link>
                   </Button>
                 </CardContent>
               </Card>
@@ -742,7 +742,7 @@ const Home = async () => {
               <CardHeader>
                 <div className="flex items-center space-x-4">
                   <Avatar>
-                    <AvatarImage src="/placeholder-user.jpg" />
+                    <AvatarImage src="/place-holder.png" />
                     <AvatarFallback className="bg-green-100 text-green-700">
                       JD
                     </AvatarFallback>
@@ -777,7 +777,7 @@ const Home = async () => {
               <CardHeader>
                 <div className="flex items-center space-x-4">
                   <Avatar>
-                    <AvatarImage src="/placeholder-user.jpg" />
+                    <AvatarImage src="/place-holder.png" />
                     <AvatarFallback className="bg-green-100 text-green-700">
                       SM
                     </AvatarFallback>
@@ -812,7 +812,7 @@ const Home = async () => {
               <CardHeader>
                 <div className="flex items-center space-x-4">
                   <Avatar>
-                    <AvatarImage src="/placeholder-user.jpg" />
+                    <AvatarImage src="/place-holder.png" />
                     <AvatarFallback className="bg-green-100 text-green-700">
                       MJ
                     </AvatarFallback>
