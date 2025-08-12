@@ -62,7 +62,7 @@ export default function MyTicketsPage() {
   ) => {
     setIsLoading(true);
     // Simulate API delay
-    const mockBookingResponse = await getBookingHistory(2);
+    const mockBookingResponse = await getBookingHistory(page);
 
     setBookingResponse(mockBookingResponse);
     setIsLoading(false);
