@@ -127,7 +127,7 @@ const TripItem = ({ trip }: { trip: TripItemProps }) => {
             <p className="text-xs text-gray-500">vé</p>
           </div>
           <div className="flex gap-2">
-            <Link href={`/trips/${trip.trip_id}`} className="hidden lg:block">
+            <Link aria-label="View trip details" href={`/trips/${trip.trip_id}`} className="hidden lg:block">
               <Button
                 variant="outline"
                 size="sm"

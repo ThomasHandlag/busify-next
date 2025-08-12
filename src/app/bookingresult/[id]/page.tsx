@@ -1,108 +1,3 @@
-
-
-
-// "use client";
-
-// import { useEffect, useState } from "react";
-// import { useParams } from "next/navigation";
-// import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-
-// interface PaymentDetails {
-//   paymentId: number;
-//   amount: number;
-//   transactionCode: string;
-//   paymentMethod: string;
-//   bookingDetails: {
-//     bookingId: number;
-//     bookingCode: string;
-//     departureName: string;
-//     arrivalName: string;
-//     departureTime: string;
-//     arrivalTime: string;
-//     status: string;
-//   };
-//   customerName: string;
-//   customerEmail: string;
-//   customerPhone: string;
-//   status: string;
-//   paidAt: string | null;
-// }
-
-// export default function BookingResult() {
-//   const { id } = useParams();
-//   const [paymentDetails, setPaymentDetails] = useState<PaymentDetails | null>(null);
-//   const [error, setError] = useState<string | null>(null);
-
-//   useEffect(() => {
-//     const fetchPaymentDetails = async () => {
-//       try {
-//         const response = await fetch(`http://localhost:8080/api/payments/${id}`, {
-//           method: "GET",
-//           headers: { "Content-Type": "application/json" },
-//         });
-
-//         if (!response.ok) {
-//           throw new Error("Không thể lấy chi tiết thanh toán");
-//         }
-
-//         const result = await response.json();
-//         console.log("Payment details response:", result);
-//         setPaymentDetails(result.result);
-//       } catch (err: any) {
-//         console.error("Error fetching payment details:", err);
-//         setError("Không thể tải chi tiết đặt vé. Vui lòng thử lại.");
-//       }
-//     };
-
-//     fetchPaymentDetails();
-//   }, [id]);
-
-//   if (error) {
-//     return (
-//       <div className="flex items-center justify-center min-h-screen">
-//         <p className="text-red-500">{error}</p>
-//       </div>
-//     );
-//   }
-
-//   if (!paymentDetails) {
-//     return (
-//       <div className="flex items-center justify-center min-h-screen">
-//         <p>Đang tải...</p>
-//       </div>
-//     );
-//   }
-
-//   return (
-//     <div className="container mx-auto p-4">
-//       <Card>
-//         <CardHeader>
-//           <CardTitle>Chi tiết đặt vé</CardTitle>
-//         </CardHeader>
-//         <CardContent>
-//           <div className="space-y-4">
-//             <p><strong>Mã thanh toán:</strong> {paymentDetails.paymentId}</p>
-//             <p><strong>Mã đặt vé:</strong> {paymentDetails.bookingDetails.bookingCode}</p>
-//             <p><strong>Tên khách hàng:</strong> {paymentDetails.customerName}</p>
-//             <p><strong>Email:</strong> {paymentDetails.customerEmail}</p>
-//             <p><strong>Số điện thoại:</strong> {paymentDetails.customerPhone}</p>
-//             <p><strong>Điểm đi:</strong> {paymentDetails.bookingDetails.departureName}</p>
-//             <p><strong>Điểm đến:</strong> {paymentDetails.bookingDetails.arrivalName}</p>
-//             <p><strong>Thời gian khởi hành:</strong> {paymentDetails.bookingDetails.departureTime}</p>
-//             <p><strong>Thời gian đến:</strong> {paymentDetails.bookingDetails.arrivalTime}</p>
-//             <p><strong>Số tiền:</strong> {paymentDetails.amount.toLocaleString("vi-VN")}đ</p>
-//             <p><strong>Phương thức thanh toán:</strong> {paymentDetails.paymentMethod}</p>
-//             <p><strong>Trạng thái:</strong> {paymentDetails.status}</p>
-//             {paymentDetails.paidAt && (
-//               <p><strong>Thời gian thanh toán:</strong> {new Date(paymentDetails.paidAt).toLocaleString("vi-VN")}</p>
-//             )}
-//           </div>
-//         </CardContent>
-//       </Card>
-//     </div>
-//   );
-// }
-
 "use client";
 
 import { useEffect, useState } from "react";
@@ -110,8 +5,21 @@ import { useParams } from "next/navigation";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { Separator } from "@/components/ui/separator";
-import { CheckCircle, Clock, Mail, MessageSquare, Copy, Calendar, AlertCircle, ArrowRight, CreditCard, Banknote, MapPin, User, Phone } from 'lucide-react';
+import {
+  CheckCircle,
+  Clock,
+  Mail,
+  MessageSquare,
+  Copy,
+  Calendar,
+  AlertCircle,
+  ArrowRight,
+  CreditCard,
+  Banknote,
+  MapPin,
+  User,
+  Phone,
+} from "lucide-react";
 import Link from "next/link";
 
 interface PaymentDetails {
@@ -137,7 +45,9 @@ interface PaymentDetails {
 
 export default function BookingResult() {
   const { id } = useParams();
-  const [paymentDetails, setPaymentDetails] = useState<PaymentDetails | null>(null);
+  const [paymentDetails, setPaymentDetails] = useState<PaymentDetails | null>(
+    null
+  );
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
   const [copied, setCopied] = useState(false);
@@ -146,19 +56,22 @@ export default function BookingResult() {
     const fetchPaymentDetails = async () => {
       try {
         setLoading(true);
-        const response = await fetch(`http://localhost:8080/api/payments/${id}`, {
-          method: "GET",
-          headers: { "Content-Type": "application/json" },
-        });
-        
+        const response = await fetch(
+          `http://localhost:8080/api/payments/${id}`,
+          {
+            method: "GET",
+            headers: { "Content-Type": "application/json" },
+          }
+        );
+
         if (!response.ok) {
           throw new Error("Không thể lấy chi tiết thanh toán");
         }
-        
+
         const result = await response.json();
         console.log("Payment details response:", result);
         setPaymentDetails(result.result);
-      } catch (err: any) {
+      } catch (err) {
         console.error("Error fetching payment details:", err);
         setError("Giao dịch không tồn tại hoặc chưa thanh toán !");
       } finally {
@@ -175,7 +88,9 @@ export default function BookingResult() {
   const copyBookingCode = async () => {
     if (!paymentDetails) return;
     try {
-      await navigator.clipboard.writeText(paymentDetails.bookingDetails.bookingCode);
+      await navigator.clipboard.writeText(
+        paymentDetails.bookingDetails.bookingCode
+      );
       setCopied(true);
       setTimeout(() => setCopied(false), 2000);
     } catch (err) {
@@ -195,7 +110,7 @@ export default function BookingResult() {
   const formatDateTime = (dateString: string) => {
     return new Date(dateString).toLocaleString("vi-VN", {
       day: "2-digit",
-      month: "2-digit", 
+      month: "2-digit",
       year: "numeric",
       hour: "2-digit",
       minute: "2-digit",
@@ -269,9 +184,11 @@ export default function BookingResult() {
           <CardContent className="p-6 text-center">
             <div className="flex flex-col items-center space-y-4">
               <AlertCircle className="w-8 h-8 text-red-600" />
-              <p className="text-red-700">{error || "Không tìm thấy thông tin đặt vé."}</p>
-              <Button 
-                onClick={() => window.location.reload()} 
+              <p className="text-red-700">
+                {error || "Không tìm thấy thông tin đặt vé."}
+              </p>
+              <Button
+                onClick={() => window.location.reload()}
                 variant="outline"
                 className="border-red-300 text-red-700 hover:bg-red-100"
               >
@@ -285,9 +202,10 @@ export default function BookingResult() {
   }
 
   const statusBadgeProps = getStatusBadgeProps(paymentDetails.status);
-  const isSuccess = paymentDetails.status.toLowerCase() === 'success' || 
-                   paymentDetails.status.toLowerCase() === 'completed' ||
-                   paymentDetails.status.toLowerCase() === 'confirmed';
+  const isSuccess =
+    paymentDetails.status.toLowerCase() === "success" ||
+    paymentDetails.status.toLowerCase() === "completed" ||
+    paymentDetails.status.toLowerCase() === "confirmed";
 
   return (
     <div className="min-h-screen bg-gray-50 w-full">
@@ -303,10 +221,20 @@ export default function BookingResult() {
       <div className="px-4 py-8 w-full">
         <div className="space-y-6">
           {/* Success/Status Message */}
-          <Card className={isSuccess ? "border-green-200 bg-green-50" : "border-yellow-200 bg-yellow-50"}>
+          <Card
+            className={
+              isSuccess
+                ? "border-green-200 bg-green-50"
+                : "border-yellow-200 bg-yellow-50"
+            }
+          >
             <CardContent className="p-6 text-center">
               <div className="flex flex-col items-center space-y-4">
-                <div className={`w-16 h-16 ${isSuccess ? 'bg-green-500' : 'bg-yellow-500'} rounded-full flex items-center justify-center`}>
+                <div
+                  className={`w-16 h-16 ${
+                    isSuccess ? "bg-green-500" : "bg-yellow-500"
+                  } rounded-full flex items-center justify-center`}
+                >
                   {isSuccess ? (
                     <CheckCircle className="w-8 h-8 text-white" />
                   ) : (
@@ -314,14 +242,19 @@ export default function BookingResult() {
                   )}
                 </div>
                 <div>
-                  <h1 className={`text-2xl font-bold ${isSuccess ? 'text-green-800' : 'text-yellow-800'} mb-2` }>
-                    {isSuccess ? 'Đặt vé thành công!' : 'Đặt vé đang xử lý!'}
+                  <h1
+                    className={`text-2xl font-bold ${
+                      isSuccess ? "text-green-800" : "text-yellow-800"
+                    } mb-2`}
+                  >
+                    {isSuccess ? "Đặt vé thành công!" : "Đặt vé đang xử lý!"}
                   </h1>
-                  <p className={isSuccess ? 'text-green-700' : 'text-yellow-700'}>
-                    {isSuccess 
-                      ? 'Cảm ơn bạn đã sử dụng dịch vụ của BUSIFY. Thông tin đặt vé đã được xác nhận.'
-                      : 'Đặt vé của bạn đang được xử lý. Vui lòng chờ xác nhận.'
-                    }
+                  <p
+                    className={isSuccess ? "text-green-700" : "text-yellow-700"}
+                  >
+                    {isSuccess
+                      ? "Cảm ơn bạn đã sử dụng dịch vụ của BUSIFY. Thông tin đặt vé đã được xác nhận."
+                      : "Đặt vé của bạn đang được xử lý. Vui lòng chờ xác nhận."}
                   </p>
                 </div>
               </div>
@@ -376,7 +309,9 @@ export default function BookingResult() {
                         {paymentDetails.bookingDetails.departureName}
                       </p>
                       <p className="text-sm text-blue-600">
-                        {formatTime(paymentDetails.bookingDetails.departureTime)}
+                        {formatTime(
+                          paymentDetails.bookingDetails.departureTime
+                        )}
                       </p>
                     </div>
                     <div className="flex-1 flex justify-center">
@@ -397,7 +332,9 @@ export default function BookingResult() {
                     <div>
                       <p className="text-sm text-gray-500">Ngày khởi hành</p>
                       <p className="font-semibold">
-                        {formatDate(paymentDetails.bookingDetails.departureTime)}
+                        {formatDate(
+                          paymentDetails.bookingDetails.departureTime
+                        )}
                       </p>
                     </div>
                     <div>
@@ -442,7 +379,9 @@ export default function BookingResult() {
                 <CardContent className="space-y-4">
                   <div className="space-y-3">
                     <div>
-                      <p className="text-sm text-gray-500">Phương thức thanh toán</p>
+                      <p className="text-sm text-gray-500">
+                        Phương thức thanh toán
+                      </p>
                       <div className="flex items-center gap-2 mt-1">
                         <Banknote className="w-4 h-4 text-blue-600" />
                         <span className="font-semibold">
@@ -452,7 +391,9 @@ export default function BookingResult() {
                     </div>
 
                     <div>
-                      <p className="text-sm text-gray-500">Số tiền đã thanh toán</p>
+                      <p className="text-sm text-gray-500">
+                        Số tiền đã thanh toán
+                      </p>
                       <p className="font-semibold text-green-600 text-lg">
                         {formatCurrency(paymentDetails.amount)}
                       </p>
@@ -537,7 +478,9 @@ export default function BookingResult() {
                   <div className="flex items-center gap-3 p-4 bg-blue-50 rounded-lg">
                     <Mail className="w-5 h-5 text-blue-600" />
                     <div>
-                      <p className="font-medium text-blue-800">Email xác nhận</p>
+                      <p className="font-medium text-blue-800">
+                        Email xác nhận
+                      </p>
                       <p className="text-sm text-blue-600">
                         Đã gửi đến {paymentDetails.customerEmail}
                       </p>
@@ -559,7 +502,7 @@ export default function BookingResult() {
 
           {/* Actions */}
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <Link href="/booking/history">
+            <Link aria-label="View Booking History" href="/user/my-tickets">
               <Button className="bg-green-600 hover:bg-green-700 text-white flex items-center gap-2">
                 <Calendar className="w-4 h-4" />
                 Xem lịch sử đặt vé
@@ -567,8 +510,8 @@ export default function BookingResult() {
               </Button>
             </Link>
             {!isSuccess && (
-              <Button 
-                onClick={() => window.location.reload()} 
+              <Button
+                onClick={() => window.location.reload()}
                 variant="outline"
                 className="flex items-center gap-2"
               >

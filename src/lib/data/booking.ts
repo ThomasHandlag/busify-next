@@ -115,12 +115,10 @@ export const mockBookingDetailResponse: BookingDetailResponse = {
 };
 
 export async function getBookingHistory(
-  userId: number,
   page = 1,
   size = 10
 ): Promise<BookingResponse> {
-  const response = await api.get(`/api/bookings?userId=${userId}&page=${page}&size=${size}`);
-  console.log("Booking history response:", response.data);
+  const response = await api.get(`/api/bookings?page=${page}&size=${size}`);
   return response.data.result;
 }
 

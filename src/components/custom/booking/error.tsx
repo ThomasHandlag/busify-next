@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import { useSearchParams } from "next/navigation";
 
 export default function ErrorPage() {
@@ -11,9 +12,9 @@ export default function ErrorPage() {
       <div className="text-center">
         <h1 className="text-2xl font-bold text-red-600">Lỗi</h1>
         <p className="mt-4">{message}</p>
-        <a href="/" className="mt-6 inline-block bg-blue-600 text-white py-2 px-4 rounded">
+        <Link aria-label="Back to home" href="/" className="mt-6 inline-block bg-blue-600 text-white py-2 px-4 rounded">
           Quay lại trang chủ
-        </a>
+        </Link>
       </div>
     </div>
   );

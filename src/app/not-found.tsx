@@ -7,7 +7,7 @@ const NotFound = () => {
       <p className="text-lg mb-8">
         The page you are looking for does not exist.
       </p>
-      <Link href="/" className="text-blue-500 hover:underline">
+      <Link aria-label="Go back to Home" href="/" className="text-blue-500 hover:underline">
         Go back to Home
       </Link>
     </div>

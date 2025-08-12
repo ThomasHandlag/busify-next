@@ -30,26 +30,7 @@ import BusOperatorItem, {
   BusOperatorItemProps,
 } from "@/components/custom/bus_operator/bus_operator_item";
 
-<<<<<<< HEAD:src/app/passenger/page.tsx
-export interface TripItemProps {
-  trip_id: number;
-  operator_name: string;
-  route: {
-    start_location: string;
-    end_location: string;
-  };
-  departure_time: string;
-  arrival_time: string;
-  available_seats: number;
-  average_rating: number;
-  price_per_seat: number;
-  duration: string;
-}
-
-const Passenger = async () => {
-=======
 const PassengerPage = async () => {
->>>>>>> origin/dev:src/app/about/page.tsx
   const trips: TripItemProps[] = await getUpcomingTrips();
   const busOperators = await getBusOperatorsRating();
   return (
@@ -67,7 +48,7 @@ const PassengerPage = async () => {
             className="bg-white text-green-600 hover:bg-green-50"
           >
             <ShoppingCart className="mr-2 w-5 h-5" />
-            <Link href="/trips">Start Booking Now</Link>
+            <Link aria-label="Start Booking Now" href="/trips">Start Booking Now</Link>
           </Button>
         </div>
         <div className="sm::hidden mr-20">

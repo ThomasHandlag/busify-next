@@ -49,6 +49,7 @@ const NavMobile = ({
                 {publicMenuItems.map((item) => {
                   return (
                     <Link
+                      aria-label={item.label} 
                       key={item.href}
                       href={item.href}
                       className={`flex items-center space-x-3 px-3 py-2 rounded-lg transition-colors ${
@@ -82,6 +83,7 @@ const NavMobile = ({
                           const isExternal = item.href.startsWith("http");
                           return (
                             <Link
+                              aria-label={item.label}
                               key={item.href}
                               href={item.href}
                               {...(isExternal && {
@@ -127,6 +129,7 @@ const NavMobile = ({
                       {section.items.map((item) => {
                         return (
                           <Link
+                          aria-label={item.label}
                             key={item.href}
                             href={item.href}
                             className="flex items-center space-x-3 px-3 py-2 rounded-lg hover:bg-blue-50 text-gray-700 hover:text-blue-700"
@@ -165,6 +168,7 @@ const NavMobile = ({
                         {section.items.map((item) => {
                           return (
                             <Link
+                            aria-label={item.label}
                               key={item.href}
                               href={item.href}
                               className="flex items-center space-x-3 px-3 py-2 rounded-lg hover:bg-purple-50 text-gray-700 hover:text-purple-700"
@@ -198,7 +202,8 @@ const NavMobile = ({
                     asChild
                   >
                     <Link
-                      href="/auth/signin"
+                      aria-label="Sign in"
+                      href="/login"
                       className="flex items-center space-x-2"
                     >
                       <User className="w-4 h-4" />
@@ -209,22 +214,17 @@ const NavMobile = ({
                     className="w-full bg-green-600 hover:bg-green-700"
                     asChild
                   >
-                    <Link href="/auth/signup">Get Started</Link>
+                    <Link aria-label="Get Started" href="/signup">Get Started</Link>
                   </Button>
                 </>
               ) : (
                 <Button
                   variant="outline"
-                  className="w-full justify-start"
-                  asChild
+                  onClick={() => signOut()}
+                  className="flex items-center space-x-2"
                 >
-                  <Button
-                    onClick={() => signOut()}
-                    className="flex items-center space-x-2"
-                  >
-                    <User className="w-4 h-4" />
-                    <span>Log out</span>
-                  </Button>
+                  <User className="w-4 h-4" />
+                  <span>Log out</span>
                 </Button>
               )}
             </div>
@@ -237,11 +237,17 @@ const NavMobile = ({
         <span className="text-xl font-bold text-gray-900">Busify</span>
       </div>
 
-      <Button variant="ghost" size="sm" asChild>
-        <Link href="/signin">
-          <User className="w-5 h-5" />
-        </Link>
-      </Button>
+      {session.status === "authenticated" ? (
+        <Button variant="ghost" size="sm" asChild>
+          <Link aria-label="User profile" href={`/user/profile`}>
+            <User className="w-5 h-5" />
+          </Link>
+        </Button>
+      ) : (
+        <Button variant="ghost" size="sm" asChild>
+          <Link aria-label="Log in" href="/login">Log in</Link>
+        </Button>
+      )}
     </div>
   );
 };

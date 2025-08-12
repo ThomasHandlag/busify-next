@@ -3,6 +3,7 @@ import { useEffect, useState, Suspense } from "react";
 import { useSearchParams, useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
+import { verification } from "@/lib/data/auth";
 
 function LoadingFallback() {
   return (
@@ -50,25 +51,17 @@ function VerifyEmailContent() {
       }
 
       try {
-        const response = await fetch(
-          `http://localhost:8080/api/auth/verify-email?token=${token}`,
-          {
-            method: "GET",
-            headers: {
-              "Content-Type": "application/json",
-            },
-          }
-        );
+        const response = await verification(token);
 
-        const data = await response.json();
-
-        if (response.ok && data.message === "Email verified successfully") {
+        if (response.code === 200) {
           setVerificationStatus("success");
-          setMessage("Your email has been verified successfully!");
+          setMessage(
+            response.message || "Your email has been verified successfully."
+          );
         } else {
           setVerificationStatus("error");
           setMessage(
-            data.message || "Email verification failed. Please try again."
+            response.message || "Email verification failed. Please try again."
           );
         }
       } catch (error) {
@@ -206,7 +199,7 @@ function VerifyEmailContent() {
               >
                 Try Again
               </Button>
-              <Link href="/login">
+              <Link aria-label="Login" href="/login">
                 <Button
                   variant="outline"
                   className="w-full text-green-600 border-green-600 hover:bg-green-50 font-semibold py-3 rounded-xl"
@@ -266,7 +259,7 @@ function VerifyEmailContent() {
                   {resendMessage}
                 </div>
               )}
-              <Link href="/login">
+              <Link aria-label="Back to Sign In" href="/login">
                 <Button
                   variant="outline"
                   className="w-full text-green-600 border-green-600 hover:bg-green-50 font-semibold py-3 rounded-xl"
