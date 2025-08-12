@@ -502,7 +502,7 @@ export default function BookingResult() {
 
           {/* Actions */}
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <Link href="/booking/history">
+            <Link aria-label="View Booking History" href="/user/my-tickets">
               <Button className="bg-green-600 hover:bg-green-700 text-white flex items-center gap-2">
                 <Calendar className="w-4 h-4" />
                 Xem lịch sử đặt vé
