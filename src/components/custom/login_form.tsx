@@ -1,4 +1,3 @@
-
 "use client";
 import { useForm } from "react-hook-form";
 import { Button } from "../ui/button";
@@ -14,16 +13,14 @@ import { signIn } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 
-import { BASE_URL } from "@/lib/constants/constants"; // Đảm bảo import đúng đường dẫn
-
-
 const LoginForm = () => {
   const [showPassword, setShowPassword] = React.useState(false);
   const [isGoogleLoading, setIsGoogleLoading] = React.useState(false);
   const [showResendModal, setShowResendModal] = React.useState(false);
   const [resendEmail, setResendEmail] = React.useState("");
-  const [resendStatus, setResendStatus] =
-    React.useState<"idle" | "loading" | "success" | "error">("idle");
+  const [resendStatus, setResendStatus] = React.useState<
+    "idle" | "loading" | "success" | "error"
+  >("idle");
   const [resendMessage, setResendMessage] = React.useState("");
   const [isMounted, setIsMounted] = React.useState(false);
 
@@ -49,71 +46,26 @@ const LoginForm = () => {
     e.preventDefault();
 
     try {
-      // Gọi API login trực tiếp
-      const response = await fetch(`${BASE_URL}api/auth/login`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          username: form.getValues("email"),
-          password: form.getValues("password"),
-        }),
+      const result = await signIn("credentials", {
+        redirect: false, // Quan trọng: ngăn tự động redirect
+        username: form.getValues("email"),
+        password: form.getValues("password"),
       });
 
-      const data = await response.json();
-      console.log("API Response:", data);
+      console.log("SignIn result:", result); // Debug log
 
-      if (response.ok && data.result) {
-        
-        if (typeof window !== "undefined") {
-          // localStorage.setItem("accessToken", data.result.accessToken);
-          localStorage.setItem("email", data.result.email);
-          localStorage.setItem("fullName",data.result.fullName);
-          localStorage.setItem("phoneNumber",data.result.phoneNumber);
-        }
-
-        // Sử dụng signIn để thiết lập session với next-auth
-        const signInResult = await signIn("credentials", {
-          redirect: false,
-          username: form.getValues("email"),
-          password: form.getValues("password"),
-          // accessToken: data.result.accessToken, // Truyền accessToken để next-auth sử dụng
-          email: data.result.email,
-          fullName: data.result.fullName,
-          phoneNumber: data.result.phoneNumber
-        });
-
-        if (signInResult?.ok && !signInResult?.error) {
-          console.log("Login successful, redirecting...");
-          router.push("/");
-        } else {
-          console.error("Session setup failed:", signInResult?.error);
-          toast.error("Failed to set up session");
-        }
+      if (result?.ok && !result?.error) {
+        console.log("Login successful, redirecting...");
+        router.push("/");
       } else {
-
-        console.error("Login failed:", data?.error);
+        console.error("Login failed:", result?.error);
         toast.error("Invalid email or password");
       }
     } catch (error) {
       console.error("Login error:", error);
       toast.error("An error occurred during login");
-    } 
+    }
   };
-
-  // const handleGoogleLogin = async () => {
-  //   try {
-  //     setIsGoogleLoading(true);
-
-  //     // Redirect trực tiếp tới backend Google OAuth
-  //     const googleOAuthUrl = `http://localhost:8080/api/auth/login/google`;
-  //     window.location.href = googleOAuthUrl;
-  //   } catch (error) {
-  //     console.error("Google login error:", error);
-  //     setIsGoogleLoading(false);
-  //   }
-  // };
 
   const handleResendVerification = async () => {
     if (!resendEmail.trim()) {

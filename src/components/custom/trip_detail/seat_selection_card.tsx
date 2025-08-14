@@ -28,6 +28,8 @@ import { Seat } from "@/lib/data/trip_seats";
 import { BusLayout } from "@/lib/data/bus";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
+import { useSession } from "next-auth/react";
+import { BASE_URL } from "@/lib/constants/constants";
 
 interface PassengerInfo {
   phone: string;
@@ -50,19 +52,9 @@ export function SeatSelectionCard({
   pricePerSeat,
   onSeatSelection,
 }: SeatSelectionCardProps) {
+  const { data: session } = useSession();
   const [selectedSeats, setSelectedSeats] = useState<string[]>([]);
   const router = useRouter();
-
-  // Lấy thông tin người dùng từ localStorage
-  const getUserInfoFromLocalStorage = (): PassengerInfo => {
-    if (typeof window !== "undefined") {
-      const email = localStorage.getItem("email") || "";
-      const fullName = localStorage.getItem("fullName") || "";
-      const phone = localStorage.getItem("phoneNumber") || "";
-      return { email, fullName, phone };
-    }
-    return { email: "", fullName: "", phone: "" };
-  };
 
   const passengerSchema = z.object({
     phone: z
@@ -78,8 +70,80 @@ export function SeatSelectionCard({
 
   const form = useForm<PassengerInfo>({
     resolver: zodResolver(passengerSchema),
-    defaultValues: getUserInfoFromLocalStorage(),
+    defaultValues: {
+      email: "",
+      fullName: "",
+      phone: "",
+    },
   });
+
+  // Fetch user info using accessToken
+  useEffect(() => {
+    const fetchUserInfo = async () => {
+      if (session?.user?.accessToken) {
+        try {
+          console.log("Fetching user info with accessToken:", session.user.accessToken);
+
+          const response = await fetch(`${BASE_URL}api/users/email`, {
+            method: "GET",
+            headers: {
+              Authorization: `Bearer ${session.user.accessToken.trim()}`,
+              "Content-Type": "application/json",
+              Accept: "application/json",
+            },
+          });
+
+          console.log("Response status:", response.status);
+
+          if (response.ok) {
+            const data = await response.json();
+            console.log("API Response data:", data);
+
+            if (data && data.result) {
+              form.reset({
+                email: data.result.email || "",
+                fullName: data.result.fullName || "",
+                phone: data.result.phoneNumber || "",
+              });
+              console.log("Form values after reset:", form.getValues());
+            } else {
+              console.error("No result in API response");
+              toast.error("Không thể lấy thông tin người dùng từ API");
+              form.reset({
+                email: "",
+                fullName: "",
+                phone: "",
+              });
+            }
+          } else {
+            const errorData = await response.json().catch(() => null);
+            console.error("API Error:", {
+              status: response.status,
+              data: errorData,
+            });
+            toast.error("Lỗi khi lấy thông tin người dùng");
+            form.reset({
+              email: "",
+              fullName: "",
+              phone: "",
+            });
+          }
+        } catch (error) {
+          console.error("Fetch error:", error);
+          toast.error("Lỗi kết nối khi lấy thông tin người dùng");
+          form.reset({
+            email: "",
+            fullName: "",
+            phone: "",
+          });
+        }
+      } else {
+        console.log("No session or accessToken available");
+      }
+    };
+
+    fetchUserInfo();
+  }, [session, form]);
 
   // Generate seats based on layout
   const generateSeatsFromLayout = () => {
@@ -212,13 +276,6 @@ export function SeatSelectionCard({
       return;
     }
 
-    // Cập nhật localStorage với thông tin mới từ form
-    if (typeof window !== "undefined") {
-      localStorage.setItem("email", values.email);
-      localStorage.setItem("fullName", values.fullName);
-      localStorage.setItem("phoneNumber", values.phone);
-    }
-
     router.push(
       `/booking/confirmation/${tripId}?` +
         new URLSearchParams({
@@ -296,6 +353,7 @@ export function SeatSelectionCard({
                             placeholder="Nhập số điện thoại"
                             maxLength={10}
                             {...field}
+                            className={session?.user ? "bg-gray-100" : ""}
                           />
                         </FormControl>
                         <FormMessage />
@@ -309,7 +367,11 @@ export function SeatSelectionCard({
                       <FormItem>
                         <FormLabel>Họ và tên</FormLabel>
                         <FormControl>
-                          <Input placeholder="Nhập họ và tên" {...field} />
+                          <Input
+                            placeholder="Nhập họ và tên"
+                            {...field}
+                            className={session?.user ? "bg-gray-100" : ""}
+                          />
                         </FormControl>
                         <FormMessage />
                       </FormItem>
@@ -326,14 +388,19 @@ export function SeatSelectionCard({
                             placeholder="Nhập email"
                             type="email"
                             {...field}
+                            className={session?.user ? "bg-gray-100" : ""}
                           />
                         </FormControl>
                         <FormMessage />
                       </FormItem>
                     )}
                   />
-                  <Button type="submit" disabled={selectedSeats.length === 0}>
-                    Đặt vé
+                  <Button
+                    type="submit"
+                    disabled={selectedSeats.length === 0}
+                    className="w-full"
+                  >
+                    Đặt vé ({selectedSeats.length} ghế)
                   </Button>
                 </form>
               </Form>
