@@ -88,6 +88,7 @@ const NavDesktop = ({
                               const isExternal = item.href.startsWith("http");
                               return (
                                 <Link
+                                  aria-label={item.label}
                                   key={item.href}
                                   href={item.href}
                                   {...(isExternal && {
@@ -148,6 +149,7 @@ const NavDesktop = ({
                           {section.items.map((item) => {
                             return (
                               <Link
+                                aria-label={item.label}
                                 key={item.href}
                                 href={item.href}
                                 className="flex items-start space-x-3 p-2 rounded-lg hover:bg-gray-50 transition-colors"
@@ -201,6 +203,7 @@ const NavDesktop = ({
                             {section.items.map((item) => {
                               return (
                                 <Link
+                                  aria-label={item.label}
                                   key={item.href}
                                   href={item.href}
                                   className="flex items-start space-x-3 p-2 rounded-lg hover:bg-gray-50 transition-colors"
@@ -232,13 +235,13 @@ const NavDesktop = ({
       {session.status !== "authenticated" ? (
         <div className="flex items-center space-x-4">
           <Button variant="outline" size="sm" asChild>
-            <Link href="/login" className="flex items-center space-x-2">
+            <Link aria-label="Sign in" href="/login" className="flex items-center space-x-2">
               <User className="w-4 h-4" />
               <span>Sign In</span>
             </Link>
           </Button>
           <Button size="sm" className="bg-green-600 hover:bg-green-700" asChild>
-            <Link href="/signup">Sign up</Link>
+            <Link aria-label="Sign up" href="/signup">Sign up</Link>
           </Button>
         </div>
       ) : (
@@ -253,7 +256,8 @@ const NavDesktop = ({
                 <div className="w-48 p-2">
                   <div className="space-y-1">
                     <Link
-                      href={`/trips/auth/profile/${session.data?.user?.email}`}
+                      aria-label="User profile"
+                      href={`/user/profile`}
                       className="block px-3 py-2 text-sm rounded-lg hover:bg-gray-100 transition-colors"
                     >
                       Profile

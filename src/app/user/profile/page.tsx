@@ -1,4 +1,4 @@
-import { getUserProfileByEmail } from "@/lib/data/users";
+import { UserProfileResponse } from "@/lib/data/users";
 import {
   Card,
   CardContent,
@@ -9,15 +9,78 @@ import {
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Mail, Phone, MapPin, Calendar, User } from "lucide-react";
 import UpdateProfileDialog from "@/components/custom/profile/update_profile";
-export const dynamic = "force-static";
+import React from "react";
+import { auth } from "@/lib/data/auth";
+import { BASE_URL } from "@/lib/constants/constants";
 
-const ProfilePage = async ({
-  params,
-}: {
-  params: Promise<{ email: string }>;
-}) => {
-  const email = (await params).email;
-  const userProfile = await getUserProfileByEmail(email);
+const ProfileSkeleton = () => {
+  return (
+    <div className="animate-pulse container mx-auto p-6 max-w-4xl mb-10">
+      <div className="mb-8">
+        <div className="h-8 w-48 bg-gray-200 rounded mb-2"></div>
+        <div className="h-4 w-64 bg-gray-200 rounded"></div>
+      </div>
+      <div className="mb-6">
+        <div className="flex items-center space-x-4">
+          <div className="h-20 w-20 bg-gray-200 rounded-full"></div>
+          <div>
+            <div className="h-6 w-40 bg-gray-200 rounded mb-2"></div>
+            <div className="h-4 w-32 bg-gray-200 rounded"></div>
+          </div>
+        </div>
+      </div>
+      <div className="grid md:grid-cols-2 gap-6 mb-6">
+        <div className="bg-gray-100 rounded-lg p-6 space-y-4">
+          <div className="h-4 w-32 bg-gray-200 rounded mb-2"></div>
+          <div className="h-4 w-24 bg-gray-200 rounded mb-2"></div>
+          <div className="h-4 w-28 bg-gray-200 rounded"></div>
+        </div>
+        <div className="bg-gray-100 rounded-lg p-6">
+          <div className="h-4 w-32 bg-gray-200 rounded mb-2"></div>
+          <div className="h-4 w-40 bg-gray-200 rounded"></div>
+        </div>
+      </div>
+      <div className="mt-6">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+          <div className="h-16 bg-gray-100 rounded-lg"></div>
+          <div className="h-16 bg-gray-100 rounded-lg"></div>
+          <div className="h-16 bg-gray-100 rounded-lg"></div>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+const ProfilePage = async () => {
+  const session = await auth();
+  if (!session) {
+    console.log("No session found - user not logged in");
+    return (
+      <div className="container mx-auto p-6 max-w-4xl mb-10">
+        <div className="text-center">
+          <h1 className="text-2xl font-bold text-red-600 mb-4">
+            Not Authenticated
+          </h1>
+          <p>Please log in to view your profile.</p>
+        </div>
+      </div>
+    );
+  }
+
+  const response = await fetch(`${BASE_URL}api/users/profile`, {
+    method: "GET",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${session?.user.accessToken}`,
+    },
+  });
+
+  if (!response.ok) {
+    return <ProfileSkeleton />;
+  }
+
+  const data = await response.json();
+  const userProfile = data.result as UserProfileResponse;
 
   return (
     <div className="container mx-auto p-6 max-w-4xl mb-10">

@@ -19,7 +19,7 @@ export function ImageWithFallback({ src, alt, width, height, className }: ImageW
       height={height}
       className={className}
       onError={(e) => {
-        (e.target as HTMLImageElement).src = "/placeholder-logo.png"; // Fallback khi ảnh lỗi
+        (e.target as HTMLImageElement).src = "/place-holder.png"; // Fallback khi ảnh lỗi
       }}
     />
   );

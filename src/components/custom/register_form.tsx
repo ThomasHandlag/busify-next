@@ -356,6 +356,7 @@ export const RegisterForm = () => {
                 Already have an account?{" "}
                 <Link
                   href="/login"
+                  aria-label="Sign in"
                   className="text-green-600 hover:text-green-700 font-semibold"
                 >
                   Sign in

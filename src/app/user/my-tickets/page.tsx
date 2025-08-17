@@ -26,7 +26,7 @@ import {
   BookingDetailResponse,
   BookingData,
 } from "@/lib/data/booking";
-import { TicketCard } from "../../../../components/custom/my_tickets/ticket_card";
+import { TicketCard } from "../../../components/custom/my_tickets/ticket_card";
 import { getBookingDetails, getBookingHistory } from "@/lib/data/booking";
 import { BookingDetailSheet } from "@/components/custom/my_tickets/booking_detail_sheet";
 
@@ -62,7 +62,7 @@ export default function MyTicketsPage() {
   ) => {
     setIsLoading(true);
     // Simulate API delay
-    const mockBookingResponse = await getBookingHistory(2);
+    const mockBookingResponse = await getBookingHistory(page);
 
     setBookingResponse(mockBookingResponse);
     setIsLoading(false);
@@ -263,7 +263,7 @@ export default function MyTicketsPage() {
                     Bạn chưa có chuyến đi nào được lên lịch. Hãy đặt vé ngay để
                     khám phá những điểm đến mới!
                   </p>
-                  <Link href="/trips">
+                  <Link aria-label="Book a Ticket" href="/trips">
                     <Button className="bg-green-600 hover:bg-green-700 text-sm sm:text-base">
                       Đặt vé ngay
                     </Button>

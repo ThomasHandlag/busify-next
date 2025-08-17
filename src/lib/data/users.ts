@@ -13,10 +13,9 @@ export interface UserProfileResponse {
 }
 
 export async function getUserProfileByEmail(
-  email: string
 ): Promise<UserProfileResponse | null | undefined> {
   try {
-    const response = await api.get(`api/users/email/${email}`);
+    const response = await api.get(`api/users/profile`);
     return response.data.result;
   } catch (error) {
     console.error("Error fetching user profile by email:", error);

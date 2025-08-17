@@ -11,7 +11,6 @@ import React, { FormEvent } from "react";
 import Link from "next/link";
 import { signIn } from "next-auth/react";
 import { useRouter } from "next/navigation";
-import { BASE_URL } from "@/lib/constants/constants";
 import { toast } from "sonner";
 
 const LoginForm = () => {
@@ -65,20 +64,6 @@ const LoginForm = () => {
     } catch (error) {
       console.error("Login error:", error);
       toast.error("An error occurred during login");
-    }
-  };
-
-  const handleGoogleLogin = async () => {
-    if (!isMounted) return;
-
-    try {
-      setIsGoogleLoading(true);
-
-      const googleOAuthUrl = `${BASE_URL}api/auth/login/google`;
-      window.location.href = googleOAuthUrl;
-    } catch (error) {
-      console.error("Google login error:", error);
-      setIsGoogleLoading(false);
     }
   };
 
@@ -212,6 +197,7 @@ const LoginForm = () => {
                 <span className="ml-2 text-sm text-gray-600">Remember me</span>
               </label>
               <Link
+                aria-label="Forgot password"
                 href="/forgot-password"
                 className="text-sm text-green-600 hover:text-green-700 font-medium"
               >
@@ -229,7 +215,7 @@ const LoginForm = () => {
         </Form>
         <div className="grid grid-cols-3 gap-2 sm:gap-3 mt-4">
           <button
-            onClick={handleGoogleLogin}
+            onClick={() => signIn("google")}
             disabled={isGoogleLoading || !isMounted}
             className="flex items-center justify-center py-3 px-2 sm:px-4 border border-gray-200 rounded-xl hover:bg-gray-50 transition-colors duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
           >
@@ -254,6 +240,7 @@ const LoginForm = () => {
           <p className="text-sm sm:text-base text-gray-600">
             Don&apos;t have an account?{" "}
             <Link
+              aria-label="Sign up"
               href="/signup"
               className="text-green-600 hover:text-green-700 font-semibold"
             >
