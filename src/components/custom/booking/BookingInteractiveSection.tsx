@@ -7,6 +7,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
 import { CreditCard } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { useSession } from "next-auth/react";
 
 interface BookingData {
   trip: { route: string };
@@ -52,6 +53,7 @@ export default function BookingInteractiveSection({
   const [paymentError, setPaymentError] = useState<string | null>(null);
   const [paymentLink, setPaymentLink] = useState<string | null>(null);
 
+  const { data: session } = useSession();
   const finalAmount = initialTotalPrice - discount;
 
   // Hàm xử lý xác nhận thanh toán
@@ -99,11 +101,13 @@ export default function BookingInteractiveSection({
           method: "POST",
           headers: {
             "Content-Type": "application/json",
+            Authorization: `Bearer ${session?.user.accessToken}`,
           },
           body: JSON.stringify(bookingRequest),
         }
       );
 
+      console.log("accessToken ", session?.user.accessToken);
       if (!bookingResponse.ok) {
         const errorData = await bookingResponse.json().catch(() => null);
         const errorMessage =
