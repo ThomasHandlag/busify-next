@@ -67,7 +67,7 @@ const ProfilePage = async () => {
     );
   }
 
-  const response = await fetch(`${BASE_URL}api/users/profile`, {
+  const response = await fetch(`${BASE_URL}/api/users/profile`, {
     method: "GET",
     headers: {
       "Content-Type": "application/json",
