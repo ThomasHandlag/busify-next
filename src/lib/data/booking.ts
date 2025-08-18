@@ -1,3 +1,4 @@
+import { auth } from "./auth";
 import api from "./axios-instance";
 
 export interface BookingData {
@@ -118,7 +119,7 @@ export async function getBookingHistory(
   page = 1,
   size = 10
 ): Promise<BookingResponse> {
-  const response = await api.get(`/api/bookings?page=${page}&size=${size}`);
+  const response = await api.get(`/api/bookings?page=${page}&size=${size}`, {});
   return response.data.result;
 }
 
