@@ -84,7 +84,7 @@ export function SeatSelectionCard({
         try {
           console.log("Fetching user info with accessToken:", session.user.accessToken);
 
-          const response = await fetch(`${BASE_URL}api/users/email`, {
+          const response = await fetch(`${BASE_URL}api/users/profile`, {
             method: "GET",
             headers: {
               Authorization: `Bearer ${session.user.accessToken.trim()}`,
