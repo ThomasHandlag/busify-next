@@ -72,8 +72,10 @@ const ProfilePage = async () => {
     headers: {
       "Content-Type": "application/json",
       Authorization: `Bearer ${session?.user.accessToken}`,
+
     },
   });
+  
 
   if (!response.ok) {
     return <ProfileSkeleton />;
