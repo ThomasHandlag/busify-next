@@ -7,7 +7,6 @@ const AppLayout = ({ children }: { children: ReactNode }) => {
     <TripFilterProvider>
       <div className="flex flex-col items-start w-full min-h-screen">
         <div className="w-full">{children}</div>
-        <BottomBar />
       </div>
     </TripFilterProvider>
   );
