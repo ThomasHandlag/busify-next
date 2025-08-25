@@ -1,4 +1,4 @@
-import { Search, Filter } from "lucide-react";
+import { Search, Filter, Loader2 } from "lucide-react";
 import {
   Sheet,
   SheetContent,
@@ -30,15 +30,17 @@ import { Input } from "../ui/input";
 
 import { OperatorMultiSelect } from "./bus_operator/operator_multi_select";
 
-
 type SearchFilterProps = {
   onApplyFilters: (filters: TripFilterQuery | null) => void;
+  isLoading?: boolean;
 };
 
-const SearchFilter = ({ onApplyFilters }: SearchFilterProps) => {
-  const [windowWidth, setWindowWidth] = useState(
-    typeof window !== "undefined" ? window.innerWidth : 768
-  );
+const SearchFilter = ({
+  onApplyFilters,
+  isLoading = false,
+}: SearchFilterProps) => {
+  const [windowWidth, setWindowWidth] = useState(768);
+  const [mounted, setMounted] = useState(false);
 
   const [operators, setOperators] = useState<BusOperator[]>([]);
   const [routes, setRoutes] = useState<BusifyRouteDetail[]>([]);
@@ -54,6 +56,10 @@ const SearchFilter = ({ onApplyFilters }: SearchFilterProps) => {
 
   const form = useForm<TripFilterQuery>({
     defaultValues: {
+      routeId: undefined,
+      departureDate: undefined,
+      untilTime: undefined,
+      availableSeats: undefined,
       busOperatorIds: [],
       busModel: [],
       amenities: [],
@@ -61,14 +67,18 @@ const SearchFilter = ({ onApplyFilters }: SearchFilterProps) => {
   });
 
   useEffect(() => {
-    const handleResize = () => {
-      setWindowWidth(window.innerWidth);
-    };
-
+    setMounted(true);
+    const handleResize = () => setWindowWidth(window.innerWidth);
     if (typeof window !== "undefined") {
+      setWindowWidth(window.innerWidth);
       window.addEventListener("resize", handleResize);
-      return () => window.removeEventListener("resize", handleResize);
     }
+
+    return () => {
+      if (typeof window !== "undefined") {
+        window.removeEventListener("resize", handleResize);
+      }
+    };
   }, []);
 
   useEffect(() => {
@@ -89,6 +99,11 @@ const SearchFilter = ({ onApplyFilters }: SearchFilterProps) => {
     onApplyFilters(data);
   };
 
+  const handleApplyFilters = () => {
+    const formData = form.getValues();
+    onApplyFilters(formData);
+  };
+
   return (
     <Sheet>
       <SheetTrigger asChild>
@@ -98,7 +113,8 @@ const SearchFilter = ({ onApplyFilters }: SearchFilterProps) => {
         </Button>
       </SheetTrigger>
       <SheetContent
-        side={windowWidth < 640 ? "bottom" : "right"}
+        // Only compute side after mount to avoid server/client mismatch
+        side={mounted ? (windowWidth < 640 ? "bottom" : "right") : "right"}
         className="overflow-y-auto p-4 h-full rounded"
       >
         <SheetHeader>
@@ -120,7 +136,10 @@ const SearchFilter = ({ onApplyFilters }: SearchFilterProps) => {
                 render={({ field }) => (
                   <FormItem className="mb-4">
                     <FormLabel>Route</FormLabel>
-                    <Select {...field} onValueChange={field.onChange}>
+                    <Select
+                      value={field.value || ""}
+                      onValueChange={field.onChange}
+                    >
                       <SelectTrigger className="bg-green-50">
                         <SelectValue placeholder="Select Route" />
                       </SelectTrigger>
@@ -260,6 +279,7 @@ const SearchFilter = ({ onApplyFilters }: SearchFilterProps) => {
                     <Input
                       type="time"
                       {...field}
+                      value={field.value || ""}
                       className="bg-background"
                       placeholder="HH:MM"
                     />
@@ -275,6 +295,7 @@ const SearchFilter = ({ onApplyFilters }: SearchFilterProps) => {
                     <Input
                       type="number"
                       {...field}
+                      value={field.value || ""}
                       className="bg-background"
                       placeholder="Number of seats"
                     />
@@ -291,8 +312,10 @@ const SearchFilter = ({ onApplyFilters }: SearchFilterProps) => {
             type="button"
             onClick={() => {
               form.reset({
-                routeId: "",
-                departureDate: "",
+                routeId: undefined,
+                departureDate: undefined,
+                untilTime: undefined,
+                availableSeats: undefined,
                 busOperatorIds: [],
                 busModel: [],
                 amenities: [],
@@ -304,10 +327,18 @@ const SearchFilter = ({ onApplyFilters }: SearchFilterProps) => {
           </Button>
           <Button
             className="flex-1 bg-green-600 hover:bg-green-700"
-            type="submit"
-            onClick={form.handleSubmit(onSubmit)}
+            type="button"
+            disabled={isLoading}
+            onClick={handleApplyFilters}
           >
-            Apply Filters
+            {isLoading ? (
+              <>
+                <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                Searching...
+              </>
+            ) : (
+              "Apply Filters"
+            )}
           </Button>
         </SheetFooter>
       </SheetContent>

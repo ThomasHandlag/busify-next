@@ -1,6 +1,6 @@
 "use client";
 
-import { ReactNode, useEffect, useState } from "react";
+import { ReactNode, useEffect, useState, useCallback } from "react";
 import {
   filterTripsClient,
   getUpcomingTrips,
@@ -19,38 +19,38 @@ export const TripFilterProvider = ({ children }: TripFilterProviderProps) => {
   const [isLoading, setIsLoading] = useState(false);
   const [query, setQuery] = useState<TripFilterQuery | null>(null);
 
-  const handleApplyFilters = async (filters: TripFilterQuery| null) => {
-    setQuery(filters);
-  };
+  const handleApplyFilters = useCallback(
+    async (filters: TripFilterQuery | null) => {
+      setQuery(filters);
+    },
+    []
+  );
 
   useEffect(() => {
-    if (query) {
-      const fetchedTrips = async () => {
-        setIsLoading(true);
-        try {
+    const fetchTrips = async () => {
+      setIsLoading(true);
+      try {
+        if (query) {
           const filteredTrips = await filterTripsClient(query);
           setTrips(filteredTrips);
-        } catch (error) {
-          console.error("Error filtering trips:", error);
-        } finally {
-          setIsLoading(false);
-        }
-      };
-      fetchedTrips();
-    } else {
-      const fetchInitialTrips = async () => {
-        setIsLoading(true);
-        try {
+        } else {
           const initialTrips = await getUpcomingTrips();
           setTrips(initialTrips);
-        } catch (error) {
-          console.error("Error fetching initial trips:", error);
-        } finally {
-          setIsLoading(false);
         }
-      };
-      fetchInitialTrips();
-    }
+      } catch (error) {
+        console.error("Error fetching trips:", error);
+        setTrips([]);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    // Debounce the API call by 300ms
+    const timeoutId = setTimeout(fetchTrips, 300);
+
+    return () => {
+      clearTimeout(timeoutId);
+    };
   }, [query]);
 
   const value = {
