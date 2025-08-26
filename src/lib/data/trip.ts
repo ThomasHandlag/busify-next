@@ -118,8 +118,8 @@ export async function getTripDetail(tripId: number): Promise<TripDetail> {
   try {
     const res = await api.get(`api/trips/${tripId}`);
 
-    console.log("Trip detail response:", res.data.result.routeStops);
-    return res.data.result as TripDetail;
+    console.log("Trip detail response:", res);
+    return res.data.result;
   } catch (error) {
     console.error("Error fetching trip detail:", error);
     throw error;

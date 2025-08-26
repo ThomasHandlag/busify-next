@@ -13,8 +13,9 @@ import {
   navigationMenuTriggerStyle,
 } from "@/components/ui/navigation-menu";
 import { Badge } from "@/components/ui/badge";
-import { Bus, Users, User, Building2 } from "lucide-react";
+import { Bus, Users, User, Building2, FileText } from "lucide-react";
 import { signOut, useSession } from "next-auth/react";
+import RegisterContractModal from "@/components/custom/contract/register_contract_modal";
 
 const NavDesktop = ({
   isPassenger,
@@ -25,6 +26,8 @@ const NavDesktop = ({
   isActive,
 }: NavDataProps) => {
   const session = useSession();
+
+  const [isOpen, setIsOpen] = React.useState(false);
 
   return (
     <div className="hidden lg:flex gap-6 w-full items-center justify-between">
@@ -192,6 +195,9 @@ const NavDesktop = ({
                       <p className="text-sm text-purple-700 mt-1">
                         Manage your bus business and passengers
                       </p>
+                      <div className="mt-3">
+                        <RegisterContractModal />
+                      </div>
                     </div>
                     <div className="grid grid-cols-2 gap-4">
                       {operatorMenuItems.map((section) => (
@@ -235,13 +241,19 @@ const NavDesktop = ({
       {session.status !== "authenticated" ? (
         <div className="flex items-center space-x-4">
           <Button variant="outline" size="sm" asChild>
-            <Link aria-label="Sign in" href="/login" className="flex items-center space-x-2">
+            <Link
+              aria-label="Sign in"
+              href="/login"
+              className="flex items-center space-x-2"
+            >
               <User className="w-4 h-4" />
               <span>Sign In</span>
             </Link>
           </Button>
           <Button size="sm" className="bg-green-600 hover:bg-green-700" asChild>
-            <Link aria-label="Sign up" href="/signup">Sign up</Link>
+            <Link aria-label="Sign up" href="/signup">
+              Sign up
+            </Link>
           </Button>
         </div>
       ) : (

@@ -163,10 +163,10 @@ const operatorMenuItems: MenuItemData[] = [
         description: "Overview of your business metrics",
       },
       {
-        href: "/operator/trips",
-        label: "Manage Trips",
+        href: "/operator/register/contract",
+        label: "Register Contract",
         icon: () => <Bus className="w-4 h-4" />,
-        description: "Create and manage your bus routes",
+        description: "Register a new contract for your bus services",
       },
       {
         href: "/operator/passengers",

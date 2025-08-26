@@ -9,8 +9,9 @@ import {
   SheetTrigger,
 } from "@/components/ui/sheet";
 
-import { MenuIcon, Bus, Users, User, Building2 } from "lucide-react";
+import { MenuIcon, Bus, Users, User, Building2, FileText } from "lucide-react";
 import { signOut, useSession } from "next-auth/react";
+import RegisterContractModal from "@/components/custom/contract/register_contract_modal";
 
 const NavMobile = ({
   isPassenger,
@@ -49,7 +50,7 @@ const NavMobile = ({
                 {publicMenuItems.map((item) => {
                   return (
                     <Link
-                      aria-label={item.label} 
+                      aria-label={item.label}
                       key={item.href}
                       href={item.href}
                       className={`flex items-center space-x-3 px-3 py-2 rounded-lg transition-colors ${
@@ -129,7 +130,7 @@ const NavMobile = ({
                       {section.items.map((item) => {
                         return (
                           <Link
-                          aria-label={item.label}
+                            aria-label={item.label}
                             key={item.href}
                             href={item.href}
                             className="flex items-center space-x-3 px-3 py-2 rounded-lg hover:bg-blue-50 text-gray-700 hover:text-blue-700"
@@ -159,6 +160,7 @@ const NavMobile = ({
                     <Building2 className="w-4 h-4 mr-2" />
                     For Bus Operators
                   </h3>
+
                   {operatorMenuItems.map((section) => (
                     <div key={section.title} className="mb-4">
                       <h4 className="text-xs font-semibold text-gray-500 uppercase tracking-wide mb-2">
@@ -168,7 +170,7 @@ const NavMobile = ({
                         {section.items.map((item) => {
                           return (
                             <Link
-                            aria-label={item.label}
+                              aria-label={item.label}
                               key={item.href}
                               href={item.href}
                               className="flex items-center space-x-3 px-3 py-2 rounded-lg hover:bg-purple-50 text-gray-700 hover:text-purple-700"
@@ -214,7 +216,9 @@ const NavMobile = ({
                     className="w-full bg-green-600 hover:bg-green-700"
                     asChild
                   >
-                    <Link aria-label="Get Started" href="/signup">Get Started</Link>
+                    <Link aria-label="Get Started" href="/signup">
+                      Get Started
+                    </Link>
                   </Button>
                 </>
               ) : (
@@ -245,7 +249,9 @@ const NavMobile = ({
         </Button>
       ) : (
         <Button variant="ghost" size="sm" asChild>
-          <Link aria-label="Log in" href="/login">Log in</Link>
+          <Link aria-label="Log in" href="/login">
+            Log in
+          </Link>
         </Button>
       )}
     </div>
