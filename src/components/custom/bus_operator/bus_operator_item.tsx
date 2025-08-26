@@ -48,7 +48,10 @@ const BusOperatorItem = ({
           </Avatar>
           <div className="text-sm text-gray-500">
             {busOperator.totalReviews} reviews
-            <span className="text-yellow-500"> {busOperator.averageRating}/5⭐</span>
+            <span className="text-yellow-500">
+              {" "}
+              {busOperator.averageRating.toFixed(1)}/5⭐
+            </span>
           </div>
         </div>
       </CardContent>

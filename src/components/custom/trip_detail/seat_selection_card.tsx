@@ -12,7 +12,7 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -25,9 +25,10 @@ import {
 import { Armchair } from "lucide-react";
 import { Seat } from "@/lib/data/trip_seats";
 import { BusLayout } from "@/lib/data/bus";
-
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
+import { useSession } from "next-auth/react";
+import { BASE_URL } from "@/lib/constants/constants";
 
 interface PassengerInfo {
   phone: string;
@@ -50,19 +51,108 @@ export function SeatSelectionCard({
   pricePerSeat,
   onSeatSelection,
 }: SeatSelectionCardProps) {
+  const { data: session } = useSession();
   const [selectedSeats, setSelectedSeats] = useState<string[]>([]);
-
   const router = useRouter();
+
+  const passengerSchema = z.object({
+    phone: z
+      .string()
+      .min(1, "Vui lòng nhập số điện thoại")
+      .regex(/^\d{10}$/, "Số điện thoại phải gồm 10 số"),
+    fullName: z
+      .string()
+      .min(1, "Vui lòng nhập họ và tên")
+      .min(2, "Họ và tên ít nhất 2 ký tự"),
+    email: z.string().email("Email không đúng định dạng"),
+  });
+
+  const form = useForm<PassengerInfo>({
+    resolver: zodResolver(passengerSchema),
+    defaultValues: {
+      email: "",
+      fullName: "",
+      phone: "",
+    },
+  });
+
+  // Fetch user info using accessToken
+  useEffect(() => {
+    const fetchUserInfo = async () => {
+      if (session?.user?.accessToken) {
+        try {
+          console.log(
+            "Fetching user info with accessToken:",
+            session.user.accessToken
+          );
+
+          const response = await fetch(`${BASE_URL}/api/users/profile`, {
+            method: "GET",
+            headers: {
+              Authorization: `Bearer ${session.user.accessToken.trim()}`,
+              "Content-Type": "application/json",
+              Accept: "application/json",
+            },
+          });
+
+          console.log("Response status:", response.status);
+
+          if (response.ok) {
+            const data = await response.json();
+            console.log("API Response data:", data);
+
+            if (data && data.result) {
+              form.reset({
+                email: data.result.email || "",
+                fullName: data.result.fullName || "",
+                phone: data.result.phoneNumber || "",
+              });
+              console.log("Form values after reset:", form.getValues());
+            } else {
+              console.error("No result in API response");
+              toast.error("Không thể lấy thông tin người dùng từ API");
+              form.reset({
+                email: "",
+                fullName: "",
+                phone: "",
+              });
+            }
+          } else {
+            const errorData = await response.json().catch(() => null);
+            console.error("API Error:", {
+              status: response.status,
+              data: errorData,
+            });
+            toast.error("Lỗi khi lấy thông tin người dùng");
+            form.reset({
+              email: "",
+              fullName: "",
+              phone: "",
+            });
+          }
+        } catch (error) {
+          console.error("Fetch error:", error);
+          toast.error("Lỗi kết nối khi lấy thông tin người dùng");
+          form.reset({
+            email: "",
+            fullName: "",
+            phone: "",
+          });
+        }
+      } else {
+        console.log("No session or accessToken available");
+      }
+    };
+
+    fetchUserInfo();
+  }, [session, form]);
 
   // Generate seats based on layout
   const generateSeatsFromLayout = () => {
     const generatedSeats: Seat[] = [];
-
-    // Return the provided seats if layout is null
     if (!layout) {
       return seats;
     }
-
     for (let floor = 1; floor <= layout.floors; floor++) {
       for (let row = 1; row <= layout.rows; row++) {
         for (let col = 0; col < layout.cols; col++) {
@@ -72,12 +162,9 @@ export function SeatSelectionCard({
             col +
             1;
           const seatName = `${String.fromCharCode(65 + col)}.${row}.${floor}`;
-
-          // Find status from trip seats data if available
           const seatStatus =
             seats?.find((s) => s.seat_number === seatName)?.status ||
             "available";
-
           generatedSeats.push({
             id: seatId,
             seat_number: seatName,
@@ -90,40 +177,16 @@ export function SeatSelectionCard({
         }
       }
     }
-
     return generatedSeats;
   };
-
-  const passengerSchema = z.object({
-    phone: z
-      .string()
-      .min(1, "Vui lòng nhập số điện thoại")
-      .regex(/^\d{10}$/, "Số điện thoại phải gồm 10 số"),
-    fullName: z
-      .string()
-      .min(1, "Vui lòng nhập họ và tên")
-      .min(2, "Họ và tên ít nhất 2 ký tự"),
-    email: z.email("Email không đúng định dạng"),
-  });
-
-  const form = useForm<PassengerInfo>({
-    resolver: zodResolver(passengerSchema),
-    defaultValues: {
-      phone: "",
-      fullName: "",
-      email: "",
-    },
-  });
 
   const allSeats = generateSeatsFromLayout();
 
   const handleSeatClick = (seatNumber: string, status: string) => {
     if (status === "booked") return;
-
     const newSelectedSeats = selectedSeats.includes(seatNumber)
       ? selectedSeats.filter((seat) => seat !== seatNumber)
       : [...selectedSeats, seatNumber];
-
     setSelectedSeats(newSelectedSeats);
     const totalPrice = newSelectedSeats.length * pricePerSeat;
     onSeatSelection?.(newSelectedSeats, totalPrice);
@@ -158,7 +221,6 @@ export function SeatSelectionCard({
     const floorSeats = allSeats.filter(
       (seat) => (seat.floor || 1) === floorNumber
     );
-
     return (
       <div key={floorNumber} className="mb-6">
         {floors > 1 && (
@@ -166,7 +228,6 @@ export function SeatSelectionCard({
             Tầng {floorNumber}
           </h3>
         )}
-
         <div
           className="grid gap-2 justify-center"
           style={{
@@ -180,9 +241,7 @@ export function SeatSelectionCard({
               const seat = floorSeats.find(
                 (s) => s.row === rowIndex && s.column === colIndex
               );
-
               if (!seat) return null;
-
               return (
                 <button
                   key={seat.id}
@@ -219,7 +278,6 @@ export function SeatSelectionCard({
       return;
     }
 
-    // Chuyển sang trang booking-confirmation
     router.push(
       `/booking/confirmation/${tripId}?` +
         new URLSearchParams({
@@ -261,7 +319,6 @@ export function SeatSelectionCard({
             <span className="text-xs text-gray-600">Đang chọn</span>
           </div>
         </div>
-
         <div className="border rounded-lg p-4 bg-gray-50 mb-4">
           {Array.from({ length: layout?.floors || 1 }, (_, i) =>
             renderFloorSeats(i + 1)
@@ -281,7 +338,6 @@ export function SeatSelectionCard({
               Tổng tiền: {totalPrice.toLocaleString("vi-VN")}đ
             </p>
           </div>
-
           <Card className="mt-4">
             <CardContent>
               <Form {...form}>
@@ -300,13 +356,13 @@ export function SeatSelectionCard({
                             placeholder="Nhập số điện thoại"
                             maxLength={10}
                             {...field}
+                            className={session?.user ? "bg-gray-100" : ""}
                           />
                         </FormControl>
                         <FormMessage />
                       </FormItem>
                     )}
                   />
-
                   <FormField
                     control={form.control}
                     name="fullName"
@@ -314,13 +370,16 @@ export function SeatSelectionCard({
                       <FormItem>
                         <FormLabel>Họ và tên</FormLabel>
                         <FormControl>
-                          <Input placeholder="Nhập họ và tên" {...field} />
+                          <Input
+                            placeholder="Nhập họ và tên"
+                            {...field}
+                            className={session?.user ? "bg-gray-100" : ""}
+                          />
                         </FormControl>
                         <FormMessage />
                       </FormItem>
                     )}
                   />
-
                   <FormField
                     control={form.control}
                     name="email"
@@ -332,14 +391,19 @@ export function SeatSelectionCard({
                             placeholder="Nhập email"
                             type="email"
                             {...field}
+                            className={session?.user ? "bg-gray-100" : ""}
                           />
                         </FormControl>
                         <FormMessage />
                       </FormItem>
                     )}
                   />
-                  <Button type="submit" disabled={selectedSeats.length === 0}>
-                    Đặt vé
+                  <Button
+                    type="submit"
+                    disabled={selectedSeats.length === 0}
+                    className="w-full"
+                  >
+                    Đặt vé ({selectedSeats.length} ghế)
                   </Button>
                 </form>
               </Form>
@@ -347,7 +411,6 @@ export function SeatSelectionCard({
           </Card>
         </div>
       </CardFooter>
-
       <style jsx global>{`
         .scrollbar-hide {
           -ms-overflow-style: none;

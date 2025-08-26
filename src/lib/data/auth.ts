@@ -164,7 +164,7 @@ export const config: NextAuthOptions = {
           password: credentials.password,
         };
 
-        const res = await fetch(`${BASE_URL}api/auth/login`, {
+        const res = await fetch(`${BASE_URL}/api/auth/login`, {
           method: "POST",
           body: JSON.stringify(payload),
           headers: {

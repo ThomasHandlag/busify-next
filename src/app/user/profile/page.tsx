@@ -68,13 +68,15 @@ const ProfilePage = async () => {
     );
   }
 
-  const response = await fetch(`${BASE_URL}api/users/profile`, {
+  const response = await fetch(`${BASE_URL}/api/users/profile`, {
     method: "GET",
     headers: {
       "Content-Type": "application/json",
       Authorization: `Bearer ${session?.user.accessToken}`,
+
     },
   });
+  
 
   if (!response.ok) {
     return <ProfileSkeleton />;
