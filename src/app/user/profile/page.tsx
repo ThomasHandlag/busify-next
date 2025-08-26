@@ -9,6 +9,7 @@ import {
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Mail, Phone, MapPin, Calendar, User } from "lucide-react";
 import UpdateProfileDialog from "@/components/custom/profile/update_profile";
+import ComplaintManagement from "@/components/custom/profile/complaint_management";
 import React from "react";
 import { auth } from "@/lib/data/auth";
 import { BASE_URL } from "@/lib/constants/constants";
@@ -67,7 +68,7 @@ const ProfilePage = async () => {
     );
   }
 
-  const response = await fetch(`${BASE_URL}api/users/profile`, {
+  const response = await fetch(`${BASE_URL}/api/users/profile`, {
     method: "GET",
     headers: {
       "Content-Type": "application/json",
@@ -196,6 +197,10 @@ const ProfilePage = async () => {
           </div>
         </CardContent>
       </Card>
+
+      <div className="mt-6">
+        <ComplaintManagement userId={session.user?.id} />
+      </div>
     </div>
   );
 };

@@ -1,14 +1,12 @@
 "use client";
 
-import { Card, CardContent, CardHeader, CardTitle } from "../../ui/card";
+import { Card, CardContent } from "../../ui/card";
 import { Button } from "../../ui/button";
 import { Badge } from "../../ui/badge";
-import { Separator } from "../../ui/separator";
 import { Clock, MapPin, Users, Star, ArrowRight } from "lucide-react";
 import { format } from "date-fns";
 
 import { TripItemProps } from "@/lib/data/trip";
-import { redirect } from "next/navigation";
 import Link from "next/link";
 
 const TripItem = ({ trip }: { trip: TripItemProps }) => {
@@ -24,14 +22,13 @@ const TripItem = ({ trip }: { trip: TripItemProps }) => {
     return "Available";
   };
 
-
   // Parse ISO 8601 format dates properly
   const departureDateObj = new Date(trip.departure_time);
   const arrivalDateObj = new Date(trip.arrival_time);
 
   // Format the times
-  const departure_time = format(departureDateObj, "HH:MM");
-  const arrival_time = format(arrivalDateObj, "HH:MM");
+  const departure_time = format(departureDateObj, "HH:mm");
+  const arrival_time = format(arrivalDateObj, "HH:mm");
 
   // Calculate duration correctly
   const trip_duration_minutes = Math.abs(
@@ -39,110 +36,112 @@ const TripItem = ({ trip }: { trip: TripItemProps }) => {
   );
   const hours = Math.floor(trip_duration_minutes / 60);
   const minutes = Math.round(trip_duration_minutes % 60);
-  const duration =
-    minutes === 0 ? `${hours} giờ` : `${hours} giờ ${minutes} phút`;
+  const duration = minutes === 0 ? `${hours}h` : `${hours}h${minutes}m`;
 
   // Format the dates
-  const departureDate = format(departureDateObj, "dd/MM/yyyy");
+  const departureDate = format(departureDateObj, "dd/MM");
 
   return (
-    <Card
-      className="hover:shadow-lg transition-shadow duration-200 border-l-4 border-l-green-500"
-      onClick={() => {
-        redirect(`/trips/${trip.trip_id}`);
-      }}
-    >
-      <CardHeader className="pb-1">
-        <div className="flex justify-between items-start">
-          <div className="flex-1">
-            <CardTitle className="text-lg font-bold text-gray-900 mb-1">
+    <Card className="hover:shadow-md transition-all duration-200 border-l-4 border-l-green-500 cursor-pointer">
+      <CardContent className="p-4">
+        {/* Header Row - Compact */}
+        <div className="flex justify-between items-start mb-3">
+          <div className="flex-1 min-w-0 pr-3">
+            <h3 className="text-sm font-bold text-gray-900 mb-1 truncate">
               {trip.operator_name}
-            </CardTitle>
+            </h3>
+            <div className="flex items-center gap-2 text-xs text-gray-500">
+              <span className="flex items-center gap-1">
+                <MapPin className="w-3 h-3" />
+                {departureDate}
+              </span>
+              <span className="flex items-center gap-1">
+                <Star className="w-3 h-3 text-yellow-400 fill-current" />
+                {trip.average_rating}
+              </span>
+            </div>
           </div>
-          <Badge
-            className={`${getAvailabilityColor(trip.available_seats)} border-0`}
-          >
-            {getAvailabilityText(trip.available_seats)} left
-          </Badge>
+          <div className="flex flex-col items-end gap-1">
+            <Badge
+              className={`${getAvailabilityColor(
+                trip.available_seats
+              )} text-xs px-2 py-1`}
+            >
+              {getAvailabilityText(trip.available_seats)}
+            </Badge>
+            <p className="text-lg font-bold text-green-600">
+              {new Intl.NumberFormat("vi-VN").format(trip.price_per_seat)}đ
+            </p>
+          </div>
         </div>
-      </CardHeader>
 
-      <CardContent className="space-y-2">
-        {/* Route Information */}
-        <div className="grid grid-cols-3 gap-2 items-center">
-          <div className="text-center">
-            <p className="text-lg font-bold text-gray-900">{departure_time}</p>
+        {/* Route Row - Ultra Compact */}
+        <div className="grid grid-cols-5 items-center gap-2 mb-3">
+          <div className="col-span-2 text-left">
+            <p className="text-sm font-semibold text-gray-900">
+              {departure_time}
+            </p>
             <p className="text-xs text-gray-500 truncate">
               {trip.route.start_location}
             </p>
           </div>
-          <div className="text-center">
-            <div className="flex items-center justify-center mb-1">
-              <div className="w-2 h-2 bg-green-500 rounded-full"></div>
+
+          <div className="flex items-center justify-center">
+            <div className="flex items-center w-full">
+              <div className="w-1.5 h-1.5 bg-green-500 rounded-full"></div>
               <div className="flex-1 h-px bg-gray-300 mx-2 relative">
                 <ArrowRight className="w-3 h-3 text-gray-400 absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-white" />
               </div>
-              <div className="w-2 h-2 bg-green-500 rounded-full"></div>
-            </div>
-            <div className="flex items-center justify-center text-xs text-gray-500">
-              <Clock className="w-3 h-3 mr-1" />
-              {duration}
+              <div className="w-1.5 h-1.5 bg-green-500 rounded-full"></div>
             </div>
           </div>
-          <div className="text-center">
-            <p className="text-lg font-bold text-gray-900">{arrival_time}</p>
+
+          <div className="col-span-2 text-right">
+            <p className="text-sm font-semibold text-gray-900">
+              {arrival_time}
+            </p>
             <p className="text-xs text-gray-500 truncate">
               {trip.route.end_location}
             </p>
           </div>
         </div>
 
-        {/* Trip Details */}
-        <div className="flex items-center justify-between text-sm text-gray-600">
-          <div className="flex items-center space-x-4">
-            <div className="flex items-center">
-              <MapPin className="w-4 h-4 mr-1 text-green-600" />
-              <span className="text-xs">{departureDate}</span>
-            </div>
-            <div className="flex items-center">
-              <Users className="w-4 h-4 mr-1 text-green-600" />
-              <span className="text-xs">{trip.available_seats} seats</span>
-            </div>
-          </div>
-          <div className="flex items-center">
-            <Star className="w-4 h-4 text-yellow-400 fill-current mr-1" />
-            <span className="text-xs font-medium">{trip.average_rating}</span>
-          </div>
-        </div>
-
-        <Separator />
-
-        {/* Price and Action */}
+        {/* Bottom Row - Info & Actions */}
         <div className="flex justify-between items-center">
-          <div>
-            <p className="text-2xl font-bold text-green-600">
-              {new Intl.NumberFormat("vi-VN").format(trip.price_per_seat)}đ
-            </p>
-
-            <p className="text-xs text-gray-500">vé</p>
+          <div className="flex items-center gap-3 text-xs text-gray-500">
+            <span className="flex items-center gap-1">
+              <Clock className="w-3 h-3" />
+              {duration}
+            </span>
+            <span className="flex items-center gap-1">
+              <Users className="w-3 h-3" />
+              {trip.available_seats}
+            </span>
           </div>
+
           <div className="flex gap-2">
-            <Link aria-label="View trip details" href={`/trips/${trip.trip_id}`} className="hidden lg:block">
+            <Link
+              aria-label="View trip details"
+              href={`/trips/${trip.trip_id}`}
+              className="hidden sm:block"
+            >
               <Button
                 variant="outline"
                 size="sm"
-                className="border-green-600 text-green-600 hover:bg-green-50"
+                className="border-green-600 text-green-600 hover:bg-green-50 text-xs h-7 px-3"
               >
-                View Details
+                Chi tiết
               </Button>
             </Link>
 
-            <Button
-              size="sm"
-              className="bg-green-600 hover:bg-green-700 text-white"
-            >
-              Book Now
-            </Button>
+            <Link aria-label="Book trip" href={`/trips/${trip.trip_id}`}>
+              <Button
+                size="sm"
+                className="bg-green-600 hover:bg-green-700 text-white text-xs h-7 px-3"
+              >
+                Đặt vé
+              </Button>
+            </Link>
           </div>
         </div>
       </CardContent>

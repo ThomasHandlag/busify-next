@@ -1,14 +1,14 @@
 import { Card, CardContent } from "@/components/ui/card";
 import "leaflet/dist/leaflet.css";
 import "leaflet-routing-machine/dist/leaflet-routing-machine.css";
-import TripOverviewCard from "@/components/custom/trip/trip_overview_card";
 import ReviewSection from "@/components/custom/review_section";
 import { TripHeroSection } from "@/components/custom/trip_detail/trip_hero_section";
 import { OperatorInfoCard } from "@/components/custom/trip_detail/operator_info_card";
-import { MobileBookingBar } from "@/components/custom/trip_detail/mobile_booking_bar";
 import { SimilarTripsSection } from "@/components/custom/trip_detail/similar_trip_section";
 import { ReviewModal } from "@/components/custom/trip_detail/review_modal";
-import ComplaintSection from "@/components/custom/trip_detail/complaint_section";
+import TripInfoCard from "@/components/custom/trip_detail/trip_info_card";
+import SeatSelectionTabsCard from "@/components/custom/trip_detail/seat_selection_tabs_card";
+// import ComplaintSection from "@/components/custom/trip_detail/complaint_section";
 import { getTripDetail } from "@/lib/data/trip";
 import { getTripSeatById, Seat, TripSeatsStatus } from "@/lib/data/trip_seats";
 import { BusLayout, getBusSeatsLayout } from "@/lib/data/bus";
@@ -86,13 +86,11 @@ export default async function TripDetailPage({
   });
 
   const bookingBar = (
-    <MobileBookingBar
+    <SeatSelectionTabsCard
       tripId={tripId}
       layout={busLayout}
       seats={busSeats}
       pricePerSeat={tripDetail.price_per_seat}
-      busType={tripDetail.bus.name}
-      operatorName={tripDetail.operator_name}
     />
   );
   return (
@@ -103,12 +101,13 @@ export default async function TripDetailPage({
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
           {/* Left Column */}
           <div className="lg:col-span-2 space-y-6">
-            <TripOverviewCard tripDetail={tripDetail} />
+            <TripInfoCard tripDetail={tripDetail} />
             <div className="lg:hidden md:hidden block">{bookingBar}</div>
             <OperatorInfoCard id={tripDetail.operator_id} />
             <ReviewModal tripId={tripDetail.trip_id} />
             <ReviewSection mockTripDetail={tripDetail} />
-            <ComplaintSection tripId={tripDetail.trip_id} />
+            {/* Moved ComplaintSection to profile - will be implemented later */}
+            {/* <ComplaintSection tripId={tripDetail.trip_id} /> */}
           </div>
 
           {/* Right Column - Desktop Booking */}

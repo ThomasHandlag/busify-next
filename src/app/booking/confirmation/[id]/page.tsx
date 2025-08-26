@@ -103,6 +103,7 @@ export default function BookingConfirmation({ params }: PageProps) {
       return;
     }
 
+    console.log(tripId, "Trip ID from params");
     const fetchTripData = async () => {
       setLoading(true);
       try {

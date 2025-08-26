@@ -289,7 +289,7 @@ export default function MyTicketsPage() {
               </div>
             ) : upcomingBookings.length > 0 ? (
               <>
-                <div className="space-y-3 sm:space-y-4">
+                <div className="grid grid-cols-1 lg:grid-cols-2 gap-3 sm:gap-4">
                   {upcomingBookings.map(renderTicketCard)}
                 </div>
                 <PaginationControls />
@@ -325,7 +325,7 @@ export default function MyTicketsPage() {
               </div>
             ) : completedBookings.length > 0 ? (
               <>
-                <div className="space-y-3 sm:space-y-4">
+                <div className="grid grid-cols-1 lg:grid-cols-2 gap-3 sm:gap-4">
                   {completedBookings.map(renderTicketCard)}
                 </div>
                 <PaginationControls />
@@ -355,7 +355,7 @@ export default function MyTicketsPage() {
               </div>
             ) : canceledBookings.length > 0 ? (
               <>
-                <div className="space-y-3 sm:space-y-4">
+                <div className="grid grid-cols-1 lg:grid-cols-2 gap-3 sm:gap-4">
                   {canceledBookings.map(renderTicketCard)}
                 </div>
                 <PaginationControls />
