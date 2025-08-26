@@ -38,6 +38,7 @@ const getReviewsByCustomerId = async (
 };
 
 const getReviewsByTripId = async (tripId: number): Promise<Review[]> => {
+  console.log("Fetching reviews for tripId:", tripId);
   try {
     const response = await api.get(`api/reviews/trip/${tripId}`);
     return response.data.result.reviews;

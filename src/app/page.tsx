@@ -99,7 +99,7 @@ const Home = async () => {
             Popular Routes
           </h2>
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {popularRoutes.slice(0, 6).map((route: BusifyRoute) => (
+            {popularRoutes?.slice(0, 6).map((route: BusifyRoute) => (
               <BusifyRouteItem key={route.routeId} item={route} />
             ))}
           </div>

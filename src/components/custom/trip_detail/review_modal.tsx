@@ -23,6 +23,7 @@ import {
 
 import { addReviewClient } from "@/lib/data/reviews";
 import { toast } from "sonner";
+import { Textarea } from "@/components/ui/textarea";
 
 type ReviewFormValues = {
   comment: string;
@@ -57,10 +58,11 @@ export function ReviewModal({ tripId }: { tripId: number }) {
         comment: "",
         rating: 5,
       });
-      setOpen(false);
     } catch (error) {
+      console.error("Error submitting review:", error);
       toast.error("Không thể gửi đánh giá. Vui lòng thử lại sau.");
     }
+    setOpen(false);
     setLoading(false);
   };
 
@@ -120,11 +122,14 @@ export function ReviewModal({ tripId }: { tripId: number }) {
                     Nội dung đánh giá
                   </FormLabel>
                   <FormControl>
-                    <textarea
+                    <Textarea
                       className="w-full border rounded p-2"
                       rows={3}
                       placeholder="Nhập nhận xét của bạn..."
                       {...field}
+                      onChange={(e) => {
+                        field.onChange(e);
+                      }}
                     />
                   </FormControl>
                   <FormMessage />
@@ -135,8 +140,7 @@ export function ReviewModal({ tripId }: { tripId: number }) {
             <Button
               type="submit"
               className="w-full"
-
-              disabled={form.getValues().comment.trim() === "" || loading}
+              disabled={form.getFieldState("comment").invalid || loading}
             >
               {loading && <Loader2 className="animate-spin mr-2" />}
               Gửi đánh giá

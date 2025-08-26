@@ -6,7 +6,9 @@ import { TripFilterQuery, TripItemProps } from "../data/trip";
 
 interface TripFilterContextType {
   trips: TripItemProps[];
-  handleApplyFilters: (filters: TripFilterQuery| null) => Promise<void>;
+  page: number;
+  handlePageChange: (page: number) => void;
+  handleApplyFilters: (filters: TripFilterQuery | null) => Promise<void>;
   isLoading: boolean;
 }
 

@@ -12,27 +12,34 @@ import { Checkbox } from "../ui/checkbox";
 import { useEffect, useState } from "react";
 import { Calendar28 } from "./date_picker";
 import { BusifyRouteDetail, getAllRoutesClient } from "@/lib/data/route_api";
-import { getAllBusOperators, BusOperator } from "@/lib/data/bus_operator";
 import { TripFilterQuery } from "@/lib/data/trip";
 import { useForm } from "react-hook-form";
 import { Form, FormField, FormItem, FormLabel } from "../ui/form";
 import { Input } from "../ui/input";
-import { OperatorMultiSelect } from "./bus_operator/operator_multi_select";
 import { Separator } from "../ui/separator";
 import { Loader2 } from "lucide-react";
+import { getAllBusModelsClient } from "@/lib/data/bus";
 
 type SearchFilterSidebarProps = {
   onApplyFilters: (filters: TripFilterQuery | null) => void;
   isLoading?: boolean;
 };
 
+type FormValues = {
+  routeId: null | string;
+  departureDate: Date | undefined;
+  untilTime: Date | undefined;
+  busModels: undefined | string[];
+  amenities: undefined | string[];
+  operatorName: undefined | string;
+};
+
 const SearchFilterSidebar = ({
   onApplyFilters,
   isLoading = false,
 }: SearchFilterSidebarProps) => {
-  const [operators, setOperators] = useState<BusOperator[]>([]);
   const [routes, setRoutes] = useState<BusifyRouteDetail[]>([]);
-  const busModels: string[] = ["limousine", "Giường nằm", "Ghế ngồi"];
+  const [busModels, setBusModels] = useState<string[]>([]);
 
   const amenities: string[] = [
     "Wifi",
@@ -42,27 +49,26 @@ const SearchFilterSidebar = ({
     "Ổ cắm sạc",
   ];
 
-  const form = useForm<TripFilterQuery>({
+  const form = useForm<FormValues>({
     defaultValues: {
-      routeId: undefined,
+      routeId: null,
       departureDate: undefined,
       untilTime: undefined,
-      availableSeats: undefined,
-      busOperatorIds: [],
-      busModel: [],
+      busModels: [],
       amenities: [],
+      operatorName: "",
     },
   });
 
   useEffect(() => {
     const fetchData = async () => {
-      const [fetchedOperators, fetchedRoutes] = await Promise.all([
-        getAllBusOperators(),
+      const [fetchedRoutes, fetchedBusModels] = await Promise.all([
         getAllRoutesClient(),
+        getAllBusModelsClient(),
       ]);
 
-      setOperators(fetchedOperators);
       setRoutes(fetchedRoutes);
+      setBusModels(fetchedBusModels);
     };
 
     fetchData();
@@ -71,7 +77,15 @@ const SearchFilterSidebar = ({
   const handleApplyFilters = (e: React.FormEvent) => {
     e.preventDefault();
     const formData = form.getValues();
-    onApplyFilters(formData);
+    onApplyFilters({
+      routeId: formData.routeId,
+      departureDate: formData.departureDate,
+      untilTime: formData.untilTime,
+      busModels: formData.busModels,
+      amenities: formData.amenities,
+      operatorName: formData.operatorName,
+      timeZone: Intl.DateTimeFormat().resolvedOptions().timeZone,
+    });
   };
 
   return (
@@ -117,7 +131,25 @@ const SearchFilterSidebar = ({
                 name="departureDate"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Departure Date</FormLabel>
+                    <FormLabel>From Date</FormLabel>
+                    <Calendar28
+                      field={field}
+                      picker={{
+                        placeholder: "YYYY-MM-DD",
+                        initialDate: new Date(),
+                      }}
+                    />
+                  </FormItem>
+                )}
+              />
+            </div>
+            <div className="space-y-4">
+              <FormField
+                control={form.control}
+                name="untilTime"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>To Date</FormLabel>
                     <Calendar28
                       field={field}
                       picker={{
@@ -138,12 +170,12 @@ const SearchFilterSidebar = ({
             <h3 className="font-semibold text-gray-900 mb-3">Bus Operators</h3>
             <FormField
               control={form.control}
-              name="busOperatorIds"
+              name="operatorName"
               render={({ field }) => (
                 <FormItem>
-                  <OperatorMultiSelect
-                    operators={operators}
-                    value={field.value}
+                  <Input
+                    placeholder="Enter operator name"
+                    value={field.value || ""}
                     onChange={field.onChange}
                   />
                 </FormItem>
@@ -158,7 +190,7 @@ const SearchFilterSidebar = ({
             <h3 className="font-semibold text-gray-900 mb-3">Bus Type</h3>
             <FormField
               control={form.control}
-              name="busModel"
+              name="busModels"
               render={({ field }) => (
                 <FormItem>
                   <div className="space-y-3">
@@ -240,28 +272,6 @@ const SearchFilterSidebar = ({
 
           <Separator />
 
-          {/* Available Seats */}
-          <div>
-            <h3 className="font-semibold text-gray-900 mb-3">
-              Available Seats
-            </h3>
-            <FormField
-              control={form.control}
-              name="availableSeats"
-              render={({ field }) => (
-                <FormItem>
-                  <Input
-                    type="number"
-                    {...field}
-                    value={field.value || ""}
-                    className="bg-gray-50"
-                    placeholder="Minimum seats required"
-                  />
-                </FormItem>
-              )}
-            />
-          </div>
-
           {/* Action Buttons */}
           <div className="pt-4 space-y-3">
             <Button
@@ -270,7 +280,10 @@ const SearchFilterSidebar = ({
               disabled={isLoading}
               onClick={() => {
                 const formData = form.getValues();
-                onApplyFilters(formData);
+                onApplyFilters({
+                  ...formData,
+                  timeZone: Intl.DateTimeFormat().resolvedOptions().timeZone,
+                });
               }}
             >
               {isLoading ? (
@@ -292,9 +305,8 @@ const SearchFilterSidebar = ({
                   routeId: undefined,
                   departureDate: undefined,
                   untilTime: undefined,
-                  availableSeats: undefined,
-                  busOperatorIds: [],
-                  busModel: [],
+                  operatorName: undefined,
+                  busModels: [],
                   amenities: [],
                 });
                 onApplyFilters(null);

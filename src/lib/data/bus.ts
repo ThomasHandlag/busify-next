@@ -17,3 +17,33 @@ export async function getBusSeatsLayout(
     return null;
   }
 }
+
+export interface BusModel {
+  id: number;
+  name: string;
+}
+
+export async function getAllBusModels(): Promise<BusModel[]> {
+  try {
+    const res = await api.get("api/bus-models");
+    return res.data.result as BusModel[];
+  } catch (error) {
+    console.error("Error fetching bus routes:", error);
+    return [];
+  }
+}
+
+export async function getAllBusModelsClient(): Promise<string[]> {
+  try {
+    const res = await fetch("/api/bus-models", {
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
+    const data = await res.json();
+    return data.result.map((model: BusModel) => model.name);
+  } catch (error) {
+    console.error("Error fetching bus models:", error);
+    return [];
+  }
+}

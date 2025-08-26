@@ -1,11 +1,7 @@
 "use client";
 
 import { ReactNode, useEffect, useState, useCallback } from "react";
-import {
-  filterTripsClient,
-  getUpcomingTrips,
-  TripFilterQuery,
-} from "@/lib/data/trip";
+import { filterTripsClient, TripFilterQuery } from "@/lib/data/trip";
 
 import { TripItemProps } from "@/lib/data/trip";
 import TripFilterContext from "../../lib/contexts/TripFilterContext";
@@ -16,6 +12,7 @@ interface TripFilterProviderProps {
 
 export const TripFilterProvider = ({ children }: TripFilterProviderProps) => {
   const [trips, setTrips] = useState<TripItemProps[]>([]);
+  const [page, setPage] = useState(1);
   const [isLoading, setIsLoading] = useState(false);
   const [query, setQuery] = useState<TripFilterQuery | null>(null);
 
@@ -27,15 +24,31 @@ export const TripFilterProvider = ({ children }: TripFilterProviderProps) => {
   );
 
   useEffect(() => {
+    // get current time zone
+    const timeZone = Intl.DateTimeFormat().resolvedOptions().timeZone;
     const fetchTrips = async () => {
       setIsLoading(true);
       try {
         if (query) {
-          const filteredTrips = await filterTripsClient(query);
-          setTrips(filteredTrips);
+          const filteredTrips = await filterTripsClient(
+            { ...query, timeZone },
+            page
+          );
+          setTrips(filteredTrips.data);
         } else {
-          const initialTrips = await getUpcomingTrips();
-          setTrips(initialTrips);
+          const filteredTrips = await filterTripsClient(
+            {
+              routeId: undefined,
+              departureDate: undefined,
+              busModels: undefined,
+              untilTime: undefined,
+              amenities: undefined,
+              operatorName: undefined,
+              timeZone,
+            },
+            page
+          );
+          setTrips(filteredTrips.data);
         }
       } catch (error) {
         console.error("Error fetching trips:", error);
@@ -51,12 +64,14 @@ export const TripFilterProvider = ({ children }: TripFilterProviderProps) => {
     return () => {
       clearTimeout(timeoutId);
     };
-  }, [query]);
+  }, [query, page]);
 
   const value = {
     trips,
     handleApplyFilters,
     isLoading,
+    page,
+    handlePageChange: setPage,
   };
 
   return (

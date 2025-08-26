@@ -47,7 +47,8 @@ const Calendar28 = ({
   field,
 }: {
   picker?: DatePickerProps;
-  field: ControllerRenderProps;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  field: ControllerRenderProps<any, any>;
 }) => {
   const [open, setOpen] = React.useState(false);
   const [date, setDate] = React.useState<Date | undefined>(picker?.initialDate);

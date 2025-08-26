@@ -1,4 +1,5 @@
 // lib/data/operator.ts
+import { AxiosError } from "axios";
 import axios from "./axios-instance";
 import api from "./axios-instance";
 
@@ -63,8 +64,10 @@ export async function getBusOperatorById(
     console.log("Fetching bus operator with ID:", id);
     const res = await api.get(`api/bus-operators/${id}`);
     return res.data.result as BusOperatorDetail;
-  } catch (error) {
+  } catch (e) {
+    const error = e as AxiosError;
     console.error("Error fetching bus operator by ID:", error);
+    console.log("Response data:", error.response);
     return null;
   }
 }

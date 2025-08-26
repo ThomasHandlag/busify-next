@@ -22,13 +22,10 @@ import { Checkbox } from "../ui/checkbox";
 import { useEffect, useState } from "react";
 import { Calendar28 } from "./date_picker";
 import { BusifyRouteDetail, getAllRoutesClient } from "@/lib/data/route_api";
-import { getAllBusOperators, BusOperator } from "@/lib/data/bus_operator";
 import { TripFilterQuery } from "@/lib/data/trip";
 import { useForm } from "react-hook-form";
 import { Form, FormField, FormItem, FormLabel } from "../ui/form";
 import { Input } from "../ui/input";
-
-import { OperatorMultiSelect } from "./bus_operator/operator_multi_select";
 
 type SearchFilterProps = {
   onApplyFilters: (filters: TripFilterQuery | null) => void;
@@ -42,7 +39,6 @@ const SearchFilter = ({
   const [windowWidth, setWindowWidth] = useState(768);
   const [mounted, setMounted] = useState(false);
 
-  const [operators, setOperators] = useState<BusOperator[]>([]);
   const [routes, setRoutes] = useState<BusifyRouteDetail[]>([]);
   const busModels: string[] = ["limousine", "Giường nằm", "Ghế ngồi"];
 
@@ -59,9 +55,8 @@ const SearchFilter = ({
       routeId: undefined,
       departureDate: undefined,
       untilTime: undefined,
-      availableSeats: undefined,
-      busOperatorIds: [],
-      busModel: [],
+      operatorName: null,
+      busModels: [],
       amenities: [],
     },
   });
@@ -83,12 +78,8 @@ const SearchFilter = ({
 
   useEffect(() => {
     const fetchData = async () => {
-      const [fetchedOperators, fetchedRoutes] = await Promise.all([
-        getAllBusOperators(),
-        getAllRoutesClient(),
-      ]);
+      const [fetchedRoutes] = await Promise.all([getAllRoutesClient()]);
 
-      setOperators(fetchedOperators);
       setRoutes(fetchedRoutes);
     };
 
@@ -160,14 +151,16 @@ const SearchFilter = ({
 
               <FormField
                 control={form.control}
-                name="busOperatorIds"
+                name="operatorName"
                 render={({ field }) => (
                   <FormItem className="mb-4">
                     <FormLabel>Bus Operator</FormLabel>
-                    <OperatorMultiSelect
-                      operators={operators}
-                      value={field.value}
-                      onChange={field.onChange}
+                    <Input
+                      type="text"
+                      {...field}
+                      value={field.value || ""}
+                      className="bg-background"
+                      placeholder="Operator Name"
                     />
                   </FormItem>
                 )}
@@ -175,7 +168,7 @@ const SearchFilter = ({
 
               <FormField
                 control={form.control}
-                name="busModel"
+                name="busModels"
                 render={({ field }) => (
                   <FormItem className="mb-4">
                     <FormLabel>Bus Model</FormLabel>
@@ -274,30 +267,14 @@ const SearchFilter = ({
                 control={form.control}
                 name="untilTime"
                 render={({ field }) => (
-                  <FormItem className="mb-4">
-                    <FormLabel>Until Time</FormLabel>
-                    <Input
-                      type="time"
-                      {...field}
-                      value={field.value || ""}
-                      className="bg-background"
-                      placeholder="HH:MM"
-                    />
-                  </FormItem>
-                )}
-              />
-              <FormField
-                control={form.control}
-                name="availableSeats"
-                render={({ field }) => (
-                  <FormItem className="mb-4">
-                    <FormLabel>Available Seats</FormLabel>
-                    <Input
-                      type="number"
-                      {...field}
-                      value={field.value || ""}
-                      className="bg-background"
-                      placeholder="Number of seats"
+                  <FormItem>
+                    <FormLabel>To Date</FormLabel>
+                    <Calendar28
+                      field={field}
+                      picker={{
+                        placeholder: "YYYY-MM-DD",
+                        initialDate: new Date(),
+                      }}
                     />
                   </FormItem>
                 )}
@@ -315,9 +292,8 @@ const SearchFilter = ({
                 routeId: undefined,
                 departureDate: undefined,
                 untilTime: undefined,
-                availableSeats: undefined,
-                busOperatorIds: [],
-                busModel: [],
+                operatorName: null,
+                busModels: [],
                 amenities: [],
               });
               onApplyFilters(null);
