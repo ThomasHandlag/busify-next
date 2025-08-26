@@ -191,13 +191,17 @@ export function SeatSelectionTabsCard({
                         }
                       `}
                     >
-                      <Armchair className="w-5 h-5" />
+                      {/* Icon ghế giữ nguyên */}
+                      <Armchair className="w-5 h-5 text-gray-600" />
+
+                      {/* Số ghế đặt ở phía dưới icon trong cùng ô */}
+                      <span className="absolute bottom-0 text-[10px] font-semibold text-gray-700">
+                        {seat.seat_number}
+                      </span>
+
                       {isSelected && (
                         <CheckCircle className="w-3 h-3 absolute -top-1 -right-1 text-white" />
                       )}
-                      <span className="absolute -bottom-5 text-xs text-gray-600">
-                        {seat.seat_number.split(".")[0]}
-                      </span>
                     </button>
                   );
                 })}
