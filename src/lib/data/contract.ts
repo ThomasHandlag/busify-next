@@ -40,14 +40,14 @@ const createContract = async (data: ContractFormData) => {
       formDataToSend.append("attachmentUrl", data.attachmentUrl);
     }
 
-    console.log("Sending FormData to:", `${BASE_URL}api/contracts`);
+    console.log("Sending FormData to:", `${BASE_URL}/api/contracts`);
 
     // Log FormData contents
     for (const [key, value] of formDataToSend.entries()) {
       console.log(`${key}:`, value);
     }
 
-    const response = await fetch(`${BASE_URL}api/contracts`, {
+    const response = await fetch(`${BASE_URL}/api/contracts`, {
       method: "POST",
       // Don't set Content-Type header - let browser set it with boundary for FormData
       body: formDataToSend,
