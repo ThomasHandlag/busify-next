@@ -93,6 +93,9 @@ export default async function TripDetailPage({
       pricePerSeat={tripDetail.price_per_seat}
     />
   );
+  const departureDate = new Date(tripDetail.departure_time);
+  const tripStarted = departureDate.getTime() > Date.now();
+
   return (
     <div className="min-h-screen bg-gray-50">
       <TripHeroSection isFavorite={false} tripDetail={tripDetail} />
@@ -104,8 +107,10 @@ export default async function TripDetailPage({
             <TripInfoCard tripDetail={tripDetail} />
             <div className="lg:hidden md:hidden block">{bookingBar}</div>
             <OperatorInfoCard id={tripDetail.operator_id} />
-            <ReviewModal tripId={tripDetail.trip_id} />
-            <ReviewSection mockTripDetail={tripDetail} />
+            {tripDetail.departure_time && (
+              <ReviewModal tripId={tripDetail.trip_id} />
+            )}
+            {tripStarted && <ReviewSection mockTripDetail={tripDetail} />}
             {/* Moved ComplaintSection to profile - will be implemented later */}
             {/* <ComplaintSection tripId={tripDetail.trip_id} /> */}
           </div>

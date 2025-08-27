@@ -2,66 +2,38 @@ import { NavDataProps } from "./header";
 import Link from "next/link";
 import React from "react";
 import { Button } from "@/components/ui/button";
+import Logo from "@/components/custom/logo";
 
 import {
   NavigationMenu,
   NavigationMenuItem,
   NavigationMenuList,
-  NavigationMenuLink,
   NavigationMenuContent,
   NavigationMenuTrigger,
-  navigationMenuTriggerStyle,
 } from "@/components/ui/navigation-menu";
-import { Badge } from "@/components/ui/badge";
-import { Bus, Users, User, Building2, FileText } from "lucide-react";
+import { Users, User, Building2 } from "lucide-react";
 import { signOut, useSession } from "next-auth/react";
 import RegisterContractModal from "@/components/custom/contract/register_contract_modal";
 
 const NavDesktop = ({
   isPassenger,
   passengerMenuItems,
-  publicMenuItems,
   operatorMenuItems,
   aboutMenuItems,
-  isActive,
 }: NavDataProps) => {
   const session = useSession();
-
-  const [isOpen, setIsOpen] = React.useState(false);
 
   return (
     <div className="hidden lg:flex gap-6 w-full items-center justify-between">
       <div className="flex items-center space-x-3">
         <div className="flex items-center space-x-2">
-          <Bus className="w-8 h-8 text-green-600" />
+          <Logo width={32} height={32} />
           <span className="text-2xl font-bold text-gray-900">Busify</span>
         </div>
-        <Badge variant="secondary" className="text-xs">
-          {isPassenger ? "Booking Platform" : "Travel & Transport Platform"}
-        </Badge>
       </div>
 
       <NavigationMenu>
         <NavigationMenuList className="space-x-1">
-          {/* Public Navigation */}
-          {publicMenuItems.map((item) => {
-            return (
-              <NavigationMenuItem key={item.href}>
-                <NavigationMenuLink
-                  href={item.href}
-                  className={`${navigationMenuTriggerStyle()} ${
-                    isActive(item.href)
-                      ? "bg-green-100 text-green-700"
-                      : "hover:bg-green-50 hover:text-green-700"
-                  } flex items-center space-x-2`}
-                >
-                  {item.icon()}
-                  <span>{item.label}</span>
-                </NavigationMenuLink>
-              </NavigationMenuItem>
-            );
-          })}
-
           {/* About Dropdown */}
           {!isPassenger && (
             <NavigationMenuItem>

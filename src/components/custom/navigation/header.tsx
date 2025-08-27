@@ -10,9 +10,7 @@ import {
   Search,
   Calendar,
   Building2,
-  HelpCircle,
   Ticket,
-  CreditCard,
   BarChart3,
   Settings,
 } from "lucide-react";
@@ -36,20 +34,10 @@ export interface MenuItemData {
 export interface NavDataProps {
   isPassenger: boolean;
   passengerMenuItems: MenuItemData[];
-  publicMenuItems: NavItemData[];
   operatorMenuItems: MenuItemData[];
   aboutMenuItems: MenuItemData[];
   isActive: (href: string) => boolean;
 }
-
-const publicNavigationItems: NavItemData[] = [
-  { href: "/", label: "Home", icon: () => <Bus className="w-4 h-4" /> },
-  {
-    href: "/help",
-    label: "Help",
-    icon: () => <HelpCircle className="w-4 h-4" />,
-  },
-];
 
 // About section with social links
 const aboutMenuItems: MenuItemData[] = [
@@ -61,12 +49,6 @@ const aboutMenuItems: MenuItemData[] = [
         label: "About Us",
         icon: () => <Users className="w-4 h-4" />,
         description: "Learn more about our mission and team",
-      },
-      {
-        href: "/about/careers",
-        label: "Careers",
-        icon: () => <Building2 className="w-4 h-4" />,
-        description: "Join our growing team",
       },
       {
         href: "/about/contact",
@@ -120,9 +102,9 @@ const passengerMenuItems: MenuItemData[] = [
       },
       {
         href: "/user/redeem",
-        label: "Travel History",
+        label: "Redeem Shop",
         icon: () => <Calendar className="w-4 h-4" />,
-        description: "Your past trips and experiences",
+        description: "Redeem your points for rewards",
       },
     ],
   },
@@ -136,13 +118,7 @@ const passengerMenuItems: MenuItemData[] = [
         description: "Manage your personal information",
       },
       {
-        href: "/user/payments",
-        label: "Payment Methods",
-        icon: () => <CreditCard className="w-4 h-4" />,
-        description: "Saved cards and payment history",
-      },
-      {
-        href: "/user/preferences",
+        href: "/preferences",
         label: "Preferences",
         icon: () => <Settings className="w-4 h-4" />,
         description: "Travel preferences and notifications",
@@ -252,7 +228,6 @@ const Header = () => {
       <NavDesktop
         isPassenger={isPassenger}
         passengerMenuItems={passengerMenuItems}
-        publicMenuItems={publicNavigationItems}
         operatorMenuItems={operatorMenuItems}
         aboutMenuItems={aboutMenuItems}
         isActive={isActive}
@@ -262,7 +237,6 @@ const Header = () => {
       <NavMobile
         isPassenger={isPassenger}
         passengerMenuItems={passengerMenuItems}
-        publicMenuItems={publicNavigationItems}
         operatorMenuItems={operatorMenuItems}
         aboutMenuItems={aboutMenuItems}
         isActive={isActive}

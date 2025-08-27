@@ -4,6 +4,8 @@ import Header from "@/components/custom/navigation/header";
 import { Toaster } from "sonner";
 import SessionProviderWrapper from "@/components/providers/SessionProvider";
 import "./globals.css";
+import PreferencesProvider from "@/components/providers/PreferencesProvider";
+import { NextIntlClientProvider } from "next-intl";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -30,14 +32,18 @@ export default function RootLayout({
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
-        <SessionProviderWrapper>
-          <Header />
-          <main className="flex flex-col gap-[32px] row-start-2 items-center sm:items-start">
-            {children}
-          </main>
-          <footer className="row-start-3 flex gap-[24px] flex-wrap items-center justify-center"></footer>
-          <Toaster />
-        </SessionProviderWrapper>
+        <PreferencesProvider>
+          <NextIntlClientProvider>
+            <SessionProviderWrapper>
+              <Header />
+              <main className="flex flex-col gap-[32px] row-start-2 items-center sm:items-start">
+                {children}
+              </main>
+              <footer className="row-start-3 flex gap-[24px] flex-wrap items-center justify-center"></footer>
+              <Toaster />
+            </SessionProviderWrapper>
+          </NextIntlClientProvider>
+        </PreferencesProvider>
       </body>
     </html>
   );

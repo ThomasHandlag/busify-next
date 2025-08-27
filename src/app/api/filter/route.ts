@@ -8,7 +8,6 @@ export async function POST(req: Request) {
     filters,
     Number(searchParams.get("page")) || 1
   );
-  console.log("Filtered trips from cli:", trips);
   return new Response(JSON.stringify({ result: trips }), {
     headers: {
       "Content-Type": "application/json",

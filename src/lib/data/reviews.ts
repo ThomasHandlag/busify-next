@@ -43,57 +43,44 @@ const getReviewsByTripId = async (tripId: number): Promise<Review[]> => {
     const response = await api.get(`api/reviews/trip/${tripId}`);
     return response.data.result.reviews;
   } catch (error) {
+    console.log(error);
     const errorMessage = error as ResponseError;
     printError(errorMessage);
     return [];
   }
 };
 
-const addReview = async (review: {
-  customerId: number;
-  rating: number;
-  comment: string;
-  tripId: number;
-}) => {
-  try {
-    const response = await api.post(`api/reviews/trip`, review);
-    return response.data.result;
-  } catch (error) {
-    const errorMessage = error as ResponseError;
-    printError(errorMessage);
-    return null;
-  }
-};
-
-const addReviewClient = async (review: {
-  customerId: number;
-  rating: number;
-  comment: string;
-  tripId: number;
-}) => {
-  try {
+const addReviewClient = async (
+  review: {
+    rating: number;
+    comment: string;
+    tripId: number;
+  },
+  accessToken: string,
+  callBack: (value: string) => void
+) => {
     const response = await fetch(`/api/review`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
+        Authorization: `Bearer ${accessToken}`,
       },
       body: JSON.stringify(review),
     });
     if (!response.ok) {
-      throw new Error("Failed to add review");
+      const errorData = (await response.json()) as ResponseError;
+      console.log(errorData);
+      callBack(errorData.message || "Failed to add review");
+      return;
     }
     const data = await response.json();
+    callBack("Add review successfully");
     return data.result;
-  } catch (error) {
-    console.error("Error submitting review:", error);
-    throw error; // Re-throw for handling in the UI
-  }
 };
 
 export {
   getReviewsByOperatorId,
   getReviewsByCustomerId,
   getReviewsByTripId,
-  addReview,
   addReviewClient,
 };

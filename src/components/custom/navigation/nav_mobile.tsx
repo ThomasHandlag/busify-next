@@ -9,17 +9,14 @@ import {
   SheetTrigger,
 } from "@/components/ui/sheet";
 
-import { MenuIcon, Bus, Users, User, Building2, FileText } from "lucide-react";
+import { MenuIcon, Bus, Users, User, Building2 } from "lucide-react";
 import { signOut, useSession } from "next-auth/react";
-import RegisterContractModal from "@/components/custom/contract/register_contract_modal";
 
 const NavMobile = ({
   isPassenger,
   passengerMenuItems,
-  publicMenuItems,
   operatorMenuItems,
   aboutMenuItems,
-  isActive,
 }: NavDataProps) => {
   const [isOpen, setIsOpen] = useState(false);
   const session = useSession();
@@ -47,24 +44,6 @@ const NavMobile = ({
                 <h3 className="text-sm font-semibold text-gray-900 mb-2">
                   Platform
                 </h3>
-                {publicMenuItems.map((item) => {
-                  return (
-                    <Link
-                      aria-label={item.label}
-                      key={item.href}
-                      href={item.href}
-                      className={`flex items-center space-x-3 px-3 py-2 rounded-lg transition-colors ${
-                        isActive(item.href)
-                          ? "bg-green-100 text-green-700"
-                          : "hover:bg-gray-100 text-gray-700"
-                      }`}
-                      onClick={() => setIsOpen(false)}
-                    >
-                      {item.icon()}
-                      <span className="font-medium">{item.label}</span>
-                    </Link>
-                  );
-                })}
               </nav>
 
               {/* About Section */}
