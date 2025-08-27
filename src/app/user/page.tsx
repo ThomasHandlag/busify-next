@@ -3,6 +3,7 @@ import {
   Card,
   CardContent,
   CardDescription,
+  CardFooter,
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
@@ -13,6 +14,7 @@ import ComplaintManagement from "@/components/custom/profile/complaint_managemen
 import React from "react";
 import { auth } from "@/lib/data/auth";
 import { BASE_URL } from "@/lib/constants/constants";
+import PreferencesForm from "@/components/custom/preferences/preferences_form";
 
 const ProfileSkeleton = () => {
   return (
@@ -73,10 +75,8 @@ const ProfilePage = async () => {
     headers: {
       "Content-Type": "application/json",
       Authorization: `Bearer ${session?.user.accessToken}`,
-
     },
   });
-  
 
   if (!response.ok) {
     return <ProfileSkeleton />;
@@ -114,6 +114,9 @@ const ProfilePage = async () => {
           </div>
           <UpdateProfileDialog userProfile={userProfile} />
         </CardHeader>
+        <CardFooter>
+          <PreferencesForm />
+        </CardFooter>
       </Card>
 
       <div className="grid md:grid-cols-2 gap-6">

@@ -18,7 +18,6 @@ import {
   BatteryCharging,
 } from "lucide-react";
 import { Separator } from "../../ui/separator";
-import { Badge } from "../../ui/badge";
 import { TripDetail } from "@/lib/data/trip";
 import Image from "next/image";
 import dynamic from "next/dynamic";

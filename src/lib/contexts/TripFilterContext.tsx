@@ -10,6 +10,7 @@ interface TripFilterContextType {
   handlePageChange: (page: number) => void;
   handleApplyFilters: (filters: TripFilterQuery | null) => Promise<void>;
   isLoading: boolean;
+  total: number;
 }
 
 const TripFilterContext = createContext<TripFilterContextType | undefined>(

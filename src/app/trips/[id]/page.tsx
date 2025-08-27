@@ -94,7 +94,7 @@ export default async function TripDetailPage({
     />
   );
   const departureDate = new Date(tripDetail.departure_time);
-  const tripStarted = departureDate.getTime() > Date.now();
+  const tripStarted = departureDate.getTime() < Date.now();
 
   return (
     <div className="min-h-screen bg-gray-50">

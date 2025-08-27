@@ -15,6 +15,7 @@ export const TripFilterProvider = ({ children }: TripFilterProviderProps) => {
   const [page, setPage] = useState(1);
   const [isLoading, setIsLoading] = useState(false);
   const [query, setQuery] = useState<TripFilterQuery | null>(null);
+  const [total, setTotal] = useState(0);
 
   const handleApplyFilters = useCallback(
     async (filters: TripFilterQuery | null) => {
@@ -45,10 +46,12 @@ export const TripFilterProvider = ({ children }: TripFilterProviderProps) => {
               amenities: undefined,
               operatorName: undefined,
               timeZone,
+              availableSeats: 1,
             },
             page
           );
           setTrips(filteredTrips.data);
+          setTotal(filteredTrips.total);
         }
       } catch (error) {
         console.error("Error fetching trips:", error);
@@ -72,6 +75,7 @@ export const TripFilterProvider = ({ children }: TripFilterProviderProps) => {
     isLoading,
     page,
     handlePageChange: setPage,
+    total,
   };
 
   return (

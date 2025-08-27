@@ -1,10 +1,13 @@
 import { createContext, useContext } from "react";
 
+export type Theme = "light" | "dark" | "system";
+export type Language = "en" | "vi" | "ko" | "jp";
+
 interface PreferencesType {
-  language: string;
-  theme: "light" | "dark";
-  setLanguage?: (lang: string) => void;
-  setTheme?: (theme: "light" | "dark") => void;
+  language: Language;
+  theme: Theme;
+  setLanguage?: (lang: Language) => void;
+  setTheme?: (theme: Theme) => void;
 }
 
 export const PreferencesContext = createContext<PreferencesType | undefined>({

@@ -10,19 +10,20 @@ import {
   NavigationMenuList,
   NavigationMenuContent,
   NavigationMenuTrigger,
+  NavigationMenuLink,
+  navigationMenuTriggerStyle,
 } from "@/components/ui/navigation-menu";
-import { Users, User, Building2 } from "lucide-react";
+import { User } from "lucide-react";
 import { signOut, useSession } from "next-auth/react";
-import RegisterContractModal from "@/components/custom/contract/register_contract_modal";
+import { useTranslations } from "next-intl";
 
 const NavDesktop = ({
-  isPassenger,
-  passengerMenuItems,
-  operatorMenuItems,
-  aboutMenuItems,
+  contactMenuItems,
+  publicMenuItems,
+  isActive,
 }: NavDataProps) => {
   const session = useSession();
-
+  const trans = useTranslations("Header");
   return (
     <div className="hidden lg:flex gap-6 w-full items-center justify-between">
       <div className="flex items-center space-x-3">
@@ -34,179 +35,72 @@ const NavDesktop = ({
 
       <NavigationMenu>
         <NavigationMenuList className="space-x-1">
-          {/* About Dropdown */}
-          {!isPassenger && (
-            <NavigationMenuItem>
-              <NavigationMenuTrigger className="hover:bg-green-50 hover:text-green-700 data-[state=open]:bg-green-100 data-[state=open]:text-green-700">
-                <Users className="w-4 h-4 mr-2" />
-                About
-              </NavigationMenuTrigger>
-              <NavigationMenuContent>
-                <div className="w-[500px] p-4">
-                  <div className="grid gap-4">
-                    <div className="text-center p-4 bg-green-50 rounded-lg">
-                      <h4 className="text-lg font-semibold text-green-900">
-                        About Busify
-                      </h4>
-                      <p className="text-sm text-green-700 mt-1">
-                        Connecting passengers and operators nationwide
-                      </p>
-                    </div>
-                    <div className="grid grid-cols-2 gap-4">
-                      {aboutMenuItems.map((section) => (
-                        <div key={section.title}>
-                          <h5 className="font-medium text-gray-900 mb-2">
-                            {section.title}
-                          </h5>
-                          <div className="space-y-1">
-                            {section.items.map((item) => {
-                              const isExternal = item.href.startsWith("http");
-                              return (
-                                <Link
-                                  aria-label={item.label}
-                                  key={item.href}
-                                  href={item.href}
-                                  {...(isExternal && {
-                                    target: "_blank",
-                                    rel: "noopener noreferrer",
-                                  })}
-                                  className="flex items-start space-x-3 p-2 rounded-lg hover:bg-gray-50 transition-colors"
-                                >
-                                  {item.icon()}
-                                  <div>
-                                    <p className="font-medium text-sm flex items-center">
-                                      {item.label}
-                                      {isExternal && (
-                                        <span className="ml-1 text-xs">↗</span>
-                                      )}
-                                    </p>
-                                    <p className="text-xs text-gray-600">
-                                      {item.description}
-                                    </p>
-                                  </div>
-                                </Link>
-                              );
-                            })}
-                          </div>
-                        </div>
-                      ))}
-                    </div>
-                  </div>
-                </div>
-              </NavigationMenuContent>
-            </NavigationMenuItem>
-          )}
-
-          {/* Passenger Portal Dropdown */}
+          {publicMenuItems.map((item) => {
+            return (
+              <NavigationMenuItem key={item.href}>
+                <NavigationMenuLink
+                  href={item.href}
+                  className={`${navigationMenuTriggerStyle()} ${
+                    isActive(item.href)
+                      ? "bg-green-100 text-green-700"
+                      : "hover:bg-green-50 hover:text-green-700"
+                  } flex items-center space-x-2`}
+                >
+                  {item.icon()}
+                  <span>{item.label}</span>
+                </NavigationMenuLink>
+              </NavigationMenuItem>
+            );
+          })}
           <NavigationMenuItem>
-            <NavigationMenuTrigger className="hover:bg-blue-50 hover:text-blue-700 data-[state=open]:bg-blue-100 data-[state=open]:text-blue-700">
-              <User className="w-4 h-4 mr-2" />
-              For Passengers
+            <NavigationMenuTrigger className="hover:bg-green-50 hover:text-green-700 data-[state=open]:bg-green-100 data-[state=open]:text-green-700">
+              {trans("contact")}
             </NavigationMenuTrigger>
             <NavigationMenuContent>
               <div className="w-[500px] p-4">
                 <div className="grid gap-4">
-                  <div className="text-center p-4 bg-blue-50 rounded-lg">
-                    <h4 className="text-lg font-semibold text-blue-900">
-                      Passenger Portal
+                  <div className="text-center p-4 bg-green-50 rounded-lg">
+                    <h4 className="text-lg font-semibold text-green-900">
+                      {trans("contact")}
                     </h4>
-                    <p className="text-sm text-blue-700 mt-1">
-                      Book tickets and manage your journeys
+                    <p className="text-sm text-green-700 mt-1">
+                      Connecting passengers and operators nationwide
                     </p>
                   </div>
                   <div className="grid grid-cols-2 gap-4">
-                    {passengerMenuItems.map((section) => (
-                      <div key={section.title}>
-                        <h5 className="font-medium text-gray-900 mb-2">
-                          {section.title}
-                        </h5>
-                        <div className="space-y-1">
-                          {section.items.map((item) => {
-                            return (
-                              <Link
-                                aria-label={item.label}
-                                key={item.href}
-                                href={item.href}
-                                className="flex items-start space-x-3 p-2 rounded-lg hover:bg-gray-50 transition-colors"
-                              >
-                                {item.icon()}
-                                <div>
-                                  <p className="font-medium text-sm">
-                                    {item.label}
-                                  </p>
-                                  <p className="text-xs text-gray-600">
-                                    {item.description}
-                                  </p>
-                                </div>
-                              </Link>
-                            );
+                    {contactMenuItems.map((item) => {
+                      const isExternal = item.href.startsWith("http");
+                      return (
+                        <Link
+                          aria-label={item.label}
+                          key={item.href}
+                          href={item.href}
+                          {...(isExternal && {
+                            target: "_blank",
+                            rel: "noopener noreferrer",
                           })}
-                        </div>
-                      </div>
-                    ))}
+                          className="flex items-start space-x-3 p-2 rounded-lg hover:bg-gray-50 transition-colors"
+                        >
+                          {item.icon()}
+                          <div>
+                            <p className="font-medium text-sm flex items-center">
+                              {item.label}
+                              {isExternal && (
+                                <span className="ml-1 text-xs">↗</span>
+                              )}
+                            </p>
+                            <p className="text-xs text-gray-600">
+                              {item.description}
+                            </p>
+                          </div>
+                        </Link>
+                      );
+                    })}
                   </div>
                 </div>
               </div>
             </NavigationMenuContent>
           </NavigationMenuItem>
-
-          {/* Operator Portal Dropdown */}
-          {!isPassenger && (
-            <NavigationMenuItem>
-              <NavigationMenuTrigger className="hover:bg-purple-50 hover:text-purple-700 data-[state=open]:bg-purple-100 data-[state=open]:text-purple-700">
-                <Building2 className="w-4 h-4 mr-2" />
-                For Operators
-              </NavigationMenuTrigger>
-              <NavigationMenuContent>
-                <div className="w-[500px] p-4">
-                  <div className="grid gap-4">
-                    <div className="text-center p-4 bg-purple-50 rounded-lg">
-                      <h4 className="text-lg font-semibold text-purple-900">
-                        Operator Portal
-                      </h4>
-                      <p className="text-sm text-purple-700 mt-1">
-                        Manage your bus business and passengers
-                      </p>
-                      <div className="mt-3">
-                        <RegisterContractModal />
-                      </div>
-                    </div>
-                    <div className="grid grid-cols-2 gap-4">
-                      {operatorMenuItems.map((section) => (
-                        <div key={section.title}>
-                          <h5 className="font-medium text-gray-900 mb-2">
-                            {section.title}
-                          </h5>
-                          <div className="space-y-1">
-                            {section.items.map((item) => {
-                              return (
-                                <Link
-                                  aria-label={item.label}
-                                  key={item.href}
-                                  href={item.href}
-                                  className="flex items-start space-x-3 p-2 rounded-lg hover:bg-gray-50 transition-colors"
-                                >
-                                  <div>
-                                    {item.icon()}
-                                    <p className="font-medium text-sm">
-                                      {item.label}
-                                    </p>
-                                    <p className="text-xs text-gray-600">
-                                      {item.description}
-                                    </p>
-                                  </div>
-                                </Link>
-                              );
-                            })}
-                          </div>
-                        </div>
-                      ))}
-                    </div>
-                  </div>
-                </div>
-              </NavigationMenuContent>
-            </NavigationMenuItem>
-          )}
         </NavigationMenuList>
       </NavigationMenu>
       {/* If authenticated hide this part */}
@@ -234,17 +128,16 @@ const NavDesktop = ({
             <NavigationMenuItem>
               <NavigationMenuTrigger className="flex items-center space-x-2 hover:bg-gray-50">
                 <User className="w-4 h-4" />
-                <span>{session.data?.user?.email || "User"}</span>
               </NavigationMenuTrigger>
               <NavigationMenuContent>
                 <div className="w-48 p-2">
                   <div className="space-y-1">
                     <Link
-                      aria-label="User profile"
-                      href={`/user/profile`}
+                      aria-label="User Dashboard"
+                      href={`/user`}
                       className="block px-3 py-2 text-sm rounded-lg hover:bg-gray-100 transition-colors"
                     >
-                      Profile
+                      Dashboard
                     </Link>
                     <hr className="my-1" />
                     <button

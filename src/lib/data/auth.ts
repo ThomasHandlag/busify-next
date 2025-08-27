@@ -181,7 +181,7 @@ export const config: NextAuthOptions = {
           // Return user object with accessToken and refreshToken
           return {
             id: tokens.result.id,
-            name: tokens.result.name,
+            name: tokens.result.fullName,
             email: tokens.result.email,
             avatar: tokens.result.avatar,
             accessToken: tokens.result.accessToken,

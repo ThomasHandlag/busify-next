@@ -65,6 +65,7 @@ export interface TripFilterQuery {
   amenities?: string[];
   operatorName?: string | null;
   timeZone: string;
+  availableSeats: number;
 }
 
 export async function getUpcomingTrips(): Promise<TripItemProps[]> {

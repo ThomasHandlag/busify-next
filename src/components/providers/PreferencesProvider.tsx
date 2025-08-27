@@ -1,11 +1,11 @@
 "use client";
 
-import { PreferencesContext } from "@/lib/contexts/PreferenceContext";
+import { Language, PreferencesContext, Theme } from "@/lib/contexts/PreferenceContext";
 import { ReactNode, useEffect, useState } from "react";
 
 const PreferencesProvider = ({ children }: { children: ReactNode }) => {
-  const [language, setLanguage] = useState("en");
-  const [theme, setTheme] = useState<"light" | "dark">("light");
+  const [language, setLanguage] = useState<Language>("en");
+  const [theme, setTheme] = useState<Theme>("light");
 
   const value = {
     language,
