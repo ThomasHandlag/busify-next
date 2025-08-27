@@ -85,6 +85,48 @@ interface UserType {
   role?: string;
 }
 
+// Hàm refresh token
+async function refreshAccessToken(token: JWT): Promise<JWT> {
+  try {
+    const response = await fetch(`${BASE_URL}api/auth/refresh`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        refreshToken: token.refreshToken,
+      }),
+    });
+
+    const refreshedTokens = await response.json();
+
+    if (!response.ok) {
+      throw refreshedTokens;
+    }
+
+    // Nếu backend không trả về expiresIn, sử dụng default 1 giờ
+    const expiresIn = refreshedTokens.expiresIn || 3600; // 1 hour default
+
+    return {
+      ...token,
+      accessToken:
+        refreshedTokens.accessToken || refreshedTokens.result?.accessToken,
+      accessTokenExpires: Date.now() + expiresIn * 1000,
+      refreshToken:
+        refreshedTokens.refreshToken ||
+        refreshedTokens.result?.refreshToken ||
+        token.refreshToken,
+    };
+  } catch (error) {
+    console.error("Error refreshing access token:", error);
+
+    return {
+      ...token,
+      error: "RefreshAccessTokenError",
+    };
+  }
+}
+
 export const config: NextAuthOptions = {
   debug: true,
   pages: {
@@ -122,7 +164,7 @@ export const config: NextAuthOptions = {
           password: credentials.password,
         };
 
-        const res = await fetch(`${BASE_URL}api/auth/login`, {
+        const res = await fetch(`${BASE_URL}/api/auth/login`, {
           method: "POST",
           body: JSON.stringify(payload),
           headers: {
@@ -192,17 +234,51 @@ export const config: NextAuthOptions = {
     },
 
     async jwt({ token, user }) {
+      // Initial sign in
       if (user) {
         token.id = user.id;
         token.role = user.role;
         token.accessToken = user.accessToken;
         token.refreshToken = user.refreshToken;
+        // Set expiry time (assume 1 hour for access token)
+        token.accessTokenExpires = Date.now() + 60 * 60 * 1000;
+        return token;
       }
 
-      return token;
+      // Nếu không có accessTokenExpires, giả định token còn hiệu lực
+      if (!token.accessTokenExpires) {
+        return token;
+      }
+
+      // Return previous token if the access token has not expired yet
+      if (Date.now() < (token.accessTokenExpires as number)) {
+        return token;
+      }
+
+      // Access token has expired, try to update it
+      console.log("Access token expired, attempting to refresh...");
+      return refreshAccessToken(token);
     },
 
     async session({ session, token }: { session: Session; token: JWT }) {
+      // If there's an error with refresh token, force sign out
+      if (token.error) {
+        console.error("Session error:", token.error);
+        // Trả về session rỗng để force logout
+        return {
+          ...session,
+          error: token.error,
+          user: {
+            id: "",
+            name: "",
+            email: "",
+            accessToken: "",
+            refreshToken: "",
+            role: "",
+          },
+        };
+      }
+
       // Create a user object with token properties
       const userObject: UserType = {
         id: (token.id as string) || "",
@@ -224,6 +300,7 @@ declare module "next-auth" {
   interface User extends UserType {
     accessToken?: string;
     refreshToken?: string;
+    accessTokenExpires?: number;
   }
 }
 
@@ -231,7 +308,9 @@ declare module "next-auth" {
   interface Session {
     user: UserType & {
       accessToken?: string;
+      accessTokenExpires?: number;
     };
+    error?: string;
   }
 }
 
@@ -239,6 +318,8 @@ declare module "next-auth/jwt" {
   interface JWT extends UserType {
     accessToken?: string;
     refreshToken?: string;
+    accessTokenExpires?: number;
+    error?: string;
   }
 }
 

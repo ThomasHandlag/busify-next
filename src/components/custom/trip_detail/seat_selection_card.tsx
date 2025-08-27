@@ -1,4 +1,3 @@
-
 "use client";
 
 import { Input } from "@/components/ui/input";
@@ -82,9 +81,12 @@ export function SeatSelectionCard({
     const fetchUserInfo = async () => {
       if (session?.user?.accessToken) {
         try {
-          console.log("Fetching user info with accessToken:", session.user.accessToken);
+          console.log(
+            "Fetching user info with accessToken:",
+            session.user.accessToken
+          );
 
-          const response = await fetch(`${BASE_URL}api/users/profile`, {
+          const response = await fetch(`${BASE_URL}/api/users/profile`, {
             method: "GET",
             headers: {
               Authorization: `Bearer ${session.user.accessToken.trim()}`,
@@ -297,7 +299,8 @@ export function SeatSelectionCard({
         </CardTitle>
         <CardDescription>
           <p className="text-sm text-gray-500">
-            Chọn ghế của bạn từ sơ đồ ghế bên dưới. Nhấn vào ghế để chọn hoặc bỏ chọn.
+            Chọn ghế của bạn từ sơ đồ ghế bên dưới. Nhấn vào ghế để chọn hoặc bỏ
+            chọn.
           </p>
         </CardDescription>
       </CardHeader>

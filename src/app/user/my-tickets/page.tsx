@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Button } from "@/components/ui/button";
@@ -27,8 +27,9 @@ import {
   BookingData,
 } from "@/lib/data/booking";
 import { TicketCard } from "../../../components/custom/my_tickets/ticket_card";
-import { getBookingDetails, getBookingHistory } from "@/lib/data/booking";
+import { getBookingDetails } from "@/lib/data/booking";
 import { BookingDetailSheet } from "@/components/custom/my_tickets/booking_detail_sheet";
+import { useSession } from "next-auth/react";
 
 const getMockBookingDetailResponse = async (
   booking: string
@@ -53,25 +54,66 @@ export default function MyTicketsPage() {
   });
   const [currentPage, setCurrentPage] = useState(1);
   const [isLoading, setIsLoading] = useState(false);
+  const { data: session } = useSession();
 
   // Simulate API call
-  const fetchBookings = async (
-    page: number
-    // search?: string,
-    // sort?: string
-  ) => {
-    setIsLoading(true);
-    // Simulate API delay
-    const mockBookingResponse = await getBookingHistory(page);
+  const fetchBookings = useCallback(
+    async (
+      page: number
+      // search?: string,
+      // sort?: string
+    ) => {
+      // Check if session exists before making API call
+      if (!session?.user?.accessToken) {
+        console.log("No session or access token available");
+        setIsLoading(false);
+        return;
+      }
 
-    setBookingResponse(mockBookingResponse);
-    setIsLoading(false);
-  };
+      setIsLoading(true);
+      try {
+        const mockBookingResponse = await fetch(
+          `http://localhost:8080/api/bookings?page=${page}&size=10`,
+          {
+            headers: {
+              Authorization: `Bearer ${session.user.accessToken}`,
+            },
+          }
+        );
+
+        if (!mockBookingResponse.ok) {
+          throw new Error(`HTTP error! status: ${mockBookingResponse.status}`);
+        }
+
+        const data = await mockBookingResponse.json();
+        console.log("Fetched bookings:", data);
+
+        setBookingResponse(data.result || data);
+      } catch (error) {
+        console.error("Error fetching bookings:", error);
+        // Set default empty response on error
+        setBookingResponse({
+          result: [],
+          pageNumber: 1,
+          pageSize: 10,
+          totalRecords: 0,
+          totalPages: 0,
+          hasNext: false,
+          hasPrevious: false,
+        });
+      } finally {
+        setIsLoading(false);
+      }
+    },
+    [session?.user?.accessToken]
+  );
 
   useEffect(() => {
-    // fetchBookings(currentPage, searchTerm, sortBy);
-    fetchBookings(currentPage);
-  }, [currentPage]);
+    // Only fetch when session is available
+    if (session?.user?.accessToken) {
+      fetchBookings(currentPage);
+    }
+  }, [currentPage, fetchBookings, session?.user?.accessToken]);
 
   const filterBookings = (status: string) => {
     return bookingResponse.result.filter((booking) => {
@@ -247,7 +289,7 @@ export default function MyTicketsPage() {
               </div>
             ) : upcomingBookings.length > 0 ? (
               <>
-                <div className="space-y-3 sm:space-y-4">
+                <div className="grid grid-cols-1 lg:grid-cols-2 gap-3 sm:gap-4">
                   {upcomingBookings.map(renderTicketCard)}
                 </div>
                 <PaginationControls />
@@ -283,7 +325,7 @@ export default function MyTicketsPage() {
               </div>
             ) : completedBookings.length > 0 ? (
               <>
-                <div className="space-y-3 sm:space-y-4">
+                <div className="grid grid-cols-1 lg:grid-cols-2 gap-3 sm:gap-4">
                   {completedBookings.map(renderTicketCard)}
                 </div>
                 <PaginationControls />
@@ -313,7 +355,7 @@ export default function MyTicketsPage() {
               </div>
             ) : canceledBookings.length > 0 ? (
               <>
-                <div className="space-y-3 sm:space-y-4">
+                <div className="grid grid-cols-1 lg:grid-cols-2 gap-3 sm:gap-4">
                   {canceledBookings.map(renderTicketCard)}
                 </div>
                 <PaginationControls />

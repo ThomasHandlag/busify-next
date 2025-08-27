@@ -4,7 +4,7 @@ import ResponseError from "@/lib/data/response_error";
 export async function GET(req: Request) {
   try {
     const headers = req.headers;
-    const response = await fetch(`${BASE_URL}api/users/profile`, {
+    const response = await fetch(`${BASE_URL}/api/users/profile`, {
       method: "GET",
       headers,
     });
