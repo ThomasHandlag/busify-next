@@ -8,12 +8,12 @@ export interface BusifyRoute {
 }
 
 export interface BusifyRouteDetail {
-    id: number;
-    name: string;
-    start_location: string;
-    end_location: string;
-    default_duration_minutes: number;
-    default_price: number;
+  id: number;
+  name: string;
+  start_location: string;
+  end_location: string;
+  default_duration_minutes: number;
+  default_price: number;
 }
 
 export async function getPopularRoutes(): Promise<BusifyRoute[]> {
