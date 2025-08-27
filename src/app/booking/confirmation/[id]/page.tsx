@@ -198,7 +198,11 @@ export default function BookingConfirmation({ params }: PageProps) {
 
   if (loading) return <div className="text-center py-8">Đang tải...</div>;
   if (!bookingData)
-    return <div className="text-center py-8">Không có dữ liệu để hiển thị</div>;
+    return (
+      <div className="flex justify-center text-center py-8">
+        Không có dữ liệu để hiển thị
+      </div>
+    );
 
   return (
     <div className="min-h-screen bg-gray-50 w-full">

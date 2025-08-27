@@ -48,7 +48,6 @@ export const VALIDATION_MESSAGES = {
 const RegisterContractModal = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [acceptedPolicy, setAcceptedPolicy] = useState(false);
-  const [open, setOpen] = useState(false); // Add controlled state
   const [formData, setFormData] = useState<ContractFormData>({
     email: "",
     phone: "",
@@ -164,8 +163,6 @@ const RegisterContractModal = () => {
           attachmentUrl: null,
         });
         setAcceptedPolicy(false);
-        // Close modal after successful submission
-        setOpen(false);
       } else {
         toast.error("Có lỗi xảy ra khi đăng ký hợp đồng");
       }

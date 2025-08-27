@@ -4,39 +4,49 @@ import { BASE_URL } from "@/lib/constants/constants";
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json();
-    const { refreshToken } = body;
+    const { refresh_token } = body;
 
-    if (!refreshToken) {
+    if (!refresh_token) {
       return NextResponse.json(
         { error: "Refresh token is required" },
         { status: 400 }
       );
     }
 
+    console.log("Calling backend refresh token API...");
+
     // Gọi API backend để refresh token
-    const response = await fetch(`${BASE_URL}api/auth/refresh`, {
+    const response = await fetch(`${BASE_URL}/api/auth/refresh-token`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
       },
-      body: JSON.stringify({ refreshToken }),
+      body: JSON.stringify({ refresh_token }),
     });
 
-    if (!response.ok) {
+    const data = await response.json();
+    console.log("Backend response:", data);
+
+    if (!response.ok || data.code !== 200) {
       // Nếu refresh token không hợp lệ hoặc đã hết hạn
+      console.error("Backend refresh failed:", data);
       return NextResponse.json(
-        { error: "Invalid or expired refresh token" },
-        { status: 401 }
+        {
+          error: data.message || "Invalid or expired refresh token",
+          code: data.code,
+        },
+        { status: response.status }
       );
     }
 
-    const data = await response.json();
-
-    // Trả về access token và refresh token mới
+    // Trả về theo format mà NextAuth expects
     return NextResponse.json({
-      success: true,
-      accessToken: data.result.accessToken,
-      refreshToken: data.result.refreshToken,
+      code: 200,
+      message: data.message,
+      result: {
+        access_token: data.result.access_token,
+        refresh_token: data.result.refresh_token,
+      },
     });
   } catch (error) {
     console.error("Error refreshing token:", error);

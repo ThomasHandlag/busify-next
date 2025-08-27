@@ -37,6 +37,9 @@ import BusifyRouteItem from "@/components/custom/route/busify_route_item";
 
 const Home = async () => {
   const popularRoutes = await getPopularRoutes();
+  if (!popularRoutes || popularRoutes.length === 0) {
+    
+  }
   return (
     <div className="h-full w-full">
       {/* Hero Section */}

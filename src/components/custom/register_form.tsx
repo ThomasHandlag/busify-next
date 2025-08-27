@@ -4,15 +4,27 @@ import { Button } from "../ui/button";
 import { Form, FormField, FormItem, FormLabel, FormMessage } from "../ui/form";
 import { FaEye, FaEyeSlash, FaCheck } from "react-icons/fa";
 import { Input } from "../ui/input";
-import { z } from "zod";
+import { Textarea } from "../ui/textarea";
+import { Checkbox } from "../ui/checkbox";
+import { Calendar } from "../ui/calendar";
+import { Popover, PopoverContent, PopoverTrigger } from "../ui/popover";
+import { CalendarIcon } from "lucide-react";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { register } from "@/lib/data/auth";
+import { createContract, ContractFormData } from "@/lib/data/contract";
 import React from "react";
 import Link from "next/link";
 import { toast } from "sonner";
+import { Building2 } from "lucide-react";
+import { format } from "date-fns";
+import { cn } from "@/lib/utils";
+import Policy from "./policy/policy";
+import { busOperatorSchema, userSchema } from "@/lib/scheams/scheams";
 export const RegisterForm = () => {
   const [showPassword, setShowPassword] = React.useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = React.useState(false);
+  const [isBusOperator, setIsBusOperator] = React.useState(false);
+  const [acceptedPolicy, setAcceptedPolicy] = React.useState(false);
   const [passwordRequirements, setPasswordRequirements] = React.useState({
     requirements: {
       length: false,
@@ -29,49 +41,126 @@ export const RegisterForm = () => {
   const [userEmail, setUserEmail] = React.useState("");
 
   // Define the form schema using Zod
-  const formSchema = z
-    .object({
-      fullName: z.string().min(2, "Họ và tên là bắt buộc").max(50),
-      email: z.string().email("Địa chỉ email không hợp lệ").min(2).max(50),
-      phone: z.string().optional(),
-      password: z.string().min(6, "Mật khẩu phải có ít nhất 6 ký tự").max(100),
-      confirmPassword: z
-        .string()
-        .min(6, "Xác nhận mật khẩu phải có ít nhất 6 ký tự")
-        .max(100),
-    })
-    .refine((data) => data.password === data.confirmPassword, {
-      message: "Mật khẩu không khớp nhau",
-      path: ["confirmPassword"],
-    });
-  const form = useForm<z.infer<typeof formSchema>>({
-    resolver: zodResolver(formSchema),
-    mode: "onChange",
+
+  const form = useForm({
+    resolver: zodResolver(isBusOperator ? busOperatorSchema : userSchema),
     defaultValues: {
-      fullName: "",
       email: "",
       phone: "",
+      address: "",
+      startDate: "",
+      endDate: "",
+      operationArea: "",
+      VATCode: "",
+      attachmentUrl: null,
+      fullName: "",
       password: "",
       confirmPassword: "",
     },
   });
 
-  const onSubmit = async (data: z.infer<typeof formSchema>) => {
+  const onSubmit = async (data: any) => {
     setIsSubmitting(true);
     try {
-      const response = await register({
-        name: data.fullName,
-        phoneNumber: data.phone ?? "",
-        email: data.email,
-        password: data.password,
-      });
+      // If registering as bus operator, validate contract fields
+      if (isBusOperator) {
+        if (!acceptedPolicy) {
+          toast.error("Vui lòng đồng ý với chính sách của website");
+          setIsSubmitting(false);
+          return;
+        }
 
-      if (response.code === 200) {
-        setUserEmail(data.email);
-        setRegistrationSuccess(true);
+        // Validate required contract fields
+        if (
+          !data.phone ||
+          !data.address ||
+          !data.startDate ||
+          !data.endDate ||
+          !data.operationArea ||
+          !data.VATCode
+        ) {
+          toast.error("Vui lòng điền đầy đủ thông tin hợp đồng");
+          setIsSubmitting(false);
+          return;
+        }
+
+        // Validate phone format
+        const PHONE_PATTERN = /^[\+]?[0-9]{10,15}$/;
+        if (!PHONE_PATTERN.test(data.phone)) {
+          toast.error(
+            "Số điện thoại không đúng định dạng (10-15 chữ số, có thể có +)"
+          );
+          setIsSubmitting(false);
+          return;
+        }
+
+        // Validate VAT code format
+        const VAT_CODE_PATTERN = /^[0-9]{10,15}$/;
+        if (!VAT_CODE_PATTERN.test(data.VATCode)) {
+          toast.error("Mã số thuế phải từ 10-15 chữ số");
+          setIsSubmitting(false);
+          return;
+        }
+
+        // Validate dates
+        const startDate = new Date(data.startDate);
+        const endDate = new Date(data.endDate);
+        const now = new Date();
+
+        if (startDate < now) {
+          toast.error("Ngày bắt đầu phải là ngày hiện tại hoặc tương lai");
+          setIsSubmitting(false);
+          return;
+        }
+
+        if (endDate <= startDate) {
+          toast.error("Ngày kết thúc phải sau ngày bắt đầu");
+          setIsSubmitting(false);
+          return;
+        }
+
+        // For bus operator, create contract directly without user registration
+        const contractData: ContractFormData = {
+          email: data.email,
+          phone: data.phone || "",
+          address: data.address || "",
+          startDate: data.startDate || "",
+          endDate: data.endDate || "",
+          operationArea: data.operationArea || "",
+          VATCode: data.VATCode || "",
+          attachmentUrl: data.attachmentUrl || null,
+        };
+
+        const contractResponse = await createContract(contractData);
+
+        if (contractResponse.code === 201 || contractResponse.code === 200) {
+          toast.success(
+            "Đăng ký hợp đồng thành công! Chờ xác nhận từ quản trị viên."
+          );
+          setUserEmail(data.email);
+          setRegistrationSuccess(true);
+        } else {
+          toast.error("Có lỗi xảy ra khi đăng ký hợp đồng");
+        }
       } else {
-        // Handle error
-        toast.error((response.message as string) || "Registration failed");
+        // Regular user registration
+        const response = await register({
+          name: data.fullName,
+          phoneNumber: data.phone ?? "",
+          email: data.email,
+          password: data.password,
+        });
+
+        if (response.code === 200) {
+          setUserEmail(data.email);
+          toast.success(
+            "Đăng ký tài khoản thành công! Vui lòng kiểm tra email để xác thực tài khoản."
+          );
+          setRegistrationSuccess(true);
+        } else {
+          // Handle error
+          toast.error((response.message as string) || "Registration failed");
+        }
       }
     } catch (error) {
       console.error("Registration error:", error);
@@ -131,26 +220,28 @@ export const RegisterForm = () => {
                 onSubmit={form.handleSubmit(onSubmit)}
                 className="space-y-4 sm:space-y-5"
               >
-                {/* Full Name */}
-                <FormField
-                  control={form.control}
-                  name="fullName"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel className="text-gray-700 font-medium">
-                        Full Name <span className="text-red-500">*</span>
-                      </FormLabel>
-                      <Input
-                        {...field}
-                        type="text"
-                        placeholder="Enter your full name"
-                        required
-                        className="h-12 bg-gray-50 border-gray-200 rounded-xl focus:ring-2 focus:ring-green-500 focus:border-transparent transition-all duration-200"
-                      />
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
+                {/* Full Name - Only show when not bus operator */}
+                {!isBusOperator && (
+                  <FormField
+                    control={form.control}
+                    name="fullName"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel className="text-gray-700 font-medium">
+                          Full Name <span className="text-red-500">*</span>
+                        </FormLabel>
+                        <Input
+                          {...field}
+                          type="text"
+                          placeholder="Enter your full name"
+                          required
+                          className="h-12 bg-gray-50 border-gray-200 rounded-xl focus:ring-2 focus:ring-green-500 focus:border-transparent transition-all duration-200"
+                        />
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                )}
 
                 {/* Email */}
                 <FormField
@@ -173,176 +264,526 @@ export const RegisterForm = () => {
                   )}
                 />
 
-                {/* Phone Number */}
+                {/* Phone Number - Show for both regular users and bus operators */}
                 <FormField
                   control={form.control}
                   name="phone"
                   render={({ field }) => (
                     <FormItem>
                       <FormLabel className="text-gray-700 font-medium">
-                        Phone Number
+                        Phone Number{" "}
+                        {isBusOperator && (
+                          <span className="text-red-500">*</span>
+                        )}
                       </FormLabel>
                       <Input
                         {...field}
                         type="tel"
-                        placeholder="Enter your phone number"
+                        placeholder={
+                          isBusOperator
+                            ? "0123456789"
+                            : "Enter your phone number"
+                        }
                         className="h-12 bg-gray-50 border-gray-200 rounded-xl focus:ring-2 focus:ring-green-500 focus:border-transparent transition-all duration-200"
                       />
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-
-                {/* Password */}
-                <FormField
-                  control={form.control}
-                  name="password"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel className="text-gray-700 font-medium">
-                        Password <span className="text-red-500">*</span>
-                      </FormLabel>
-                      <div className="relative">
-                        <Input
-                          {...field}
-                          type={showPassword ? "text" : "password"}
-                          placeholder="Create a strong password"
-                          required
-                          className="h-12 bg-gray-50 border-gray-200 rounded-xl focus:ring-2 focus:ring-green-500 focus:border-transparent transition-all duration-200 pr-12"
-                          onChange={(e) => {
-                            field.onChange(e);
-                            setPasswordRequirements(
-                              checkPasswordRequirements(e.target.value)
-                            );
-                          }}
-                        />
-                        <button
-                          type="button"
-                          onClick={() => setShowPassword(!showPassword)}
-                          className="absolute right-4 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-600"
-                        >
-                          {showPassword ? (
-                            <FaEyeSlash size={18} />
-                          ) : (
-                            <FaEye size={18} />
-                          )}
-                        </button>
-                      </div>
-                      {field.value && (
-                        <div className="mt-2">
-                          <p className="text-xs">
-                            {passwordRequirements.strength >= 3 ? (
-                              <span className="text-green-600">
-                                Mật khẩu đủ mạnh
-                              </span>
-                            ) : (
-                              <span className="text-red-500">
-                                Cần:{" "}
-                                {[
-                                  !passwordRequirements.requirements.length &&
-                                    "6+ ký tự",
-                                  !passwordRequirements.requirements
-                                    .uppercase && "chữ hoa",
-                                  !passwordRequirements.requirements
-                                    .lowercase && "chữ thường",
-                                  !passwordRequirements.requirements.number &&
-                                    "số",
-                                  !passwordRequirements.requirements.special &&
-                                    "ký tự đặc biệt",
-                                ]
-                                  .filter(Boolean)
-                                  .join(", ")}
-                              </span>
-                            )}
-                          </p>
-                        </div>
+                      {isBusOperator && (
+                        <p className="text-xs text-gray-500">
+                          Số điện thoại từ 10-15 chữ số (có thể bắt đầu bằng +)
+                        </p>
                       )}
-                    </FormItem>
-                  )}
-                />
-
-                {/* Confirm Password */}
-                <FormField
-                  control={form.control}
-                  name="confirmPassword"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel className="text-gray-700 font-medium">
-                        Confirm Password <span className="text-red-500">*</span>
-                      </FormLabel>
-                      <div className="relative">
-                        <Input
-                          {...field}
-                          type={showConfirmPassword ? "text" : "password"}
-                          placeholder="Confirm your password"
-                          required
-                          className="h-12 bg-gray-50 border-gray-200 rounded-xl focus:ring-2 focus:ring-green-500 focus:border-transparent transition-all duration-200 pr-12"
-                        />
-                        <button
-                          type="button"
-                          onClick={() =>
-                            setShowConfirmPassword(!showConfirmPassword)
-                          }
-                          className="absolute right-4 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-600"
-                        >
-                          {showConfirmPassword ? (
-                            <FaEyeSlash size={18} />
-                          ) : (
-                            <FaEye size={18} />
-                          )}
-                        </button>
-                      </div>
                       <FormMessage />
                     </FormItem>
                   )}
                 />
 
-                {/* Terms and Conditions */}
-                <div className="flex items-start space-x-3">
-                  <input
-                    type="checkbox"
-                    required
-                    className="w-4 h-4 text-green-600 border-gray-300 rounded focus:ring-green-500 mt-1 flex-shrink-0"
+                {/* Password - Only show when not bus operator */}
+                {!isBusOperator && (
+                  <FormField
+                    control={form.control}
+                    name="password"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel className="text-gray-700 font-medium">
+                          Password <span className="text-red-500">*</span>
+                        </FormLabel>
+                        <div className="relative">
+                          <Input
+                            {...field}
+                            type={showPassword ? "text" : "password"}
+                            placeholder="Create a strong password"
+                            required
+                            className="h-12 bg-gray-50 border-gray-200 rounded-xl focus:ring-2 focus:ring-green-500 focus:border-transparent transition-all duration-200 pr-12"
+                            onChange={(e) => {
+                              field.onChange(e);
+                              setPasswordRequirements(
+                                checkPasswordRequirements(e.target.value)
+                              );
+                            }}
+                          />
+                          <button
+                            type="button"
+                            onClick={() => setShowPassword(!showPassword)}
+                            className="absolute right-4 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-600"
+                          >
+                            {showPassword ? (
+                              <FaEyeSlash size={18} />
+                            ) : (
+                              <FaEye size={18} />
+                            )}
+                          </button>
+                        </div>
+                        {field.value && (
+                          <div className="mt-2">
+                            <p className="text-xs">
+                              {passwordRequirements.strength >= 3 ? (
+                                <span className="text-green-600">
+                                  Mật khẩu đủ mạnh
+                                </span>
+                              ) : (
+                                <span className="text-red-500">
+                                  Cần:{" "}
+                                  {[
+                                    !passwordRequirements.requirements.length &&
+                                      "6+ ký tự",
+                                    !passwordRequirements.requirements
+                                      .uppercase && "chữ hoa",
+                                    !passwordRequirements.requirements
+                                      .lowercase && "chữ thường",
+                                    !passwordRequirements.requirements.number &&
+                                      "số",
+                                    !passwordRequirements.requirements
+                                      .special && "ký tự đặc biệt",
+                                  ]
+                                    .filter(Boolean)
+                                    .join(", ")}
+                                </span>
+                              )}
+                            </p>
+                          </div>
+                        )}
+                      </FormItem>
+                    )}
                   />
-                  <p className="text-xs sm:text-sm text-gray-600 leading-relaxed">
-                    I agree to the{" "}
-                    <a
-                      href="#"
-                      className="text-green-600 hover:text-green-700 font-medium"
+                )}
+
+                {/* Confirm Password - Only show when not bus operator */}
+                {!isBusOperator && (
+                  <FormField
+                    control={form.control}
+                    name="confirmPassword"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel className="text-gray-700 font-medium">
+                          Confirm Password{" "}
+                          <span className="text-red-500">*</span>
+                        </FormLabel>
+                        <div className="relative">
+                          <Input
+                            {...field}
+                            type={showConfirmPassword ? "text" : "password"}
+                            placeholder="Confirm your password"
+                            required
+                            className="h-12 bg-gray-50 border-gray-200 rounded-xl focus:ring-2 focus:ring-green-500 focus:border-transparent transition-all duration-200 pr-12"
+                          />
+                          <button
+                            type="button"
+                            onClick={() =>
+                              setShowConfirmPassword(!showConfirmPassword)
+                            }
+                            className="absolute right-4 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-600"
+                          >
+                            {showConfirmPassword ? (
+                              <FaEyeSlash size={18} />
+                            ) : (
+                              <FaEye size={18} />
+                            )}
+                          </button>
+                        </div>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                )}
+
+                {/* Bus Operator Checkbox */}
+                <div className="flex items-start space-x-3 p-4 bg-blue-50 rounded-xl border border-blue-200">
+                  <Checkbox
+                    id="busOperator"
+                    checked={isBusOperator}
+                    onCheckedChange={(checked) =>
+                      setIsBusOperator(checked as boolean)
+                    }
+                    className="mt-1"
+                  />
+                  <div className="flex-1">
+                    <label
+                      htmlFor="busOperator"
+                      className="text-sm font-medium text-blue-900 cursor-pointer flex items-center gap-2"
                     >
-                      Terms of Service
-                    </a>{" "}
-                    and{" "}
-                    <a
-                      href="#"
-                      className="text-green-600 hover:text-green-700 font-medium"
-                    >
-                      Privacy Policy
-                    </a>
-                  </p>
+                      <Building2 className="w-4 h-4" />
+                      Đăng ký với tư cách Bus Operator
+                    </label>
+                    <p className="text-xs text-blue-700 mt-1">
+                      Tick vào đây nếu bạn muốn đăng ký trở thành đối tác nhà xe
+                      của Busify
+                    </p>
+                  </div>
                 </div>
 
-                {/* Newsletter Subscription */}
-                <div className="flex items-start space-x-3">
-                  <input
-                    type="checkbox"
-                    className="w-4 h-4 text-green-600 border-gray-300 rounded focus:ring-green-500 mt-1 flex-shrink-0"
-                  />
-                  <p className="text-xs sm:text-sm text-gray-600">
-                    I want to receive updates and marketing communications
-                  </p>
-                </div>
+                {/* Bus Operator Fields - Only show when checkbox is checked */}
+                {isBusOperator && (
+                  <div className="space-y-4 p-4 bg-gray-50 rounded-xl border border-gray-200">
+                    <h3 className="text-lg font-semibold text-gray-800 flex items-center gap-2">
+                      <Building2 className="w-5 h-5" />
+                      Thông tin hợp đồng nhà xe
+                    </h3>
+
+                    {/* Address */}
+                    <FormField
+                      control={form.control}
+                      name="address"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel className="text-gray-700 font-medium">
+                            Địa chỉ <span className="text-red-500">*</span>
+                          </FormLabel>
+                          <Textarea
+                            {...field}
+                            placeholder="123 ABC Street, Ho Chi Minh City"
+                            className="bg-white border-gray-200 rounded-xl focus:ring-2 focus:ring-green-500 focus:border-transparent transition-all duration-200"
+                          />
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+
+                    {/* Start Date and End Date */}
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                      <FormField
+                        control={form.control}
+                        name="startDate"
+                        render={({ field }) => (
+                          <FormItem className="flex flex-col">
+                            <FormLabel className="text-gray-700 font-medium">
+                              Ngày bắt đầu{" "}
+                              <span className="text-red-500">*</span>
+                            </FormLabel>
+                            <Popover>
+                              <PopoverTrigger asChild>
+                                <Button
+                                  variant={"outline"}
+                                  className={cn(
+                                    "h-12 bg-white border-gray-200 rounded-xl focus:ring-2 focus:ring-green-500 focus:border-transparent transition-all duration-200 justify-start text-left font-normal",
+                                    !field.value && "text-muted-foreground"
+                                  )}
+                                >
+                                  <CalendarIcon className="mr-2 h-4 w-4" />
+                                  {field.value ? (
+                                    format(
+                                      new Date(field.value),
+                                      "dd/MM/yyyy HH:mm"
+                                    )
+                                  ) : (
+                                    <span>Chọn ngày bắt đầu</span>
+                                  )}
+                                </Button>
+                              </PopoverTrigger>
+                              <PopoverContent
+                                className="w-auto p-0"
+                                align="start"
+                              >
+                                <Calendar
+                                  mode="single"
+                                  selected={
+                                    field.value
+                                      ? new Date(field.value)
+                                      : undefined
+                                  }
+                                  onSelect={(date) => {
+                                    if (date) {
+                                      // Set time to current time
+                                      const now = new Date();
+                                      date.setHours(
+                                        now.getHours(),
+                                        now.getMinutes()
+                                      );
+                                      field.onChange(
+                                        date.toISOString().slice(0, 16)
+                                      );
+                                    }
+                                  }}
+                                  disabled={(date) =>
+                                    date <
+                                    new Date(new Date().setHours(0, 0, 0, 0))
+                                  }
+                                  initialFocus
+                                />
+                                <div className="p-3 border-t">
+                                  <Input
+                                    type="time"
+                                    value={
+                                      field.value
+                                        ? field.value.slice(11, 16)
+                                        : ""
+                                    }
+                                    onChange={(e) => {
+                                      if (field.value) {
+                                        const [date] = field.value.split("T");
+                                        field.onChange(
+                                          `${date}T${e.target.value}`
+                                        );
+                                      }
+                                    }}
+                                    className="w-full"
+                                  />
+                                </div>
+                              </PopoverContent>
+                            </Popover>
+                            <p className="text-xs text-gray-500">
+                              Chọn ngày và giờ bắt đầu hợp đồng
+                            </p>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+
+                      <FormField
+                        control={form.control}
+                        name="endDate"
+                        render={({ field }) => (
+                          <FormItem className="flex flex-col">
+                            <FormLabel className="text-gray-700 font-medium">
+                              Ngày kết thúc{" "}
+                              <span className="text-red-500">*</span>
+                            </FormLabel>
+                            <Popover>
+                              <PopoverTrigger asChild>
+                                <Button
+                                  variant={"outline"}
+                                  className={cn(
+                                    "h-12 bg-white border-gray-200 rounded-xl focus:ring-2 focus:ring-green-500 focus:border-transparent transition-all duration-200 justify-start text-left font-normal",
+                                    !field.value && "text-muted-foreground"
+                                  )}
+                                >
+                                  <CalendarIcon className="mr-2 h-4 w-4" />
+                                  {field.value ? (
+                                    format(
+                                      new Date(field.value),
+                                      "dd/MM/yyyy HH:mm"
+                                    )
+                                  ) : (
+                                    <span>Chọn ngày kết thúc</span>
+                                  )}
+                                </Button>
+                              </PopoverTrigger>
+                              <PopoverContent
+                                className="w-auto p-0"
+                                align="start"
+                              >
+                                <Calendar
+                                  mode="single"
+                                  selected={
+                                    field.value
+                                      ? new Date(field.value)
+                                      : undefined
+                                  }
+                                  onSelect={(date) => {
+                                    if (date) {
+                                      // Set time to current time
+                                      const now = new Date();
+                                      date.setHours(
+                                        now.getHours(),
+                                        now.getMinutes()
+                                      );
+                                      field.onChange(
+                                        date.toISOString().slice(0, 16)
+                                      );
+                                    }
+                                  }}
+                                  disabled={(date) => {
+                                    const startDate = form.watch("startDate");
+                                    const minDate = startDate
+                                      ? new Date(startDate)
+                                      : new Date();
+                                    return date < minDate;
+                                  }}
+                                  initialFocus
+                                />
+                                <div className="p-3 border-t">
+                                  <Input
+                                    type="time"
+                                    value={
+                                      field.value
+                                        ? field.value.slice(11, 16)
+                                        : ""
+                                    }
+                                    onChange={(e) => {
+                                      if (field.value) {
+                                        const [date] = field.value.split("T");
+                                        field.onChange(
+                                          `${date}T${e.target.value}`
+                                        );
+                                      }
+                                    }}
+                                    className="w-full"
+                                  />
+                                </div>
+                              </PopoverContent>
+                            </Popover>
+                            <p className="text-xs text-gray-500">
+                              Chọn ngày và giờ kết thúc hợp đồng
+                            </p>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+                    </div>
+
+                    {/* Operation Area */}
+                    <FormField
+                      control={form.control}
+                      name="operationArea"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel className="text-gray-700 font-medium">
+                            Khu vực hoạt động{" "}
+                            <span className="text-red-500">*</span>
+                          </FormLabel>
+                          <Input
+                            {...field}
+                            placeholder="Ho Chi Minh - Da Nang"
+                            className="h-12 bg-white border-gray-200 rounded-xl focus:ring-2 focus:ring-green-500 focus:border-transparent transition-all duration-200"
+                          />
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+
+                    {/* VAT Code */}
+                    <FormField
+                      control={form.control}
+                      name="VATCode"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel className="text-gray-700 font-medium">
+                            Mã số thuế <span className="text-red-500">*</span>
+                          </FormLabel>
+                          <Input
+                            {...field}
+                            placeholder="0101234562"
+                            className="h-12 bg-white border-gray-200 rounded-xl focus:ring-2 focus:ring-green-500 focus:border-transparent transition-all duration-200"
+                          />
+                          <p className="text-xs text-gray-500">
+                            Mã số thuế phải từ 10-15 chữ số
+                          </p>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+
+                    {/* File Upload */}
+                    <FormField
+                      control={form.control}
+                      name="attachmentUrl"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel className="text-gray-700 font-medium">
+                            Tài liệu đính kèm
+                          </FormLabel>
+                          <Input
+                            type="file"
+                            accept=".pdf,.doc,.docx,.jpg,.png"
+                            onChange={(e) => {
+                              const file = e.target.files?.[0];
+                              field.onChange(file);
+                            }}
+                            className="h-12 bg-white border-gray-200 rounded-xl focus:ring-2 focus:ring-green-500 focus:border-transparent transition-all duration-200 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-green-50 file:text-green-700 hover:file:bg-green-100"
+                          />
+                          <p className="text-xs text-gray-500">
+                            Chấp nhận file PDF, DOC, DOCX, JPG, PNG (tối đa
+                            10MB)
+                          </p>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+
+                    {/* Policy Checkbox for Bus Operator */}
+                    <div className="flex items-start space-x-3 p-3 bg-white rounded-lg border border-gray-200">
+                      <Checkbox
+                        id="policy"
+                        checked={acceptedPolicy}
+                        onCheckedChange={(checked) =>
+                          setAcceptedPolicy(checked as boolean)
+                        }
+                        className="mt-1"
+                      />
+                      <label htmlFor="policy" className="text-sm text-gray-700">
+                        Tôi đồng ý với <Policy /> của Busify{" "}
+                        <span className="text-red-500">*</span>
+                      </label>
+                    </div>
+                  </div>
+                )}
+
+                {/* Terms and Conditions - Only show when not bus operator */}
+                {!isBusOperator && (
+                  <>
+                    <div className="flex items-start space-x-3">
+                      <input
+                        type="checkbox"
+                        required
+                        className="w-4 h-4 text-green-600 border-gray-300 rounded focus:ring-green-500 mt-1 flex-shrink-0"
+                      />
+                      <p className="text-xs sm:text-sm text-gray-600 leading-relaxed">
+                        I agree to the{" "}
+                        <a
+                          href="#"
+                          className="text-green-600 hover:text-green-700 font-medium"
+                        >
+                          Terms of Service
+                        </a>{" "}
+                        and{" "}
+                        <a
+                          href="#"
+                          className="text-green-600 hover:text-green-700 font-medium"
+                        >
+                          Privacy Policy
+                        </a>
+                      </p>
+                    </div>
+
+                    {/* Newsletter Subscription */}
+                    <div className="flex items-start space-x-3">
+                      <input
+                        type="checkbox"
+                        className="w-4 h-4 text-green-600 border-gray-300 rounded focus:ring-green-500 mt-1 flex-shrink-0"
+                      />
+                      <p className="text-xs sm:text-sm text-gray-600">
+                        I want to receive updates and marketing communications
+                      </p>
+                    </div>
+                  </>
+                )}
 
                 <Button
                   type="submit"
                   className="w-full h-12 bg-gradient-to-r from-green-600 to-green-700 hover:from-green-700 hover:to-green-800 text-white font-semibold rounded-xl transition-all duration-200 transform hover:scale-[1.02] shadow-lg disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none"
-                  disabled={isSubmitting || !isPasswordStrong}
+                  disabled={
+                    isSubmitting ||
+                    (!isBusOperator && !isPasswordStrong) ||
+                    (isBusOperator && !acceptedPolicy)
+                  }
                 >
                   {isSubmitting ? (
                     <div className="flex items-center justify-center">
                       <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-white mr-2"></div>
-                      Creating Account...
+                      {isBusOperator
+                        ? "Đang tạo hợp đồng..."
+                        : "Creating Account..."}
                     </div>
+                  ) : isBusOperator ? (
+                    "Tạo hợp đồng"
                   ) : (
                     "Create Account"
                   )}
@@ -409,6 +850,8 @@ export const RegisterForm = () => {
             <Button
               onClick={() => {
                 setRegistrationSuccess(false);
+                setIsBusOperator(false);
+                setAcceptedPolicy(false);
                 form.reset();
               }}
               variant="outline"

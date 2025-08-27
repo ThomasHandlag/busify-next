@@ -27,8 +27,6 @@ const NavDesktop = ({
 }: NavDataProps) => {
   const session = useSession();
 
-  const [isOpen, setIsOpen] = React.useState(false);
-
   return (
     <div className="hidden lg:flex gap-6 w-full items-center justify-between">
       <div className="flex items-center space-x-3">
