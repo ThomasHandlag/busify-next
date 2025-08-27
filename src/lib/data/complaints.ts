@@ -12,6 +12,13 @@ export interface Complaint {
   tripId?: number; // Thêm tripId, loại bỏ customerName nếu không cần
 }
 
+export interface ComplaintAddDTO {
+  title: string;
+  description: string;
+  bookingCode: string;
+  status: "New";
+}
+
 const getComplaintsByOperator = async (
   operatorId: number
 ): Promise<Complaint[]> => {
@@ -42,19 +49,6 @@ const getComplaintsByCurrentUser = async (
   token: string
 ): Promise<Complaint[]> => {
   try {
-    // // use fetch instead
-    // const response = await fetch(
-    //   `http://localhost:8080/api/complaints/customer`,
-    //   {
-    //     method: "GET",
-    //     headers: {
-    //       "Content-Type": "application/json",
-    //       Authorization: `Bearer ${token}`,
-    //     },
-    //   }
-    // );
-    // const data = await response.json();
-
     const response = await api.get(`api/complaints/customer`, {
       headers: {
         Authorization: `Bearer ${token}`,
@@ -68,8 +62,28 @@ const getComplaintsByCurrentUser = async (
   }
 };
 
+const createComplaint = async (
+  token: string,
+  complaint: ComplaintAddDTO
+): Promise<Complaint | null> => {
+  try {
+    const response = await api.post(`api/complaints/booking`, complaint, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+    console.log(response.data.result);
+    return response.data.result;
+  } catch (error) {
+    const errorMessage = error as ResponseError;
+    printError(errorMessage);
+    return null;
+  }
+};
+
 export {
   getComplaintsByOperator,
   getComplaintsByTripId,
   getComplaintsByCurrentUser,
+  createComplaint,
 };
