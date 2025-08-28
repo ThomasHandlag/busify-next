@@ -58,7 +58,8 @@ export interface Trip {
 }
 
 export interface TripFilterQuery {
-  routeId?: string | null;
+  startLocation?: number | null;
+  endLocation?: number | null;
   departureDate?: Date | undefined;
   busModels?: string[];
   untilTime?: Date | undefined;

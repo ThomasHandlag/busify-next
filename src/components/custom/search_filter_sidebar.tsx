@@ -19,7 +19,8 @@ import { Input } from "../ui/input";
 import { Separator } from "../ui/separator";
 import { Loader2 } from "lucide-react";
 import { getAllBusModelsClient } from "@/lib/data/bus";
-import { Location } from "@/lib/data/location";
+import { getAllLocationsClient, Location } from "@/lib/data/location";
+import { toast } from "sonner";
 
 type SearchFilterSidebarProps = {
   onApplyFilters: (filters: TripFilterQuery | null) => void;
@@ -27,7 +28,8 @@ type SearchFilterSidebarProps = {
 };
 
 type FormValues = {
-  routeId: null | string;
+  startLocation: null | number;
+  endLocation: null | number;
   departureDate: Date | undefined;
   untilTime: Date | undefined;
   busModels: undefined | string[];
@@ -54,7 +56,8 @@ const SearchFilterSidebar = ({
 
   const form = useForm<FormValues>({
     defaultValues: {
-      routeId: null,
+      startLocation: null,
+      endLocation: null,
       departureDate: undefined,
       untilTime: undefined,
       busModels: [],
@@ -64,15 +67,22 @@ const SearchFilterSidebar = ({
     },
   });
 
+  const messageCallback = (message: string) => {
+    toast.info(message);
+  };
+
   useEffect(() => {
     const fetchData = async () => {
-      const [fetchedRoutes, fetchedBusModels] = await Promise.all([
-        getAllRoutesClient(),
-        getAllBusModelsClient(),
-      ]);
+      const [fetchedRoutes, fetchedBusModels, fetchedLocations] =
+        await Promise.all([
+          getAllRoutesClient(messageCallback),
+          getAllBusModelsClient(messageCallback),
+          getAllLocationsClient(messageCallback),
+        ]);
 
       setRoutes(fetchedRoutes);
       setBusModels(fetchedBusModels);
+      setLocations(fetchedLocations);
     };
 
     fetchData();
@@ -82,7 +92,8 @@ const SearchFilterSidebar = ({
     e.preventDefault();
     const formData = form.getValues();
     onApplyFilters({
-      routeId: formData.routeId,
+      startLocation: formData.startLocation,
+      endLocation: formData.endLocation,
       departureDate: formData.departureDate,
       untilTime: formData.untilTime,
       busModels: formData.busModels,
@@ -99,12 +110,12 @@ const SearchFilterSidebar = ({
         <form onSubmit={handleApplyFilters} className="space-y-6">
           <FormField
             control={form.control}
-            name="routeId"
+            name="startLocation"
             render={({ field }) => (
               <FormItem>
                 <FormLabel>Start Location</FormLabel>
                 <Select
-                  value={field.value || ""}
+                  value={field.value?.toString() || ""}
                   onValueChange={field.onChange}
                 >
                   <SelectTrigger className="bg-gray-50">
@@ -123,12 +134,12 @@ const SearchFilterSidebar = ({
           />
           <FormField
             control={form.control}
-            name="routeId"
+            name="endLocation"
             render={({ field }) => (
               <FormItem>
                 <FormLabel>End Location</FormLabel>
                 <Select
-                  value={field.value || ""}
+                  value={field.value?.toString() || ""}
                   onValueChange={field.onChange}
                 >
                   <SelectTrigger className="bg-gray-50">

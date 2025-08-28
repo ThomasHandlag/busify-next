@@ -1,4 +1,5 @@
 import api from "./axios-instance";
+import { AsyncCallback } from "./response_error";
 
 export interface BusifyRoute {
   routeId: number;
@@ -8,44 +9,40 @@ export interface BusifyRoute {
 }
 
 export interface BusifyRouteDetail {
-    id: number;
-    name: string;
-    start_location: string;
-    end_location: string;
-    default_duration_minutes: number;
-    default_price: number;
+  id: number;
+  name: string;
+  start_location: string;
+  end_location: string;
+  default_duration_minutes: number;
+  default_price: number;
 }
 
-export async function getPopularRoutes(): Promise<BusifyRoute[]> {
-  try {
-    const res = await api.get("api/routes/popular-routes");
-    return res.data.result as BusifyRoute[];
-  } catch (error) {
-    console.error("Error fetching popular routes:", error);
-    throw error;
+export async function getPopularRoutes(
+  callback: AsyncCallback
+): Promise<BusifyRoute[]> {
+  const res = await api.get("api/routes/popular-routes");
+  if (res.status !== 200) {
+    callback("Failed to fetch popular routes");
   }
+  return res.data.result as BusifyRoute[];
 }
 
-export async function getAllRoutes(): Promise<BusifyRouteDetail[]> {
-  try {
-    const res = await api.get("api/routes");
-    return res.data.result as BusifyRouteDetail[];
-  } catch (error) {
-    console.error("Error fetching routes:", error);
+export async function getAllRoutesServer(): Promise<BusifyRouteDetail[]> {
+  const res = await api.get("api/routes");
+  if (res.status !== 200) {
+    throw new Error("Failed to fetch all routes");
+  }
+  return res.data.result as BusifyRouteDetail[];
+}
+
+export async function getAllRoutesClient(
+  callback: AsyncCallback
+): Promise<BusifyRouteDetail[]> {
+  const res = await fetch("/api/route");
+  if (!res.ok) {
+    callback("Failed to fetch client routes");
     return [];
   }
-}
-
-export async function getAllRoutesClient(): Promise<BusifyRouteDetail[]> {
-  try {
-    const res = await fetch("/api/route");
-    if (!res.ok) {
-      throw new Error("Failed to fetch client routes");
-    }
-    const data = await res.json();
-    return data as BusifyRouteDetail[];
-  } catch (error) {
-    console.error("Error fetching client routes:", error);
-    return [];
-  }
+  const data = await res.json();
+  return data as BusifyRouteDetail[];
 }
