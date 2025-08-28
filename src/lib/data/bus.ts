@@ -1,4 +1,5 @@
-import api from "./axios-instance";
+import api, { ApiFnParams } from "./axios-instance";
+import ResponseError from "./response_error";
 
 export interface BusLayout {
   rows: number;
@@ -33,17 +34,19 @@ export async function getAllBusModels(): Promise<BusModel[]> {
   }
 }
 
-export async function getAllBusModelsClient(): Promise<string[]> {
-  try {
-    const res = await fetch("/api/bus-models", {
-      headers: {
-        "Content-Type": "application/json",
-      },
-    });
-    const data = await res.json();
-    return data.result.map((model: BusModel) => model.name);
-  } catch (error) {
-    console.error("Error fetching bus models:", error);
+export async function getAllBusModelsClient(
+  params: ApiFnParams
+): Promise<string[]> {
+  const res = await fetch("/api/bus-models", {
+    headers: {
+      "Content-Type": "application/json",
+    },
+  });
+  const data = await res.json();
+  if (!res.ok) {
+    const error = data as ResponseError;
+    params.callback(error.message ?? data.message);
     return [];
   }
+  return data.result.map((model: BusModel) => model.name);
 }

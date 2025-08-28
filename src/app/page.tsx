@@ -36,7 +36,10 @@ import Link from "next/link";
 import BusifyRouteItem from "@/components/custom/route/busify_route_item";
 
 const Home = async () => {
-  const popularRoutes = await getPopularRoutes();
+  const popularRoutes = await getPopularRoutes({
+    callback: (msg: string) => console.error(msg),
+    localeMessage: "Failed to load popular routes",
+  });
   return (
     <div className="h-full w-full">
       {/* Hero Section */}

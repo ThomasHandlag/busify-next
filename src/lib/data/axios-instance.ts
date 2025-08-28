@@ -2,6 +2,13 @@ import { BASE_URL } from "@/lib/constants/constants";
 import axios, { InternalAxiosRequestConfig, AxiosError } from "axios";
 import TokenManager from "@/lib/utils/token-manager";
 
+export type ApiFnParams = {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  [key: string]: any;
+  callback: (message: string) => void;
+  localeMessage?: string;
+};
+
 const api = axios.create({
   baseURL: `${BASE_URL}/`,
   // timeout: 10000,

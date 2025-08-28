@@ -15,6 +15,7 @@ import React from "react";
 import { auth } from "@/lib/data/auth";
 import { BASE_URL } from "@/lib/constants/constants";
 import PreferencesForm from "@/components/custom/preferences/preferences_form";
+import { getComplaintsByCurrentUser } from "@/lib/data/complaints";
 
 const ProfileSkeleton = () => {
   return (
@@ -56,6 +57,8 @@ const ProfileSkeleton = () => {
 
 const ProfilePage = async () => {
   const session = await auth();
+  const complaints = await getComplaintsByCurrentUser(session?.user.accessToken || ""); // Lưu vào biến complaints thay vì result
+  console.log(complaints); // Giữ lại để debug nếu cần
   if (!session) {
     console.log("No session found - user not logged in");
     return (
@@ -202,7 +205,7 @@ const ProfilePage = async () => {
       </Card>
 
       <div className="mt-6">
-        <ComplaintManagement userId={session.user?.id} />
+        <ComplaintManagement userId={session.user?.id} complaints={complaints} /> {/* Truyền complaints như prop */}
       </div>
     </div>
   );

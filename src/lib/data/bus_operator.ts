@@ -1,6 +1,6 @@
 // lib/data/operator.ts
 import { AxiosError } from "axios";
-import axios from "./axios-instance";
+import axios, { ApiFnParams } from "./axios-instance";
 import api from "./axios-instance";
 
 export interface BusOperatorDetail {
@@ -72,11 +72,13 @@ export async function getBusOperatorById(
   }
 }
 
-export async function getAllBusOperatorsClient(): Promise<BusOperator[]> {
+export async function getAllBusOperatorsClient(params: ApiFnParams): Promise<BusOperator[]> {
   try {
     const res = await fetch("/api/operator");
     if (!res.ok) {
-      throw new Error("Failed to fetch bus operators");
+      params.callback(
+        (await res.json()).message ?? params.localeMessage
+      );
     }
     const data = await res.json();
     return data as BusOperator[];

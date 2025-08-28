@@ -16,6 +16,7 @@ import {
   Shield,
   Tv,
   BatteryCharging,
+  Toilet, // Thêm import cho Toilet icon
 } from "lucide-react";
 import { Separator } from "../../ui/separator";
 import { TripDetail } from "@/lib/data/trip";
@@ -45,6 +46,62 @@ const TripInfoCard = ({ tripDetail }: { tripDetail: TripDetail }) => {
       month: "2-digit",
       year: "numeric",
     });
+  };
+
+  // Mapping cho amenities: key là string từ amenities array, value là config hiển thị
+  const amenityMap: Record<
+    string,
+    {
+      icon: React.ComponentType<{ className?: string }>;
+      label: string;
+      color: string;
+    }
+  > = {
+    wifi: { icon: Wifi, label: "WiFi miễn phí", color: "text-blue-500" },
+    tv: { icon: Tv, label: "TV giải trí", color: "text-purple-500" },
+    toilet: { icon: Toilet, label: "Nhà vệ sinh", color: "text-green-500" },
+    charging: {
+      icon: BatteryCharging,
+      label: "Sạc điện thoại",
+      color: "text-green-500",
+    },
+    air_conditioner: {
+      icon: Snowflake,
+      label: "Điều hòa",
+      color: "text-blue-500",
+    },
+    // Có thể thêm các amenities khác nếu cần (ví dụ: coffee, shield, etc.)
+  };
+
+  // Lọc và render amenities dựa trên tripDetail.bus.amenities
+  const renderAmenities = () => {
+    const availableAmenities = tripDetail.bus.amenities
+      .filter((amenity) => amenityMap[amenity]) // Chỉ lấy những amenity có trong map
+      .map((amenity) => {
+        const config = amenityMap[amenity];
+        const IconComponent = config.icon;
+        return (
+          <div key={amenity} className="flex items-center gap-2 text-sm">
+            <IconComponent className={`w-4 h-4 ${config.color}`} />
+            <span>{config.label}</span>
+          </div>
+        );
+      });
+
+    // Nếu không có amenities nào, hiển thị thông báo mặc định
+    if (availableAmenities.length === 0) {
+      return (
+        <div className="text-sm text-gray-500">
+          Không có tiện ích nào được liệt kê.
+        </div>
+      );
+    }
+
+    return (
+      <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+        {availableAmenities}
+      </div>
+    );
   };
 
   return (
@@ -259,32 +316,7 @@ const TripInfoCard = ({ tripDetail }: { tripDetail: TripDetail }) => {
           {/* Amenities */}
           <div>
             <h4 className="font-semibold text-gray-900 mb-3">Tiện ích</h4>
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
-              <div className="flex items-center gap-2 text-sm">
-                <Wifi className="w-4 h-4 text-blue-500" />
-                <span>WiFi miễn phí</span>
-              </div>
-              <div className="flex items-center gap-2 text-sm">
-                <Snowflake className="w-4 h-4 text-blue-500" />
-                <span>Điều hòa</span>
-              </div>
-              <div className="flex items-center gap-2 text-sm">
-                <BatteryCharging className="w-4 h-4 text-green-500" />
-                <span>Sạc điện thoại</span>
-              </div>
-              <div className="flex items-center gap-2 text-sm">
-                <Shield className="w-4 h-4 text-green-500" />
-                <span>Bảo hiểm</span>
-              </div>
-              <div className="flex items-center gap-2 text-sm">
-                <Coffee className="w-4 h-4 text-orange-500" />
-                <span>Nước uống</span>
-              </div>
-              <div className="flex items-center gap-2 text-sm">
-                <Tv className="w-4 h-4 text-purple-500" />
-                <span>TV giải trí</span>
-              </div>
-            </div>
+            {renderAmenities()}
           </div>
         </div>
       </CardContent>

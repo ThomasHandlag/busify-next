@@ -11,7 +11,6 @@ import { Checkbox } from "../ui/checkbox";
 
 import { useEffect, useState } from "react";
 import { Calendar28 } from "./date_picker";
-import { BusifyRouteDetail, getAllRoutesClient } from "@/lib/data/route_api";
 import { TripFilterQuery } from "@/lib/data/trip";
 import { useForm } from "react-hook-form";
 import { Form, FormField, FormItem, FormLabel } from "../ui/form";
@@ -19,7 +18,7 @@ import { Input } from "../ui/input";
 import { Separator } from "../ui/separator";
 import { Loader2 } from "lucide-react";
 import { getAllBusModelsClient } from "@/lib/data/bus";
-import { getAllLocationsClient, Location } from "@/lib/data/location";
+import { getAllLocationsClient } from "@/lib/data/location";
 import { toast } from "sonner";
 
 type SearchFilterSidebarProps = {
@@ -38,13 +37,19 @@ type FormValues = {
   availableSeats: number;
 };
 
+export type FilterLocationType = {
+  locationId: number;
+  locationName: string;
+};
+
 const SearchFilterSidebar = ({
   onApplyFilters,
   isLoading = false,
 }: SearchFilterSidebarProps) => {
-  const [routes, setRoutes] = useState<BusifyRouteDetail[]>([]);
-  const [busModels, setBusModels] = useState<string[]>([]);
-  const [locations, setLocations] = useState<Location[]>([]);
+  const [busModels, setBusModels] = useState<string[] | undefined>([]);
+  const [locations, setLocations] = useState<FilterLocationType[] | undefined>(
+    []
+  );
 
   const amenities: string[] = [
     "Wifi",
@@ -73,14 +78,17 @@ const SearchFilterSidebar = ({
 
   useEffect(() => {
     const fetchData = async () => {
-      const [fetchedRoutes, fetchedBusModels, fetchedLocations] =
-        await Promise.all([
-          getAllRoutesClient(messageCallback),
-          getAllBusModelsClient(messageCallback),
-          getAllLocationsClient(messageCallback),
-        ]);
+      const [fetchedBusModels, fetchedLocations] = await Promise.all([
+        getAllBusModelsClient({
+          callback: messageCallback,
+          localeMessage: "Failed to fetch bus models",
+        }),
+        getAllLocationsClient({
+          callback: messageCallback,
+          localeMessage: "Failed to fetch locations",
+        }),
+      ]);
 
-      setRoutes(fetchedRoutes);
       setBusModels(fetchedBusModels);
       setLocations(fetchedLocations);
     };
@@ -122,9 +130,12 @@ const SearchFilterSidebar = ({
                     <SelectValue placeholder="Select Location" />
                   </SelectTrigger>
                   <SelectContent>
-                    {routes?.map((route: BusifyRouteDetail) => (
-                      <SelectItem key={route.id} value={route.id.toString()}>
-                        {route.name}
+                    {locations?.map((route: FilterLocationType) => (
+                      <SelectItem
+                        key={route.locationId}
+                        value={route.locationId.toString()}
+                      >
+                        {route.locationName}
                       </SelectItem>
                     ))}
                   </SelectContent>
@@ -146,9 +157,12 @@ const SearchFilterSidebar = ({
                     <SelectValue placeholder="Select Location" />
                   </SelectTrigger>
                   <SelectContent>
-                    {routes?.map((route: BusifyRouteDetail) => (
-                      <SelectItem key={route.id} value={route.id.toString()}>
-                        {route.name}
+                    {locations?.map((route: FilterLocationType) => (
+                      <SelectItem
+                        key={route.locationId}
+                        value={route.locationId.toString()}
+                      >
+                        {route.locationName}
                       </SelectItem>
                     ))}
                   </SelectContent>
@@ -218,7 +232,7 @@ const SearchFilterSidebar = ({
               <FormItem>
                 <FormLabel>Bus Models</FormLabel>
                 <div className="space-y-3">
-                  {busModels.map((model) => (
+                  {busModels?.map((model) => (
                     <div key={model} className="flex items-center space-x-3">
                       <Checkbox
                         id={`model-${model}`}
@@ -331,7 +345,8 @@ const SearchFilterSidebar = ({
               disabled={isLoading}
               onClick={() => {
                 form.reset({
-                  routeId: undefined,
+                  startLocation: undefined,
+                  endLocation: undefined,
                   departureDate: undefined,
                   untilTime: undefined,
                   operatorName: undefined,

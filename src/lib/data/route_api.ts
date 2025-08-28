@@ -1,5 +1,5 @@
-import api from "./axios-instance";
-import { AsyncCallback } from "./response_error";
+import api, { ApiFnParams } from "./axios-instance";
+import ResponseError from "./response_error";
 
 export interface BusifyRoute {
   routeId: number;
@@ -18,13 +18,18 @@ export interface BusifyRouteDetail {
 }
 
 export async function getPopularRoutes(
-  callback: AsyncCallback
+  {
+    callback,
+    localeMessage
+  }: ApiFnParams
 ): Promise<BusifyRoute[]> {
   const res = await api.get("api/routes/popular-routes");
+  const data = res.data;
   if (res.status !== 200) {
-    callback("Failed to fetch popular routes");
+    const error = data as ResponseError;
+    callback(error.message ?? localeMessage ?? "Failed to fetch popular routes");
   }
-  return res.data.result as BusifyRoute[];
+  return data.result as BusifyRoute[];
 }
 
 export async function getAllRoutesServer(): Promise<BusifyRouteDetail[]> {
@@ -36,13 +41,14 @@ export async function getAllRoutesServer(): Promise<BusifyRouteDetail[]> {
 }
 
 export async function getAllRoutesClient(
-  callback: AsyncCallback
+  params: ApiFnParams
 ): Promise<BusifyRouteDetail[]> {
-  const res = await fetch("/api/route");
-  if (!res.ok) {
-    callback("Failed to fetch client routes");
+  const res = await fetch("api/routes");
+  const response = await res.json();
+
+  if (res.status !== 200) {
+    params.callback(response.message ?? params.localeMessage);
     return [];
   }
-  const data = await res.json();
-  return data as BusifyRouteDetail[];
+  return response.result as BusifyRouteDetail[];
 }
