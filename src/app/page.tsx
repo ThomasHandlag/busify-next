@@ -1,6 +1,4 @@
-"use server";
 import Footer from "@/components/custom/footer";
-import Image from "next/image";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -26,14 +24,12 @@ import {
   Globe,
   CreditCard,
   Navigation,
-  Building2,
-  Ticket,
 } from "lucide-react";
-import { FadeinWrapper } from "@/components/custom/animation/fadein_wrapper";
 import { getPopularRoutes } from "@/lib/data/route_api";
-import { BusifyRoute } from "@/lib/data/route_api";
+import type { BusifyRoute } from "@/lib/data/route_api";
 import Link from "next/link";
 import BusifyRouteItem from "@/components/custom/route/busify_route_item";
+import Image from "next/image";
 
 const Home = async () => {
   const popularRoutes = await getPopularRoutes({
@@ -42,56 +38,162 @@ const Home = async () => {
   });
   return (
     <div className="h-full w-full">
-      {/* Hero Section */}
-      <section className="bg-gradient-to-br w-full relative from-green-600 to-green-700 h-screen flex flex-col justify-center items-center text-white">
-        <Image
-          src="/bus-photo.jpg"
-          fill
-          loading="lazy"
-          placeholder="blur"
-          blurDataURL="..."
-          alt="Bus platform logo"
-          className="object-cover absolute h-sceen w-full opacity-50"
-        />
-        <div className="z-10 flex flex-col items-center">
-          <FadeinWrapper effect="animate-fade-in-left">
-            <h1 className="text-5xl font-bold text-center mb-6">
-              Welcome to Busify
-            </h1>
-            <FadeinWrapper effect="animate-fade-in-l300">
-              <p className="text-xl text-center mb-8 max-w-3xl px-4">
-                The complete travel platform connecting passengers with trusted
-                bus operators. Book tickets effortlessly or grow your bus
-                business with our comprehensive management tools.
-              </p>
-            </FadeinWrapper>
-          </FadeinWrapper>
+      {/* Hero Section with Decorative Banner and Booking Form */}
 
-          <FadeinWrapper effect="animate-fade-in-l400">
-            <div className="flex flex-col sm:flex-row gap-4">
-              <Button
-                size="lg"
-                className="bg-white text-green-600 hover:bg-green-50 flex items-center space-x-2"
-                asChild
-              >
-                <Link aria-label="Book Your Journey" href="/trips">
-                  <Ticket className="w-5 h-5" />
-                  <span>Book Your Journey</span>
-                </Link>
-              </Button>
-              <Button
-                size="lg"
-                variant="outline"
-                className="border-white bg-transparent text-white hover:bg-white hover:text-green-600 flex items-center space-x-2"
-                asChild
-              >
-                <a href="/operator">
-                  <Building2 className="w-5 h-5" />
-                  <span>Grow Your Business</span>
-                </a>
-              </Button>
+      <section className="w-full relative">
+        {/* Header background xanh bo góc */}
+        <div
+          className="relative bg-gradient-to-r from-green-600 to-green-500 overflow-hidden rounded-b-3xl mx-4 md:mx-8"
+          style={{ minHeight: "120px" }}
+        >
+          {/* Decorative elements */}
+          <div className="absolute inset-0 overflow-hidden">
+            {/* Gradient overlay patterns */}
+            <div className="absolute top-0 left-0 w-full h-full bg-gradient-to-br from-transparent via-green-400/10 to-transparent"></div>
+            <div className="absolute top-0 right-0 w-1/3 h-full bg-gradient-to-l from-green-300/20 to-transparent"></div>
+          </div>
+        </div>
+        {/* Bus image và overlay chữ tràn ra ngoài, không bị bo góc nền xanh cắt */}
+        <div
+          className="relative flex justify-center"
+          style={{ zIndex: 20, marginTop: "-60px", marginBottom: "16px" }}
+        >
+          <div className="relative w-full max-w-6xl">
+            <Image
+              src="/bus-photo.jpg"
+              fill
+              loading="lazy"
+              placeholder="blur"
+              blurDataURL="..."
+              alt="Bus platform logo"
+              className="object-cover absolute h-sceen w-full opacity-50"
+            />
+            {/* Overlay text on image */}
+            <div className="absolute inset-0 flex flex-col items-center justify-center text-center pointer-events-none">
+              <div className="bg-black/40 rounded-2xl px-8 py-6 md:px-16 md:py-8 flex flex-col items-center gap-2">
+                <div className="flex items-center justify-center gap-4 mb-2">
+                  <span className="text-5xl md:text-7xl font-bold bg-gradient-to-br from-yellow-200 via-yellow-300 to-yellow-400 bg-clip-text text-transparent drop-shadow-lg">
+                    24
+                  </span>
+                  <div className="text-left">
+                    <div className="text-2xl md:text-3xl font-bold bg-gradient-to-r from-white to-green-100 bg-clip-text text-transparent">
+                      NĂM
+                    </div>
+                    <div className="text-2xl md:text-4xl font-bold bg-gradient-to-r from-white via-green-50 to-green-100 bg-clip-text text-transparent">
+                      VỮNG TIN & PHÁT TRIỂN
+                    </div>
+                  </div>
+                </div>
+                <div className="text-transparent bg-gradient-to-r from-green-600 to-green-400 bg-clip-text text-lg md:text-xl font-semibold tracking-wide uppercase">
+                  CHẤT LƯỢNG LÀ DANH DỰ
+                </div>
+              </div>
             </div>
-          </FadeinWrapper>
+          </div>
+        </div>
+
+        <div className="bg-gray-50 py-8">
+          <div className="max-w-6xl mx-auto px-4">
+            <Card className="bg-white shadow-lg shadow-green-500/20 border-2 border-green-500 rounded-2xl">
+              <CardContent className="p-6">
+                {/* Trip Type Selection - compact hơn */}
+                <div className="flex items-center justify-between mb-6">
+                  <div className="flex items-center gap-6">
+                    <div className="flex items-center gap-2">
+                      <input
+                        type="radio"
+                        id="one-way"
+                        name="trip-type"
+                        defaultChecked
+                        className="w-4 h-4 text-green-600 border-gray-300 focus:ring-green-500"
+                      />
+                      <label
+                        htmlFor="one-way"
+                        className="text-green-700 font-medium text-sm"
+                      >
+                        Một chiều
+                      </label>
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <input
+                        type="radio"
+                        id="round-trip"
+                        name="trip-type"
+                        className="w-4 h-4 text-green-600 border-gray-300 focus:ring-green-500"
+                      />
+                      <label
+                        htmlFor="round-trip"
+                        className="text-gray-600 font-medium text-sm"
+                      >
+                        Khứ hồi
+                      </label>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Main booking form - compact layout như Phương Trang */}
+                <div className="grid grid-cols-1 md:grid-cols-5 gap-3 mb-6">
+                  {/* Departure Location */}
+                  <div className="space-y-1">
+                    <label className="text-xs font-medium text-gray-600">
+                      ĐIỂM ĐI
+                    </label>
+                    <Input
+                      placeholder="Bình Định"
+                      className="h-10 text-sm border-gray-300 focus:border-green-500 focus:ring-green-500"
+                    />
+                  </div>
+
+                  {/* Arrival Location */}
+                  <div className="space-y-1">
+                    <label className="text-xs font-medium text-gray-600">
+                      ĐIỂM ĐẾN
+                    </label>
+                    <Input
+                      placeholder="TP. Hồ Chí Minh"
+                      className="h-10 text-sm border-gray-300 focus:border-green-500 focus:ring-green-500"
+                    />
+                  </div>
+
+                  {/* Date */}
+                  <div className="space-y-1">
+                    <label className="text-xs font-medium text-gray-600">
+                      NGÀY ĐI
+                    </label>
+                    <Input
+                      type="date"
+                      defaultValue="2025-08-26"
+                      className="h-10 text-sm border-gray-300 focus:border-green-500 focus:ring-green-500"
+                    />
+                  </div>
+
+                  {/* Passenger Count */}
+                  <div className="space-y-1">
+                    <label className="text-xs font-medium text-gray-600">
+                      SỐ VÉ
+                    </label>
+                    <select className="h-10 w-full border border-gray-300 rounded-md px-3 text-sm focus:border-green-500 focus:ring-green-500 bg-white">
+                      <option value="1">1 vé</option>
+                      <option value="2">2 vé</option>
+                      <option value="3">3 vé</option>
+                      <option value="4">4 vé</option>
+                      <option value="5">5 vé</option>
+                    </select>
+                  </div>
+
+                  {/* Search Button */}
+                  <div className="flex items-end">
+                    <Button
+                      size="sm"
+                      className="h-10 w-full bg-green-600 hover:bg-green-700 text-white px-6 rounded-md font-medium text-sm"
+                    >
+                      TÌM CHUYẾN
+                    </Button>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+          </div>
         </div>
       </section>
 
@@ -110,7 +212,7 @@ const Home = async () => {
             <Button
               size="lg"
               variant="outline"
-              className="border-green-600 text-green-600 hover:bg-green-600 hover:text-white"
+              className="border-green-600 text-green-600 hover:bg-green-600 hover:text-white bg-transparent"
               asChild
             >
               <Link href="/trips">View All Routes</Link>

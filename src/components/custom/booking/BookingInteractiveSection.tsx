@@ -1,13 +1,13 @@
 "use client";
 
 import { useState } from "react";
+import { useSession } from "next-auth/react";
 import PromoCodeSection from "./PromoCodeSection";
 import PaymentMethods from "./PaymentMethods";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
 import { CreditCard } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { useSession } from "next-auth/react";
 
 interface BookingData {
   trip: { route: string };
@@ -47,13 +47,13 @@ export default function BookingInteractiveSection({
   mockData,
   tripId,
 }: BookingInteractiveSectionProps) {
+  const { data: session } = useSession();
   const [discount, setDiscount] = useState(0);
   const [paymentMethod, setPaymentMethod] = useState<string>("vnpay"); // Mặc định là VNPAY
   const [paymentLoading, setPaymentLoading] = useState(false);
   const [paymentError, setPaymentError] = useState<string | null>(null);
   const [paymentLink, setPaymentLink] = useState<string | null>(null);
 
-  const { data: session } = useSession();
   const finalAmount = initialTotalPrice - discount;
 
   // Hàm xử lý xác nhận thanh toán
@@ -76,6 +76,12 @@ export default function BookingInteractiveSection({
       return;
     }
 
+    // Kiểm tra session
+    if (!session?.user?.accessToken) {
+      setPaymentError("Vui lòng đăng nhập để tiếp tục thanh toán.");
+      return;
+    }
+
     setPaymentLoading(true);
     setPaymentError(null);
     setPaymentLink(null);
@@ -84,7 +90,7 @@ export default function BookingInteractiveSection({
       // Bước 1: Gửi POST request tới API bookings
       const bookingRequest: BookingAddRequestDTO = {
         tripId: Number(tripId),
-        customerId: null,
+        customerId: session.user.id ? Number(session.user.id) : null, // Sử dụng customerId từ session
         guestFullName: mockData.passenger.fullName,
         guestEmail: mockData.passenger.email,
         guestPhone: mockData.passenger.phone,
@@ -101,13 +107,12 @@ export default function BookingInteractiveSection({
           method: "POST",
           headers: {
             "Content-Type": "application/json",
-            Authorization: `Bearer ${session?.user.accessToken}`,
+            "Authorization": `Bearer ${session.user.accessToken}`, // Thêm token
           },
           body: JSON.stringify(bookingRequest),
         }
       );
 
-      console.log("accessToken ", session?.user.accessToken);
       if (!bookingResponse.ok) {
         const errorData = await bookingResponse.json().catch(() => null);
         const errorMessage =
@@ -138,6 +143,7 @@ export default function BookingInteractiveSection({
           method: "POST",
           headers: {
             "Content-Type": "application/json",
+            "Authorization": `Bearer ${session.user.accessToken}`, // Thêm token
           },
           body: JSON.stringify(paymentRequest),
         }
