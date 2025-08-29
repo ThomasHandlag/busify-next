@@ -20,8 +20,8 @@ export async function getBusSeatsLayout(
 }
 
 export interface BusModel {
-  id: number;
-  name: string;
+  modelId: number;
+  modelName: string;
 }
 
 export async function getAllBusModels(): Promise<BusModel[]> {
@@ -48,5 +48,5 @@ export async function getAllBusModelsClient(
     params.callback(error.message ?? data.message);
     return [];
   }
-  return data.result.map((model: BusModel) => model.name);
+  return data.result.map((model: BusModel) => model.modelName);
 }
