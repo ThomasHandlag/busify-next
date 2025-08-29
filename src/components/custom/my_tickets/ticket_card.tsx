@@ -12,8 +12,22 @@ import {
   Navigation,
   Users,
   Download,
+  AlertTriangle, // Đổi từ MessageSquare sang AlertTriangle cho biểu tượng khiếu nại
 } from "lucide-react";
 import { BookingData } from "@/lib/data/booking";
+import { useState } from "react"; // Thêm import useState nếu chưa có
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog"; // Thêm import cho Dialog
+import { Textarea } from "@/components/ui/textarea"; // Thêm import cho Textarea
+import { Input } from "@/components/ui/input"; // Thêm import cho Input
+import { useSession } from "next-auth/react"; // Thêm import useSession
+import { createComplaint, ComplaintAddDTO } from "@/lib/data/complaints"; // Thêm import createComplaint
+import { toast } from "sonner"; // Thêm import toast cho thông báo
 
 const getStatusInfo = (status: BookingData["status"]) => {
   switch (status) {
@@ -86,8 +100,54 @@ export const TicketCard = ({
 }) => {
   const statusInfo = getStatusInfo(booking.status);
   const StatusIcon = statusInfo.icon;
+  const [complaintTitle, setComplaintTitle] = useState(""); // State cho tiêu đề khiếu nại
+  const [complaintDescription, setComplaintDescription] = useState(""); // State cho mô tả khiếu nại
+  const [isComplaintModalOpen, setIsComplaintModalOpen] = useState(false); // State cho modal
+  const [isSubmittingComplaint, setIsSubmittingComplaint] = useState(false); // State cho loading khi gửi khiếu nại
+  const { data: session } = useSession(); // Lấy session để lấy token
 
   const isPast = new Date(booking.departure_time) < new Date();
+
+  const handleSubmitComplaint = async () => {
+    if (!session?.user?.accessToken) {
+      toast.error("Bạn cần đăng nhập để gửi khiếu nại.");
+      return;
+    }
+
+    if (!complaintTitle.trim() || !complaintDescription.trim()) {
+      toast.error("Vui lòng nhập đầy đủ tiêu đề và mô tả khiếu nại.");
+      return;
+    }
+
+    setIsSubmittingComplaint(true);
+    try {
+      const complaintData: ComplaintAddDTO = {
+        title: complaintTitle.trim(),
+        description: complaintDescription.trim(),
+        bookingCode: booking.booking_code,
+        status: "New",
+      };
+
+      const result = await createComplaint(
+        session.user.accessToken,
+        complaintData
+      );
+
+      if (result) {
+        toast.success("Khiếu nại đã được gửi thành công!");
+        setComplaintTitle("");
+        setComplaintDescription("");
+        setIsComplaintModalOpen(false);
+      } else {
+        toast.error("Có lỗi xảy ra khi gửi khiếu nại. Vui lòng thử lại.");
+      }
+    } catch (error) {
+      console.error("Error submitting complaint:", error);
+      toast.error("Có lỗi xảy ra khi gửi khiếu nại. Vui lòng thử lại.");
+    } finally {
+      setIsSubmittingComplaint(false);
+    }
+  };
 
   return (
     <Card className="hover:shadow-md transition-all duration-200 border-l-4 border-l-green-500 overflow-hidden">
@@ -98,9 +158,7 @@ export const TicketCard = ({
             <h3 className="text-sm font-bold text-gray-900 mb-1 truncate">
               {booking.route_name}
             </h3>
-            <p className="text-xs text-gray-500">
-              {booking.booking_code}
-            </p>
+            <p className="text-xs text-gray-500">{booking.booking_code}</p>
           </div>
           <div className="flex flex-col items-end gap-1">
             <Badge
@@ -126,7 +184,7 @@ export const TicketCard = ({
               {booking.departure_address}
             </p>
           </div>
-          
+
           <div className="flex items-center justify-center">
             <div className="flex items-center w-full">
               <div className="w-1.5 h-1.5 bg-green-500 rounded-full"></div>
@@ -136,7 +194,7 @@ export const TicketCard = ({
               <div className="w-1.5 h-1.5 bg-green-500 rounded-full"></div>
             </div>
           </div>
-          
+
           <div className="col-span-2 text-right">
             <p className="text-sm font-semibold text-gray-900">
               {formatTime(booking.arrival_time)}
@@ -165,7 +223,8 @@ export const TicketCard = ({
               (new Date(booking.arrival_time).getTime() -
                 new Date(booking.departure_time).getTime()) /
                 3600000
-            )}h
+            )}
+            h
           </span>
         </div>
 
@@ -179,17 +238,14 @@ export const TicketCard = ({
           >
             Chi tiết
           </Button>
-          
-          {(booking.status === "confirmed" || booking.status === "completed") && (
-            <Button
-              variant="outline"
-              size="sm"
-              className="h-8 px-3 text-xs"
-            >
+
+          {(booking.status === "confirmed" ||
+            booking.status === "completed") && (
+            <Button variant="outline" size="sm" className="h-8 px-3 text-xs">
               <Download className="w-3 h-3" />
             </Button>
           )}
-          
+
           {booking.status === "confirmed" && !isPast && (
             <Button
               variant="destructive"
@@ -199,15 +255,68 @@ export const TicketCard = ({
               Hủy
             </Button>
           )}
-          
+
           {booking.status === "completed" && (
-            <Button
-              variant="default"
-              size="sm"
-              className="bg-green-600 hover:bg-green-700 h-8 px-3 text-xs"
-            >
-              Đánh giá
-            </Button>
+            <>
+              <Button
+                variant="default"
+                size="sm"
+                className="bg-green-600 hover:bg-green-700 h-8 px-3 text-xs"
+              >
+                Đánh giá
+              </Button>
+              <Dialog
+                open={isComplaintModalOpen}
+                onOpenChange={setIsComplaintModalOpen}
+              >
+                <DialogTrigger asChild>
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    className="h-8 px-3 text-xs"
+                  >
+                    <AlertTriangle className="w-3 h-3" />
+                  </Button>
+                </DialogTrigger>
+                <DialogContent>
+                  <DialogHeader>
+                    <DialogTitle>Gửi khiếu nại</DialogTitle>
+                  </DialogHeader>
+                  <div className="space-y-4">
+                    <div>
+                      <label className="text-sm font-medium">Tiêu đề</label>
+                      <Input
+                        placeholder="Nhập tiêu đề khiếu nại (5-100 ký tự)"
+                        value={complaintTitle}
+                        onChange={(e) => setComplaintTitle(e.target.value)}
+                        disabled={isSubmittingComplaint}
+                      />
+                    </div>
+                    <div>
+                      <label className="text-sm font-medium">Mô tả</label>
+                      <Textarea
+                        placeholder="Nhập mô tả khiếu nại (10-1000 ký tự)"
+                        value={complaintDescription}
+                        onChange={(e) =>
+                          setComplaintDescription(e.target.value)
+                        }
+                        disabled={isSubmittingComplaint}
+                      />
+                    </div>
+                    <Button
+                      onClick={handleSubmitComplaint}
+                      disabled={
+                        isSubmittingComplaint ||
+                        !complaintTitle.trim() ||
+                        !complaintDescription.trim()
+                      }
+                    >
+                      {isSubmittingComplaint ? "Đang gửi..." : "Gửi"}
+                    </Button>
+                  </div>
+                </DialogContent>
+              </Dialog>
+            </>
           )}
         </div>
       </CardContent>

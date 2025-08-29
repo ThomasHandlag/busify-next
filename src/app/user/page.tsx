@@ -1,18 +1,21 @@
-import { UserProfileResponse } from "@/lib/data/users";
+import { getUserProfile } from "@/lib/data/users";
 import {
   Card,
   CardContent,
   CardDescription,
+  CardFooter,
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
-import { Mail, Phone, MapPin, Calendar, User } from "lucide-react";
+import { Mail, Phone, MapPin, User } from "lucide-react";
 import UpdateProfileDialog from "@/components/custom/profile/update_profile";
 import ComplaintManagement from "@/components/custom/profile/complaint_management";
 import React from "react";
 import { auth } from "@/lib/data/auth";
-import { BASE_URL } from "@/lib/constants/constants";
+import PreferencesForm from "@/components/custom/preferences/preferences_form";
+import { getComplaintsByCurrentUser } from "@/lib/data/complaints";
+import { toast } from "sonner";
 
 const ProfileSkeleton = () => {
   return (
@@ -54,6 +57,10 @@ const ProfileSkeleton = () => {
 
 const ProfilePage = async () => {
   const session = await auth();
+  const complaints = await getComplaintsByCurrentUser(
+    session?.user.accessToken || ""
+  ); // Lưu vào biến complaints thay vì result
+  console.log(complaints); // Giữ lại để debug nếu cần
   if (!session) {
     console.log("No session found - user not logged in");
     return (
@@ -68,22 +75,16 @@ const ProfilePage = async () => {
     );
   }
 
-  const response = await fetch(`${BASE_URL}/api/users/profile`, {
-    method: "GET",
-    headers: {
-      "Content-Type": "application/json",
-      Authorization: `Bearer ${session?.user.accessToken}`,
-
+  const userProfile = await getUserProfile({
+    accessToken: session?.user.accessToken,
+    callback: (message: string) => {
+      toast.error(message);
     },
   });
-  
 
-  if (!response.ok) {
+  if (!userProfile) {
     return <ProfileSkeleton />;
   }
-
-  const data = await response.json();
-  const userProfile = data.result as UserProfileResponse;
 
   return (
     <div className="container mx-auto p-6 max-w-4xl mb-10">
@@ -114,6 +115,9 @@ const ProfilePage = async () => {
           </div>
           <UpdateProfileDialog userProfile={userProfile} />
         </CardHeader>
+        <CardFooter>
+          <PreferencesForm />
+        </CardFooter>
       </Card>
 
       <div className="grid md:grid-cols-2 gap-6">
@@ -140,15 +144,6 @@ const ProfilePage = async () => {
                 <p className="text-sm text-gray-500">Phone</p>
                 <p className="font-medium">
                   {userProfile?.phoneNumber || "Not provided"}
-                </p>
-              </div>
-            </div>
-            <div className="flex items-center space-x-3">
-              <Calendar className="w-5 h-5 text-gray-400" />
-              <div>
-                <p className="text-sm text-gray-500">Date of Birth</p>
-                <p className="font-medium">
-                  {new Date("1/2/2001").toLocaleDateString()}
                 </p>
               </div>
             </div>
@@ -199,7 +194,11 @@ const ProfilePage = async () => {
       </Card>
 
       <div className="mt-6">
-        <ComplaintManagement userId={session.user?.id} />
+        <ComplaintManagement
+          userId={session.user?.id}
+          complaints={complaints}
+        />{" "}
+        {/* Truyền complaints như prop */}
       </div>
     </div>
   );

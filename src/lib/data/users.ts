@@ -1,4 +1,4 @@
-import api from "./axios-instance";
+import api, { ApiFnParams } from "./axios-instance";
 
 export interface UserProfileResponse {
   id: number;
@@ -12,30 +12,25 @@ export interface UserProfileResponse {
   roleName: string;
 }
 
-export async function getUserProfileByEmail(
-): Promise<UserProfileResponse | null | undefined> {
-  try {
-    const response = await api.get(`/api/users/profile`);
-    return response.data.result;
-  } catch (error) {
-    console.error("Error fetching user profile by email:", error);
-    return null;
-  }
-}
-
 export async function getUserProfile(
-  userId: number
-): Promise<UserProfileResponse | null | undefined> {
-  try {
-    const response = await api.get(`api/users/${userId}`);
-    return response.data.result;
-  } catch (error) {
-    console.error("Error fetching user profile:", error);
-    return null;
+  params: ApiFnParams
+): Promise<UserProfileResponse | undefined> {
+  const response = await api.get(`api/users/profile`, {
+    headers: {
+      Authorization: `Bearer ${params.accessToken}`,
+    },
+  });
+  if (response.status !== 200) {
+    console.error("Error fetching user profile:", response.data.message);
+    params.callback(
+      response.data.message ?? params.localeMessage ?? "Unknown error"
+    );
+    return undefined;
   }
+  return response.data.result as UserProfileResponse;
 }
 
-export async function updateUserProfile(
+export async function updateUserProfileServer(
   userId: number | null | undefined,
   data: Partial<UserProfileResponse>
 ): Promise<UserProfileResponse | null | undefined> {

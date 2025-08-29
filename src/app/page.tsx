@@ -1,6 +1,4 @@
-"use server";
 import Footer from "@/components/custom/footer";
-import Image from "next/image";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -26,69 +24,83 @@ import {
   Globe,
   CreditCard,
   Navigation,
-  Building2,
-  Ticket,
 } from "lucide-react";
-import { FadeinWrapper } from "@/components/custom/animation/fadein_wrapper";
 import { getPopularRoutes } from "@/lib/data/route_api";
-import { BusifyRoute } from "@/lib/data/route_api";
+import type { BusifyRoute } from "@/lib/data/route_api";
 import Link from "next/link";
 import BusifyRouteItem from "@/components/custom/route/busify_route_item";
+import Image from "next/image";
+import HomeSearchForm from "@/components/custom/home_search_form";
+import { getAllLocations } from "@/lib/data/location";
+import { toast } from "sonner";
 
 const Home = async () => {
-  const popularRoutes = await getPopularRoutes();
+  const popularRoutes = await getPopularRoutes({
+    callback: (msg: string) => toast.error(msg),
+    localeMessage: "Failed to load popular routes",
+  });
+  const locations = await getAllLocations({
+    callback: (msg: string) => toast.info(msg),
+    localeMessage: "Failed to load locations",
+  });
   return (
     <div className="h-full w-full">
-      {/* Hero Section */}
-      <section className="bg-gradient-to-br w-full relative from-green-600 to-green-700 h-screen flex flex-col justify-center items-center text-white">
-        <Image
-          src="/bus-photo.jpg"
-          fill
-          loading="lazy"
-          placeholder="blur"
-          blurDataURL="..."
-          alt="Bus platform logo"
-          className="object-cover absolute h-sceen w-full opacity-50"
-        />
-        <div className="z-10 flex flex-col items-center">
-          <FadeinWrapper effect="animate-fade-in-left">
-            <h1 className="text-5xl font-bold text-center mb-6">
-              Welcome to Busify
-            </h1>
-            <FadeinWrapper effect="animate-fade-in-l300">
-              <p className="text-xl text-center mb-8 max-w-3xl px-4">
-                The complete travel platform connecting passengers with trusted
-                bus operators. Book tickets effortlessly or grow your bus
-                business with our comprehensive management tools.
-              </p>
-            </FadeinWrapper>
-          </FadeinWrapper>
+      <section className="w-full relative">
+        <div
+          className="relative bg-gradient-to-r from-green-600 to-green-500 overflow-hidden rounded-b-3xl mx-4 md:mx-8"
+          style={{ minHeight: "140px" }}
+        >
+          <div className="absolute inset-0 overflow-hidden">
+            <div className="absolute top-0 left-0 w-full h-full bg-gradient-to-br from-transparent via-green-400/10 to-transparent"></div>
+            <div className="absolute top-0 right-0 w-1/3 h-full bg-gradient-to-l from-green-300/20 to-transparent"></div>
+          </div>
+        </div>
 
-          <FadeinWrapper effect="animate-fade-in-l400">
-            <div className="flex flex-col sm:flex-row gap-4">
-              <Button
-                size="lg"
-                className="bg-white text-green-600 hover:bg-green-50 flex items-center space-x-2"
-                asChild
-              >
-                <Link aria-label="Book Your Journey" href="/trips">
-                  <Ticket className="w-5 h-5" />
-                  <span>Book Your Journey</span>
-                </Link>
-              </Button>
-              <Button
-                size="lg"
-                variant="outline"
-                className="border-white bg-transparent text-white hover:bg-white hover:text-green-600 flex items-center space-x-2"
-                asChild
-              >
-                <a href="/operator">
-                  <Building2 className="w-5 h-5" />
-                  <span>Grow Your Business</span>
-                </a>
-              </Button>
+        <div
+          className="relative flex justify-center px-4"
+          style={{ zIndex: 20, marginTop: "-100px", marginBottom: "12px" }}
+        >
+          <div className="w-full max-w-6xl">
+            <div className="relative z-10 flex flex-col items-center justify-center text-center">
+              <div className="rounded-2xl px-6 py-8 md:px-12 md:py-10 flex flex-col items-center gap-4 shadow-2xl border border-white/20">
+                <div className="flex flex-col md:flex-row items-center justify-center gap-4 md:gap-6 mb-4">
+                  <span className="text-5xl md:text-7xl font-bold bg-gradient-to-br bg-green-500 bg-clip-text text-transparent drop-shadow-2xl">
+                    Bustify
+                  </span>
+                  <div className="text-center md:text-left">
+                    <div className="text-xl md:text-2xl font-bold text-green-500 drop-shadow-lg">
+                      ĐỒNG HÀNH - PHÁT TRIỂN
+                    </div>
+                    <div className="text-xl md:text-3xl font-bold text-green-500 drop-shadow-lg">
+                      VỮNG TIN - AN TOÀN
+                    </div>
+                  </div>
+                </div>
+                <div className="-z-1 rounded-2xl h-[30px]">
+                  <Image
+                    src="/copy.jpg"
+                    fill
+                    loading="lazy"
+                    placeholder="blur"
+                    blurDataURL="..."
+                    alt="Bus platform background"
+                    className="object-cover rounded-2xl "
+                  />
+                  <div className="bg-black/10 backdrop:blur-xl absolute inset-0 rounded-2xl"></div>
+                </div>
+              </div>
             </div>
-          </FadeinWrapper>
+          </div>
+        </div>
+
+        <div className="relative py-8 z-30">
+          <div className="max-w-6xl mx-auto px-4">
+            <Card className="bg-white shadow-xl shadow-green-500/25 border-2 border-green-500 rounded-2xl backdrop-blur-sm">
+              <CardContent className="p-6">
+                <HomeSearchForm locations={locations} />
+              </CardContent>
+            </Card>
+          </div>
         </div>
       </section>
 
@@ -99,7 +111,7 @@ const Home = async () => {
             Popular Routes
           </h2>
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {popularRoutes.slice(0, 6).map((route: BusifyRoute) => (
+            {popularRoutes?.slice(0, 6).map((route: BusifyRoute) => (
               <BusifyRouteItem key={route.routeId} item={route} />
             ))}
           </div>
@@ -107,7 +119,7 @@ const Home = async () => {
             <Button
               size="lg"
               variant="outline"
-              className="border-green-600 text-green-600 hover:bg-green-600 hover:text-white"
+              className="border-green-600 text-green-600 hover:bg-green-600 hover:text-white bg-transparent"
               asChild
             >
               <Link href="/trips">View All Routes</Link>
@@ -154,26 +166,26 @@ const Home = async () => {
               </div>
 
               <div className="flex flex-col sm:flex-row gap-4">
-                <Button className="bg-black text-white hover:bg-gray-800 flex items-center space-x-2">
+                <Button className="bg-gray-900 text-white hover:bg-gray-800 flex items-center justify-center space-x-2 px-6 py-3 rounded-lg transition-colors">
                   <Download className="w-5 h-5" />
                   <span>Download on App Store</span>
                 </Button>
-                <Button className="bg-black text-white hover:bg-gray-800 flex items-center space-x-2">
+                <Button className="bg-green-600 text-white hover:bg-green-700 flex items-center justify-center space-x-2 px-6 py-3 rounded-lg transition-colors">
                   <Download className="w-5 h-5" />
                   <span>Get it on Google Play</span>
                 </Button>
               </div>
             </div>
 
-            <div className="relative">
-              <div className="bg-gradient-to-br from-green-400 to-green-600 rounded-2xl p-8 shadow-2xl">
+            <div className="relative lg:pl-8">
+              <div className="bg-gradient-to-br from-green-500 to-green-700 rounded-2xl p-8 shadow-2xl transform rotate-1 hover:rotate-0 transition-transform duration-300">
                 <div className="bg-white rounded-xl p-6 shadow-lg">
                   <div className="flex items-center space-x-3 mb-4">
-                    <div className="w-12 h-12 bg-green-600 rounded-lg flex items-center justify-center">
+                    <div className="w-12 h-12 bg-gradient-to-br from-green-500 to-green-600 rounded-lg flex items-center justify-center shadow-md">
                       <Smartphone className="w-6 h-6 text-white" />
                     </div>
                     <div>
-                      <h3 className="font-bold text-green-700">
+                      <h3 className="font-bold text-green-800 text-lg">
                         Busify Mobile
                       </h3>
                       <p className="text-sm text-gray-600">
@@ -204,111 +216,111 @@ const Home = async () => {
       </section>
 
       {/* Testimonials Section */}
-      <section className="bg-green-50 py-16">
+      <section className="bg-gradient-to-b from-green-50 to-white py-16">
         <div className="max-w-6xl mx-auto px-4">
-          <h2 className="text-3xl font-bold text-center text-green-700 mb-12">
+          <h2 className="text-3xl font-bold text-center text-green-800 mb-12">
             What Our Customers Say
           </h2>
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
-            <Card className="border-green-200 bg-white">
+            <Card className="border-green-200 bg-white shadow-lg hover:shadow-xl transition-shadow duration-300">
               <CardHeader>
                 <div className="flex items-center space-x-4">
-                  <Avatar>
+                  <Avatar className="ring-2 ring-green-200">
                     <AvatarImage src="/place-holder.png" />
-                    <AvatarFallback className="bg-green-100 text-green-700">
+                    <AvatarFallback className="bg-green-100 text-green-800 font-semibold">
                       JD
                     </AvatarFallback>
                   </Avatar>
                   <div>
-                    <CardTitle className="text-lg text-green-800">
+                    <CardTitle className="text-lg text-green-900">
                       John Doe
                     </CardTitle>
-                    <CardDescription className="text-green-600">
+                    <CardDescription className="text-green-700">
                       Frequent Traveler
                     </CardDescription>
                   </div>
                 </div>
               </CardHeader>
               <CardContent>
-                <div className="flex mb-2">
+                <div className="flex mb-3">
                   {[...Array(5)].map((_, i) => (
                     <Star
                       key={`testimonial1-star-${i}`}
-                      className="w-4 h-4 fill-green-400 text-green-400"
+                      className="w-4 h-4 fill-yellow-400 text-yellow-400"
                     />
                   ))}
                 </div>
-                <p className="text-green-700">
+                <p className="text-gray-700 italic">
                   &quot;Busify has made my business trips so much easier. I can
                   compare prices and book tickets in minutes!&quot;
                 </p>
               </CardContent>
             </Card>
 
-            <Card className="border-green-200 bg-white">
+            <Card className="border-green-200 bg-white shadow-lg hover:shadow-xl transition-shadow duration-300">
               <CardHeader>
                 <div className="flex items-center space-x-4">
-                  <Avatar>
+                  <Avatar className="ring-2 ring-green-200">
                     <AvatarImage src="/place-holder.png" />
-                    <AvatarFallback className="bg-green-100 text-green-700">
+                    <AvatarFallback className="bg-green-100 text-green-800 font-semibold">
                       SM
                     </AvatarFallback>
                   </Avatar>
                   <div>
-                    <CardTitle className="text-lg text-green-800">
+                    <CardTitle className="text-lg text-green-900">
                       Sarah Miller
                     </CardTitle>
-                    <CardDescription className="text-green-600">
+                    <CardDescription className="text-green-700">
                       Bus Provider Owner
                     </CardDescription>
                   </div>
                 </div>
               </CardHeader>
               <CardContent>
-                <div className="flex mb-2">
+                <div className="flex mb-3">
                   {[...Array(5)].map((_, i) => (
                     <Star
                       key={`testimonial2-star-${i}`}
-                      className="w-4 h-4 fill-green-400 text-green-400"
+                      className="w-4 h-4 fill-yellow-400 text-yellow-400"
                     />
                   ))}
                 </div>
-                <p className="text-green-700">
+                <p className="text-gray-700 italic">
                   &quot;Since joining Busify, our bookings increased by 40%. The
                   platform is easy to use and the support is excellent.&quot;
                 </p>
               </CardContent>
             </Card>
 
-            <Card className="border-green-200 bg-white">
+            <Card className="border-green-200 bg-white shadow-lg hover:shadow-xl transition-shadow duration-300">
               <CardHeader>
                 <div className="flex items-center space-x-4">
-                  <Avatar>
+                  <Avatar className="ring-2 ring-green-200">
                     <AvatarImage src="/place-holder.png" />
-                    <AvatarFallback className="bg-green-100 text-green-700">
+                    <AvatarFallback className="bg-green-100 text-green-800 font-semibold">
                       MJ
                     </AvatarFallback>
                   </Avatar>
                   <div>
-                    <CardTitle className="text-lg text-green-800">
+                    <CardTitle className="text-lg text-green-900">
                       Mike Johnson
                     </CardTitle>
-                    <CardDescription className="text-green-600">
+                    <CardDescription className="text-green-700">
                       Regular Commuter
                     </CardDescription>
                   </div>
                 </div>
               </CardHeader>
               <CardContent>
-                <div className="flex mb-2">
+                <div className="flex mb-3">
                   {[...Array(5)].map((_, i) => (
                     <Star
                       key={`testimonial3-star-${i}`}
-                      className="w-4 h-4 fill-green-400 text-green-400"
+                      className="w-4 h-4 fill-yellow-400 text-yellow-400"
                     />
                   ))}
                 </div>
-                <p className="text-green-700">
+                <p className="text-gray-700 italic">
                   &quot;Real-time tracking and reliable service. I always know
                   when my bus will arrive. Highly recommended!&quot;
                 </p>
@@ -319,9 +331,9 @@ const Home = async () => {
       </section>
 
       {/* FAQ Section */}
-      <section className="py-16 bg-white">
+      <section className="py-16 bg-gray-50">
         <div className="max-w-4xl mx-auto px-4">
-          <h2 className="text-3xl font-bold text-center text-green-700 mb-12">
+          <h2 className="text-3xl font-bold text-center text-green-800 mb-12">
             Frequently Asked Questions
           </h2>
 
@@ -383,10 +395,17 @@ const Home = async () => {
       </section>
 
       {/* Newsletter Signup Section */}
-      <section className="py-16 bg-green-700 text-white">
-        <div className="max-w-4xl mx-auto px-4 text-center">
-          <h2 className="text-3xl font-bold mb-4">Stay Updated with Busify</h2>
-          <p className="text-lg text-green-100 mb-8">
+      <section className="py-16 bg-gradient-to-r from-green-700 via-green-600 to-green-700 text-white relative overflow-hidden">
+        {/* Background pattern */}
+        <div className="absolute inset-0 opacity-10">
+          <div className="absolute top-0 left-0 w-full h-full bg-gradient-to-br from-transparent via-white/10 to-transparent"></div>
+        </div>
+
+        <div className="max-w-4xl mx-auto px-4 text-center relative z-10">
+          <h2 className="text-3xl font-bold mb-4 text-white">
+            Stay Updated with Busify
+          </h2>
+          <p className="text-lg text-green-50 mb-8">
             Get the latest deals, new routes, and travel tips delivered to your
             inbox.
           </p>
@@ -394,14 +413,14 @@ const Home = async () => {
           <div className="flex flex-col sm:flex-row gap-4 max-w-md mx-auto">
             <Input
               placeholder="Enter your email address"
-              className="bg-white text-gray-900 border-0 flex-1"
+              className="bg-white/95 text-gray-900 border-0 flex-1 placeholder:text-gray-500 focus:bg-white transition-colors"
             />
-            <Button className="bg-green-500 hover:bg-green-400 text-white">
+            <Button className="bg-white text-green-700 hover:bg-green-50 font-semibold px-6 transition-colors">
               Subscribe
             </Button>
           </div>
 
-          <p className="text-sm text-green-200 mt-4 p-3">
+          <p className="text-sm text-green-100 mt-6">
             By subscribing, you agree to receive marketing emails. Unsubscribe
             at any time.
           </p>

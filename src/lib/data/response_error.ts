@@ -6,6 +6,8 @@ interface ResponseError {
   code: number;
 }
 
+export type AsyncCallback = (message: string) => void;
+
 const printError = (error: ResponseError | undefined | null): void => {
   if (error) {
     console.error("Error:", error.message);

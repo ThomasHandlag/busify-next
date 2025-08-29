@@ -1,10 +1,12 @@
 import { getSession, signOut } from "next-auth/react";
-import api from "../data/axios-instance";
 
 interface RefreshTokenResponse {
-  success: boolean;
-  accessToken?: string;
-  refreshToken?: string;
+  code: number;
+  message: string;
+  result?: {
+    access_token: string;
+    refresh_token?: string;
+  };
   error?: string;
 }
 
@@ -44,21 +46,28 @@ export class TokenManager {
     refreshToken: string
   ): Promise<string | null> {
     try {
-      const response = await api.post("/api/auth/refresh", {
-        refreshToken,
+      console.log("Calling refresh token API...");
+
+      const response = await fetch("/api/auth/refresh", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          refresh_token: refreshToken,
+        }),
       });
 
-      if (response.status !== 200) {
-        throw new Error("Failed to refresh token");
+      const data: RefreshTokenResponse = await response.json();
+      console.log("Refresh API response:", data);
+
+      if (response.ok && data.code === 200 && data.result?.access_token) {
+        console.log("Token refreshed successfully via API");
+        return data.result.access_token;
       }
 
-      const data: RefreshTokenResponse = response.data;
-
-      if (data.success && data.accessToken) {
-        return data.accessToken;
-      }
-
-      throw new Error(data.error || "Failed to refresh token");
+      console.error("Failed to refresh token:", data.error || data.message);
+      throw new Error(data.error || data.message || "Failed to refresh token");
     } catch (error) {
       console.error("Error refreshing token:", error);
       return null;
@@ -71,12 +80,14 @@ export class TokenManager {
   static async getValidAccessToken(): Promise<string | null> {
     // Nếu đang trong quá trình refresh, đợi kết quả
     if (this.isRefreshing && this.refreshPromise) {
+      console.log("Waiting for ongoing refresh...");
       return await this.refreshPromise;
     }
 
     const session = await getSession();
 
     if (!session?.user?.accessToken) {
+      console.log("No access token found in session");
       return null;
     }
 
@@ -85,8 +96,11 @@ export class TokenManager {
       return session.user.accessToken;
     }
 
+    console.log("Access token expired, need to refresh");
+
     // Nếu không có refresh token, logout
     if (!session.user.refreshToken) {
+      console.log("No refresh token available, logging out");
       await this.handleTokenExpired();
       return null;
     }
@@ -114,13 +128,14 @@ export class TokenManager {
       const newAccessToken = await this.refreshAccessToken(refreshToken);
 
       if (newAccessToken) {
-        // Cập nhật session với token mới
-        // Note: Trong thực tế, bạn có thể cần trigger một update session
+        // Note: NextAuth sẽ tự động cập nhật session thông qua JWT callback
+        // khi có request tiếp theo
         console.log("Token refreshed successfully");
         return newAccessToken;
       }
 
       // Nếu refresh thất bại, logout
+      console.log("Token refresh failed, logging out");
       await this.handleTokenExpired();
       return null;
     } catch (error) {
@@ -149,10 +164,14 @@ export class TokenManager {
    */
   static async handleTokenExpired(): Promise<void> {
     console.log("Token expired, logging out...");
-    await signOut({
-      callbackUrl: "/login",
-      redirect: true,
-    });
+
+    // Chỉ redirect nếu đang ở client side
+    if (typeof window !== "undefined") {
+      await signOut({
+        callbackUrl: "/login",
+        redirect: true,
+      });
+    }
   }
 
   /**

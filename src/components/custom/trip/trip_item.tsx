@@ -120,6 +120,12 @@ const TripItem = ({ trip }: { trip: TripItemProps }) => {
           </div>
 
           <div className="flex gap-2">
+            <Link
+              aria-label="View trip details"
+              href={`/trips/${trip.trip_id}`}
+              className="hidden sm:block"
+            ></Link>
+
             <Link aria-label="Book trip" href={`/trips/${trip.trip_id}`}>
               <Button
                 size="sm"

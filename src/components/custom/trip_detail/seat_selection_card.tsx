@@ -53,6 +53,7 @@ export function SeatSelectionCard({
 }: SeatSelectionCardProps) {
   const { data: session } = useSession();
   const [selectedSeats, setSelectedSeats] = useState<string[]>([]);
+  const [isLoadingUserInfo, setIsLoadingUserInfo] = useState(false);
   const router = useRouter();
 
   const passengerSchema = z.object({
@@ -79,13 +80,19 @@ export function SeatSelectionCard({
   // Fetch user info using accessToken
   useEffect(() => {
     const fetchUserInfo = async () => {
+      console.log("=== DEBUG: fetchUserInfo called ===");
+      console.log("Session status:", session?.user ? 'logged in' : 'not logged in');
+      console.log("Session:", session);
+      console.log("AccessToken exists:", !!session?.user?.accessToken);
+      
+      // Đợi session load xong và có accessToken
       if (session?.user?.accessToken) {
+        setIsLoadingUserInfo(true);
         try {
-          console.log(
-            "Fetching user info with accessToken:",
-            session.user.accessToken
-          );
-
+          console.log("Making API call to:", `${BASE_URL}/api/users/profile`);
+          console.log("With token:", session.user.accessToken.substring(0, 20) + "...");
+          
+          // Gọi API với accessToken
           const response = await fetch(`${BASE_URL}/api/users/profile`, {
             method: "GET",
             headers: {
@@ -96,56 +103,88 @@ export function SeatSelectionCard({
           });
 
           console.log("Response status:", response.status);
+          console.log("Response ok:", response.ok);
 
+          // Tự động điền form
           if (response.ok) {
             const data = await response.json();
-            console.log("API Response data:", data);
-
+            console.log("Full API response:", data);
+            
             if (data && data.result) {
-              form.reset({
+              const userData = {
                 email: data.result.email || "",
-                fullName: data.result.fullName || "",
-                phone: data.result.phoneNumber || "",
-              });
-              console.log("Form values after reset:", form.getValues());
+                fullName: data.result.fullName || data.result.name || "", // fallback to name
+                phone: data.result.phoneNumber || data.result.phone || "", // fallback to phone
+              };
+              
+              console.log("Extracted user data:", userData);
+              console.log("Form before update:", form.getValues());
+              
+              // Sử dụng setValue để set từng field
+              if (userData.email) {
+                form.setValue("email", userData.email, { shouldValidate: true, shouldDirty: true });
+              }
+              if (userData.fullName) {
+                form.setValue("fullName", userData.fullName, { shouldValidate: true, shouldDirty: true });
+              }
+              if (userData.phone) {
+                form.setValue("phone", userData.phone, { shouldValidate: true, shouldDirty: true });
+              }
+              
+              console.log("Form after setValue:", form.getValues());
+              
+              toast.success("Đã tự động điền thông tin từ tài khoản");
             } else {
-              console.error("No result in API response");
-              toast.error("Không thể lấy thông tin người dùng từ API");
-              form.reset({
-                email: "",
-                fullName: "",
-                phone: "",
-              });
+              console.error("No result in API response:", data);
+              toast.error("Dữ liệu trả về không đúng format");
             }
           } else {
-            const errorData = await response.json().catch(() => null);
+            const errorText = await response.text();
             console.error("API Error:", {
               status: response.status,
-              data: errorData,
+              statusText: response.statusText,
+              errorText: errorText,
             });
-            toast.error("Lỗi khi lấy thông tin người dùng");
-            form.reset({
-              email: "",
-              fullName: "",
-              phone: "",
-            });
+            
+            // Nếu lỗi 401, có thể token hết hạn
+            if (response.status === 401) {
+              toast.error("Phiên đăng nhập hết hạn, vui lòng đăng nhập lại");
+            } else {
+              toast.error(`Lỗi API: ${response.status} - ${response.statusText}`);
+            }
           }
         } catch (error) {
           console.error("Fetch error:", error);
           toast.error("Lỗi kết nối khi lấy thông tin người dùng");
-          form.reset({
-            email: "",
-            fullName: "",
-            phone: "",
-          });
+        } finally {
+          setIsLoadingUserInfo(false);
         }
       } else {
         console.log("No session or accessToken available");
+        if (!session) {
+          console.log("Session is null/undefined");
+        } else if (!session.user) {
+          console.log("No user in session");
+        } else if (!session.user.accessToken) {
+          console.log("No accessToken in session user");
+          console.log("Session user keys:", Object.keys(session.user));
+        }
       }
     };
 
-    fetchUserInfo();
+    // Chỉ gọi API khi session đã sẵn sàng
+    if (session !== undefined) {
+      fetchUserInfo();
+    }
   }, [session, form]);
+
+  // Debug form values changes
+  useEffect(() => {
+    const subscription = form.watch((value, { name, type }) => {
+      console.log("Form field changed:", { name, type, value });
+    });
+    return () => subscription.unsubscribe();
+  }, [form]);
 
   // Generate seats based on layout
   const generateSeatsFromLayout = () => {
@@ -340,11 +379,24 @@ export function SeatSelectionCard({
           </div>
           <Card className="mt-4">
             <CardContent>
+              {isLoadingUserInfo && (
+                <div className="flex items-center justify-center p-4 text-blue-600">
+                  <div className="animate-spin w-4 h-4 border-2 border-blue-600 border-t-transparent rounded-full mr-2"></div>
+                  Đang tải thông tin tài khoản...
+                </div>
+              )}
               <Form {...form}>
                 <form
                   className="space-y-4"
                   onSubmit={form.handleSubmit(handleFormSubmit)}
                 >
+                  {session?.user && !isLoadingUserInfo && (
+                    <div className="p-3 bg-green-50 border border-green-200 rounded-lg">
+                      <p className="text-sm text-green-700">
+                        ✓ Thông tin đã được tự động điền từ tài khoản của bạn
+                      </p>
+                    </div>
+                  )}
                   <FormField
                     control={form.control}
                     name="phone"

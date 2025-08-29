@@ -46,7 +46,7 @@ const Footer = () => {
                 </Link>
               </li>
               <li>
-                <Link aria-label="Tickets" href="/tickets" className="text-green-100 hover:text-white transition-colors text-sm">
+                <Link aria-label="Tickets" href="/trips" className="text-green-100 hover:text-white transition-colors text-sm">
                   Book Tickets
                 </Link>
               </li>

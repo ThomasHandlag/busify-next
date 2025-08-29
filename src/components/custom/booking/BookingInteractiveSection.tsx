@@ -1,13 +1,14 @@
 "use client";
 
 import { useState } from "react";
+import { useSession } from "next-auth/react";
 import PromoCodeSection from "./PromoCodeSection";
 import PaymentMethods from "./PaymentMethods";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
 import { CreditCard } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { useSession } from "next-auth/react";
+import { DiscountInfo } from "@/lib/data/discount";
 
 interface BookingData {
   trip: { route: string };
@@ -27,6 +28,7 @@ interface BookingAddRequestDTO {
   guestEmail: string;
   guestPhone: string;
   guestAddress?: string | null;
+  discountCode?: string | null;
   seatNumber: string;
   totalAmount: number;
 }
@@ -47,14 +49,23 @@ export default function BookingInteractiveSection({
   mockData,
   tripId,
 }: BookingInteractiveSectionProps) {
+  const { data: session } = useSession();
   const [discount, setDiscount] = useState(0);
+  const [discountInfo, setDiscountInfo] = useState<DiscountInfo | null>(null);
   const [paymentMethod, setPaymentMethod] = useState<string>("vnpay"); // Mặc định là VNPAY
   const [paymentLoading, setPaymentLoading] = useState(false);
   const [paymentError, setPaymentError] = useState<string | null>(null);
   const [paymentLink, setPaymentLink] = useState<string | null>(null);
 
-  const { data: session } = useSession();
   const finalAmount = initialTotalPrice - discount;
+
+  const handleDiscountChange = (
+    newDiscount: number,
+    newDiscountInfo: DiscountInfo | null
+  ) => {
+    setDiscount(newDiscount);
+    setDiscountInfo(newDiscountInfo);
+  };
 
   // Hàm xử lý xác nhận thanh toán
   const handleConfirmPayment = async () => {
@@ -76,6 +87,12 @@ export default function BookingInteractiveSection({
       return;
     }
 
+    // Kiểm tra session
+    if (!session?.user?.accessToken) {
+      setPaymentError("Vui lòng đăng nhập để tiếp tục thanh toán.");
+      return;
+    }
+
     setPaymentLoading(true);
     setPaymentError(null);
     setPaymentLink(null);
@@ -84,11 +101,12 @@ export default function BookingInteractiveSection({
       // Bước 1: Gửi POST request tới API bookings
       const bookingRequest: BookingAddRequestDTO = {
         tripId: Number(tripId),
-        customerId: null,
+        customerId: session.user.id ? Number(session.user.id) : null, // Sử dụng customerId từ session
         guestFullName: mockData.passenger.fullName,
         guestEmail: mockData.passenger.email,
         guestPhone: mockData.passenger.phone,
         guestAddress: null,
+        discountCode: discountInfo?.code || null,
         seatNumber: mockData.selectedSeats.join(","),
         totalAmount: finalAmount,
       };
@@ -101,13 +119,12 @@ export default function BookingInteractiveSection({
           method: "POST",
           headers: {
             "Content-Type": "application/json",
-            Authorization: `Bearer ${session?.user.accessToken}`,
+            "Authorization": `Bearer ${session.user.accessToken}`, // Thêm token
           },
           body: JSON.stringify(bookingRequest),
         }
       );
 
-      console.log("accessToken ", session?.user.accessToken);
       if (!bookingResponse.ok) {
         const errorData = await bookingResponse.json().catch(() => null);
         const errorMessage =
@@ -138,6 +155,7 @@ export default function BookingInteractiveSection({
           method: "POST",
           headers: {
             "Content-Type": "application/json",
+            "Authorization": `Bearer ${session.user.accessToken}`, // Thêm token
           },
           body: JSON.stringify(paymentRequest),
         }
@@ -167,8 +185,7 @@ export default function BookingInteractiveSection({
     } catch (e) {
       const error = e as Error;
       console.error("Lỗi khi xử lý thanh toán:", error.message);
-      let userFriendlyMessage =
-        "Không thể xác nhận thanh toán. Vui lòng thử lại.";
+      let userFriendlyMessage = error.message;
       if (error.message.includes("409")) {
         userFriendlyMessage =
           "Ghế đã được đặt hoặc thông tin không hợp lệ. Vui lòng chọn ghế khác hoặc kiểm tra lại.";
@@ -188,7 +205,8 @@ export default function BookingInteractiveSection({
         <CardContent>
           <PromoCodeSection
             initialDiscount={discount}
-            onDiscountChange={setDiscount}
+            onDiscountChange={handleDiscountChange}
+            originalPrice={initialTotalPrice}
           />
         </CardContent>
       </Card>
@@ -204,13 +222,33 @@ export default function BookingInteractiveSection({
           <div className="space-y-2">
             <div className="flex justify-between">
               <span>Giá vé ({mockData.selectedSeats.length} ghế)</span>
-              <span>
-                {mockData.pricing.totalPrice.toLocaleString("vi-VN")}đ
-              </span>
+              <div className="text-right">
+                {discount > 0 ? (
+                  <>
+                    <span className="text-gray-400 line-through text-sm">
+                      {mockData.pricing.totalPrice.toLocaleString("vi-VN")}đ
+                    </span>
+                    <br />
+                    <span className="text-green-600 font-medium">
+                      {finalAmount.toLocaleString("vi-VN")}đ
+                    </span>
+                  </>
+                ) : (
+                  <span>
+                    {mockData.pricing.totalPrice.toLocaleString("vi-VN")}đ
+                  </span>
+                )}
+              </div>
             </div>
-            {discount > 0 && (
+            {discount > 0 && discountInfo && (
               <div className="flex justify-between text-green-600">
-                <span>Giảm giá</span>
+                <span>
+                  Giảm giá (
+                  {discountInfo.discountType === "PERCENTAGE"
+                    ? `${discountInfo.discountValue}%`
+                    : `${discountInfo.discountValue.toLocaleString("vi-VN")}đ`}
+                  )
+                </span>
                 <span>-{discount.toLocaleString("vi-VN")}đ</span>
               </div>
             )}

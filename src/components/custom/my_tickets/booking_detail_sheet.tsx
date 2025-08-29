@@ -26,6 +26,7 @@ import {
   AlertCircle,
   CheckCircle,
   XCircle,
+  AlertTriangle, // Đổi từ MessageSquare sang AlertTriangle cho biểu tượng khiếu nại
 } from "lucide-react";
 import { BookingDetailResponse } from "@/lib/data/booking";
 import {
@@ -33,6 +34,18 @@ import {
   formatTime,
   formatCurrency,
 } from "../my_tickets/ticket_card";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog"; // Thêm import cho Dialog
+import { Textarea } from "@/components/ui/textarea"; // Thêm import cho Textarea
+import { Input } from "@/components/ui/input"; // Thêm import cho Input
+import { useSession } from "next-auth/react"; // Thêm import useSession
+import { createComplaint, ComplaintAddDTO } from "@/lib/data/complaints"; // Thêm import createComplaint
+import { toast } from "sonner"; // Thêm import toast cho thông báo
 
 interface BookingDetailSheetProps {
   booking: BookingDetailResponse;
@@ -87,8 +100,13 @@ export function BookingDetailSheet({
   onClose,
 }: BookingDetailSheetProps) {
   const [isLoading, setIsLoading] = useState(false);
+  const [complaintTitle, setComplaintTitle] = useState(""); // State cho tiêu đề khiếu nại
+  const [complaintDescription, setComplaintDescription] = useState(""); // State cho mô tả khiếu nại
+  const [isComplaintModalOpen, setIsComplaintModalOpen] = useState(false); // State cho modal
+  const [isSubmittingComplaint, setIsSubmittingComplaint] = useState(false); // State cho loading khi gửi khiếu nại
   const statusInfo = getStatusInfo(booking.status);
   const StatusIcon = statusInfo.icon;
+  const { data: session } = useSession(); // Lấy session để lấy token
 
   const handleCancelBooking = async () => {
     setIsLoading(true);
@@ -106,12 +124,54 @@ export function BookingDetailSheet({
     console.log("Opening review modal...");
   };
 
+  const handleSubmitComplaint = async () => {
+    if (!session?.user?.accessToken) {
+      toast.error("Bạn cần đăng nhập để gửi khiếu nại.");
+      return;
+    }
+
+    if (!complaintTitle.trim() || !complaintDescription.trim()) {
+      toast.error("Vui lòng nhập đầy đủ tiêu đề và mô tả khiếu nại.");
+      return;
+    }
+
+    setIsSubmittingComplaint(true);
+    try {
+      const complaintData: ComplaintAddDTO = {
+        title: complaintTitle.trim(),
+        description: complaintDescription.trim(),
+        bookingCode: booking.booking_id, // Sử dụng booking_id thay vì booking_code nếu cần
+        status: "New",
+      };
+
+      const result = await createComplaint(
+        session.user.accessToken,
+        complaintData
+      );
+
+      if (result) {
+        toast.success("Khiếu nại đã được gửi thành công!");
+        setComplaintTitle("");
+        setComplaintDescription("");
+        setIsComplaintModalOpen(false);
+      } else {
+        toast.error("Có lỗi xảy ra khi gửi khiếu nại. Vui lòng thử lại.");
+      }
+    } catch (error) {
+      console.error("Error submitting complaint:", error);
+      toast.error("Có lỗi xảy ra khi gửi khiếu nại. Vui lòng thử lại.");
+    } finally {
+      setIsSubmittingComplaint(false);
+    }
+  };
+
   const isPast = new Date(booking.departure_time) < new Date();
   const canCancel =
     (booking.status === "confirmed" || booking.status === "pending") && !isPast;
   const canReview = booking.status === "completed";
   const canDownload =
     booking.status === "confirmed" || booking.status === "completed";
+  const canComplain = booking.status === "completed"; // Thêm điều kiện cho khiếu nại
 
   const routeName = `${booking.route_start.city} - ${booking.route_end.city}`;
 
@@ -354,6 +414,57 @@ export function BookingDetailSheet({
                     <Star className="w-4 h-4 mr-2" />
                     Viết đánh giá
                   </Button>
+                )}
+
+                {canComplain && (
+                  <Dialog
+                    open={isComplaintModalOpen}
+                    onOpenChange={setIsComplaintModalOpen}
+                  >
+                    <DialogTrigger asChild>
+                      <Button variant="outline" className="w-full">
+                        <AlertTriangle className="w-4 h-4 mr-2" />
+                        Gửi khiếu nại
+                      </Button>
+                    </DialogTrigger>
+                    <DialogContent>
+                      <DialogHeader>
+                        <DialogTitle>Gửi khiếu nại</DialogTitle>
+                      </DialogHeader>
+                      <div className="space-y-4">
+                        <div>
+                          <label className="text-sm font-medium">Tiêu đề</label>
+                          <Input
+                            placeholder="Nhập tiêu đề khiếu nại (5-100 ký tự)"
+                            value={complaintTitle}
+                            onChange={(e) => setComplaintTitle(e.target.value)}
+                            disabled={isSubmittingComplaint}
+                          />
+                        </div>
+                        <div>
+                          <label className="text-sm font-medium">Mô tả</label>
+                          <Textarea
+                            placeholder="Nhập mô tả khiếu nại (10-1000 ký tự)"
+                            value={complaintDescription}
+                            onChange={(e) =>
+                              setComplaintDescription(e.target.value)
+                            }
+                            disabled={isSubmittingComplaint}
+                          />
+                        </div>
+                        <Button
+                          onClick={handleSubmitComplaint}
+                          disabled={
+                            isSubmittingComplaint ||
+                            !complaintTitle.trim() ||
+                            !complaintDescription.trim()
+                          }
+                        >
+                          {isSubmittingComplaint ? "Đang gửi..." : "Gửi"}
+                        </Button>
+                      </div>
+                    </DialogContent>
+                  </Dialog>
                 )}
 
                 {canCancel && (

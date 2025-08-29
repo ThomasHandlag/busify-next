@@ -23,44 +23,57 @@ import {
 
 import { addReviewClient } from "@/lib/data/reviews";
 import { toast } from "sonner";
+import { Textarea } from "@/components/ui/textarea";
+import { useSession } from "next-auth/react";
+import z from "zod";
+import { zodResolver } from "@hookform/resolvers/zod";
 
 type ReviewFormValues = {
   comment: string;
   rating: number;
 };
 
+const commentSchema = z.object({
+  comment: z.string().min(4, "At least 4 characters").max(500, "Too long"),
+  rating: z.number().min(1).max(5),
+});
+
 export function ReviewModal({ tripId }: { tripId: number }) {
   const [loading, setLoading] = useState(false);
   const [open, setOpen] = useState(false);
+  const session = useSession();
 
   const form = useForm<ReviewFormValues>({
     defaultValues: {
       comment: "",
       rating: 5,
     },
+    mode: "onBlur",
+    resolver: zodResolver(commentSchema),
   });
 
   const handleSubmit = async (values: ReviewFormValues) => {
     if (!values.comment.trim()) return;
-    setLoading(true);
-    try {
-      const review = {
-        customerId: 2,
-        rating: values.rating,
-        comment: values.comment,
-        tripId: tripId, // Add the tripId to associate with the trip
-      };
-
-      await addReviewClient(review);
-      toast.success("Đánh giá đã được gửi thành công!");
-      form.reset({
-        comment: "",
-        rating: 5,
-      });
-      setOpen(false);
-    } catch (error) {
-      toast.error("Không thể gửi đánh giá. Vui lòng thử lại sau.");
+    if (session.status !== "authenticated") {
+      toast.error("Bạn cần đăng nhập để gửi đánh giá.");
+      return;
     }
+    setLoading(true);
+    const review = {
+      rating: values.rating,
+      comment: values.comment,
+      tripId: tripId, // Add the tripId to associate with the trip
+    };
+
+    await addReviewClient(review, session.data.user.accessToken, (message) => {
+      toast.info(message);
+    });
+    form.reset({
+      comment: "",
+      rating: 5,
+    });
+
+    setOpen(false);
     setLoading(false);
   };
 
@@ -120,11 +133,14 @@ export function ReviewModal({ tripId }: { tripId: number }) {
                     Nội dung đánh giá
                   </FormLabel>
                   <FormControl>
-                    <textarea
+                    <Textarea
                       className="w-full border rounded p-2"
                       rows={3}
                       placeholder="Nhập nhận xét của bạn..."
                       {...field}
+                      onChange={(e) => {
+                        field.onChange(e);
+                      }}
                     />
                   </FormControl>
                   <FormMessage />
@@ -135,8 +151,7 @@ export function ReviewModal({ tripId }: { tripId: number }) {
             <Button
               type="submit"
               className="w-full"
-
-              disabled={form.getValues().comment.trim() === "" || loading}
+              disabled={form.getFieldState("comment").invalid || loading}
             >
               {loading && <Loader2 className="animate-spin mr-2" />}
               Gửi đánh giá
