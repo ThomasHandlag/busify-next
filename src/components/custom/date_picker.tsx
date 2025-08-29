@@ -12,7 +12,6 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
-import { ControllerRenderProps } from "react-hook-form";
 interface DatePickerProps {
   onDateChange?: (date: Date | undefined) => void;
   onDateSelect?: (date: Date | undefined) => void;
@@ -44,21 +43,16 @@ function isValidDate(date: Date | undefined) {
 
 const Calendar28 = ({
   picker,
-  field,
 }: {
   picker?: DatePickerProps;
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  field: ControllerRenderProps<any, any>;
 }) => {
   const [open, setOpen] = React.useState(false);
-  const [date, setDate] = React.useState<Date | undefined>(picker?.initialDate);
   const [month, setMonth] = React.useState<Date | undefined>(
     picker?.initialDate
   );
 
   React.useEffect(() => {
     if (picker?.initialDate) {
-      setDate(picker.initialDate);
       setMonth(picker.initialDate);
     }
   }, [picker?.initialDate]);
@@ -78,7 +72,6 @@ const Calendar28 = ({
     const inputValue = e.target.value;
     const parsedDate = new Date(inputValue);
     if (isValidDate(parsedDate)) {
-      setDate(parsedDate);
       setMonth(parsedDate);
       picker?.onDateChange?.(parsedDate);
     }
@@ -92,10 +85,11 @@ const Calendar28 = ({
       <div className="relative flex gap-2">
         <Input
           id="date"
-          {...field}
+          value={formatDate(picker?.initialDate)}
           placeholder={picker?.placeholder}
-          className="bg-background pr-10"
+          className="bg-background"
           onChange={handleInputChange}
+          disabled
           onKeyDown={(e) => {
             if (e.key === "ArrowDown") {
               e.preventDefault();
@@ -130,15 +124,13 @@ const Calendar28 = ({
           >
             <Calendar
               mode="single"
-              selected={date}
+              selected={picker?.initialDate}
               captionLayout="dropdown"
               month={month}
               onMonthChange={setMonth}
               onSelect={(date) => {
-                setDate(date);
                 setOpen(false);
                 picker?.onDateChange?.(date);
-                field.onChange(formatDate(date));
               }}
             />
           </PopoverContent>

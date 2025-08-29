@@ -20,6 +20,7 @@ import { Loader2 } from "lucide-react";
 import { getAllBusModelsClient } from "@/lib/data/bus";
 import { getAllLocationsClient } from "@/lib/data/location";
 import { toast } from "sonner";
+import { useTripFilter } from "@/lib/contexts/TripFilterContext";
 
 export type SearchFilterSidebarProps = {
   onApplyFilters: (filters: TripFilterQuery | undefined) => void;
@@ -42,10 +43,12 @@ export type FilterLocationType = {
   locationName: string;
 };
 
-const SearchFilterSidebar = ({
-  onApplyFilters,
-  isLoading = false,
-}: SearchFilterSidebarProps) => {
+const SearchFilterSidebar = () => {
+  const {
+    handleApplyFilters: onApplyFilters,
+    isLoading,
+    query,
+  } = useTripFilter();
   const [busModels, setBusModels] = useState<string[] | undefined>([]);
   const [locations, setLocations] = useState<FilterLocationType[] | undefined>(
     []
@@ -61,14 +64,14 @@ const SearchFilterSidebar = ({
 
   const form = useForm<FormValues>({
     defaultValues: {
-      startLocation: undefined,
-      endLocation: undefined,
-      departureDate: undefined,
-      untilTime: undefined,
-      busModels: [],
-      amenities: [],
-      operatorName: "",
-      availableSeats: 1,
+      startLocation: query?.startLocation,
+      endLocation: query?.endLocation,
+      departureDate: query?.departureDate,
+      untilTime: query?.untilTime,
+      busModels: query?.busModels ?? [],
+      amenities: query?.amenities ?? [],
+      operatorName: query?.operatorName ?? "",
+      availableSeats: query?.availableSeats ?? 1,
     },
   });
 
@@ -180,10 +183,10 @@ const SearchFilterSidebar = ({
               <FormItem>
                 <FormLabel>From Date</FormLabel>
                 <Calendar28
-                  field={field}
                   picker={{
-                    placeholder: "YYYY-MM-DD",
-                    initialDate: new Date(),
+                    placeholder: "Select a date",
+                    initialDate: field.value,
+                    onDateChange: (date) => field.onChange(date),
                   }}
                 />
               </FormItem>
@@ -196,10 +199,10 @@ const SearchFilterSidebar = ({
               <FormItem>
                 <FormLabel>To Date</FormLabel>
                 <Calendar28
-                  field={field}
                   picker={{
-                    placeholder: "YYYY-MM-DD",
-                    initialDate: new Date(),
+                    placeholder: "Select a date",
+                    initialDate: field.value,
+                    onDateChange: (date) => field.onChange(date),
                   }}
                 />
               </FormItem>
@@ -352,8 +355,12 @@ const SearchFilterSidebar = ({
                   operatorName: undefined,
                   busModels: [],
                   amenities: [],
+                  availableSeats: 0
                 });
-                onApplyFilters(undefined);
+                onApplyFilters({
+                  ...form.getValues(),
+                  timeZone: Intl.DateTimeFormat().resolvedOptions().timeZone,
+                });
               }}
             >
               Clear All

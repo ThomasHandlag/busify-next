@@ -58,7 +58,7 @@ const Home = async () => {
 
         <div
           className="relative flex justify-center px-4"
-          style={{ zIndex: 20, marginTop: "-80px", marginBottom: "12px" }}
+          style={{ zIndex: 20, marginTop: "-100px", marginBottom: "12px" }}
         >
           <div className="w-full max-w-6xl">
             <div className="relative z-10 flex flex-col items-center justify-center text-center">
@@ -76,7 +76,7 @@ const Home = async () => {
                     </div>
                   </div>
                 </div>
-                <div className="-z-1 rounded-2xl">
+                <div className="-z-1 rounded-2xl h-[30px]">
                   <Image
                     src="/copy.jpg"
                     fill
@@ -84,7 +84,7 @@ const Home = async () => {
                     placeholder="blur"
                     blurDataURL="..."
                     alt="Bus platform background"
-                    className="object-cover rounded-2xl"
+                    className="object-cover rounded-2xl "
                   />
                   <div className="bg-black/10 backdrop:blur-xl absolute inset-0 rounded-2xl"></div>
                 </div>

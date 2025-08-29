@@ -16,7 +16,7 @@ import {
 import { Button } from "@/components/ui/button";
 
 const AppPage = () => {
-  const { trips, isLoading, handleApplyFilters } = useTripFilter();
+  const { trips, isLoading } = useTripFilter();
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -33,8 +33,6 @@ const AppPage = () => {
               </CardHeader>
               <CardContent>
                 <SearchFilterSidebar
-                  onApplyFilters={handleApplyFilters}
-                  isLoading={isLoading}
                 />
               </CardContent>
             </Card>
@@ -64,8 +62,6 @@ const AppPage = () => {
                   </SheetDescription>
                 </SheetHeader>
                 <SearchFilterSidebar
-                  onApplyFilters={handleApplyFilters}
-                  isLoading={isLoading}
                 />
               </SheetContent>
             </Sheet>

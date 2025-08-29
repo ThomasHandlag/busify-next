@@ -26,20 +26,21 @@ import { FilterLocationType } from "./search_filter_sidebar";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Input } from "../ui/input";
-import { FilterX } from "lucide-react";
+import { Separator } from "@radix-ui/react-select";
 
 type HomeSearchFormValues = {
   departureDate?: Date | undefined;
-  startLocation?: string | undefined;
-  endLocation?: string | undefined;
+  untilTime?: Date | undefined;
+  startLocation?: number | undefined;
+  endLocation?: number | undefined;
   availableSeats?: number;
 };
 
 const schema = z
   .object({
     departureDate: z.date().optional(),
-    startLocation: z.string().optional(),
-    endLocation: z.string().optional(),
+    startLocation: z.number().min(1).optional(),
+    endLocation: z.number().min(1).optional(),
     availableSeats: z
       .number()
       .min(0, { message: "Invalid number of seats" })
@@ -60,18 +61,19 @@ const HomeSearchForm = ({ locations }: { locations: FilterLocationType[] }) => {
   const form = useForm<HomeSearchFormValues>({
     defaultValues: {
       departureDate: filter.query?.departureDate,
-      startLocation: filter.query?.startLocation?.toString(),
-      endLocation: filter.query?.endLocation?.toString(),
+      untilTime: filter.query?.untilTime,
+      startLocation: filter.query?.startLocation,
+      endLocation: filter.query?.endLocation,
       availableSeats: filter.query?.availableSeats || 1,
     },
     resolver: zodResolver(schema),
   });
 
-  const onSubmit: SubmitHandler<HomeSearchFormValues> = (data) => {
+  const onSubmit: SubmitHandler<HomeSearchFormValues> = async (data) => {
     filter.handleApplyFilters({
       departureDate: data.departureDate,
-      startLocation: Number(data.startLocation),
-      endLocation: Number(data.endLocation),
+      startLocation: data.startLocation,
+      endLocation: data.endLocation,
       availableSeats: data.availableSeats ?? 1,
       timeZone: Intl.DateTimeFormat().resolvedOptions().timeZone,
     });
@@ -82,7 +84,7 @@ const HomeSearchForm = ({ locations }: { locations: FilterLocationType[] }) => {
   return (
     <Form {...form}>
       <form
-        className="grid grid-cols-2 justify-between gap-2"
+        className="grid grid-cols-2 justify-center items-center gap-2 "
         onSubmit={form.handleSubmit(onSubmit)}
       >
         <FormField
@@ -91,7 +93,10 @@ const HomeSearchForm = ({ locations }: { locations: FilterLocationType[] }) => {
           render={({ field }) => (
             <FormItem>
               <FormLabel>Departure Location</FormLabel>
-              <Select onValueChange={field.onChange} {...field}>
+              <Select
+                onValueChange={(e) => field.onChange(Number(e))}
+                value={field.value?.toString()}
+              >
                 <FormControl>
                   <SelectTrigger>
                     <SelectValue placeholder="Select a location" />
@@ -121,7 +126,10 @@ const HomeSearchForm = ({ locations }: { locations: FilterLocationType[] }) => {
           render={({ field }) => (
             <FormItem>
               <FormLabel>Arrival Location</FormLabel>
-              <Select value={field.value} onValueChange={field.onChange}>
+              <Select
+                value={field.value?.toString()}
+                onValueChange={(e) => field.onChange(Number(e))}
+              >
                 <FormControl>
                   <SelectTrigger>
                     <SelectValue placeholder="Select a location" />
@@ -151,13 +159,31 @@ const HomeSearchForm = ({ locations }: { locations: FilterLocationType[] }) => {
           render={({ field }) => (
             <FormItem>
               <Calendar28
-                field={field}
                 picker={{
                   placeholder: "Select a date",
-                  label: "Departure Date",
-                  initialDate: new Date(),
+                  label: "From Date",
+                  initialDate: field.value,
+                  onDateChange: (date) => field.onChange(date),
                 }}
               />
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+        <FormField
+          name="untilTime"
+          control={form.control}
+          render={({ field }) => (
+            <FormItem>
+              <Calendar28
+                picker={{
+                  placeholder: "Select a date",
+                  label: "Until Date",
+                  initialDate: field.value,
+                  onDateChange: (date) => field.onChange(date),
+                }}
+              />
+              <FormMessage />
             </FormItem>
           )}
         />
@@ -180,16 +206,17 @@ const HomeSearchForm = ({ locations }: { locations: FilterLocationType[] }) => {
             </FormItem>
           )}
         />
-        <Button
-          className="h-10 w-full bg-green-600 hover:bg-green-700 text-white px-6 rounded-md font-medium text-sm"
-          disabled={filter.isLoading}
-          onClick={() => form.handleSubmit(onSubmit)()}
-        >
-          TÌM CHUYẾN
-        </Button>
-        <Button variant={"outline"} onClick={() => form.reset()}>
-          <FilterX />
-        </Button>
+        <Separator />
+        <div className="grid grid-cols-3 w-full gap-2">
+          <Button
+            type="submit"
+            className="h-10 col-span-2 bg-green-600 hover:bg-green-700 text-white px-6 rounded-md font-medium text-sm"
+            disabled={filter.isLoading}
+            onClick={() => form.handleSubmit(onSubmit)()}
+          >
+            TÌM CHUYẾN
+          </Button>
+        </div>
       </form>
     </Form>
   );
