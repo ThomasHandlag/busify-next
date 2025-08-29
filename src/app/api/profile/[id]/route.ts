@@ -1,5 +1,5 @@
 import ResponseError from "@/lib/data/response_error";
-import { updateUserProfile } from "@/lib/data/users";
+import { updateUserProfileServer } from "@/lib/data/users";
 
 export async function POST(req: Request) {
   try {
@@ -14,7 +14,7 @@ export async function POST(req: Request) {
     }
 
     // Update user profile
-    const updatedProfile = await updateUserProfile(userId, data);
+    const updatedProfile = await updateUserProfileServer(userId, data);
     if (!updatedProfile) {
       return new Response(
         JSON.stringify({ error: "Failed to update profile" }),

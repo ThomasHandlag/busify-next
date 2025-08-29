@@ -1,5 +1,6 @@
 // lib/data/operator.ts
-import axios from "./axios-instance";
+import { AxiosError } from "axios";
+import axios, { ApiFnParams } from "./axios-instance";
 import api from "./axios-instance";
 
 export interface BusOperatorDetail {
@@ -36,7 +37,7 @@ export interface BusOperator {
 
 export async function getAllBusOperators(): Promise<BusOperator[]> {
   try {
-    const res = await axios.get("/api/bus-operators");
+    const res = await axios.get("api/bus-operators");
     return res.data.result;
   } catch (error) {
     console.error("Error fetching bus operators:", error);
@@ -63,17 +64,21 @@ export async function getBusOperatorById(
     console.log("Fetching bus operator with ID:", id);
     const res = await api.get(`api/bus-operators/${id}`);
     return res.data.result as BusOperatorDetail;
-  } catch (error) {
+  } catch (e) {
+    const error = e as AxiosError;
     console.error("Error fetching bus operator by ID:", error);
+    console.log("Response data:", error.response);
     return null;
   }
 }
 
-export async function getAllBusOperatorsClient(): Promise<BusOperator[]> {
+export async function getAllBusOperatorsClient(params: ApiFnParams): Promise<BusOperator[]> {
   try {
     const res = await fetch("/api/operator");
     if (!res.ok) {
-      throw new Error("Failed to fetch bus operators");
+      params.callback(
+        (await res.json()).message ?? params.localeMessage
+      );
     }
     const data = await res.json();
     return data as BusOperator[];

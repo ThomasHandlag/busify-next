@@ -30,11 +30,18 @@ import { TicketCard } from "../../../components/custom/my_tickets/ticket_card";
 import { getBookingDetails } from "@/lib/data/booking";
 import { BookingDetailSheet } from "@/components/custom/my_tickets/booking_detail_sheet";
 import { useSession } from "next-auth/react";
+import { toast } from "sonner";
 
 const getMockBookingDetailResponse = async (
   booking: string
 ): Promise<BookingDetailResponse> => {
-  return await getBookingDetails(booking);
+  return await getBookingDetails({
+    bookingCode: booking,
+    callback: (message: string) => {
+      toast.error(message);
+    },
+    localeMessage: "Failed to fetch booking details",
+  });
 };
 
 export default function MyTicketsPage() {
@@ -153,7 +160,7 @@ export default function MyTicketsPage() {
 
   const renderTicketCard = (booking: BookingData) => (
     <TicketCard
-      key={booking.booking_id}
+      key={booking.booking_code}
       booking={booking}
       onViewDetails={() => handleViewDetails(booking)}
     />

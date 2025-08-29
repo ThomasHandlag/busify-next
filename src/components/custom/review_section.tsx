@@ -25,8 +25,8 @@ const ReviewSection = async ({
 }: {
   mockTripDetail: TripDetail;
 }) => {
-
   const reviews = await getReviewsByTripId(mockTripDetail.trip_id);
+  console.log("Reviews fetched:", reviews);
   return (
     <Card>
       <CardHeader>
@@ -77,6 +77,18 @@ const ReviewSection = async ({
   );
 };
 
+function formatDate(date: Date | undefined) {
+  if (!date) {
+    return "";
+  }
+
+  return date.toLocaleDateString("en-US", {
+    day: "2-digit",
+    month: "long",
+    year: "numeric",
+  });
+}
+
 const ReviewItem = ({ review }: { review: Review }) => {
   return (
     <div key={review.reviewId} className="border-b pb-4 last:border-b-0">
@@ -99,7 +111,9 @@ const ReviewItem = ({ review }: { review: Review }) => {
         </div>
       </div>
       <p className="text-gray-600 mb-2">{review.comment}</p>
-      <p className="text-sm text-gray-500">{review.createdAt}</p>
+      <p className="text-sm text-gray-500">
+        {formatDate(new Date(review.createdAt))}
+      </p>
     </div>
   );
 };

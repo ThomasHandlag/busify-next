@@ -117,7 +117,7 @@ export function SeatSelectionTabsCard({
   const allSeats = generateSeatsFromLayout();
 
   const handleSeatClick = (seatNumber: string, seatStatus: string) => {
-    if (seatStatus === "booked") return;
+    if (seatStatus === "booked" || seatStatus === "locked") return;
 
     setSelectedSeats((prev) => {
       const newSelection = prev.includes(seatNumber)
@@ -170,6 +170,7 @@ export function SeatSelectionTabsCard({
                   const isSelected = selectedSeats.includes(seat.seat_number);
                   const isBooked = seat.status === "booked";
                   const isAvailable = seat.status === "available";
+                  const isLocked = seat.status === "locked";
 
                   return (
                     <button
@@ -183,6 +184,8 @@ export function SeatSelectionTabsCard({
                         ${
                           isBooked
                             ? "bg-gray-200 border-gray-300 text-gray-500 cursor-not-allowed"
+                            : isLocked
+                            ? "bg-yellow-100 border-yellow-200 text-yellow-700 cursor-not-allowed"
                             : isSelected
                             ? "bg-green-500 border-green-600 text-white shadow-lg scale-105"
                             : isAvailable
@@ -256,6 +259,10 @@ export function SeatSelectionTabsCard({
           <div className="flex items-center gap-2">
             <div className="w-4 h-4 bg-green-500 border-2 border-green-600 rounded"></div>
             <span>Đã chọn</span>
+          </div>
+          <div className="flex items-center gap-2">
+            <div className="w-4 h-4 bg-yellow-500 border-2 border-yellow-200 rounded"></div>
+            <span>Đang chọn</span>
           </div>
           <div className="flex items-center gap-2">
             <div className="w-4 h-4 bg-gray-200 border-2 border-gray-300 rounded"></div>

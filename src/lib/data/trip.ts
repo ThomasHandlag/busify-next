@@ -58,13 +58,15 @@ export interface Trip {
 }
 
 export interface TripFilterQuery {
-  routeId?: string;
-  busOperatorIds?: string[];
-  departureDate?: string;
-  busModel?: string[];
-  untilTime?: string;
-  availableSeats?: number;
+  startLocation?: number | undefined;
+  endLocation?: number | undefined;
+  departureDate?: Date | undefined;
+  busModels?: string[];
+  untilTime?: Date | undefined;
   amenities?: string[];
+  operatorName?: string | undefined;
+  timeZone: string;
+  availableSeats: number;
 }
 
 export async function getUpcomingTrips(): Promise<TripItemProps[]> {
@@ -77,24 +79,60 @@ export async function getUpcomingTrips(): Promise<TripItemProps[]> {
   }
 }
 
+export interface TripFilterResponse {
+  total: number;
+  page: number;
+  size: number;
+  totalPages: number;
+  isFirst: boolean;
+  isLast: boolean;
+  data: TripItemProps[];
+}
+
 export async function filterTrips(
-  filters: TripFilterQuery
-): Promise<TripItemProps[]> {
+  filters: TripFilterQuery,
+  page: number,
+  size = 20
+): Promise<TripFilterResponse> {
   try {
-    const res = await api.post("api/trips/filter", filters);
-    console.log("Calling API with filters:", filters);
-    return res.data.result;
+    const res = await api.post(
+      `api/trips/filter?page=${page}&size=${size}`,
+      filters
+    );
+    if (res && res.data.code == 200) {
+      return res.data.result;
+    } else {
+      return {
+        data: [],
+        total: 0,
+        page: 1,
+        size: 20,
+        totalPages: 1,
+        isFirst: true,
+        isLast: true,
+      };
+    }
   } catch (error) {
     console.error("Error filtering trips:", error);
-    return [];
+    return {
+      data: [],
+      total: 0,
+      page: 1,
+      size: 20,
+      totalPages: 1,
+      isFirst: true,
+      isLast: true,
+    };
   }
 }
 
 export async function filterTripsClient(
-  filters: TripFilterQuery
-): Promise<TripItemProps[]> {
+  filters: TripFilterQuery,
+  page: number,
+  size = 20
+): Promise<TripFilterResponse> {
   try {
-    const res = await fetch("/api/filter", {
+    const res = await fetch(`/api/filter?page=${page}&size=${size}`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -107,19 +145,25 @@ export async function filterTripsClient(
     }
 
     const data = await res.json();
-    return data.result as TripItemProps[];
+    return data.result as TripFilterResponse;
   } catch (error) {
     console.error("Error filtering trips client:", error);
-    return [];
+    return {
+      data: [],
+      total: 0,
+      page: 1,
+      size: 20,
+      totalPages: 1,
+      isFirst: true,
+      isLast: true,
+    };
   }
 }
 
 export async function getTripDetail(tripId: number): Promise<TripDetail> {
   try {
     const res = await api.get(`api/trips/${tripId}`);
-
-    console.log("Trip detail response:", res.data.result.routeStops);
-    return res.data.result as TripDetail;
+    return res.data.result;
   } catch (error) {
     console.error("Error fetching trip detail:", error);
     throw error;

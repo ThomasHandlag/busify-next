@@ -9,7 +9,6 @@ import {
   CheckCircle,
   Clock,
   Mail,
-  MessageSquare,
   Copy,
   Calendar,
   AlertCircle,
@@ -253,7 +252,11 @@ export default function BookingResult() {
                     className={isSuccess ? "text-green-700" : "text-yellow-700"}
                   >
                     {isSuccess
-                      ? "Cảm ơn bạn đã sử dụng dịch vụ của BUSIFY. Thông tin đặt vé đã được xác nhận."
+                      ? (
+                          <>
+                            Kiểm tra email <span className="font-bold text-green-800">{paymentDetails.customerEmail}</span>, SMS xác nhận đã được gửi đến <span className="font-bold text-green-800">{paymentDetails.customerPhone}</span>.
+                          </>
+                        )
                       : "Đặt vé của bạn đang được xử lý. Vui lòng chờ xác nhận."}
                   </p>
                 </div>
@@ -467,38 +470,7 @@ export default function BookingResult() {
             </div>
           </div>
 
-          {/* Notifications */}
-          {isSuccess && (
-            <Card>
-              <CardHeader>
-                <CardTitle>Thông báo xác nhận</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <div className="grid md:grid-cols-2 gap-4">
-                  <div className="flex items-center gap-3 p-4 bg-blue-50 rounded-lg">
-                    <Mail className="w-5 h-5 text-blue-600" />
-                    <div>
-                      <p className="font-medium text-blue-800">
-                        Email xác nhận
-                      </p>
-                      <p className="text-sm text-blue-600">
-                        Đã gửi đến {paymentDetails.customerEmail}
-                      </p>
-                    </div>
-                  </div>
-                  <div className="flex items-center gap-3 p-4 bg-green-50 rounded-lg">
-                    <MessageSquare className="w-5 h-5 text-green-600" />
-                    <div>
-                      <p className="font-medium text-green-800">SMS xác nhận</p>
-                      <p className="text-sm text-green-600">
-                        Đã gửi đến {paymentDetails.customerPhone}
-                      </p>
-                    </div>
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
-          )}
+         
 
           {/* Actions */}
           <div className="flex flex-col sm:flex-row gap-4 justify-center">

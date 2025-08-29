@@ -11,28 +11,48 @@ import { Checkbox } from "../ui/checkbox";
 
 import { useEffect, useState } from "react";
 import { Calendar28 } from "./date_picker";
-import { BusifyRouteDetail, getAllRoutesClient } from "@/lib/data/route_api";
-import { getAllBusOperators, BusOperator } from "@/lib/data/bus_operator";
 import { TripFilterQuery } from "@/lib/data/trip";
 import { useForm } from "react-hook-form";
 import { Form, FormField, FormItem, FormLabel } from "../ui/form";
 import { Input } from "../ui/input";
-import { OperatorMultiSelect } from "./bus_operator/operator_multi_select";
 import { Separator } from "../ui/separator";
 import { Loader2 } from "lucide-react";
+import { getAllBusModelsClient } from "@/lib/data/bus";
+import { getAllLocationsClient } from "@/lib/data/location";
+import { toast } from "sonner";
+import { useTripFilter } from "@/lib/contexts/TripFilterContext";
 
-type SearchFilterSidebarProps = {
-  onApplyFilters: (filters: TripFilterQuery | null) => void;
+export type SearchFilterSidebarProps = {
+  onApplyFilters: (filters: TripFilterQuery | undefined) => void;
   isLoading?: boolean;
 };
 
-const SearchFilterSidebar = ({
-  onApplyFilters,
-  isLoading = false,
-}: SearchFilterSidebarProps) => {
-  const [operators, setOperators] = useState<BusOperator[]>([]);
-  const [routes, setRoutes] = useState<BusifyRouteDetail[]>([]);
-  const busModels: string[] = ["limousine", "Giường nằm", "Ghế ngồi"];
+type FormValues = {
+  startLocation: undefined | number;
+  endLocation: undefined | number;
+  departureDate: Date | undefined;
+  untilTime: Date | undefined;
+  busModels: undefined | string[];
+  amenities: undefined | string[];
+  operatorName: undefined | string;
+  availableSeats: number;
+};
+
+export type FilterLocationType = {
+  locationId: number;
+  locationName: string;
+};
+
+const SearchFilterSidebar = () => {
+  const {
+    handleApplyFilters: onApplyFilters,
+    isLoading,
+    query,
+  } = useTripFilter();
+  const [busModels, setBusModels] = useState<string[] | undefined>([]);
+  const [locations, setLocations] = useState<FilterLocationType[] | undefined>(
+    []
+  );
 
   const amenities: string[] = [
     "Wifi",
@@ -42,27 +62,38 @@ const SearchFilterSidebar = ({
     "Ổ cắm sạc",
   ];
 
-  const form = useForm<TripFilterQuery>({
+  const form = useForm<FormValues>({
     defaultValues: {
-      routeId: undefined,
-      departureDate: undefined,
-      untilTime: undefined,
-      availableSeats: undefined,
-      busOperatorIds: [],
-      busModel: [],
-      amenities: [],
+      startLocation: query?.startLocation,
+      endLocation: query?.endLocation,
+      departureDate: query?.departureDate,
+      untilTime: query?.untilTime,
+      busModels: query?.busModels ?? [],
+      amenities: query?.amenities ?? [],
+      operatorName: query?.operatorName ?? "",
+      availableSeats: query?.availableSeats ?? 1,
     },
   });
 
+  const messageCallback = (message: string) => {
+    toast.info(message);
+  };
+
   useEffect(() => {
     const fetchData = async () => {
-      const [fetchedOperators, fetchedRoutes] = await Promise.all([
-        getAllBusOperators(),
-        getAllRoutesClient(),
+      const [fetchedBusModels, fetchedLocations] = await Promise.all([
+        getAllBusModelsClient({
+          callback: messageCallback,
+          localeMessage: "Failed to fetch bus models",
+        }),
+        getAllLocationsClient({
+          callback: messageCallback,
+          localeMessage: "Failed to fetch locations",
+        }),
       ]);
 
-      setOperators(fetchedOperators);
-      setRoutes(fetchedRoutes);
+      setBusModels(fetchedBusModels);
+      setLocations(fetchedLocations);
     };
 
     fetchData();
@@ -71,196 +102,221 @@ const SearchFilterSidebar = ({
   const handleApplyFilters = (e: React.FormEvent) => {
     e.preventDefault();
     const formData = form.getValues();
-    onApplyFilters(formData);
+    onApplyFilters({
+      startLocation: formData.startLocation,
+      endLocation: formData.endLocation,
+      departureDate: formData.departureDate,
+      untilTime: formData.untilTime,
+      busModels: formData.busModels,
+      amenities: formData.amenities,
+      operatorName: formData.operatorName,
+      timeZone: Intl.DateTimeFormat().resolvedOptions().timeZone,
+      availableSeats: 1,
+    });
   };
 
   return (
     <div className="space-y-6">
       <Form {...form}>
         <form onSubmit={handleApplyFilters} className="space-y-6">
-          {/* Route Selection */}
-          <div>
-            <h3 className="font-semibold text-gray-900 mb-3">Route</h3>
-            <FormField
-              control={form.control}
-              name="routeId"
-              render={({ field }) => (
-                <FormItem>
-                  <Select
-                    value={field.value || ""}
-                    onValueChange={field.onChange}
-                  >
-                    <SelectTrigger className="bg-gray-50">
-                      <SelectValue placeholder="Select Route" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      {routes?.map((route: BusifyRouteDetail) => (
-                        <SelectItem key={route.id} value={route.id.toString()}>
-                          {route.name}
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
-                </FormItem>
-              )}
-            />
-          </div>
-
-          <Separator />
-
-          {/* Date & Time */}
-          <div>
-            <h3 className="font-semibold text-gray-900 mb-3">Date & Time</h3>
-            <div className="space-y-4">
-              <FormField
-                control={form.control}
-                name="departureDate"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Departure Date</FormLabel>
-                    <Calendar28
-                      field={field}
-                      picker={{
-                        placeholder: "YYYY-MM-DD",
-                        initialDate: new Date(),
-                      }}
-                    />
-                  </FormItem>
-                )}
-              />
-            </div>
-          </div>
-
-          <Separator />
-
-          {/* Bus Operators */}
-          <div>
-            <h3 className="font-semibold text-gray-900 mb-3">Bus Operators</h3>
-            <FormField
-              control={form.control}
-              name="busOperatorIds"
-              render={({ field }) => (
-                <FormItem>
-                  <OperatorMultiSelect
-                    operators={operators}
-                    value={field.value}
-                    onChange={field.onChange}
-                  />
-                </FormItem>
-              )}
-            />
-          </div>
-
-          <Separator />
-
-          {/* Bus Models */}
-          <div>
-            <h3 className="font-semibold text-gray-900 mb-3">Bus Type</h3>
-            <FormField
-              control={form.control}
-              name="busModel"
-              render={({ field }) => (
-                <FormItem>
-                  <div className="space-y-3">
-                    {busModels.map((model) => (
-                      <div key={model} className="flex items-center space-x-3">
-                        <Checkbox
-                          id={`model-${model}`}
-                          checked={field.value?.includes(model)}
-                          onCheckedChange={(checked) => {
-                            const currentValue = field.value || [];
-                            if (checked) {
-                              field.onChange([...currentValue, model]);
-                            } else {
-                              field.onChange(
-                                currentValue.filter((m: string) => m !== model)
-                              );
-                            }
-                          }}
-                        />
-                        <Label
-                          htmlFor={`model-${model}`}
-                          className="text-sm font-normal cursor-pointer"
-                        >
-                          {model}
-                        </Label>
-                      </div>
-                    ))}
-                  </div>
-                </FormItem>
-              )}
-            />
-          </div>
-
-          <Separator />
-
-          {/* Amenities */}
-          <div>
-            <h3 className="font-semibold text-gray-900 mb-3">Amenities</h3>
-            <FormField
-              control={form.control}
-              name="amenities"
-              render={({ field }) => (
-                <FormItem>
-                  <div className="space-y-3">
-                    {amenities.map((amenity) => (
-                      <div
-                        key={amenity}
-                        className="flex items-center space-x-3"
+          <FormField
+            control={form.control}
+            name="startLocation"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Start Location</FormLabel>
+                <Select
+                  value={field.value?.toString() || ""}
+                  onValueChange={field.onChange}
+                >
+                  <SelectTrigger className="bg-gray-50">
+                    <SelectValue placeholder="Select Location" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {locations?.map((route: FilterLocationType) => (
+                      <SelectItem
+                        key={route.locationId}
+                        value={route.locationId.toString()}
                       >
-                        <Checkbox
-                          id={`amenity-${amenity}`}
-                          checked={field.value?.includes(amenity)}
-                          onCheckedChange={(checked) => {
-                            const currentValue = field.value || [];
-                            if (checked) {
-                              field.onChange([...currentValue, amenity]);
-                            } else {
-                              field.onChange(
-                                currentValue.filter(
-                                  (a: string) => a !== amenity
-                                )
-                              );
-                            }
-                          }}
-                        />
-                        <Label
-                          htmlFor={`amenity-${amenity}`}
-                          className="text-sm font-normal cursor-pointer"
-                        >
-                          {amenity}
-                        </Label>
-                      </div>
+                        {route.locationName}
+                      </SelectItem>
                     ))}
-                  </div>
-                </FormItem>
-              )}
-            />
-          </div>
+                  </SelectContent>
+                </Select>
+              </FormItem>
+            )}
+          />
+          <FormField
+            control={form.control}
+            name="endLocation"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>End Location</FormLabel>
+                <Select
+                  value={field.value?.toString() || ""}
+                  onValueChange={field.onChange}
+                >
+                  <SelectTrigger className="bg-gray-50">
+                    <SelectValue placeholder="Select Location" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {locations?.map((route: FilterLocationType) => (
+                      <SelectItem
+                        key={route.locationId}
+                        value={route.locationId.toString()}
+                      >
+                        {route.locationName}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </FormItem>
+            )}
+          />
 
           <Separator />
 
-          {/* Available Seats */}
-          <div>
-            <h3 className="font-semibold text-gray-900 mb-3">
-              Available Seats
-            </h3>
-            <FormField
-              control={form.control}
-              name="availableSeats"
-              render={({ field }) => (
-                <FormItem>
-                  <Input
-                    type="number"
-                    {...field}
-                    value={field.value || ""}
-                    className="bg-gray-50"
-                    placeholder="Minimum seats required"
-                  />
-                </FormItem>
-              )}
-            />
-          </div>
+          <FormField
+            control={form.control}
+            name="departureDate"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>From Date</FormLabel>
+                <Calendar28
+                  picker={{
+                    placeholder: "Select a date",
+                    initialDate: field.value,
+                    onDateChange: (date) => field.onChange(date),
+                  }}
+                />
+              </FormItem>
+            )}
+          />
+          <FormField
+            control={form.control}
+            name="untilTime"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>To Date</FormLabel>
+                <Calendar28
+                  picker={{
+                    placeholder: "Select a date",
+                    initialDate: field.value,
+                    onDateChange: (date) => field.onChange(date),
+                  }}
+                />
+              </FormItem>
+            )}
+          />
+
+          <Separator />
+
+          <FormField
+            control={form.control}
+            name="operatorName"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Operator Name</FormLabel>
+                <Input
+                  placeholder="Enter operator name"
+                  value={field.value || ""}
+                  onChange={field.onChange}
+                />
+              </FormItem>
+            )}
+          />
+
+          <Separator />
+
+          <FormField
+            control={form.control}
+            name="busModels"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Bus Models</FormLabel>
+                <div className="space-y-3">
+                  {busModels?.map((model) => (
+                    <div key={model} className="flex items-center space-x-3">
+                      <Checkbox
+                        id={`model-${model}`}
+                        checked={field.value?.includes(model)}
+                        onCheckedChange={(checked) => {
+                          const currentValue = field.value || [];
+                          if (checked) {
+                            field.onChange([...currentValue, model]);
+                          } else {
+                            field.onChange(
+                              currentValue.filter((m: string) => m !== model)
+                            );
+                          }
+                        }}
+                      />
+                      <Label
+                        htmlFor={`model-${model}`}
+                        className="text-sm font-normal cursor-pointer"
+                      >
+                        {model}
+                      </Label>
+                    </div>
+                  ))}
+                </div>
+              </FormItem>
+            )}
+          />
+
+          <Separator />
+
+          <FormField
+            control={form.control}
+            name="amenities"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Amenities</FormLabel>
+                <div className="space-y-3">
+                  {amenities.map((amenity) => (
+                    <div key={amenity} className="flex items-center space-x-3">
+                      <Checkbox
+                        id={`amenity-${amenity}`}
+                        checked={field.value?.includes(amenity)}
+                        onCheckedChange={(checked) => {
+                          const currentValue = field.value || [];
+                          if (checked) {
+                            field.onChange([...currentValue, amenity]);
+                          } else {
+                            field.onChange(
+                              currentValue.filter((a: string) => a !== amenity)
+                            );
+                          }
+                        }}
+                      />
+                      <Label
+                        htmlFor={`amenity-${amenity}`}
+                        className="text-sm font-normal cursor-pointer"
+                      >
+                        {amenity}
+                      </Label>
+                    </div>
+                  ))}
+                </div>
+              </FormItem>
+            )}
+          />
+          <FormField
+            control={form.control}
+            name="availableSeats"
+            render={({ field }) => (
+              <FormItem>
+                <Label htmlFor="availableSeats">Available Seats</Label>
+                <Input
+                  type="number"
+                  value={field.value}
+                  onChange={field.onChange}
+                />
+              </FormItem>
+            )}
+          />
+
+          <Separator />
 
           {/* Action Buttons */}
           <div className="pt-4 space-y-3">
@@ -270,7 +326,10 @@ const SearchFilterSidebar = ({
               disabled={isLoading}
               onClick={() => {
                 const formData = form.getValues();
-                onApplyFilters(formData);
+                onApplyFilters({
+                  ...formData,
+                  timeZone: Intl.DateTimeFormat().resolvedOptions().timeZone,
+                });
               }}
             >
               {isLoading ? (
@@ -289,15 +348,19 @@ const SearchFilterSidebar = ({
               disabled={isLoading}
               onClick={() => {
                 form.reset({
-                  routeId: undefined,
+                  startLocation: undefined,
+                  endLocation: undefined,
                   departureDate: undefined,
                   untilTime: undefined,
-                  availableSeats: undefined,
-                  busOperatorIds: [],
-                  busModel: [],
+                  operatorName: undefined,
+                  busModels: [],
                   amenities: [],
+                  availableSeats: 0
                 });
-                onApplyFilters(null);
+                onApplyFilters({
+                  ...form.getValues(),
+                  timeZone: Intl.DateTimeFormat().resolvedOptions().timeZone,
+                });
               }}
             >
               Clear All

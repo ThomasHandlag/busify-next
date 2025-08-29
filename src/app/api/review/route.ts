@@ -1,22 +1,36 @@
-import { addReview } from "@/lib/data/reviews";
+import { BASE_URL } from "@/lib/constants/constants";
+import ResponseError from "@/lib/data/response_error";
 
 export async function POST(req: Request) {
-  const reviewData = (await req.json());
-  try {
-    const newReview = await addReview(reviewData);
-    return new Response(JSON.stringify({ result: newReview, success: true }), {
-      status: 201,
-      headers: {
-        "Content-Type": "application/json",
-      },
-    });
-  } catch (error) {
-    console.error("Error adding review:", error);
-    return new Response(JSON.stringify({ success: false, message: "Failed to add review" }), { 
-      status: 500,
-      headers: {
-        "Content-Type": "application/json",
-      },
-    });
+  const headers = req.headers;
+  const reviewData = await req.json();
+  const newReview = await fetch(`${BASE_URL}/api/reviews/trip`, {
+    method: "POST",
+    headers,
+    body: JSON.stringify(reviewData),
+  });
+  if (!newReview.ok) {
+    const errorData = (await newReview.json()) as ResponseError;
+    console.log(errorData);
+    return new Response(
+      JSON.stringify({
+        success: false,
+        message: errorData.message || "Failed to add review",
+        code: 400,
+      }),
+      {
+        status: 400,
+        headers: {
+          "Content-Type": "application/json",
+        },
+      }
+    );
   }
+  const result = await newReview.json();
+  return new Response(JSON.stringify({ success: true, result, code: 201 }), {
+    status: 201,
+    headers: {
+      "Content-Type": "application/json",
+    },
+  });
 }

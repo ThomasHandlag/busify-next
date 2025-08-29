@@ -85,37 +85,62 @@ interface UserType {
   role?: string;
 }
 
+// Helper function để decode JWT và lấy exp time
+function getTokenExpirationTime(token: string): number | null {
+  try {
+    const payload = JSON.parse(atob(token.split(".")[1]));
+    return payload.exp ? payload.exp * 1000 : null; // Convert to milliseconds
+  } catch (error) {
+    console.error("Error decoding token:", error);
+    return null;
+  }
+}
+
 // Hàm refresh token
 async function refreshAccessToken(token: JWT): Promise<JWT> {
   try {
-    const response = await fetch(`${BASE_URL}api/auth/refresh`, {
+    console.log("Attempting to refresh access token...");
+
+    const response = await fetch(`${BASE_URL}/api/auth/refresh-token`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
       },
       body: JSON.stringify({
-        refreshToken: token.refreshToken,
+        refresh_token: token.refreshToken,
       }),
     });
 
     const refreshedTokens = await response.json();
+    console.log("Refresh response:", refreshedTokens);
 
     if (!response.ok) {
-      throw refreshedTokens;
+      console.error("Refresh token failed:", refreshedTokens);
+      throw new Error(refreshedTokens.message || "Failed to refresh token");
     }
 
-    // Nếu backend không trả về expiresIn, sử dụng default 1 giờ
-    const expiresIn = refreshedTokens.expiresIn || 3600; // 1 hour default
+    const newAccessToken = refreshedTokens.result?.access_token;
+    const newRefreshToken = refreshedTokens.result?.refresh_token;
+
+    if (!newAccessToken) {
+      throw new Error("No access token in refresh response");
+    }
+
+    // Lấy thời gian hết hạn từ JWT token
+    const expirationTime = getTokenExpirationTime(newAccessToken);
+    const accessTokenExpires = expirationTime || Date.now() + 60 * 60 * 1000; // fallback 1h
+
+    console.log(
+      "Token refreshed successfully. Expires at:",
+      new Date(accessTokenExpires)
+    );
 
     return {
       ...token,
-      accessToken:
-        refreshedTokens.accessToken || refreshedTokens.result?.accessToken,
-      accessTokenExpires: Date.now() + expiresIn * 1000,
-      refreshToken:
-        refreshedTokens.refreshToken ||
-        refreshedTokens.result?.refreshToken ||
-        token.refreshToken,
+      accessToken: newAccessToken,
+      accessTokenExpires,
+      refreshToken: newRefreshToken || token.refreshToken, // Keep old refresh token if new one not provided
+      error: undefined, // Clear any previous errors
     };
   } catch (error) {
     console.error("Error refreshing access token:", error);
@@ -132,6 +157,7 @@ export const config: NextAuthOptions = {
   pages: {
     signIn: "/login", //Dẫn đến trang login custom
     // error: "/auth/error", // Custom error page
+    signOut: "/login"
   },
   session: {
     strategy: "jwt",
@@ -164,7 +190,7 @@ export const config: NextAuthOptions = {
           password: credentials.password,
         };
 
-        const res = await fetch(`${BASE_URL}/api/auth/login`, {
+        const res = await fetch(`${BASE_URL}api/auth/login`, {
           method: "POST",
           body: JSON.stringify(payload),
           headers: {
@@ -181,7 +207,7 @@ export const config: NextAuthOptions = {
           // Return user object with accessToken and refreshToken
           return {
             id: tokens.result.id,
-            name: tokens.result.name,
+            name: tokens.result.fullName,
             email: tokens.result.email,
             avatar: tokens.result.avatar,
             accessToken: tokens.result.accessToken,
@@ -240,23 +266,38 @@ export const config: NextAuthOptions = {
         token.role = user.role;
         token.accessToken = user.accessToken;
         token.refreshToken = user.refreshToken;
-        // Set expiry time (assume 1 hour for access token)
-        token.accessTokenExpires = Date.now() + 60 * 60 * 1000;
+
+        // Lấy thời gian hết hạn từ JWT token thực tế
+        const expirationTime = user.accessToken
+          ? getTokenExpirationTime(user.accessToken)
+          : null;
+        token.accessTokenExpires =
+          expirationTime || Date.now() + 60 * 60 * 1000; // fallback 1h
+
+        console.log(
+          "Initial sign in - token expires at:",
+          new Date(token.accessTokenExpires)
+        );
         return token;
       }
 
       // Nếu không có accessTokenExpires, giả định token còn hiệu lực
       if (!token.accessTokenExpires) {
+        console.log("No expiration time found, assuming token is valid");
         return token;
       }
 
       // Return previous token if the access token has not expired yet
-      if (Date.now() < (token.accessTokenExpires as number)) {
+      // Thêm buffer 5 phút trước khi token hết hạn để tránh race condition
+      const bufferTime = 5 * 60 * 1000; // 5 minutes
+      if (Date.now() < (token.accessTokenExpires as number) - bufferTime) {
         return token;
       }
 
       // Access token has expired, try to update it
-      console.log("Access token expired, attempting to refresh...");
+      console.log(
+        "Access token expired or about to expire, attempting to refresh..."
+      );
       return refreshAccessToken(token);
     },
 
