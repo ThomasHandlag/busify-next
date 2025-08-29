@@ -4,7 +4,7 @@ import ResponseError from "@/lib/data/response_error";
 export async function POST(req: Request) {
   const headers = req.headers;
   const reviewData = await req.json();
-  const newReview = await fetch(`${BASE_URL}/api/reviews/trip`, {
+  const newReview = await fetch(`${BASE_URL}api/reviews/trip`, {
     method: "POST",
     headers,
     body: JSON.stringify(reviewData),
