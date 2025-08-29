@@ -10,7 +10,7 @@ export type ApiFnParams = {
 };
 
 const api = axios.create({
-  baseURL: `${BASE_URL}/`,
+  baseURL: `${BASE_URL}`,
   // timeout: 10000,
   headers: {
     "Content-Type": "application/json",

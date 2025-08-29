@@ -34,7 +34,6 @@ const ComplaintItem = ({ complaint }: { complaint: Complaint }) => {
       <div className="flex items-center justify-between mb-2">
         <div className="flex items-center space-x-2">
           <User className="w-4 h-4 text-gray-400" />
-          <span className="font-medium">{complaint.customerName}</span>
         </div>
         <p className="text-xs text-gray-500">
           {new Date(complaint.createdAt).toLocaleDateString()}

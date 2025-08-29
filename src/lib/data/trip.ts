@@ -58,13 +58,13 @@ export interface Trip {
 }
 
 export interface TripFilterQuery {
-  startLocation?: number | null;
-  endLocation?: number | null;
+  startLocation?: number | undefined;
+  endLocation?: number | undefined;
   departureDate?: Date | undefined;
   busModels?: string[];
   untilTime?: Date | undefined;
   amenities?: string[];
-  operatorName?: string | null;
+  operatorName?: string | undefined;
   timeZone: string;
   availableSeats: number;
 }

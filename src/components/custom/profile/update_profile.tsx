@@ -25,7 +25,6 @@ type UserProfileForm = {
   email: string;
   phone: string;
   address: string;
-  dateOfBirth: string;
 };
 
 type UpdateProfileDialogProps = {
@@ -107,14 +106,6 @@ const UpdateProfileDialog = ({ userProfile }: UpdateProfileDialogProps) => {
               id="phone"
               {...form.register("phone")}
               placeholder="Enter your phone number"
-            />
-          </div>
-          <div className="space-y-2">
-            <Label htmlFor="dateOfBirth">Date of Birth</Label>
-            <Input
-              id="dateOfBirth"
-              type="date"
-              {...form.register("dateOfBirth")}
             />
           </div>
           <div className="space-y-2">

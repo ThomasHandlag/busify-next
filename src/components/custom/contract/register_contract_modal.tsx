@@ -21,10 +21,6 @@ import { ContractFormData, createContract } from "@/lib/data/contract";
 import { DialogClose } from "@radix-ui/react-dialog";
 import Policy from "../policy/policy";
 
-interface RegisterContractModalProps {
-  children: React.ReactNode;
-}
-
 // Validation patterns
 export const VALIDATION_PATTERNS = {
   VAT_CODE: /^[0-9]{10,15}$/,

@@ -1,11 +1,12 @@
 {
-    "Header" : {
-        "home": "Home",
-        "signIn": "Sign In",
-        "signUp": "Sign Up",
-        "about": "About Us",
-        "contact": "Contact Us",
-        "privacy": "Privacy Policy",
-        "aboutDes": "Learn more about our mission and team"
-    }
+  "Header": {
+    "home": "Home",
+    "signIn": "Sign In",
+    "signUp": "Sign Up",
+    "about": "About Us",
+    "contact": "Contact Us",
+    "privacyPolicy": "Privacy Policy",
+    "termsOfService": "Terms of Service",
+    "language": "Language"
+  }
 }

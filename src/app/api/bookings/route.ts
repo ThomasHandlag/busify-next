@@ -1,5 +1,4 @@
-import { NextRequest } from "next/server";
-
-export async function GET(req: NextRequest) {
-  const headers = req.headers;
+export async function GET(req: Request) {
+  console.log(req);
+  return new Response("Bookings API is under construction", { status: 501 });
 }

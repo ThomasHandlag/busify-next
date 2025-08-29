@@ -6,6 +6,8 @@ import { ReactNode, useEffect, useState } from "react";
 const PreferencesProvider = ({ children }: { children: ReactNode }) => {
   const [language, setLanguage] = useState<Language>("en");
   const [theme, setTheme] = useState<Theme>("light");
+  const [isInitialized, setIsInitialized] = useState(false);
+  const [initialLanguage, setInitialLanguage] = useState<Language>("en");
 
   const value = {
     language,
@@ -14,16 +16,51 @@ const PreferencesProvider = ({ children }: { children: ReactNode }) => {
     setTheme,
   };
 
+  // Initialize language from cookie on mount
   useEffect(() => {
-    const locale = language;
-    async function updateLocale() {
-      await fetch("/api/preferences", {
-        method: "POST",
-        body: JSON.stringify({ locale }),
-      });
+    async function initializeLanguage() {
+      try {
+        const response = await fetch("/api/preferences");
+        const data = await response.json();
+        if (data.locale) {
+          setLanguage(data.locale as Language);
+          setInitialLanguage(data.locale as Language);
+        }
+      } catch {
+        // Fallback to default language
+        setLanguage("en");
+        setInitialLanguage("en");
+      } finally {
+        setIsInitialized(true);
+      }
     }
+    
+    initializeLanguage();
+  }, []);
+
+  // Update cookie when language changes (but not on initial load)
+  useEffect(() => {
+    if (!isInitialized || language === initialLanguage) return;
+    
+    async function updateLocale() {
+      try {
+        await fetch("/api/preferences", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ locale: language }),
+        });
+        
+        // Refresh the page to apply new locale
+        window.location.reload();
+      } catch (error) {
+        console.error("Failed to update locale:", error);
+      }
+    }
+    
     updateLocale();
-  }, [language]);
+  }, [language, isInitialized, initialLanguage]);
 
   useEffect(() => {
     localStorage.setItem("theme", theme);

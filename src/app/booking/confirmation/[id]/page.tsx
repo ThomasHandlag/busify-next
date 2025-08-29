@@ -91,7 +91,6 @@ export default function BookingConfirmation({ params }: PageProps) {
   const totalPriceFromParams = Number(searchParams.get("totalPrice")) || 0;
 
   // State để lưu dữ liệu
-  const [tripData, setTripData] = useState<TripApiResponse | null>(null);
   const [bookingData, setBookingData] = useState<BookingData | null>(null);
   const [loading, setLoading] = useState(true);
 
@@ -120,7 +119,6 @@ export default function BookingConfirmation({ params }: PageProps) {
           throw new Error(`Lỗi khi gọi API: ${response.status}`);
         }
         const data: TripApiResponse = await response.json();
-        setTripData(data);
 
         // Chuyển đổi estimatedDuration từ chuỗi sang số phút
         const durationMatch = data.result.route.estimated_duration.match(

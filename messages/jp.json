@@ -2,6 +2,11 @@
     "Header": {
         "home": "ホーム",
         "signIn": "サインイン",
-        "signUp": "サインアップ"
+        "signUp": "サインアップ",
+        "about": "紹介",
+        "contact": "連絡先",
+        "language": "言語",
+        "privacyPolicy": "プライバシーポリシー",
+        "termsOfService": "利用規約"
     }
 }

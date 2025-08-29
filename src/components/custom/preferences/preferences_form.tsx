@@ -15,6 +15,7 @@ import {
   Theme,
   usePreferences,
 } from "@/lib/contexts/PreferenceContext";
+import { useTheme } from "next-themes";
 import { useForm } from "react-hook-form";
 
 type PreferencesFormValues = {
@@ -24,6 +25,7 @@ type PreferencesFormValues = {
 
 const PreferencesForm = () => {
   const pref = usePreferences();
+  const themes = useTheme();
 
   const form = useForm<PreferencesFormValues>({
     defaultValues: {
@@ -75,6 +77,7 @@ const PreferencesForm = () => {
               <Select
                 {...field}
                 onValueChange={(value: Theme) => {
+                  themes.setTheme(value);
                   form.setValue("theme", value);
                   if (pref.setTheme) {
                     pref.setTheme(value);

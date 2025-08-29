@@ -5,10 +5,11 @@ import { createContext, useContext } from "react";
 import { TripFilterQuery, TripItemProps } from "../data/trip";
 
 interface TripFilterContextType {
+  query: TripFilterQuery | undefined;
   trips: TripItemProps[];
   page: number;
   handlePageChange: (page: number) => void;
-  handleApplyFilters: (filters: TripFilterQuery | null) => Promise<void>;
+  handleApplyFilters: (filters: TripFilterQuery | undefined) => Promise<void>;
   isLoading: boolean;
   total: number;
 }

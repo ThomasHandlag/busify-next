@@ -21,14 +21,14 @@ import { getAllBusModelsClient } from "@/lib/data/bus";
 import { getAllLocationsClient } from "@/lib/data/location";
 import { toast } from "sonner";
 
-type SearchFilterSidebarProps = {
-  onApplyFilters: (filters: TripFilterQuery | null) => void;
+export type SearchFilterSidebarProps = {
+  onApplyFilters: (filters: TripFilterQuery | undefined) => void;
   isLoading?: boolean;
 };
 
 type FormValues = {
-  startLocation: null | number;
-  endLocation: null | number;
+  startLocation: undefined | number;
+  endLocation: undefined | number;
   departureDate: Date | undefined;
   untilTime: Date | undefined;
   busModels: undefined | string[];
@@ -61,8 +61,8 @@ const SearchFilterSidebar = ({
 
   const form = useForm<FormValues>({
     defaultValues: {
-      startLocation: null,
-      endLocation: null,
+      startLocation: undefined,
+      endLocation: undefined,
       departureDate: undefined,
       untilTime: undefined,
       busModels: [],
@@ -353,7 +353,7 @@ const SearchFilterSidebar = ({
                   busModels: [],
                   amenities: [],
                 });
-                onApplyFilters(null);
+                onApplyFilters(undefined);
               }}
             >
               Clear All

@@ -19,7 +19,7 @@ export interface DiscountResponse {
 
 const getDiscount = async (discountCode: string): Promise<DiscountInfo> => {
   try {
-    const response = await api.get(`/api/promotions/code/${discountCode}`);
+    const response = await api.get(`api/promotions/code/${discountCode}`);
     return response.data.result;
   } catch (error) {
     console.error("Error applying discount:", error);

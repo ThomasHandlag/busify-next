@@ -14,11 +14,11 @@ export const TripFilterProvider = ({ children }: TripFilterProviderProps) => {
   const [trips, setTrips] = useState<TripItemProps[]>([]);
   const [page, setPage] = useState(1);
   const [isLoading, setIsLoading] = useState(false);
-  const [query, setQuery] = useState<TripFilterQuery | null>(null);
+  const [query, setQuery] = useState<TripFilterQuery | undefined>(undefined);
   const [total, setTotal] = useState(0);
 
   const handleApplyFilters = useCallback(
-    async (filters: TripFilterQuery | null) => {
+    async (filters: TripFilterQuery | undefined) => {
       setQuery(filters);
     },
     []
@@ -39,7 +39,8 @@ export const TripFilterProvider = ({ children }: TripFilterProviderProps) => {
         } else {
           const filteredTrips = await filterTripsClient(
             {
-              routeId: undefined,
+              startLocation: undefined,
+              endLocation: undefined,
               departureDate: undefined,
               busModels: undefined,
               untilTime: undefined,
@@ -76,6 +77,7 @@ export const TripFilterProvider = ({ children }: TripFilterProviderProps) => {
     page,
     handlePageChange: setPage,
     total,
+    query
   };
 
   return (

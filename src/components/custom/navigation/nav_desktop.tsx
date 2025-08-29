@@ -128,6 +128,7 @@ const NavDesktop = ({
             <NavigationMenuItem>
               <NavigationMenuTrigger className="flex items-center space-x-2 hover:bg-gray-50">
                 <User className="w-4 h-4" />
+                {session.data.user?.email}
               </NavigationMenuTrigger>
               <NavigationMenuContent>
                 <div className="w-48 p-2">

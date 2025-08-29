@@ -157,6 +157,7 @@ export const config: NextAuthOptions = {
   pages: {
     signIn: "/login", //Dẫn đến trang login custom
     // error: "/auth/error", // Custom error page
+    signOut: "/login"
   },
   session: {
     strategy: "jwt",
@@ -189,7 +190,7 @@ export const config: NextAuthOptions = {
           password: credentials.password,
         };
 
-        const res = await fetch(`${BASE_URL}/api/auth/login`, {
+        const res = await fetch(`${BASE_URL}api/auth/login`, {
           method: "POST",
           body: JSON.stringify(payload),
           headers: {

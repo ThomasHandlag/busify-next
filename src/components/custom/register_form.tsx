@@ -1,5 +1,4 @@
 "use client";
-import { useForm } from "react-hook-form";
 import { Button } from "../ui/button";
 import { Form, FormField, FormItem, FormLabel, FormMessage } from "../ui/form";
 import { FaEye, FaEyeSlash, FaCheck } from "react-icons/fa";
@@ -20,6 +19,7 @@ import { format } from "date-fns";
 import { cn } from "@/lib/utils";
 import Policy from "./policy/policy";
 import { busOperatorSchema, userSchema } from "@/lib/scheams/scheams";
+import { useForm } from "react-hook-form";
 export const RegisterForm = () => {
   const [showPassword, setShowPassword] = React.useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = React.useState(false);
@@ -59,6 +59,7 @@ export const RegisterForm = () => {
     },
   });
 
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const onSubmit = async (data: any) => {
     setIsSubmitting(true);
     try {

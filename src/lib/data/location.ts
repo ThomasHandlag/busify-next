@@ -25,10 +25,26 @@ export const getAllLocationsClient = async (
   return response.json();
 };
 
-export const getAllLocationsServer = async (): Promise<Location[]> => {
+export const getAllLocations = async (
+  params: ApiFnParams
+): Promise<FilterLocationType[]> => {
   const response = await api.get("api/locations");
   if (response.status !== 200) {
-    throw new Error("Failed to fetch locations");
+    params.callback(
+      response.data.message ??
+        params.localeMessage ??
+        "Failed to fetch locations"
+    );
+  }
+  return response.data.result;
+};
+
+export const getAllLocationsServer = async (): Promise<
+  FilterLocationType[]
+> => {
+  const response = await api.get("api/locations");
+  if (response.status !== 200) {
+    throw new Error(response.data.message ?? "Failed to fetch locations");
   }
   return response.data.result;
 };

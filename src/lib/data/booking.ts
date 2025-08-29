@@ -78,7 +78,7 @@ export async function getBookingHistory(
   params: ApiFnParams
 ): Promise<BookingResponse> {
   const response = await api.get(
-    `/api/bookings?page=${params.page}&size=${params.size}`,
+    `api/bookings?page=${params.page}&size=${params.size}`,
     {}
   );
   if (response.status !== 200) {
@@ -94,7 +94,7 @@ export async function getBookingHistory(
 export async function getBookingDetails(
   params: ApiFnParams
 ): Promise<BookingDetailResponse> {
-  const response = await api.get(`/api/bookings/${params.bookingCode}`);
+  const response = await api.get(`api/bookings/${params.bookingCode}`);
   if (response.status !== 200) {
     params.callback(
       response.data.message ??
