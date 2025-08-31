@@ -40,12 +40,15 @@ import {
   DialogHeader,
   DialogTitle,
   DialogTrigger,
-} from "@/components/ui/dialog"; // Thêm import cho Dialog
+  DialogFooter,
+  DialogDescription,
+} from "@/components/ui/dialog"; // Thêm DialogFooter và DialogDescription
 import { Textarea } from "@/components/ui/textarea"; // Thêm import cho Textarea
 import { Input } from "@/components/ui/input"; // Thêm import cho Input
 import { useSession } from "next-auth/react"; // Thêm import useSession
 import { createComplaint, ComplaintAddDTO } from "@/lib/data/complaints"; // Thêm import createComplaint
 import { toast } from "sonner"; // Thêm import toast cho thông báo
+import { cancelBooking } from "@/lib/data/booking"; // Thêm import cancelBooking
 
 interface BookingDetailSheetProps {
   booking: BookingDetailResponse;
@@ -104,14 +107,39 @@ export function BookingDetailSheet({
   const [complaintDescription, setComplaintDescription] = useState(""); // State cho mô tả khiếu nại
   const [isComplaintModalOpen, setIsComplaintModalOpen] = useState(false); // State cho modal
   const [isSubmittingComplaint, setIsSubmittingComplaint] = useState(false); // State cho loading khi gửi khiếu nại
+  const [isCancelConfirmOpen, setIsCancelConfirmOpen] = useState(false); // State cho dialog xác nhận hủy
   const statusInfo = getStatusInfo(booking.status);
   const StatusIcon = statusInfo.icon;
   const { data: session } = useSession(); // Lấy session để lấy token
 
   const handleCancelBooking = async () => {
+    if (!session?.user?.accessToken) {
+      toast.error("Bạn cần đăng nhập để hủy vé.");
+      return;
+    }
+
     setIsLoading(true);
-    // API call to cancel booking
-    setTimeout(() => setIsLoading(false), 2000);
+    try {
+      const success = await cancelBooking({
+        bookingCode: booking.booking_id, // Sử dụng booking_id thay vì booking_code nếu cần
+        accessToken: session.user.accessToken,
+        callback: (message: string) => {
+          toast.error(message);
+        },
+        localeMessage: "Không thể hủy vé. Vui lòng thử lại.",
+      });
+
+      if (success) {
+        toast.success("Vé đã được hủy thành công!");
+        setIsCancelConfirmOpen(false); // Đóng dialog sau khi hủy thành công
+        onClose(); // Đóng sheet sau khi hủy
+      }
+    } catch (error) {
+      console.error("Error cancelling booking:", error);
+      toast.error("Có lỗi xảy ra khi hủy vé. Vui lòng thử lại.");
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   const handleDownloadTicket = () => {
@@ -469,7 +497,7 @@ export function BookingDetailSheet({
 
                 {canCancel && (
                   <Button
-                    onClick={handleCancelBooking}
+                    onClick={() => setIsCancelConfirmOpen(true)} // Mở dialog xác nhận thay vì hủy ngay
                     disabled={isLoading}
                     variant="destructive"
                     className="w-full"

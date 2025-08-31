@@ -163,6 +163,7 @@ export default function MyTicketsPage() {
       key={booking.booking_code}
       booking={booking}
       onViewDetails={() => handleViewDetails(booking)}
+      onBookingCancelled={() => fetchBookings(currentPage)} // Thêm prop để làm mới danh sách
     />
   );
 

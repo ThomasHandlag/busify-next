@@ -22,12 +22,15 @@ import {
   DialogHeader,
   DialogTitle,
   DialogTrigger,
-} from "@/components/ui/dialog"; // Thêm import cho Dialog
+  DialogFooter,
+  DialogDescription,
+} from "@/components/ui/dialog"; // Thêm import cho Dialog, bao gồm DialogFooter và DialogDescription
 import { Textarea } from "@/components/ui/textarea"; // Thêm import cho Textarea
 import { Input } from "@/components/ui/input"; // Thêm import cho Input
 import { useSession } from "next-auth/react"; // Thêm import useSession
 import { createComplaint, ComplaintAddDTO } from "@/lib/data/complaints"; // Thêm import createComplaint
 import { toast } from "sonner"; // Thêm import toast cho thông báo
+import { cancelBooking } from "@/lib/data/booking"; // Thêm import cho cancelBooking
 
 const getStatusInfo = (status: BookingData["status"]) => {
   switch (status) {
@@ -94,9 +97,11 @@ const formatCurrency = (amount: number) => {
 export const TicketCard = ({
   booking,
   onViewDetails,
+  onBookingCancelled, // Thêm prop mới
 }: {
   booking: BookingData;
   onViewDetails?: () => void;
+  onBookingCancelled?: () => void; // Thêm prop mới
 }) => {
   const statusInfo = getStatusInfo(booking.status);
   const StatusIcon = statusInfo.icon;
@@ -104,6 +109,8 @@ export const TicketCard = ({
   const [complaintDescription, setComplaintDescription] = useState(""); // State cho mô tả khiếu nại
   const [isComplaintModalOpen, setIsComplaintModalOpen] = useState(false); // State cho modal
   const [isSubmittingComplaint, setIsSubmittingComplaint] = useState(false); // State cho loading khi gửi khiếu nại
+  const [isCancelling, setIsCancelling] = useState(false); // Thêm state cho loading khi hủy
+  const [isCancelConfirmOpen, setIsCancelConfirmOpen] = useState(false); // State cho dialog xác nhận hủy
   const { data: session } = useSession(); // Lấy session để lấy token
 
   const isPast = new Date(booking.departure_time) < new Date();
@@ -146,6 +153,40 @@ export const TicketCard = ({
       toast.error("Có lỗi xảy ra khi gửi khiếu nại. Vui lòng thử lại.");
     } finally {
       setIsSubmittingComplaint(false);
+    }
+  };
+
+  // Thêm hàm xử lý hủy vé
+  const handleCancelBooking = async () => {
+    if (!session?.user?.accessToken) {
+      toast.error("Bạn cần đăng nhập để hủy vé.");
+      return;
+    }
+
+    setIsCancelling(true);
+    try {
+      const success = await cancelBooking({
+        bookingCode: booking.booking_code,
+        accessToken: session.user.accessToken,
+        callback: (message: string) => {
+          toast.error(message);
+        },
+        localeMessage: "Không thể hủy vé. Vui lòng thử lại.",
+      });
+
+      if (success) {
+        toast.success("Vé đã được hủy thành công!");
+        // Thông báo cho parent component để làm mới danh sách
+        if (onBookingCancelled) {
+          onBookingCancelled();
+        }
+        setIsCancelConfirmOpen(false); // Đóng dialog sau khi hủy thành công
+      }
+    } catch (error) {
+      console.error("Error cancelling booking:", error);
+      toast.error("Có lỗi xảy ra khi hủy vé. Vui lòng thử lại.");
+    } finally {
+      setIsCancelling(false);
     }
   };
 
@@ -239,12 +280,18 @@ export const TicketCard = ({
             Chi tiết
           </Button>
 
-          {(booking.status === "confirmed" ||
-            booking.status === "completed") && (
-            <Button variant="outline" size="sm" className="h-8 px-3 text-xs">
-              <Download className="w-3 h-3" />
-            </Button>
-          )}
+          {(booking.status === "confirmed" || booking.status === "pending") &&
+            !isPast && (
+              <Button
+                variant="destructive"
+                size="sm"
+                onClick={() => setIsCancelConfirmOpen(true)} // Mở dialog xác nhận thay vì hủy ngay
+                disabled={isCancelling} // Vô hiệu hóa khi đang hủy
+                className="h-8 px-3 text-xs"
+              >
+                {isCancelling ? "Đang hủy..." : "Hủy"} {/* Text động */}
+              </Button>
+            )}
 
           {booking.status === "confirmed" && !isPast && (
             <Button
@@ -319,6 +366,38 @@ export const TicketCard = ({
             </>
           )}
         </div>
+
+        {/* Dialog xác nhận hủy vé */}
+        <Dialog
+          open={isCancelConfirmOpen}
+          onOpenChange={setIsCancelConfirmOpen}
+        >
+          <DialogContent>
+            <DialogHeader>
+              <DialogTitle>Xác nhận hủy vé</DialogTitle>
+              <DialogDescription>
+                Bạn có chắc chắn muốn hủy vé này không? Hành động này không thể
+                hoàn tác và có thể mất phí hủy vé nếu áp dụng.
+              </DialogDescription>
+            </DialogHeader>
+            <DialogFooter>
+              <Button
+                variant="outline"
+                onClick={() => setIsCancelConfirmOpen(false)}
+                disabled={isCancelling}
+              >
+                Hủy
+              </Button>
+              <Button
+                variant="destructive"
+                onClick={handleCancelBooking}
+                disabled={isCancelling}
+              >
+                {isCancelling ? "Đang xử lý..." : "Xác nhận hủy"}
+              </Button>
+            </DialogFooter>
+          </DialogContent>
+        </Dialog>
       </CardContent>
     </Card>
   );
