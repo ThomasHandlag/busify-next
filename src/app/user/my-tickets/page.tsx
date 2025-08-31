@@ -8,18 +8,11 @@ import {
   Clock,
   CheckCircle,
   XCircle,
-  Search,
   ChevronLeft,
   ChevronRight,
+  Home,
+  ChevronRight as ChevronRightIcon,
 } from "lucide-react";
-import { Input } from "@/components/ui/input";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
 import Link from "next/link";
 import {
   BookingResponse,
@@ -32,21 +25,7 @@ import { BookingDetailSheet } from "@/components/custom/my_tickets/booking_detai
 import { useSession } from "next-auth/react";
 import { toast } from "sonner";
 
-const getMockBookingDetailResponse = async (
-  booking: string
-): Promise<BookingDetailResponse> => {
-  return await getBookingDetails({
-    bookingCode: booking,
-    callback: (message: string) => {
-      toast.error(message);
-    },
-    localeMessage: "Failed to fetch booking details",
-  });
-};
-
 export default function MyTicketsPage() {
-  const [searchTerm, setSearchTerm] = useState("");
-  const [sortBy, setSortBy] = useState("departure_time");
   const [selectedBookingDetail, setSelectedBookingDetail] =
     useState<BookingDetailResponse | null>(null);
   const [isDetailSheetOpen, setIsDetailSheetOpen] = useState(false);
@@ -63,23 +42,16 @@ export default function MyTicketsPage() {
   const [isLoading, setIsLoading] = useState(false);
   const { data: session } = useSession();
 
-  // Simulate API call
   const fetchBookings = useCallback(
-    async (
-      page: number
-      // search?: string,
-      // sort?: string
-    ) => {
-      // Check if session exists before making API call
+    async (page: number) => {
       if (!session?.user?.accessToken) {
-        console.log("No session or access token available");
         setIsLoading(false);
         return;
       }
 
       setIsLoading(true);
       try {
-        const mockBookingResponse = await fetch(
+        const response = await fetch(
           `http://localhost:8080/api/bookings?page=${page}&size=10`,
           {
             headers: {
@@ -88,17 +60,14 @@ export default function MyTicketsPage() {
           }
         );
 
-        if (!mockBookingResponse.ok) {
-          throw new Error(`HTTP error! status: ${mockBookingResponse.status}`);
+        if (!response.ok) {
+          throw new Error(`HTTP error! status: ${response.status}`);
         }
 
-        const data = await mockBookingResponse.json();
-        console.log("Fetched bookings:", data);
-
+        const data = await response.json();
         setBookingResponse(data.result || data);
       } catch (error) {
         console.error("Error fetching bookings:", error);
-        // Set default empty response on error
         setBookingResponse({
           result: [],
           pageNumber: 1,
@@ -116,7 +85,6 @@ export default function MyTicketsPage() {
   );
 
   useEffect(() => {
-    // Only fetch when session is available
     if (session?.user?.accessToken) {
       fetchBookings(currentPage);
     }
@@ -124,16 +92,8 @@ export default function MyTicketsPage() {
 
   const filterBookings = (status: string) => {
     return bookingResponse.result.filter((booking) => {
-      // Filter by status
       if (status === "upcoming") {
-        return (
-          // check if booking is upcoming if departure time is in the future
-          // (booking.status === "pending" || booking.status === "confirmed") &&
-          // new Date(booking.departure_time) > new Date()
-
-          // not checking departure time for upcoming bookings
-          booking.status === "pending" || booking.status === "confirmed"
-        );
+        return booking.status === "pending" || booking.status === "confirmed";
       } else if (status === "completed") {
         return booking.status === "completed";
       } else if (status === "canceled") {
@@ -151,11 +111,19 @@ export default function MyTicketsPage() {
   const canceledBookings = filterBookings("canceled");
 
   const handleViewDetails = async (booking: BookingData) => {
-    const detailedBooking = await getMockBookingDetailResponse(
-      booking.booking_code
-    );
-    setSelectedBookingDetail(detailedBooking);
-    setIsDetailSheetOpen(true);
+    try {
+      const detailedBooking = await getBookingDetails({
+        bookingCode: booking.booking_code,
+        callback: (message: string) => {
+          toast.error(message);
+        },
+        localeMessage: "Failed to fetch booking details",
+      });
+      setSelectedBookingDetail(detailedBooking);
+      setIsDetailSheetOpen(true);
+    } catch (error) {
+      console.error("Error fetching booking details:", error);
+    }
   };
 
   const renderTicketCard = (booking: BookingData) => (
@@ -163,7 +131,7 @@ export default function MyTicketsPage() {
       key={booking.booking_code}
       booking={booking}
       onViewDetails={() => handleViewDetails(booking)}
-      onBookingCancelled={() => fetchBookings(currentPage)} // Thêm prop để làm mới danh sách
+      onBookingCancelled={() => fetchBookings(currentPage)}
     />
   );
 
@@ -211,51 +179,34 @@ export default function MyTicketsPage() {
   );
 
   return (
-    <div className="min-h-screen bg-gray-50 w-full">
-      {/* Header */}
-      <div className="bg-white shadow-sm border-b">
-        <div className="container mx-auto px-3 sm:px-4 lg:px-6 py-4 sm:py-6">
-          <div className="flex flex-col space-y-4 lg:flex-row lg:items-center lg:justify-between lg:space-y-0 gap-4">
-            <div className="min-w-0 flex-1">
-              <h1 className="text-xl sm:text-2xl font-bold text-gray-900 truncate">
-                Vé của tôi
-              </h1>
-              <p className="text-sm sm:text-base text-gray-600 mt-1 hidden sm:block">
-                Quản lý và theo dõi tất cả các vé đã đặt
-              </p>
-            </div>
+    <div className="w-full">
+      {/* Breadcrumb */}
+      <div className="bg-white border-b px-4 py-3">
+        <nav className="flex items-center space-x-2 text-sm text-gray-600">
+          <Link href="/user" className="hover:text-gray-900">
+            <Home className="w-4 h-4" />
+          </Link>
+          <ChevronRightIcon className="w-4 h-4" />
+          <span className="font-medium text-gray-900">Vé của tôi</span>
+        </nav>
+      </div>
 
-            {/* Search and Filter Controls */}
-            <div className="flex flex-col space-y-3 sm:flex-row sm:space-y-0 sm:space-x-3 lg:min-w-80 xl:min-w-96">
-              <div className="relative flex-1 min-w-0">
-                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400" />
-                <Input
-                  placeholder="Tìm kiếm..."
-                  value={searchTerm}
-                  onChange={(e) => setSearchTerm(e.target.value)}
-                  className="pl-10 text-sm"
-                />
-              </div>
-              <Select value={sortBy} onValueChange={setSortBy}>
-                <SelectTrigger className="w-full sm:w-40 lg:w-48">
-                  <SelectValue />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="departure_time">
-                    Sắp xếp theo ngày đi
-                  </SelectItem>
-                  <SelectItem value="booking_date">
-                    Sắp xếp theo ngày đặt
-                  </SelectItem>
-                </SelectContent>
-              </Select>
-            </div>
+      {/* Header */}
+      <div className="bg-white shadow-sm border-b px-4 py-6">
+        <div className="flex flex-col space-y-4 lg:flex-row lg:items-center lg:justify-between lg:space-y-0 gap-4">
+          <div className="min-w-0 flex-1">
+            <h1 className="text-xl sm:text-2xl font-bold text-gray-900 truncate">
+              Vé của tôi
+            </h1>
+            <p className="text-sm sm:text-base text-gray-600 mt-1 hidden sm:block">
+              Quản lý và theo dõi tất cả các vé đã đặt
+            </p>
           </div>
         </div>
       </div>
 
       {/* Main Content */}
-      <div className="container mx-auto px-3 sm:px-4 lg:px-6 py-4 sm:py-6">
+      <div className="px-4 py-6">
         <Tabs defaultValue="upcoming" className="w-full">
           <TabsList className="grid w-full grid-cols-3 mb-4 sm:mb-6 h-auto">
             <TabsTrigger
@@ -391,6 +342,7 @@ export default function MyTicketsPage() {
           booking={selectedBookingDetail}
           isOpen={isDetailSheetOpen}
           onClose={() => setIsDetailSheetOpen(false)}
+          onBookingCancelled={() => fetchBookings(currentPage)}
         />
       )}
     </div>

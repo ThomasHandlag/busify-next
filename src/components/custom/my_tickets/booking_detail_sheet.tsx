@@ -54,6 +54,7 @@ interface BookingDetailSheetProps {
   booking: BookingDetailResponse;
   isOpen: boolean;
   onClose: () => void;
+  onBookingCancelled?: () => void; // Thêm prop callback để refresh danh sách
 }
 
 const getStatusInfo = (status: BookingDetailResponse["status"]) => {
@@ -101,6 +102,7 @@ export function BookingDetailSheet({
   booking,
   isOpen,
   onClose,
+  onBookingCancelled,
 }: BookingDetailSheetProps) {
   const [isLoading, setIsLoading] = useState(false);
   const [complaintTitle, setComplaintTitle] = useState(""); // State cho tiêu đề khiếu nại
@@ -121,7 +123,7 @@ export function BookingDetailSheet({
     setIsLoading(true);
     try {
       const success = await cancelBooking({
-        bookingCode: booking.booking_id, // Sử dụng booking_id thay vì booking_code nếu cần
+        bookingCode: booking.booking_code,
         accessToken: session.user.accessToken,
         callback: (message: string) => {
           toast.error(message);
@@ -133,6 +135,11 @@ export function BookingDetailSheet({
         toast.success("Vé đã được hủy thành công!");
         setIsCancelConfirmOpen(false); // Đóng dialog sau khi hủy thành công
         onClose(); // Đóng sheet sau khi hủy
+
+        // Gọi callback để refresh danh sách vé
+        if (onBookingCancelled) {
+          onBookingCancelled();
+        }
       }
     } catch (error) {
       console.error("Error cancelling booking:", error);
@@ -497,13 +504,13 @@ export function BookingDetailSheet({
 
                 {canCancel && (
                   <Button
-                    onClick={() => setIsCancelConfirmOpen(true)} // Mở dialog xác nhận thay vì hủy ngay
+                    onClick={() => setIsCancelConfirmOpen(true)}
                     disabled={isLoading}
                     variant="destructive"
                     className="w-full"
                   >
                     <XCircle className="w-4 h-4 mr-2" />
-                    Hủy vé
+                    {isLoading ? "Đang hủy..." : "Hủy vé"}
                   </Button>
                 )}
               </div>
@@ -511,6 +518,35 @@ export function BookingDetailSheet({
           </Card>
         </div>
       </SheetContent>
+
+      {/* Dialog xác nhận hủy vé */}
+      <Dialog open={isCancelConfirmOpen} onOpenChange={setIsCancelConfirmOpen}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Xác nhận hủy vé</DialogTitle>
+            <DialogDescription>
+              Bạn có chắc chắn muốn hủy vé này không? Hành động này không thể
+              hoàn tác và có thể mất phí hủy vé nếu áp dụng.
+            </DialogDescription>
+          </DialogHeader>
+          <DialogFooter>
+            <Button
+              variant="outline"
+              onClick={() => setIsCancelConfirmOpen(false)}
+              disabled={isLoading}
+            >
+              Hủy
+            </Button>
+            <Button
+              variant="destructive"
+              onClick={handleCancelBooking}
+              disabled={isLoading}
+            >
+              {isLoading ? "Đang xử lý..." : "Xác nhận hủy"}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </Sheet>
   );
 }

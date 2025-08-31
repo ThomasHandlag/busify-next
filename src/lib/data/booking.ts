@@ -45,6 +45,7 @@ export interface BookingDetailResponse {
   phone: string;
   email: string;
   booking_id: string;
+  booking_code: string;
   route_start: {
     name: string;
     address: string;
@@ -95,6 +96,7 @@ export async function getBookingDetails(
   params: ApiFnParams
 ): Promise<BookingDetailResponse> {
   const response = await api.get(`api/bookings/${params.bookingCode}`);
+  console.log("Booking details response:", response);
   if (response.status !== 200) {
     params.callback(
       response.data.message ??
