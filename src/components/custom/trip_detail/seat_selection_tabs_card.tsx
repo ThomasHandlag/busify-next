@@ -12,7 +12,8 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { useSession } from "next-auth/react";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -53,7 +54,9 @@ export function SeatSelectionTabsCard({
   onSeatSelection,
 }: SeatSelectionTabsCardProps) {
   const [selectedSeats, setSelectedSeats] = useState<string[]>([]);
-
+  const [isLoadingProfile, setIsLoadingProfile] = useState(false);
+  
+  const { data: session } = useSession();
   const router = useRouter();
 
   // Generate seats based on layout
@@ -113,6 +116,48 @@ export function SeatSelectionTabsCard({
       email: "",
     },
   });
+
+  // Auto-fill user profile data when logged in
+  useEffect(() => {
+    const fetchUserProfile = async () => {
+      if (session?.user?.accessToken) {
+        setIsLoadingProfile(true);
+        try {
+          const response = await fetch("http://localhost:8080/api/users/profile", {
+            method: "GET",
+            headers: {
+              "Authorization": `Bearer ${session.user.accessToken}`,
+              "Content-Type": "application/json",
+            },
+          });
+
+          if (response.ok) {
+            const profileData = await response.json();
+            console.log("Profile data fetched:", profileData);
+            
+            // Auto-fill form with user data
+            if (profileData.result) {
+              const { fullName, phoneNumber, email } = profileData.result;
+              
+              form.setValue("fullName", fullName || "");
+              form.setValue("phone", phoneNumber || "");
+              form.setValue("email", email || "");
+              
+              console.log("Form auto-filled with user profile data");
+            }
+          } else {
+            console.error("Failed to fetch user profile:", response.status);
+          }
+        } catch (error) {
+          console.error("Error fetching user profile:", error);
+        } finally {
+          setIsLoadingProfile(false);
+        }
+      }
+    };
+
+    fetchUserProfile();
+  }, [session?.user?.accessToken, form]);
 
   const allSeats = generateSeatsFromLayout();
 
@@ -305,7 +350,13 @@ export function SeatSelectionTabsCard({
 
         {/* Passenger Information Form */}
         <div className="border-t pt-6">
-          <h3 className="font-semibold mb-4">Thông tin hành khách</h3>
+          <div className="flex items-center justify-between mb-4">
+            <h3 className="font-semibold">Thông tin hành khách</h3>
+            {session?.user && isLoadingProfile && (
+              <span className="text-sm text-gray-500">Đang tải thông tin...</span>
+            )}
+            {session?.user && !isLoadingProfile }
+          </div>
           <Form {...form}>
             <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
               <FormField
@@ -315,7 +366,11 @@ export function SeatSelectionTabsCard({
                   <FormItem>
                     <FormLabel>Họ và tên</FormLabel>
                     <FormControl>
-                      <Input placeholder="Nhập họ và tên" {...field} />
+                      <Input 
+                        placeholder="Nhập họ và tên" 
+                        {...field}
+                        disabled={isLoadingProfile}
+                      />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -329,7 +384,11 @@ export function SeatSelectionTabsCard({
                   <FormItem>
                     <FormLabel>Số điện thoại</FormLabel>
                     <FormControl>
-                      <Input placeholder="Nhập số điện thoại" {...field} />
+                      <Input 
+                        placeholder="Nhập số điện thoại" 
+                        {...field}
+                        disabled={isLoadingProfile}
+                      />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -343,7 +402,12 @@ export function SeatSelectionTabsCard({
                   <FormItem>
                     <FormLabel>Email</FormLabel>
                     <FormControl>
-                      <Input placeholder="Nhập email" type="email" {...field} />
+                      <Input 
+                        placeholder="Nhập email" 
+                        type="email" 
+                        {...field}
+                        disabled={isLoadingProfile}
+                      />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
