@@ -45,6 +45,7 @@ export interface BookingDetailResponse {
   phone: string;
   email: string;
   booking_id: string;
+  booking_code: string;
   route_start: {
     name: string;
     address: string;
@@ -103,4 +104,35 @@ export async function getBookingDetails(
     );
   }
   return response.data.result[0];
+}
+
+// Thêm hàm mới để hủy vé
+export async function cancelBooking(params: {
+  bookingCode: string;
+  accessToken: string;
+  callback: (message: string) => void;
+  localeMessage?: string;
+}): Promise<boolean> {
+  try {
+    const response = await api.delete(`api/bookings/${params.bookingCode}`, {
+      headers: {
+        Authorization: `Bearer ${params.accessToken}`,
+      },
+    });
+    if (response.status !== 200) {
+      params.callback(
+        response.data.message ??
+          params.localeMessage ??
+          "Không thể hủy vé. Vui lòng thử lại."
+      );
+      return false;
+    }
+    return true;
+  } catch (error) {
+    console.error("Error cancelling booking:", error);
+    params.callback(
+      params.localeMessage ?? "Không thể hủy vé. Vui lòng thử lại."
+    );
+    return false;
+  }
 }
