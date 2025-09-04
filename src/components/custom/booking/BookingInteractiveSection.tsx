@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useSession } from "next-auth/react";
 import PromoCodeSection from "./PromoCodeSection";
 import PaymentMethods from "./PaymentMethods";
@@ -9,6 +9,8 @@ import { Separator } from "@/components/ui/separator";
 import { CreditCard } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { DiscountInfo } from "@/lib/data/discount";
+import PointsSection from "./PointsSession";
+import { getScore, usePoints } from "@/lib/data/score";
 
 interface BookingData {
   trip: { route: string };
@@ -52,12 +54,15 @@ export default function BookingInteractiveSection({
   const { data: session } = useSession();
   const [discount, setDiscount] = useState(0);
   const [discountInfo, setDiscountInfo] = useState<DiscountInfo | null>(null);
+  const [usedPoints, setUsedPoints] = useState(0);
+  const [pointsDiscount, setPointsDiscount] = useState(0);
+  const [availablePoints, setAvailablePoints] = useState(0);
   const [paymentMethod, setPaymentMethod] = useState<string>("vnpay"); // Mặc định là VNPAY
   const [paymentLoading, setPaymentLoading] = useState(false);
   const [paymentError, setPaymentError] = useState<string | null>(null);
   const [paymentLink, setPaymentLink] = useState<string | null>(null);
 
-  const finalAmount = initialTotalPrice - discount;
+  const finalAmount = initialTotalPrice - discount - pointsDiscount;
 
   const handleDiscountChange = (
     newDiscount: number,
@@ -66,6 +71,23 @@ export default function BookingInteractiveSection({
     setDiscount(newDiscount);
     setDiscountInfo(newDiscountInfo);
   };
+
+  const handlePointsChange = (points: number, discountAmount: number) => {
+    setUsedPoints(points);
+    setPointsDiscount(discountAmount);
+  };
+
+  useEffect(() => {
+    async function loadScore() {
+      try {
+        const score = await getScore();
+        setAvailablePoints(score.points);
+      } catch (error) {
+        console.error("Failed to load score:", error);
+      }
+    }
+    loadScore();
+  }, []);
 
   // Hàm xử lý xác nhận thanh toán
   const handleConfirmPayment = async () => {
@@ -119,7 +141,7 @@ export default function BookingInteractiveSection({
           method: "POST",
           headers: {
             "Content-Type": "application/json",
-            "Authorization": `Bearer ${session.user.accessToken}`, // Thêm token
+            Authorization: `Bearer ${session.user.accessToken}`, // Thêm token
           },
           body: JSON.stringify(bookingRequest),
         }
@@ -155,7 +177,7 @@ export default function BookingInteractiveSection({
           method: "POST",
           headers: {
             "Content-Type": "application/json",
-            "Authorization": `Bearer ${session.user.accessToken}`, // Thêm token
+            Authorization: `Bearer ${session.user.accessToken}`, // Thêm token
           },
           body: JSON.stringify(paymentRequest),
         }
@@ -179,6 +201,28 @@ export default function BookingInteractiveSection({
 
       // Lưu link thanh toán để hiển thị
       setPaymentLink(paymentUrl);
+
+      // Nếu user có dùng điểm thì gọi API trừ điểm
+      if (usedPoints > 0 && session?.user?.accessToken) {
+        try {
+          const pointResponse = await usePoints(
+            {
+              bookingId: bookingId,
+              pointsToUse: usedPoints,
+            },
+            session.user.accessToken // truyền token
+          );
+
+          if (!pointResponse.success) {
+            console.warn("Không trừ được điểm:", pointResponse.message);
+          } else {
+            console.log("Điểm còn lại:", pointResponse.result?.points);
+            setAvailablePoints(pointResponse.result?.points || 0);
+          }
+        } catch (err) {
+          console.error("Lỗi khi trừ điểm:", err);
+        }
+      }
 
       // Không chuyển hướng ngay, để người dùng nhấp vào link thanh toán
       // router.push(`/booking/success/${bookingId}`);
@@ -207,6 +251,20 @@ export default function BookingInteractiveSection({
             initialDiscount={discount}
             onDiscountChange={handleDiscountChange}
             originalPrice={initialTotalPrice}
+          />
+        </CardContent>
+      </Card>
+
+      <Card>
+        <CardHeader>
+          <CardTitle>Sử dụng điểm</CardTitle>
+        </CardHeader>
+        <CardContent>
+          <PointsSection
+            availablePoints={availablePoints}
+            onPointsChange={handlePointsChange}
+            originalPrice={initialTotalPrice}
+            discountAmount={discount}
           />
         </CardContent>
       </Card>
@@ -250,6 +308,12 @@ export default function BookingInteractiveSection({
                   )
                 </span>
                 <span>-{discount.toLocaleString("vi-VN")}đ</span>
+              </div>
+            )}
+            {pointsDiscount > 0 && (
+              <div className="flex justify-between text-blue-600">
+                <span>Sử dụng điểm ({usedPoints})</span>
+                <span>-{pointsDiscount.toLocaleString("vi-VN")}đ</span>
               </div>
             )}
             <Separator />
