@@ -60,9 +60,7 @@ const ProfilePage = async () => {
   const complaints = await getComplaintsByCurrentUser(
     session?.user.accessToken || ""
   ); // Lưu vào biến complaints thay vì result
-  console.log(complaints); // Giữ lại để debug nếu cần
   if (!session) {
-    console.log("No session found - user not logged in");
     return (
       <div className="container mx-auto p-6 max-w-4xl mb-10">
         <div className="text-center">
