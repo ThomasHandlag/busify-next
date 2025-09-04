@@ -10,17 +10,21 @@ import {
 } from "@/components/ui/sheet";
 import { Armchair } from "lucide-react";
 import { useState } from "react";
-import { BusLayout, Seat, SeatSelectionCard } from "./seat_selection_card";
+import { SeatSelectionCard } from "./seat_selection_card";
+import { Seat } from "@/lib/data/trip_seats";
+import { BusLayout } from "@/lib/data/bus";
 
 interface MobileBookingBarProps {
+  tripId: string; // Thêm tripId
+  layout: BusLayout | null;
   seats: Seat[];
-  layout: BusLayout;
   pricePerSeat: number;
-  operatorName?: string; // Add operator name for display
-  busType?: string; // Add bus type for display
+  busType?: string; // Optional
+  operatorName?: string; // Optional
 }
 
 export function MobileBookingBar({
+  tripId,
   busType,
   seats,
   layout,
@@ -30,15 +34,23 @@ export function MobileBookingBar({
   const [selectedSeats, setSelectedSeats] = useState<string[]>([]);
   const [totalPrice, setTotalPrice] = useState<number>(0);
 
-  const children = SeatSelectionCard({
-    seats,
-    layout,
-    pricePerSeat,
-    onSeatSelection: (seats, price) => {
-      setSelectedSeats(seats);
-      setTotalPrice(price);
-    },
-  });
+  const children = layout ? (
+    SeatSelectionCard({
+      tripId, // Truyền tripId
+
+      seats,
+      layout,
+      pricePerSeat,
+      onSeatSelection: (seats, price) => {
+        setSelectedSeats(seats);
+        setTotalPrice(price);
+      },
+    })
+  ) : (
+    <div className="text-center text-gray-500">
+      Không có thông tin về bố trí ghế.
+    </div>
+  );
 
   return (
     <div className="block">
@@ -65,7 +77,9 @@ export function MobileBookingBar({
                 </div>
               </SheetTitle>
 
-              <div className="flex-1 overflow-y-auto px-2 lg:px-4">{children}</div>
+              <div className="flex-1 overflow-y-auto px-2 lg:px-4">
+                {children}
+              </div>
             </div>
             <SheetFooter>
               <div className="flex items-center justify-between gap-3">

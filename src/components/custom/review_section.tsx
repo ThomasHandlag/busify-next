@@ -2,9 +2,9 @@ import React from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "../ui/card";
 import { Star, User } from "lucide-react";
 import { Separator } from "@radix-ui/react-separator";
-import { TripDetailProps } from "./trip_overview_card";
 import { getReviewsByTripId } from "@/lib/data/reviews";
-import { Review } from "@/lib/types/widget_proptype";
+import { Review } from "@/lib/data/reviews";
+import { TripDetail } from "@/lib/data/trip";
 
 export interface ReviewProps {
   id: number;
@@ -23,9 +23,10 @@ const tripAvgRating = (reviews: Review[]) => {
 const ReviewSection = async ({
   mockTripDetail,
 }: {
-  mockTripDetail: TripDetailProps;
+  mockTripDetail: TripDetail;
 }) => {
   const reviews = await getReviewsByTripId(mockTripDetail.trip_id);
+  console.log("Reviews fetched:", reviews);
   return (
     <Card>
       <CardHeader>
@@ -76,6 +77,18 @@ const ReviewSection = async ({
   );
 };
 
+function formatDate(date: Date | undefined) {
+  if (!date) {
+    return "";
+  }
+
+  return date.toLocaleDateString("en-US", {
+    day: "2-digit",
+    month: "long",
+    year: "numeric",
+  });
+}
+
 const ReviewItem = ({ review }: { review: Review }) => {
   return (
     <div key={review.reviewId} className="border-b pb-4 last:border-b-0">
@@ -98,7 +111,9 @@ const ReviewItem = ({ review }: { review: Review }) => {
         </div>
       </div>
       <p className="text-gray-600 mb-2">{review.comment}</p>
-      <p className="text-sm text-gray-500">{review.createdAt}</p>
+      <p className="text-sm text-gray-500">
+        {formatDate(new Date(review.createdAt))}
+      </p>
     </div>
   );
 };

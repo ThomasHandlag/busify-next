@@ -1,13 +1,17 @@
 "use client";
 
 import { createContext, useContext } from "react";
-import { TripItemProps } from "@/app/passenger/page";
-import { TripFilterQuery } from "../data/trip";
+
+import { TripFilterQuery, TripItemProps } from "../data/trip";
 
 interface TripFilterContextType {
+  query: TripFilterQuery | undefined;
   trips: TripItemProps[];
-  handleApplyFilters: (filters: TripFilterQuery) => Promise<void>;
+  page: number;
+  handlePageChange: (page: number) => void;
+  handleApplyFilters: (filters: TripFilterQuery | undefined) => Promise<void>;
   isLoading: boolean;
+  total: number;
 }
 
 const TripFilterContext = createContext<TripFilterContextType | undefined>(

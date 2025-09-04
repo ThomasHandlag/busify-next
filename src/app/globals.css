@@ -45,6 +45,7 @@
   --animate-fade-in-left: 2s fade-in-left;
   --animate-fade-in-l300: 3s fade-in-left;
   --animate-fade-in-l400: 4s fade-in-left;
+  --animate-fade-in-l500: 5s fade-in-left;
   --animate-fade-in-right: 2s fade-in-right;
   --animate-fade-in-up: 2s fade-in-up;
   --animate-float: 3s float;
@@ -171,4 +172,13 @@
   50% {
     transform: translateY(-10px);
   }
+}
+
+.scrollBar::-webkit-scrollbar {
+  display: none;
+}
+
+.scrollBar {
+  -ms-overflow-style: none; /* IE and Edge */
+  scrollbar-width: none; /* Firefox */
 }

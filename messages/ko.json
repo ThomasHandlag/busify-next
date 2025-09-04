@@ -1,0 +1,12 @@
+{
+    "Header": {
+        "home": "홈",
+        "signIn": "로그인",
+        "signUp": "회원가입",
+        "about": "소개",
+        "contact": "연락처",
+        "language": "언어",
+        "privacyPolicy": "개인정보 처리방침",
+        "termsOfService": "서비스 약관"
+    }
+}
