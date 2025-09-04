@@ -55,8 +55,8 @@ jobs:
           push: true
           labels: ${{ steps.meta.outputs.labels }}
           tags: ${{ env.DOCKER_IMAGE }}:${{ env.DOCKER_TAG }}
-          cache-from: type=registry,ref=${{ env.DOCKER_IMAGE }}:cache
-          cache-to: type=registry,ref=${{ env.DOCKER_IMAGE }}:cache,mode=max
+          cache-from: type=gha,ref=${{ env.DOCKER_IMAGE }}:cache
+          cache-to: type=gha,ref=${{ env.DOCKER_IMAGE }}:cache,mode=max
           build-args: |
             NEXT_PUBLIC_API_URL=${{ secrets.PUBLIC_API_URL }}
           platforms: linux/amd64,linux/arm64
