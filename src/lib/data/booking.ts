@@ -96,7 +96,6 @@ export async function getBookingDetails(
   params: ApiFnParams
 ): Promise<BookingDetailResponse> {
   const response = await api.get(`api/bookings/${params.bookingCode}`);
-  console.log("Booking details response:", response);
   if (response.status !== 200) {
     params.callback(
       response.data.message ??
