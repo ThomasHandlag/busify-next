@@ -46,8 +46,6 @@ jobs:
             type=sha
             type=raw,value=${{ env.DOCKER_TAG }}
             type=semver,pattern={{version}}
-          flavor: latest
-
       
       - name: Build Docker and push image
         uses: docker/build-push-action@v4
