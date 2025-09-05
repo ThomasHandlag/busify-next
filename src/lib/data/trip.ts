@@ -95,10 +95,12 @@ export async function filterTrips(
   size = 20
 ): Promise<TripFilterResponse> {
   try {
+    console.log("Filter Trips Request:", filters);
     const res = await api.post(
       `api/trips/filter?page=${page}&size=${size}`,
       filters
     );
+    console.log("Filter Trips Response:", res);
     if (res && res.data.code == 200) {
       return res.data.result;
     } else {

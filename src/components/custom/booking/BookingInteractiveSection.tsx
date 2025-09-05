@@ -119,7 +119,7 @@ export default function BookingInteractiveSection({
           method: "POST",
           headers: {
             "Content-Type": "application/json",
-            "Authorization": `Bearer ${session.user.accessToken}`, // Thêm token
+            Authorization: `Bearer ${session.user.accessToken}`, // Thêm token
           },
           body: JSON.stringify(bookingRequest),
         }
@@ -155,7 +155,7 @@ export default function BookingInteractiveSection({
           method: "POST",
           headers: {
             "Content-Type": "application/json",
-            "Authorization": `Bearer ${session.user.accessToken}`, // Thêm token
+            Authorization: `Bearer ${session.user.accessToken}`, // Thêm token
           },
           body: JSON.stringify(paymentRequest),
         }
@@ -228,10 +228,6 @@ export default function BookingInteractiveSection({
                     <span className="text-gray-400 line-through text-sm">
                       {mockData.pricing.totalPrice.toLocaleString("vi-VN")}đ
                     </span>
-                    <br />
-                    <span className="text-green-600 font-medium">
-                      {finalAmount.toLocaleString("vi-VN")}đ
-                    </span>
                   </>
                 ) : (
                   <span>
@@ -241,7 +237,7 @@ export default function BookingInteractiveSection({
               </div>
             </div>
             {discount > 0 && discountInfo && (
-              <div className="flex justify-between text-green-600">
+              <div className="flex justify-between text-red-600">
                 <span>
                   Giảm giá (
                   {discountInfo.discountType === "PERCENTAGE"

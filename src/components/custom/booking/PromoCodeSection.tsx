@@ -7,6 +7,7 @@ import {
   applyDiscountClient,
   DiscountInfo,
   calculateDiscountAmount,
+  MIN_BOOKING_AMOUNT,
 } from "@/lib/data/discount";
 import { Loader2, X } from "lucide-react";
 
@@ -49,6 +50,17 @@ export default function PromoCodeSection({
         );
         const finalDiscountAmount = Math.min(discountAmount, originalPrice);
 
+        // Kiểm tra điều kiện: giá sau khi giảm phải >= 50,000 VND
+        const finalPrice = originalPrice - finalDiscountAmount;
+
+        if (finalPrice < MIN_BOOKING_AMOUNT) {
+          throw new Error(
+            `Mã giảm giá này không thể áp dụng cho booking này vì giá trị quá lớn. Giá sau khi giảm phải tối thiểu ${MIN_BOOKING_AMOUNT.toLocaleString(
+              "vi-VN"
+            )} VND.`
+          );
+        }
+
         setDiscount(finalDiscountAmount);
         setDiscountInfo(response.discount);
         onDiscountChange(finalDiscountAmount, response.discount);
@@ -58,7 +70,11 @@ export default function PromoCodeSection({
       }
     } catch (error) {
       console.error("Error applying promo code:", error);
-      setError("Mã giảm giá không tồn tại hoặc đã hết hạn");
+      const errorMessage =
+        error instanceof Error
+          ? error.message
+          : "Mã giảm giá không tồn tại hoặc đã hết hạn";
+      setError(errorMessage);
       setDiscount(0);
       setDiscountInfo(null);
       onDiscountChange(0, null);
