@@ -98,6 +98,29 @@ const getStatusInfo = (status: BookingDetailResponse["status"]) => {
   }
 };
 
+// Thêm hàm tính toán tỷ lệ hoàn tiền
+const calculateRefundPercentage = (
+  bookingDate: string,
+  departureTime: string
+) => {
+  const now = new Date();
+  const bookingTime = new Date(bookingDate);
+  const departure = new Date(departureTime);
+
+  const hoursSinceBooking =
+    (now.getTime() - bookingTime.getTime()) / (1000 * 60 * 60);
+  const hoursUntilDeparture =
+    (departure.getTime() - now.getTime()) / (1000 * 60 * 60);
+
+  if (hoursSinceBooking <= 24) {
+    return 100;
+  } else if (hoursUntilDeparture >= 24) {
+    return 70;
+  } else {
+    return 0;
+  }
+};
+
 export function BookingDetailSheet({
   booking,
   isOpen,
@@ -209,6 +232,10 @@ export function BookingDetailSheet({
   const canComplain = booking.status === "completed"; // Thêm điều kiện cho khiếu nại
 
   const routeName = `${booking.route_start.city} - ${booking.route_end.city}`;
+  const refundPercentage = calculateRefundPercentage(
+    booking.payment_info.timestamp, // Thời gian đặt vé
+    booking.departure_time // Thời gian khởi hành
+  );
 
   return (
     <Sheet open={isOpen} onOpenChange={onClose}>
@@ -526,7 +553,9 @@ export function BookingDetailSheet({
             <DialogTitle>Xác nhận hủy vé</DialogTitle>
             <DialogDescription>
               Bạn có chắc chắn muốn hủy vé này không? Hành động này không thể
-              hoàn tác và có thể mất phí hủy vé nếu áp dụng.
+              hoàn tác và bạn sẽ được hoàn {refundPercentage}% tiền vé.
+              {refundPercentage === 0 &&
+                " (Lưu ý: Không được hoàn tiền do hủy sát giờ khởi hành.)"}
             </DialogDescription>
           </DialogHeader>
           <DialogFooter>

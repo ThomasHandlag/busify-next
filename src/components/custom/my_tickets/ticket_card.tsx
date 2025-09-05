@@ -94,14 +94,37 @@ const formatCurrency = (amount: number) => {
   return new Intl.NumberFormat("vi-VN").format(amount) + "đ";
 };
 
+// Thêm hàm tính toán tỷ lệ hoàn tiền
+const calculateRefundPercentage = (
+  bookingDate: string,
+  departureTime: string
+) => {
+  const now = new Date();
+  const bookingTime = new Date(bookingDate);
+  const departure = new Date(departureTime);
+
+  const hoursSinceBooking =
+    (now.getTime() - bookingTime.getTime()) / (1000 * 60 * 60);
+  const hoursUntilDeparture =
+    (departure.getTime() - now.getTime()) / (1000 * 60 * 60);
+
+  if (hoursSinceBooking <= 24) {
+    return 100;
+  } else if (hoursUntilDeparture >= 24) {
+    return 70;
+  } else {
+    return 0;
+  }
+};
+
 export const TicketCard = ({
   booking,
   onViewDetails,
-  onBookingCancelled, // Thêm prop mới
+  onBookingCancelled,
 }: {
   booking: BookingData;
   onViewDetails?: () => void;
-  onBookingCancelled?: () => void; // Thêm prop mới
+  onBookingCancelled?: () => void;
 }) => {
   const statusInfo = getStatusInfo(booking.status);
   const StatusIcon = statusInfo.icon;
@@ -114,6 +137,10 @@ export const TicketCard = ({
   const { data: session } = useSession(); // Lấy session để lấy token
 
   const isPast = new Date(booking.departure_time) < new Date();
+  const refundPercentage = calculateRefundPercentage(
+    booking.booking_date, // Thời gian đặt vé
+    booking.departure_time // Thời gian khởi hành
+  );
 
   const handleSubmitComplaint = async () => {
     if (!session?.user?.accessToken) {
@@ -377,7 +404,9 @@ export const TicketCard = ({
               <DialogTitle>Xác nhận hủy vé</DialogTitle>
               <DialogDescription>
                 Bạn có chắc chắn muốn hủy vé này không? Hành động này không thể
-                hoàn tác và có thể mất phí hủy vé nếu áp dụng.
+                hoàn tác và bạn sẽ được hoàn {refundPercentage}% tiền vé.
+                {refundPercentage === 0 &&
+                  " (Lưu ý: Không được hoàn tiền do hủy sát giờ khởi hành.)"}
               </DialogDescription>
             </DialogHeader>
             <DialogFooter>
