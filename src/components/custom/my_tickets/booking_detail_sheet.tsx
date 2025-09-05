@@ -40,17 +40,21 @@ import {
   DialogHeader,
   DialogTitle,
   DialogTrigger,
-} from "@/components/ui/dialog"; // Thêm import cho Dialog
+  DialogFooter,
+  DialogDescription,
+} from "@/components/ui/dialog"; // Thêm DialogFooter và DialogDescription
 import { Textarea } from "@/components/ui/textarea"; // Thêm import cho Textarea
 import { Input } from "@/components/ui/input"; // Thêm import cho Input
 import { useSession } from "next-auth/react"; // Thêm import useSession
 import { createComplaint, ComplaintAddDTO } from "@/lib/data/complaints"; // Thêm import createComplaint
 import { toast } from "sonner"; // Thêm import toast cho thông báo
+import { cancelBooking } from "@/lib/data/booking"; // Thêm import cancelBooking
 
 interface BookingDetailSheetProps {
   booking: BookingDetailResponse;
   isOpen: boolean;
   onClose: () => void;
+  onBookingCancelled?: () => void; // Thêm prop callback để refresh danh sách
 }
 
 const getStatusInfo = (status: BookingDetailResponse["status"]) => {
@@ -98,20 +102,51 @@ export function BookingDetailSheet({
   booking,
   isOpen,
   onClose,
+  onBookingCancelled,
 }: BookingDetailSheetProps) {
   const [isLoading, setIsLoading] = useState(false);
   const [complaintTitle, setComplaintTitle] = useState(""); // State cho tiêu đề khiếu nại
   const [complaintDescription, setComplaintDescription] = useState(""); // State cho mô tả khiếu nại
   const [isComplaintModalOpen, setIsComplaintModalOpen] = useState(false); // State cho modal
   const [isSubmittingComplaint, setIsSubmittingComplaint] = useState(false); // State cho loading khi gửi khiếu nại
+  const [isCancelConfirmOpen, setIsCancelConfirmOpen] = useState(false); // State cho dialog xác nhận hủy
   const statusInfo = getStatusInfo(booking.status);
   const StatusIcon = statusInfo.icon;
   const { data: session } = useSession(); // Lấy session để lấy token
 
   const handleCancelBooking = async () => {
+    if (!session?.user?.accessToken) {
+      toast.error("Bạn cần đăng nhập để hủy vé.");
+      return;
+    }
+
     setIsLoading(true);
-    // API call to cancel booking
-    setTimeout(() => setIsLoading(false), 2000);
+    try {
+      const success = await cancelBooking({
+        bookingCode: booking.booking_code,
+        accessToken: session.user.accessToken,
+        callback: (message: string) => {
+          toast.error(message);
+        },
+        localeMessage: "Không thể hủy vé. Vui lòng thử lại.",
+      });
+
+      if (success) {
+        toast.success("Vé đã được hủy thành công!");
+        setIsCancelConfirmOpen(false); // Đóng dialog sau khi hủy thành công
+        onClose(); // Đóng sheet sau khi hủy
+
+        // Gọi callback để refresh danh sách vé
+        if (onBookingCancelled) {
+          onBookingCancelled();
+        }
+      }
+    } catch (error) {
+      console.error("Error cancelling booking:", error);
+      toast.error("Có lỗi xảy ra khi hủy vé. Vui lòng thử lại.");
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   const handleDownloadTicket = () => {
@@ -469,13 +504,13 @@ export function BookingDetailSheet({
 
                 {canCancel && (
                   <Button
-                    onClick={handleCancelBooking}
+                    onClick={() => setIsCancelConfirmOpen(true)}
                     disabled={isLoading}
                     variant="destructive"
                     className="w-full"
                   >
                     <XCircle className="w-4 h-4 mr-2" />
-                    Hủy vé
+                    {isLoading ? "Đang hủy..." : "Hủy vé"}
                   </Button>
                 )}
               </div>
@@ -483,6 +518,35 @@ export function BookingDetailSheet({
           </Card>
         </div>
       </SheetContent>
+
+      {/* Dialog xác nhận hủy vé */}
+      <Dialog open={isCancelConfirmOpen} onOpenChange={setIsCancelConfirmOpen}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Xác nhận hủy vé</DialogTitle>
+            <DialogDescription>
+              Bạn có chắc chắn muốn hủy vé này không? Hành động này không thể
+              hoàn tác và có thể mất phí hủy vé nếu áp dụng.
+            </DialogDescription>
+          </DialogHeader>
+          <DialogFooter>
+            <Button
+              variant="outline"
+              onClick={() => setIsCancelConfirmOpen(false)}
+              disabled={isLoading}
+            >
+              Hủy
+            </Button>
+            <Button
+              variant="destructive"
+              onClick={handleCancelBooking}
+              disabled={isLoading}
+            >
+              {isLoading ? "Đang xử lý..." : "Xác nhận hủy"}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </Sheet>
   );
 }

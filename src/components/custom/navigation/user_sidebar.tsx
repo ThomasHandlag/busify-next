@@ -1,6 +1,6 @@
 "use client";
 
-import { Calendar, Home, User } from "lucide-react";
+import { Calendar, Home, Ticket, User } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 
@@ -13,7 +13,7 @@ export const userMenuItems = [
   {
     title: "Tickets",
     url: "/user/my-tickets",
-    icon: Home,
+    icon: Ticket,
   },
   {
     title: "Redeem",
@@ -28,16 +28,18 @@ export function UserSidebar() {
     return path === url;
   };
   return (
-    <div className="lg:flex lg:flex-col flex-row sticky gap-2 hidden">
+    <div className="lg:flex lg:flex-col flex-row sticky gap-2 hidden w-64 p-4 bg-white ">
       {userMenuItems.map((item) => (
         <Link
           key={item.title}
           href={item.url}
-          className={`flex items-center p-2 text-sm font-medium rounded-md ${
-            isActive(item.url) ? "bg-gray-100 text-gray-900" : "text-gray-600"
+          className={`flex items-center p-3 text-sm font-medium rounded-md transition-colors ${
+            isActive(item.url)
+              ? "bg-green-100 text-green-900 border border-green-200"
+              : "text-gray-600 hover:bg-gray-50 hover:text-gray-900"
           }`}
         >
-          <item.icon className="w-4 h-4 mr-2" />
+          <item.icon className="w-5 h-5 mr-3" />
           {item.title}
         </Link>
       ))}
