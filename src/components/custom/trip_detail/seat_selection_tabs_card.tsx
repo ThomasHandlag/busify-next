@@ -43,6 +43,8 @@ interface SeatSelectionTabsCardProps {
   seats: Seat[];
   layout: BusLayout | null;
   pricePerSeat: number;
+  originalPrice: number;
+  discountAmount: number;
   onSeatSelection?: (selectedSeats: string[], totalPrice: number) => void;
 }
 
@@ -51,11 +53,13 @@ export function SeatSelectionTabsCard({
   seats,
   layout,
   pricePerSeat,
+  originalPrice,
+  discountAmount,
   onSeatSelection,
 }: SeatSelectionTabsCardProps) {
   const [selectedSeats, setSelectedSeats] = useState<string[]>([]);
   const [isLoadingProfile, setIsLoadingProfile] = useState(false);
-  
+
   const { data: session } = useSession();
   const router = useRouter();
 
@@ -123,26 +127,29 @@ export function SeatSelectionTabsCard({
       if (session?.user?.accessToken) {
         setIsLoadingProfile(true);
         try {
-          const response = await fetch("http://localhost:8080/api/users/profile", {
-            method: "GET",
-            headers: {
-              "Authorization": `Bearer ${session.user.accessToken}`,
-              "Content-Type": "application/json",
-            },
-          });
+          const response = await fetch(
+            "http://localhost:8080/api/users/profile",
+            {
+              method: "GET",
+              headers: {
+                Authorization: `Bearer ${session.user.accessToken}`,
+                "Content-Type": "application/json",
+              },
+            }
+          );
 
           if (response.ok) {
             const profileData = await response.json();
             console.log("Profile data fetched:", profileData);
-            
+
             // Auto-fill form with user data
             if (profileData.result) {
               const { fullName, phoneNumber, email } = profileData.result;
-              
+
               form.setValue("fullName", fullName || "");
               form.setValue("phone", phoneNumber || "");
               form.setValue("email", email || "");
-              
+
               console.log("Form auto-filled with user profile data");
             }
           } else {
@@ -353,9 +360,11 @@ export function SeatSelectionTabsCard({
           <div className="flex items-center justify-between mb-4">
             <h3 className="font-semibold">Thông tin hành khách</h3>
             {session?.user && isLoadingProfile && (
-              <span className="text-sm text-gray-500">Đang tải thông tin...</span>
+              <span className="text-sm text-gray-500">
+                Đang tải thông tin...
+              </span>
             )}
-            {session?.user && !isLoadingProfile }
+            {session?.user && !isLoadingProfile}
           </div>
           <Form {...form}>
             <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
@@ -366,8 +375,8 @@ export function SeatSelectionTabsCard({
                   <FormItem>
                     <FormLabel>Họ và tên</FormLabel>
                     <FormControl>
-                      <Input 
-                        placeholder="Nhập họ và tên" 
+                      <Input
+                        placeholder="Nhập họ và tên"
                         {...field}
                         disabled={isLoadingProfile}
                       />
@@ -384,8 +393,8 @@ export function SeatSelectionTabsCard({
                   <FormItem>
                     <FormLabel>Số điện thoại</FormLabel>
                     <FormControl>
-                      <Input 
-                        placeholder="Nhập số điện thoại" 
+                      <Input
+                        placeholder="Nhập số điện thoại"
                         {...field}
                         disabled={isLoadingProfile}
                       />
@@ -402,9 +411,9 @@ export function SeatSelectionTabsCard({
                   <FormItem>
                     <FormLabel>Email</FormLabel>
                     <FormControl>
-                      <Input 
-                        placeholder="Nhập email" 
-                        type="email" 
+                      <Input
+                        placeholder="Nhập email"
+                        type="email"
                         {...field}
                         disabled={isLoadingProfile}
                       />
@@ -430,9 +439,32 @@ export function SeatSelectionTabsCard({
               )}
             </div>
             <div className="text-right">
-              <p className="text-lg font-bold text-green-600">
-                {totalPrice.toLocaleString("vi-VN")}đ
-              </p>
+              {discountAmount > 0 ? (
+                <div>
+                  <div className="flex items-center justify-end gap-2 mb-1">
+                    <p className="text-sm text-gray-400 line-through">
+                      {(selectedSeats.length * originalPrice).toLocaleString(
+                        "vi-VN"
+                      )}
+                      đ
+                    </p>
+                    <span className="text-xs bg-red-100 text-red-600 px-1.5 py-0.5 rounded font-medium">
+                      -
+                      {(selectedSeats.length * discountAmount).toLocaleString(
+                        "vi-VN"
+                      )}
+                      đ
+                    </span>
+                  </div>
+                  <p className="text-lg font-bold text-green-600">
+                    {totalPrice.toLocaleString("vi-VN")}đ
+                  </p>
+                </div>
+              ) : (
+                <p className="text-lg font-bold text-green-600">
+                  {totalPrice.toLocaleString("vi-VN")}đ
+                </p>
+              )}
               <p className="text-xs text-gray-500">
                 {selectedSeats.length} ghế ×{" "}
                 {pricePerSeat.toLocaleString("vi-VN")}đ

@@ -91,6 +91,8 @@ export default async function TripDetailPage({
       layout={busLayout}
       seats={busSeats}
       pricePerSeat={tripDetail.price_per_seat}
+      originalPrice={tripDetail.original_price}
+      discountAmount={tripDetail.discount_amount}
     />
   );
   const departureDate = new Date(tripDetail.departure_time);
