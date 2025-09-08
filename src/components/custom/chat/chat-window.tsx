@@ -39,6 +39,7 @@ export function ChatWindow({ onClose }: ChatWindowProps) {
   const [loading, setLoading] = useState(false);
   const [messages, setMessages] = useState<DisplayMessage[]>([]);
   const [roomId, setRoomId] = useState<string | null>(null);
+  const [isConnected, setIsConnected] = useState(false); // Thêm state để theo dõi kết nối
   const stompClient = useRef<Client | null>(null);
   const { data: session } = useSession();
   const messagesEndRef = useRef<HTMLDivElement>(null);
@@ -63,6 +64,7 @@ export function ChatWindow({ onClose }: ChatWindowProps) {
       if (stompClient.current?.connected) {
         console.log("Disconnecting STOMP client");
         stompClient.current.deactivate();
+        setIsConnected(false); // Reset state khi disconnect
       }
     };
   }, [session]);
@@ -80,6 +82,7 @@ export function ChatWindow({ onClose }: ChatWindowProps) {
         reconnectDelay: 5000,
         onConnect: () => {
           console.log("Connected to WebSocket");
+          setIsConnected(true); // Cập nhật state khi kết nối thành công
           if (currentRoomId) {
             subscribeToRoom(client, currentRoomId);
             fetchHistory(currentRoomId);
@@ -89,6 +92,11 @@ export function ChatWindow({ onClose }: ChatWindowProps) {
           console.error("Broker reported error: " + frame.headers["message"]);
           console.error("Additional details: " + frame.body);
           toast.error("Lỗi kết nối chat. Vui lòng thử lại.");
+          setIsConnected(false); // Reset state nếu có lỗi
+        },
+        onDisconnect: () => {
+          console.log("Disconnected from WebSocket");
+          setIsConnected(false); // Reset state khi disconnect
         },
       });
 
@@ -97,6 +105,7 @@ export function ChatWindow({ onClose }: ChatWindowProps) {
     } catch (error) {
       console.error("Connection error:", error);
       toast.error("Không thể kết nối đến máy chủ chat.");
+      setIsConnected(false); // Reset state nếu lỗi
     }
   };
 
@@ -140,6 +149,7 @@ export function ChatWindow({ onClose }: ChatWindowProps) {
 
   const fetchHistory = async (currentRoomId: string) => {
     setLoading(true);
+    console.log("Starting fetchHistory...");
     try {
       const response = await fetch(
         `http://localhost:8080/api/chat/history/room/${currentRoomId}`,
@@ -151,10 +161,14 @@ export function ChatWindow({ onClose }: ChatWindowProps) {
       );
       if (response.ok) {
         const history: ChatMessage[] = await response.json();
-        const formattedHistory = history.map((msg) => ({
+        // Chỉ thêm messages có type CHAT, bỏ qua JOIN/LEAVE để tránh hiển thị rỗng
+        const filteredHistory = history.filter(
+          (msg) => msg.type === MessageType.CHAT
+        );
+        const formattedHistory = filteredHistory.map((msg) => ({
           text: msg.content,
           isUser: msg.sender === session?.user?.name,
-          timestamp: new Date(), // Note: Backend should provide timestamp
+          timestamp: new Date(), // Lưu ý: Nên dùng timestamp từ backend nếu có (msg.timestamp)
           type: msg.type,
           sender: msg.sender,
         }));
@@ -166,6 +180,7 @@ export function ChatWindow({ onClose }: ChatWindowProps) {
       console.error("Failed to fetch chat history:", error);
     } finally {
       setLoading(false);
+      console.log("fetchHistory completed.");
     }
   };
 
@@ -298,13 +313,13 @@ export function ChatWindow({ onClose }: ChatWindowProps) {
             onChange={(e) => setMessage(e.target.value)}
             placeholder="Nhập tin nhắn..."
             className="flex-1"
-            disabled={loading || !stompClient.current?.connected}
+            disabled={loading || !isConnected} // Sử dụng isConnected thay vì stompClient.current?.connected
           />
           <Button
             type="submit"
             size="icon"
             disabled={
-              loading || !message.trim() || !stompClient.current?.connected
+              loading || !message.trim() || !isConnected // Sử dụng isConnected
             }
             className="bg-green-600 hover:bg-green-700"
           >
