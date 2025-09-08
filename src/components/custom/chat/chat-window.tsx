@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 
 import { Button } from "@/components/ui/button";
@@ -41,6 +42,7 @@ export function ChatWindow({ onClose }: ChatWindowProps) {
   const [roomId, setRoomId] = useState<string | null>(null);
   const [isConnected, setIsConnected] = useState(false); // Thêm state để theo dõi kết nối
   const stompClient = useRef<Client | null>(null);
+  const currentSubscription = useRef<any>(null); // Thêm ref để theo dõi subscription hiện tại
   const { data: session } = useSession();
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
@@ -62,7 +64,6 @@ export function ChatWindow({ onClose }: ChatWindowProps) {
 
     return () => {
       if (stompClient.current?.connected) {
-        console.log("Disconnecting STOMP client");
         stompClient.current.deactivate();
         setIsConnected(false); // Reset state khi disconnect
       }
@@ -76,13 +77,9 @@ export function ChatWindow({ onClose }: ChatWindowProps) {
         connectHeaders: {
           Authorization: `Bearer ${session?.user.accessToken}`,
         },
-        debug: (str) => {
-          console.log(new Date(), str);
-        },
         reconnectDelay: 5000,
         onConnect: () => {
-          console.log("Connected to WebSocket");
-          setIsConnected(true); // Cập nhật state khi kết nối thành công
+          setIsConnected(true);
           if (currentRoomId) {
             subscribeToRoom(client, currentRoomId);
             fetchHistory(currentRoomId);
@@ -92,11 +89,11 @@ export function ChatWindow({ onClose }: ChatWindowProps) {
           console.error("Broker reported error: " + frame.headers["message"]);
           console.error("Additional details: " + frame.body);
           toast.error("Lỗi kết nối chat. Vui lòng thử lại.");
-          setIsConnected(false); // Reset state nếu có lỗi
+          setIsConnected(false);
         },
         onDisconnect: () => {
-          console.log("Disconnected from WebSocket");
-          setIsConnected(false); // Reset state khi disconnect
+          setIsConnected(false);
+          currentSubscription.current = null; // Đặt lại subscription khi disconnect
         },
       });
 
@@ -105,51 +102,65 @@ export function ChatWindow({ onClose }: ChatWindowProps) {
     } catch (error) {
       console.error("Connection error:", error);
       toast.error("Không thể kết nối đến máy chủ chat.");
-      setIsConnected(false); // Reset state nếu lỗi
+      setIsConnected(false);
     }
   };
 
   const subscribeToRoom = (client: Client, newRoomId: string) => {
-    client.subscribe(`/topic/public/${newRoomId}`, (message: IMessage) => {
-      const chatMessage: ChatMessage = JSON.parse(message.body);
-      const isCurrentUser = chatMessage.sender === session?.user?.name;
+    // Hủy subscription cũ nếu có
+    if (currentSubscription.current) {
+      currentSubscription.current.unsubscribe();
+      currentSubscription.current = null;
+    }
 
-      if (chatMessage.type === MessageType.JOIN) {
-        // Optionally handle join message
-        console.log(`${chatMessage.sender} joined!`);
-        return;
-      }
-      if (chatMessage.type === MessageType.LEAVE) {
-        // Optionally handle leave message
-        console.log(`${chatMessage.sender} left!`);
-        return;
-      }
+    // Đăng ký mới
+    const subscription = client.subscribe(
+      `/topic/public/${newRoomId}`,
+      (message: IMessage) => {
+        const chatMessage: ChatMessage = JSON.parse(message.body);
+        const isCurrentUser = chatMessage.sender === session?.user?.email; // Thay name bằng email
 
-      setMessages((prev) => [
-        ...prev,
-        {
-          text: chatMessage.content,
-          isUser: isCurrentUser,
-          timestamp: new Date(),
-          type: chatMessage.type,
-          sender: chatMessage.sender,
-        },
-      ]);
-    });
+        // Xử lý tin nhắn JOIN và LEAVE
+        if (chatMessage.type === MessageType.JOIN) {
+          if (!isCurrentUser) {
+            toast(`${chatMessage.sender} đã tham gia phòng chat.`); // Sender giờ là email, có thể hiển thị email hoặc thay bằng name nếu cần
+          }
+          return;
+        }
+        if (chatMessage.type === MessageType.LEAVE) {
+          toast(`${chatMessage.sender} đã rời phòng chat.`); // Tương tự
+          return;
+        }
+
+        // Chỉ thêm tin nhắn CHAT
+        setMessages((prev) => [
+          ...prev,
+          {
+            text: chatMessage.content,
+            isUser: isCurrentUser,
+            timestamp: new Date(),
+            type: chatMessage.type,
+            sender: chatMessage.sender,
+          },
+        ]);
+      }
+    );
+
+    currentSubscription.current = subscription; // Lưu subscription mới
 
     // Announce user joining
     client.publish({
-      destination: `/app/chat.sendMessage/${newRoomId}`,
+      destination: `/app/chat.addUser/${newRoomId}`,
       body: JSON.stringify({
-        sender: session?.user?.name,
+        sender: session?.user?.email || "Anonymous", // Thay name bằng email
         type: MessageType.JOIN,
+        content: `${session?.user?.email || "Anonymous"} joined!`, // Thay name bằng email
       }),
     });
   };
 
   const fetchHistory = async (currentRoomId: string) => {
     setLoading(true);
-    console.log("Starting fetchHistory...");
     try {
       const response = await fetch(
         `http://localhost:8080/api/chat/history/room/${currentRoomId}`,
@@ -167,7 +178,7 @@ export function ChatWindow({ onClose }: ChatWindowProps) {
         );
         const formattedHistory = filteredHistory.map((msg) => ({
           text: msg.content,
-          isUser: msg.sender === session?.user?.name,
+          isUser: msg.sender === session?.user?.email, // Thay name bằng email
           timestamp: new Date(), // Lưu ý: Nên dùng timestamp từ backend nếu có (msg.timestamp)
           type: msg.type,
           sender: msg.sender,
@@ -180,7 +191,6 @@ export function ChatWindow({ onClose }: ChatWindowProps) {
       console.error("Failed to fetch chat history:", error);
     } finally {
       setLoading(false);
-      console.log("fetchHistory completed.");
     }
   };
 
@@ -221,7 +231,7 @@ export function ChatWindow({ onClose }: ChatWindowProps) {
   const sendMessage = (currentRoomId: string) => {
     if (message.trim() && stompClient.current?.connected) {
       const chatMessage: ChatMessage = {
-        sender: session?.user?.name || "Anonymous",
+        sender: session?.user?.email || "Anonymous", // Thay id bằng email
         content: message,
         type: MessageType.CHAT,
       };
