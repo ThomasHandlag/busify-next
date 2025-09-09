@@ -18,6 +18,7 @@ enum MessageType {
   CHAT = "CHAT",
   JOIN = "JOIN",
   LEAVE = "LEAVE",
+  SYSTEM_ASSIGN = "SYSTEM_ASSIGN",
 }
 
 interface ChatMessage {
@@ -172,9 +173,9 @@ export function ChatWindow({ onClose }: ChatWindowProps) {
       );
       if (response.ok) {
         const history: ChatMessage[] = await response.json();
-        // Chỉ thêm messages có type CHAT, bỏ qua JOIN/LEAVE để tránh hiển thị rỗng
+        // Chỉ thêm messages có type CHAT và SYSTEM_ASSIGN, bỏ qua JOIN/LEAVE để tránh hiển thị rỗng
         const filteredHistory = history.filter(
-          (msg) => msg.type === MessageType.CHAT
+          (msg) => msg.type === MessageType.CHAT || msg.type === MessageType.SYSTEM_ASSIGN
         );
         const formattedHistory = filteredHistory.map((msg) => ({
           text: msg.content,
