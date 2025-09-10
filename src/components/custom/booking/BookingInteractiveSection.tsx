@@ -11,7 +11,7 @@ import { Button } from "@/components/ui/button";
 import { DiscountInfo } from "@/lib/data/discount";
 import { useTranslations } from "next-intl";
 import PointsSection from "./PointsSession";
-import { getScore, usePoints } from "@/lib/data/score";
+import { getScore, makeUsePoints } from "@/lib/data/score";
 
 
 interface BookingData {
@@ -208,7 +208,7 @@ export default function BookingInteractiveSection({
       // Nếu user có dùng điểm thì gọi API trừ điểm
       if (usedPoints > 0 && session?.user?.accessToken) {
         try {
-          const pointResponse = await usePoints(
+          const pointResponse = await makeUsePoints(
             {
               bookingId: bookingId,
               pointsToUse: usedPoints,
