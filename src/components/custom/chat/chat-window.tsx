@@ -91,7 +91,12 @@ export function ChatWindow({ onClose }: ChatWindowProps) {
           return;
         }
 
-        // Add only CHAT messages to display
+        // Skip adding the user's own messages as they were already added when sending
+        if (isCurrentUser && chatMessage.type === MessageType.CHAT) {
+          return;
+        }
+
+        // Add only other users' messages or system messages
         setMessages((prev) => [
           ...prev,
           {
@@ -201,19 +206,83 @@ export function ChatWindow({ onClose }: ChatWindowProps) {
     e.preventDefault();
     if (!message.trim() || !session) return;
 
+    // Store current message before clearing input
+    const currentMessage = message;
+    setMessage(""); // Clear input immediately for better UX
+
     if (!roomId) {
-      await createRoomAndSendMessage();
+      setLoading(true);
+      try {
+        const response = await fetch(
+          `${process.env.NEXT_PUBLIC_API_URL}api/chat/createRoom`,
+          {
+            method: "POST",
+            headers: {
+              Authorization: `Bearer ${session?.user.accessToken}`,
+            },
+          }
+        );
+
+        if (!response.ok) throw new Error("Failed to create room");
+
+        const newRoomId = await response.text();
+        localStorage.setItem("chatRoomId", newRoomId);
+        setRoomId(newRoomId);
+
+        if (isConnected) {
+          // Add message to UI immediately
+          setMessages((prev) => [
+            ...prev,
+            {
+              text: currentMessage,
+              isUser: true,
+              timestamp: new Date(),
+              type: MessageType.CHAT,
+              sender: session?.user?.email || "Anonymous",
+            },
+          ]);
+
+          subscribeToRoom(newRoomId);
+          sendMessage(
+            `/app/chat.sendMessage/${newRoomId}`,
+            JSON.stringify({
+              sender: session?.user?.email || "Anonymous",
+              type: MessageType.CHAT,
+              content: currentMessage,
+            })
+          );
+        } else {
+          toast.error("Chưa kết nối tới server chat. Đang thử lại...");
+        }
+      } catch (error) {
+        console.error("Error creating room:", error);
+        toast.error("Không thể tạo phòng chat. Vui lòng thử lại.");
+        // Restore message if sending failed
+        setMessage(currentMessage);
+      } finally {
+        setLoading(false);
+      }
     } else {
-      // Fix: Include message content as second parameter
+      // Add message to UI immediately
+      setMessages((prev) => [
+        ...prev,
+        {
+          text: currentMessage,
+          isUser: true,
+          timestamp: new Date(),
+          type: MessageType.CHAT,
+          sender: session?.user?.email || "Anonymous",
+        },
+      ]);
+
       sendMessage(
         `/app/chat.sendMessage/${roomId}`,
         JSON.stringify({
           sender: session?.user?.email || "Anonymous",
           type: MessageType.CHAT,
-          content: message,
+          content: currentMessage,
         })
       );
-      setMessage(""); // Clear the input after sending
     }
   };
 
