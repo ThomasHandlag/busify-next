@@ -33,7 +33,7 @@ const getScore = async (): Promise<ScoreInfo> => {
   }
 };
 
-const usePoints = async (
+const makeUsePoints = async (
   request: UsePointsRequest,
   token: string
 ): Promise<ApiResponse<ScoreInfo>> => {
@@ -54,4 +54,4 @@ const usePoints = async (
   }
 };
 
-export { getScore, usePoints };
+export { getScore, makeUsePoints };

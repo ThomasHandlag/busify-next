@@ -32,17 +32,17 @@ const Header = () => {
   const [lastScrollTop, setLastScrollTop] = useState(0);
   const [isScrollUp, setIsScrollUp] = useState(true);
 
-  const trans = useTranslations("Header");
+  const t = useTranslations("Header");
 
   const publicNavigationItems: NavItemData[] = [
     {
       href: "/",
-      label: trans("home"),
+      label: t("home"),
       icon: () => <Bus className="w-4 h-4" />,
     },
     {
       href: "/about",
-      label: trans("about"),
+      label: t("about"),
       icon: () => <HelpCircle className="w-4 h-4" />,
     },
   ];
@@ -51,21 +51,18 @@ const Header = () => {
   const contactMenuItems: NavItemData[] = [
     {
       href: "https://facebook.com/busify",
-      label: "Facebook",
+      label: "facebook",
       icon: () => <SiFacebook className="w-4 h-4" />,
-      description: "Follow us on Facebook",
     },
     {
       href: "https://discord.com/invite/busify",
-      label: "Discord",
+      label: "discord",
       icon: () => <SiDiscord className="w-4 h-4" />,
-      description: "Join our community",
     },
     {
       href: "https://zalo.me/busify",
-      label: "Zalo",
+      label: "zalo",
       icon: () => <SiZalo className="w-4 h-4" />,
-      description: "Connect on Zalo",
     },
   ];
 

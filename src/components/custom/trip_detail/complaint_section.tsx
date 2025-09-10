@@ -1,6 +1,7 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Complaint, getComplaintsByTripId } from "@/lib/data/complaints";
 import { MessageSquareWarning, User } from "lucide-react";
+import LocaleText from "../locale_text";
 
 export default async function ComplaintSection({ tripId }: { tripId: number }) {
   const complaints: Complaint[] = await getComplaintsByTripId(tripId);
@@ -9,13 +10,17 @@ export default async function ComplaintSection({ tripId }: { tripId: number }) {
       <CardHeader>
         <CardTitle className="flex items-center space-x-2">
           <MessageSquareWarning className="w-5 h-5 text-red-500" />
-          <span>Khiếu nại</span>
+          <span>
+            <LocaleText string="complaint" name="Complaint" />
+          </span>
         </CardTitle>
       </CardHeader>
 
       <CardContent>
         {complaints.length === 0 ? (
-          <p className="text-sm text-gray-500">Chưa có khiếu nại nào.</p>
+          <p className="text-sm text-gray-500">
+            <LocaleText string="noComplaints" name="No Complaints" />
+          </p>
         ) : (
           <div className="space-y-4">
             {complaints.map((complaint) => (

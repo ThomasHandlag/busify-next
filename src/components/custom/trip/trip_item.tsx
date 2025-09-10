@@ -5,9 +5,9 @@ import { Button } from "../../ui/button";
 import { Badge } from "../../ui/badge";
 import { Clock, MapPin, Users, Star, ArrowRight } from "lucide-react";
 import { format } from "date-fns";
-
 import { TripItemProps } from "@/lib/data/trip";
 import Link from "next/link";
+import LocaleText from "../locale_text";
 
 const TripItem = ({ trip }: { trip: TripItemProps }) => {
   const getAvailabilityColor = (seats: number) => {
@@ -17,9 +17,9 @@ const TripItem = ({ trip }: { trip: TripItemProps }) => {
   };
 
   const getAvailabilityText = (seats: number) => {
-    if (seats <= 5) return "Few seats left";
-    if (seats <= 10) return "Limited seats";
-    return "Available";
+    if (seats <= 5) return (<LocaleText string="fewSeats" name="Trips.tripItem" />);
+    if (seats <= 10) return (<LocaleText string="limitedSeats" name="Trips.tripItem" />);
+    return (<LocaleText string="availableSeats" name="Trips.tripItem" />);
   };
 
   // Parse ISO 8601 format dates properly
@@ -111,11 +111,11 @@ const TripItem = ({ trip }: { trip: TripItemProps }) => {
           <div className="flex items-center gap-3 text-xs text-gray-500">
             <span className="flex items-center gap-1">
               <Clock className="w-3 h-3" />
-              {duration}
+              <span><LocaleText string="duration" name="Trips.tripItem" /></span>: {duration}
             </span>
             <span className="flex items-center gap-1">
               <Users className="w-3 h-3" />
-              {trip.available_seats}
+              <span><LocaleText string="seats" name="Trips.tripItem" /></span>: {trip.available_seats}
             </span>
           </div>
 
@@ -131,7 +131,7 @@ const TripItem = ({ trip }: { trip: TripItemProps }) => {
                 size="sm"
                 className="bg-green-600 hover:bg-green-700 text-white text-xs h-7 px-3"
               >
-                Đặt vé
+                <LocaleText string="bookTrip" name="Trips.tripItem" />
               </Button>
             </Link>
           </div>

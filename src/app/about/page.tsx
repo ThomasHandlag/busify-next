@@ -43,6 +43,7 @@ import {
 } from "lucide-react";
 import { FadeinWrapper } from "@/components/custom/animation/fadein_wrapper";
 import Link from "next/link";
+import LocaleText from "@/components/custom/locale_text";
 
 const AboutPage = async () => {
   return (
@@ -61,13 +62,11 @@ const AboutPage = async () => {
         <div className="z-10 flex flex-col items-center">
           <FadeinWrapper effect="animate-fade-in-left">
             <h1 className="text-5xl font-bold text-center mb-6">
-              Welcome to Busify
+              <LocaleText string="title" name="About" />
             </h1>
             <FadeinWrapper effect="animate-fade-in-l300">
               <p className="text-xl text-center mb-8 max-w-3xl px-4">
-                The complete travel platform connecting passengers with trusted
-                bus operators. Book tickets effortlessly or grow your bus
-                business with our comprehensive management tools.
+                <LocaleText string="platformDesc" name="About" />
               </p>
             </FadeinWrapper>
           </FadeinWrapper>
@@ -386,14 +385,14 @@ const AboutPage = async () => {
                   className="flex items-center space-x-2 data-[state=active]:bg-green-600 data-[state=active]:text-white"
                 >
                   <Users className="w-4 h-4" />
-                  <span>For Passengers</span>
+                  <span><LocaleText string="forPassengers" name="About" /></span>
                 </TabsTrigger>
                 <TabsTrigger
                   value="operators"
                   className="flex items-center space-x-2 data-[state=active]:bg-green-600 data-[state=active]:text-white"
                 >
                   <Building2 className="w-4 h-4" />
-                  <span>For Operators</span>
+                  <span><LocaleText string="forOperators" name="About" /></span>
                 </TabsTrigger>
               </TabsList>
 

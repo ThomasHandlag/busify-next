@@ -31,47 +31,7 @@ import { useSession } from "next-auth/react"; // Thêm import useSession
 import { createComplaint, ComplaintAddDTO } from "@/lib/data/complaints"; // Thêm import createComplaint
 import { toast } from "sonner"; // Thêm import toast cho thông báo
 import { cancelBooking } from "@/lib/data/booking"; // Thêm import cho cancelBooking
-
-const getStatusInfo = (status: BookingData["status"]) => {
-  switch (status) {
-    case "confirmed":
-      return {
-        label: "Đã xác nhận",
-        variant: "default" as const,
-        icon: CheckCircle,
-        color: "text-green-600",
-      };
-    case "pending":
-      return {
-        label: "Đã cọc",
-        variant: "secondary" as const,
-        icon: AlertCircle,
-        color: "text-yellow-600",
-      };
-    case "completed":
-      return {
-        label: "Đã hoàn thành",
-        variant: "default" as const,
-        icon: CheckCircle,
-        color: "text-blue-600",
-      };
-    case "canceled_by_user":
-    case "canceled_by_operator":
-      return {
-        label: "Đã hủy",
-        variant: "destructive" as const,
-        icon: XCircle,
-        color: "text-red-600",
-      };
-    default:
-      return {
-        label: "Không xác định",
-        variant: "outline" as const,
-        icon: AlertCircle,
-        color: "text-gray-600",
-      };
-  }
-};
+import { useTranslations } from "next-intl";
 
 const formatDate = (dateString: string) => {
   const date = new Date(dateString);
@@ -126,6 +86,50 @@ export const TicketCard = ({
   onViewDetails?: () => void;
   onBookingCancelled?: () => void;
 }) => {
+  const { data: session } = useSession(); // Lấy session để lấy token
+  const t = useTranslations("MyTickets");
+
+  const getStatusInfo = (status: BookingData["status"]) => {
+    switch (status) {
+      case "confirmed":
+        return {
+          label: t("confirmed"),
+          variant: "default" as const,
+          icon: CheckCircle,
+          color: "text-green-600",
+        };
+      case "pending":
+        return {
+          label: t("pending"),
+          variant: "secondary" as const,
+          icon: AlertCircle,
+          color: "text-yellow-600",
+        };
+      case "completed":
+        return {
+          label: t("completed"),
+          variant: "default" as const,
+          icon: CheckCircle,
+          color: "text-blue-600",
+        };
+      case "canceled_by_user":
+      case "canceled_by_operator":
+        return {
+          label: t("cancelled"),
+          variant: "destructive" as const,
+          icon: XCircle,
+          color: "text-red-600",
+        };
+      default:
+        return {
+          label: t("unknown"),
+          variant: "outline" as const,
+          icon: AlertCircle,
+          color: "text-gray-600",
+        };
+    }
+  };
+
   const statusInfo = getStatusInfo(booking.status);
   const StatusIcon = statusInfo.icon;
   const [complaintTitle, setComplaintTitle] = useState(""); // State cho tiêu đề khiếu nại
@@ -134,7 +138,6 @@ export const TicketCard = ({
   const [isSubmittingComplaint, setIsSubmittingComplaint] = useState(false); // State cho loading khi gửi khiếu nại
   const [isCancelling, setIsCancelling] = useState(false); // Thêm state cho loading khi hủy
   const [isCancelConfirmOpen, setIsCancelConfirmOpen] = useState(false); // State cho dialog xác nhận hủy
-  const { data: session } = useSession(); // Lấy session để lấy token
 
   const isPast = new Date(booking.departure_time) < new Date();
   const refundPercentage = calculateRefundPercentage(
@@ -144,12 +147,12 @@ export const TicketCard = ({
 
   const handleSubmitComplaint = async () => {
     if (!session?.user?.accessToken) {
-      toast.error("Bạn cần đăng nhập để gửi khiếu nại.");
+      toast.error(t("loginRequired"));
       return;
     }
 
     if (!complaintTitle.trim() || !complaintDescription.trim()) {
-      toast.error("Vui lòng nhập đầy đủ tiêu đề và mô tả khiếu nại.");
+      toast.error(t("complaintValidationError"));
       return;
     }
 
@@ -168,12 +171,12 @@ export const TicketCard = ({
       );
 
       if (result) {
-        toast.success("Khiếu nại đã được gửi thành công!");
+        toast.success(t("complaintSubmitted"));
         setComplaintTitle("");
         setComplaintDescription("");
         setIsComplaintModalOpen(false);
       } else {
-        toast.error("Có lỗi xảy ra khi gửi khiếu nại. Vui lòng thử lại.");
+        toast.error(t("complaintError"));
       }
     } catch (error) {
       console.error("Error submitting complaint:", error);
@@ -186,7 +189,7 @@ export const TicketCard = ({
   // Thêm hàm xử lý hủy vé
   const handleCancelBooking = async () => {
     if (!session?.user?.accessToken) {
-      toast.error("Bạn cần đăng nhập để hủy vé.");
+      toast.error(t("loginRequired"));
       return;
     }
 
@@ -202,7 +205,7 @@ export const TicketCard = ({
       });
 
       if (success) {
-        toast.success("Vé đã được hủy thành công!");
+        toast.success(t("bookingCancelled"));
         // Thông báo cho parent component để làm mới danh sách
         if (onBookingCancelled) {
           onBookingCancelled();
@@ -211,7 +214,7 @@ export const TicketCard = ({
       }
     } catch (error) {
       console.error("Error cancelling booking:", error);
-      toast.error("Có lỗi xảy ra khi hủy vé. Vui lòng thử lại.");
+      toast.error(t("cancellationError"));
     } finally {
       setIsCancelling(false);
     }
@@ -298,16 +301,14 @@ export const TicketCard = ({
 
         {/* Actions Row - Compact */}
         <div className="flex gap-2">
-          <Button
-            variant="outline"
-            size="sm"
-            onClick={onViewDetails}
-            className="flex-1 h-8 text-xs"
-          >
-            Chi tiết
-          </Button>
-
-          {(booking.status === "confirmed" || booking.status === "pending") &&
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={onViewDetails}
+              className="flex-1 h-8 text-xs"
+            >
+              {t("details")}
+            </Button>          {(booking.status === "confirmed" || booking.status === "pending") &&
             !isPast && (
               <Button
                 variant="destructive"
@@ -316,7 +317,7 @@ export const TicketCard = ({
                 disabled={isCancelling} // Vô hiệu hóa khi đang hủy
                 className="h-8 px-3 text-xs"
               >
-                {isCancelling ? "Đang hủy..." : "Hủy"} {/* Text động */}
+                {isCancelling ? t("cancelling") : t("cancel")} {/* Text động */}
               </Button>
             )}
 
@@ -354,22 +355,22 @@ export const TicketCard = ({
                 </DialogTrigger>
                 <DialogContent>
                   <DialogHeader>
-                    <DialogTitle>Gửi khiếu nại</DialogTitle>
+                    <DialogTitle>{t("submitComplaint")}</DialogTitle>
                   </DialogHeader>
                   <div className="space-y-4">
                     <div>
-                      <label className="text-sm font-medium">Tiêu đề</label>
+                      <label className="text-sm font-medium">{t("title")}</label>
                       <Input
-                        placeholder="Nhập tiêu đề khiếu nại (5-100 ký tự)"
+                        placeholder={t("complaintTitlePlaceholder")}
                         value={complaintTitle}
                         onChange={(e) => setComplaintTitle(e.target.value)}
                         disabled={isSubmittingComplaint}
                       />
                     </div>
                     <div>
-                      <label className="text-sm font-medium">Mô tả</label>
+                      <label className="text-sm font-medium">{t("description")}</label>
                       <Textarea
-                        placeholder="Nhập mô tả khiếu nại (10-1000 ký tự)"
+                        placeholder={t("complaintDescriptionPlaceholder")}
                         value={complaintDescription}
                         onChange={(e) =>
                           setComplaintDescription(e.target.value)
@@ -385,7 +386,7 @@ export const TicketCard = ({
                         !complaintDescription.trim()
                       }
                     >
-                      {isSubmittingComplaint ? "Đang gửi..." : "Gửi"}
+                      {isSubmittingComplaint ? t("sending") : t("send")}
                     </Button>
                   </div>
                 </DialogContent>
@@ -401,12 +402,16 @@ export const TicketCard = ({
         >
           <DialogContent>
             <DialogHeader>
-              <DialogTitle>Xác nhận hủy vé</DialogTitle>
+              <DialogTitle>{t("confirmCancelTitle")}</DialogTitle>
               <DialogDescription>
-                Bạn có chắc chắn muốn hủy vé này không? Hành động này không thể
+
+<!--                 Bạn có chắc chắn muốn hủy vé này không? Hành động này không thể
                 hoàn tác và bạn sẽ được hoàn {refundPercentage}% tiền vé.
                 {refundPercentage === 0 &&
-                  " (Lưu ý: Không được hoàn tiền do hủy sát giờ khởi hành.)"}
+                  " (Lưu ý: Không được hoàn tiền do hủy sát giờ khởi hành.)"} -->
+
+                {t("confirmCancelDescription")}
+
               </DialogDescription>
             </DialogHeader>
             <DialogFooter>
@@ -415,14 +420,14 @@ export const TicketCard = ({
                 onClick={() => setIsCancelConfirmOpen(false)}
                 disabled={isCancelling}
               >
-                Hủy
+                {t("cancel")}
               </Button>
               <Button
                 variant="destructive"
                 onClick={handleCancelBooking}
                 disabled={isCancelling}
               >
-                {isCancelling ? "Đang xử lý..." : "Xác nhận hủy"}
+                {isCancelling ? t("processing") : t("confirmCancel")}
               </Button>
             </DialogFooter>
           </DialogContent>
@@ -432,4 +437,4 @@ export const TicketCard = ({
   );
 };
 
-export { getStatusInfo, formatDate, formatTime, formatCurrency };
+export { formatDate, formatTime, formatCurrency };

@@ -23,7 +23,7 @@ const NavDesktop = ({
   isActive,
 }: NavDataProps) => {
   const session = useSession();
-  const trans = useTranslations("Header");
+  const t = useTranslations();
   return (
     <div className="hidden lg:flex gap-6 w-full items-center justify-between">
       <div className="flex items-center space-x-3">
@@ -54,17 +54,17 @@ const NavDesktop = ({
           })}
           <NavigationMenuItem>
             <NavigationMenuTrigger className="hover:bg-green-50 hover:text-green-700 data-[state=open]:bg-green-100 data-[state=open]:text-green-700">
-              {trans("contact")}
+              {t("Header.contact")}
             </NavigationMenuTrigger>
             <NavigationMenuContent>
               <div className="w-[500px] p-4">
                 <div className="grid gap-4">
                   <div className="text-center p-4 bg-green-50 rounded-lg">
                     <h4 className="text-lg font-semibold text-green-900">
-                      {trans("contact")}
+                      {t("Header.contact")}
                     </h4>
                     <p className="text-sm text-green-700 mt-1">
-                      Connecting passengers and operators nationwide
+                      {t("Home.passengers")}
                     </p>
                   </div>
                   <div className="grid grid-cols-2 gap-4">
@@ -108,17 +108,17 @@ const NavDesktop = ({
         <div className="flex items-center space-x-4">
           <Button variant="outline" size="sm" asChild>
             <Link
-              aria-label="Sign in"
+              aria-label={t("Header.signIn")}
               href="/login"
               className="flex items-center space-x-2"
             >
               <User className="w-4 h-4" />
-              <span>Sign In</span>
+              <span>{t("Header.signIn")}</span>
             </Link>
           </Button>
           <Button size="sm" className="bg-green-600 hover:bg-green-700" asChild>
-            <Link aria-label="Sign up" href="/signup">
-              Sign up
+            <Link aria-label={t("Header.signUp")} href="/signup">
+              {t("Header.signUp")}
             </Link>
           </Button>
         </div>
@@ -134,18 +134,18 @@ const NavDesktop = ({
                 <div className="w-48 p-2">
                   <div className="space-y-1">
                     <Link
-                      aria-label="User Dashboard"
+                      aria-label={t("Header.dashboard")}
                       href={`/user`}
                       className="block px-3 py-2 text-sm rounded-lg hover:bg-gray-100 transition-colors"
                     >
-                      Dashboard
+                      {t("Header.dashboard")}
                     </Link>
                     <hr className="my-1" />
                     <button
                       onClick={() => signOut()}
                       className="w-full text-left px-3 py-2 text-sm rounded-lg hover:bg-gray-100 transition-colors text-red-600"
                     >
-                      Sign Out
+                      {t("Profile.logout")}
                     </button>
                   </div>
                 </div>

@@ -20,7 +20,9 @@ import { cn } from "@/lib/utils";
 import Policy from "./policy/policy";
 import { busOperatorSchema, userSchema } from "@/lib/scheams/scheams";
 import { useForm } from "react-hook-form";
+import { useTranslations } from "next-intl";
 export const RegisterForm = () => {
+  const t = useTranslations("Form");
   const [showPassword, setShowPassword] = React.useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = React.useState(false);
   const [isBusOperator, setIsBusOperator] = React.useState(false);
@@ -66,7 +68,7 @@ export const RegisterForm = () => {
       // If registering as bus operator, validate contract fields
       if (isBusOperator) {
         if (!acceptedPolicy) {
-          toast.error("Vui lòng đồng ý với chính sách của website");
+          toast.error(t("Register.errors.acceptPolicy"));
           setIsSubmitting(false);
           return;
         }
@@ -80,7 +82,7 @@ export const RegisterForm = () => {
           !data.operationArea ||
           !data.VATCode
         ) {
-          toast.error("Vui lòng điền đầy đủ thông tin hợp đồng");
+          toast.error(t("Register.errors.fillContract"));
           setIsSubmitting(false);
           return;
         }
@@ -88,9 +90,7 @@ export const RegisterForm = () => {
         // Validate phone format
         const PHONE_PATTERN = /^[\+]?[0-9]{10,15}$/;
         if (!PHONE_PATTERN.test(data.phone)) {
-          toast.error(
-            "Số điện thoại không đúng định dạng (10-15 chữ số, có thể có +)"
-          );
+          toast.error(t("Register.errors.invalidPhone"));
           setIsSubmitting(false);
           return;
         }
@@ -98,7 +98,7 @@ export const RegisterForm = () => {
         // Validate VAT code format
         const VAT_CODE_PATTERN = /^[0-9]{10,15}$/;
         if (!VAT_CODE_PATTERN.test(data.VATCode)) {
-          toast.error("Mã số thuế phải từ 10-15 chữ số");
+          toast.error(t("Register.errors.invalidVat"));
           setIsSubmitting(false);
           return;
         }
@@ -109,13 +109,13 @@ export const RegisterForm = () => {
         const now = new Date();
 
         if (startDate < now) {
-          toast.error("Ngày bắt đầu phải là ngày hiện tại hoặc tương lai");
+          toast.error(t("Register.errors.startDateInvalid"));
           setIsSubmitting(false);
           return;
         }
 
         if (endDate <= startDate) {
-          toast.error("Ngày kết thúc phải sau ngày bắt đầu");
+          toast.error(t("Register.errors.endDateInvalid"));
           setIsSubmitting(false);
           return;
         }
@@ -135,13 +135,11 @@ export const RegisterForm = () => {
         const contractResponse = await createContract(contractData);
 
         if (contractResponse.code === 201 || contractResponse.code === 200) {
-          toast.success(
-            "Đăng ký hợp đồng thành công! Chờ xác nhận từ quản trị viên."
-          );
+          toast.success(t("Register.errors.contractSuccess"));
           setUserEmail(data.email);
           setRegistrationSuccess(true);
         } else {
-          toast.error("Có lỗi xảy ra khi đăng ký hợp đồng");
+          toast.error(t("Register.errors.contractFailed"));
         }
       } else {
         // Regular user registration
@@ -154,18 +152,18 @@ export const RegisterForm = () => {
 
         if (response.code === 200) {
           setUserEmail(data.email);
-          toast.success(
-            "Đăng ký tài khoản thành công! Vui lòng kiểm tra email để xác thực tài khoản."
-          );
+          toast.success(t("Register.errors.regSuccess"));
           setRegistrationSuccess(true);
         } else {
           // Handle error
-          toast.error((response.message as string) || "Registration failed");
+          toast.error(
+            (response.message as string) || t("Register.errors.regFailed")
+          );
         }
       }
     } catch (error) {
       console.error("Registration error:", error);
-      toast.error("An error occurred during registration");
+      toast.error(t("Register.errors.regError"));
     } finally {
       setIsSubmitting(false);
     }
@@ -180,13 +178,12 @@ export const RegisterForm = () => {
       special: /[^A-Za-z0-9]/.test(password),
     };
 
-    const unmetRequirements = [];
-    if (!requirements.length) unmetRequirements.push("Ít nhất 6 ký tự");
-    if (!requirements.uppercase) unmetRequirements.push("Một chữ cái viết hoa");
-    if (!requirements.lowercase)
-      unmetRequirements.push("Một chữ cái viết thường");
-    if (!requirements.number) unmetRequirements.push("Một chữ số");
-    if (!requirements.special) unmetRequirements.push("Một ký tự đặc biệt");
+    const unmetRequirements: string[] = [];
+    if (!requirements.length) unmetRequirements.push("length");
+    if (!requirements.uppercase) unmetRequirements.push("uppercase");
+    if (!requirements.lowercase) unmetRequirements.push("lowercase");
+    if (!requirements.number) unmetRequirements.push("number");
+    if (!requirements.special) unmetRequirements.push("special");
 
     const strength = Object.values(requirements).filter(Boolean).length;
 
@@ -208,10 +205,10 @@ export const RegisterForm = () => {
                 </span>
               </div>
               <h2 className="text-2xl sm:text-3xl font-bold text-gray-800 mb-2">
-                Create Account
+                {t("Register.title")}
               </h2>
               <p className="text-sm sm:text-base text-gray-500">
-                Join Busify today and get started
+                {t("Register.subtitle")}
               </p>
             </div>
 
@@ -229,12 +226,13 @@ export const RegisterForm = () => {
                     render={({ field }) => (
                       <FormItem>
                         <FormLabel className="text-gray-700 font-medium">
-                          Full Name <span className="text-red-500">*</span>
+                          {t("fullName")}{" "}
+                          <span className="text-red-500">*</span>
                         </FormLabel>
                         <Input
                           {...field}
                           type="text"
-                          placeholder="Enter your full name"
+                          placeholder={t("fullName")}
                           required
                           className="h-12 bg-gray-50 border-gray-200 rounded-xl focus:ring-2 focus:ring-green-500 focus:border-transparent transition-all duration-200"
                         />
@@ -251,12 +249,12 @@ export const RegisterForm = () => {
                   render={({ field }) => (
                     <FormItem>
                       <FormLabel className="text-gray-700 font-medium">
-                        Email Address <span className="text-red-500">*</span>
+                        {t("email")} <span className="text-red-500">*</span>
                       </FormLabel>
                       <Input
                         {...field}
                         type="email"
-                        placeholder="Enter your email"
+                        placeholder={t("email")}
                         required
                         className="h-12 bg-gray-50 border-gray-200 rounded-xl focus:ring-2 focus:ring-green-500 focus:border-transparent transition-all duration-200"
                       />
@@ -272,7 +270,7 @@ export const RegisterForm = () => {
                   render={({ field }) => (
                     <FormItem>
                       <FormLabel className="text-gray-700 font-medium">
-                        Phone Number{" "}
+                        {t("phone")}{" "}
                         {isBusOperator && (
                           <span className="text-red-500">*</span>
                         )}
@@ -282,14 +280,14 @@ export const RegisterForm = () => {
                         type="tel"
                         placeholder={
                           isBusOperator
-                            ? "0123456789"
-                            : "Enter your phone number"
+                            ? t("Register.placeholderPhoneOperator")
+                            : t("Register.placeholderPhone")
                         }
                         className="h-12 bg-gray-50 border-gray-200 rounded-xl focus:ring-2 focus:ring-green-500 focus:border-transparent transition-all duration-200"
                       />
                       {isBusOperator && (
                         <p className="text-xs text-gray-500">
-                          Số điện thoại từ 10-15 chữ số (có thể bắt đầu bằng +)
+                          {t("Register.phoneOperatorNote")}
                         </p>
                       )}
                       <FormMessage />
@@ -305,13 +303,14 @@ export const RegisterForm = () => {
                     render={({ field }) => (
                       <FormItem>
                         <FormLabel className="text-gray-700 font-medium">
-                          Password <span className="text-red-500">*</span>
+                          {t("password")}{" "}
+                          <span className="text-red-500">*</span>
                         </FormLabel>
                         <div className="relative">
                           <Input
                             {...field}
                             type={showPassword ? "text" : "password"}
-                            placeholder="Create a strong password"
+                            placeholder={t("Register.placeholderPassword")}
                             required
                             className="h-12 bg-gray-50 border-gray-200 rounded-xl focus:ring-2 focus:ring-green-500 focus:border-transparent transition-all duration-200 pr-12"
                             onChange={(e) => {
@@ -338,25 +337,20 @@ export const RegisterForm = () => {
                             <p className="text-xs">
                               {passwordRequirements.strength >= 3 ? (
                                 <span className="text-green-600">
-                                  Mật khẩu đủ mạnh
+                                  {t("Register.passwordStrong")}
                                 </span>
                               ) : (
                                 <span className="text-red-500">
-                                  Cần:{" "}
-                                  {[
-                                    !passwordRequirements.requirements.length &&
-                                      "6+ ký tự",
-                                    !passwordRequirements.requirements
-                                      .uppercase && "chữ hoa",
-                                    !passwordRequirements.requirements
-                                      .lowercase && "chữ thường",
-                                    !passwordRequirements.requirements.number &&
-                                      "số",
-                                    !passwordRequirements.requirements
-                                      .special && "ký tự đặc biệt",
-                                  ]
-                                    .filter(Boolean)
-                                    .join(", ")}
+                                  {t("Register.passwordNeeds", {
+                                    requirements:
+                                      passwordRequirements.unmetRequirements
+                                        .map((k) =>
+                                          t(
+                                            `Register.passwordRequirements.${k}`
+                                          )
+                                        )
+                                        .join(", "),
+                                  })}
                                 </span>
                               )}
                             </p>
@@ -375,14 +369,14 @@ export const RegisterForm = () => {
                     render={({ field }) => (
                       <FormItem>
                         <FormLabel className="text-gray-700 font-medium">
-                          Confirm Password{" "}
+                          {t("confirmPassword")}{" "}
                           <span className="text-red-500">*</span>
                         </FormLabel>
                         <div className="relative">
                           <Input
                             {...field}
                             type={showConfirmPassword ? "text" : "password"}
-                            placeholder="Confirm your password"
+                            placeholder={t("confirmPassword")}
                             required
                             className="h-12 bg-gray-50 border-gray-200 rounded-xl focus:ring-2 focus:ring-green-500 focus:border-transparent transition-all duration-200 pr-12"
                           />
@@ -422,11 +416,10 @@ export const RegisterForm = () => {
                       className="text-sm font-medium text-blue-900 cursor-pointer flex items-center gap-2"
                     >
                       <Building2 className="w-4 h-4" />
-                      Đăng ký với tư cách Bus Operator
+                      {t("Register.busOperatorLabel")}
                     </label>
                     <p className="text-xs text-blue-700 mt-1">
-                      Tick vào đây nếu bạn muốn đăng ký trở thành đối tác nhà xe
-                      của Busify
+                      {t("Register.busOperatorNote")}
                     </p>
                   </div>
                 </div>
@@ -436,7 +429,7 @@ export const RegisterForm = () => {
                   <div className="space-y-4 p-4 bg-gray-50 rounded-xl border border-gray-200">
                     <h3 className="text-lg font-semibold text-gray-800 flex items-center gap-2">
                       <Building2 className="w-5 h-5" />
-                      Thông tin hợp đồng nhà xe
+                      {t("Register.contractInfoTitle")}
                     </h3>
 
                     {/* Address */}
@@ -446,11 +439,12 @@ export const RegisterForm = () => {
                       render={({ field }) => (
                         <FormItem>
                           <FormLabel className="text-gray-700 font-medium">
-                            Địa chỉ <span className="text-red-500">*</span>
+                            {t("Register.addressLabel")}{" "}
+                            <span className="text-red-500">*</span>
                           </FormLabel>
                           <Textarea
                             {...field}
-                            placeholder="123 ABC Street, Ho Chi Minh City"
+                            placeholder={t("Register.addressPlaceholder")}
                             className="bg-white border-gray-200 rounded-xl focus:ring-2 focus:ring-green-500 focus:border-transparent transition-all duration-200"
                           />
                           <FormMessage />
@@ -466,7 +460,7 @@ export const RegisterForm = () => {
                         render={({ field }) => (
                           <FormItem className="flex flex-col">
                             <FormLabel className="text-gray-700 font-medium">
-                              Ngày bắt đầu{" "}
+                              {t("Register.startDateLabel")}{" "}
                               <span className="text-red-500">*</span>
                             </FormLabel>
                             <Popover>
@@ -485,7 +479,9 @@ export const RegisterForm = () => {
                                       "dd/MM/yyyy HH:mm"
                                     )
                                   ) : (
-                                    <span>Chọn ngày bắt đầu</span>
+                                    <span>
+                                      {t("Register.startDatePlaceholder")}
+                                    </span>
                                   )}
                                 </Button>
                               </PopoverTrigger>
@@ -541,7 +537,7 @@ export const RegisterForm = () => {
                               </PopoverContent>
                             </Popover>
                             <p className="text-xs text-gray-500">
-                              Chọn ngày và giờ bắt đầu hợp đồng
+                              {t("Register.startDateNote")}
                             </p>
                             <FormMessage />
                           </FormItem>
@@ -554,7 +550,7 @@ export const RegisterForm = () => {
                         render={({ field }) => (
                           <FormItem className="flex flex-col">
                             <FormLabel className="text-gray-700 font-medium">
-                              Ngày kết thúc{" "}
+                              {t("Register.endDateLabel")}{" "}
                               <span className="text-red-500">*</span>
                             </FormLabel>
                             <Popover>
@@ -573,7 +569,9 @@ export const RegisterForm = () => {
                                       "dd/MM/yyyy HH:mm"
                                     )
                                   ) : (
-                                    <span>Chọn ngày kết thúc</span>
+                                    <span>
+                                      {t("Register.endDatePlaceholder")}
+                                    </span>
                                   )}
                                 </Button>
                               </PopoverTrigger>
@@ -632,7 +630,7 @@ export const RegisterForm = () => {
                               </PopoverContent>
                             </Popover>
                             <p className="text-xs text-gray-500">
-                              Chọn ngày và giờ kết thúc hợp đồng
+                              {t("Register.endDateNote")}
                             </p>
                             <FormMessage />
                           </FormItem>
@@ -647,12 +645,12 @@ export const RegisterForm = () => {
                       render={({ field }) => (
                         <FormItem>
                           <FormLabel className="text-gray-700 font-medium">
-                            Khu vực hoạt động{" "}
+                            {t("Register.operationAreaLabel")}{" "}
                             <span className="text-red-500">*</span>
                           </FormLabel>
                           <Input
                             {...field}
-                            placeholder="Ho Chi Minh - Da Nang"
+                            placeholder={t("Register.operationAreaPlaceholder")}
                             className="h-12 bg-white border-gray-200 rounded-xl focus:ring-2 focus:ring-green-500 focus:border-transparent transition-all duration-200"
                           />
                           <FormMessage />
@@ -667,15 +665,16 @@ export const RegisterForm = () => {
                       render={({ field }) => (
                         <FormItem>
                           <FormLabel className="text-gray-700 font-medium">
-                            Mã số thuế <span className="text-red-500">*</span>
+                            {t("Register.vatCodeLabel")}{" "}
+                            <span className="text-red-500">*</span>
                           </FormLabel>
                           <Input
                             {...field}
-                            placeholder="0101234562"
+                            placeholder={t("Register.vatCodePlaceholder")}
                             className="h-12 bg-white border-gray-200 rounded-xl focus:ring-2 focus:ring-green-500 focus:border-transparent transition-all duration-200"
                           />
                           <p className="text-xs text-gray-500">
-                            Mã số thuế phải từ 10-15 chữ số
+                            {t("Register.vatCodeNote")}
                           </p>
                           <FormMessage />
                         </FormItem>
@@ -689,7 +688,7 @@ export const RegisterForm = () => {
                       render={({ field }) => (
                         <FormItem>
                           <FormLabel className="text-gray-700 font-medium">
-                            Tài liệu đính kèm
+                            {t("Register.attachmentLabel")}
                           </FormLabel>
                           <Input
                             type="file"
@@ -701,8 +700,7 @@ export const RegisterForm = () => {
                             className="h-12 bg-white border-gray-200 rounded-xl focus:ring-2 focus:ring-green-500 focus:border-transparent transition-all duration-200 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-green-50 file:text-green-700 hover:file:bg-green-100"
                           />
                           <p className="text-xs text-gray-500">
-                            Chấp nhận file PDF, DOC, DOCX, JPG, PNG (tối đa
-                            10MB)
+                            {t("Register.attachmentNote")}
                           </p>
                           <FormMessage />
                         </FormItem>
@@ -720,7 +718,18 @@ export const RegisterForm = () => {
                         className="mt-1"
                       />
                       <label htmlFor="policy" className="text-sm text-gray-700">
-                        Tôi đồng ý với <Policy /> của Busify{" "}
+                        {(() => {
+                          const parts = t("Register.policyAgreement").split(
+                            "{policy}"
+                          );
+                          return (
+                            <>
+                              {parts[0]}
+                              <Policy />
+                              {parts[1]}
+                            </>
+                          );
+                        })()}{" "}
                         <span className="text-red-500">*</span>
                       </label>
                     </div>
@@ -737,20 +746,7 @@ export const RegisterForm = () => {
                         className="w-4 h-4 text-green-600 border-gray-300 rounded focus:ring-green-500 mt-1 flex-shrink-0"
                       />
                       <p className="text-xs sm:text-sm text-gray-600 leading-relaxed">
-                        I agree to the{" "}
-                        <a
-                          href="#"
-                          className="text-green-600 hover:text-green-700 font-medium"
-                        >
-                          Terms of Service
-                        </a>{" "}
-                        and{" "}
-                        <a
-                          href="#"
-                          className="text-green-600 hover:text-green-700 font-medium"
-                        >
-                          Privacy Policy
-                        </a>
+                        {t("Register.termsAgreement")}
                       </p>
                     </div>
 
@@ -761,7 +757,7 @@ export const RegisterForm = () => {
                         className="w-4 h-4 text-green-600 border-gray-300 rounded focus:ring-green-500 mt-1 flex-shrink-0"
                       />
                       <p className="text-xs sm:text-sm text-gray-600">
-                        I want to receive updates and marketing communications
+                        {t("Register.newsletterText")}
                       </p>
                     </div>
                   </>
@@ -780,13 +776,13 @@ export const RegisterForm = () => {
                     <div className="flex items-center justify-center">
                       <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-white mr-2"></div>
                       {isBusOperator
-                        ? "Đang tạo hợp đồng..."
-                        : "Creating Account..."}
+                        ? t("Register.creatingContract")
+                        : t("Register.creatingAccount")}
                     </div>
                   ) : isBusOperator ? (
-                    "Tạo hợp đồng"
+                    t("Register.createContractButton")
                   ) : (
-                    "Create Account"
+                    t("Register.createAccountButton")
                   )}
                 </Button>
               </form>
@@ -795,13 +791,13 @@ export const RegisterForm = () => {
             {/* Sign in link */}
             <div className="text-center mt-6">
               <p className="text-sm sm:text-base text-gray-600">
-                Already have an account?{" "}
+                {t("Register.alreadyHaveAccount")}{" "}
                 <Link
                   href="/login"
                   aria-label="Sign in"
                   className="text-green-600 hover:text-green-700 font-semibold"
                 >
-                  Sign in
+                  {t("Register.signIn")}
                 </Link>
               </p>
             </div>
@@ -811,11 +807,11 @@ export const RegisterForm = () => {
               <div className="flex items-center space-x-2 text-green-700">
                 <FaCheck size={16} />
                 <span className="text-sm font-medium">
-                  Your data is secure with us
+                  {t("Register.securityTitle")}
                 </span>
               </div>
               <p className="text-xs text-green-600 mt-1">
-                We use industry-standard encryption to protect your information
+                {t("Register.securityDesc")}
               </p>
             </div>
           </>
@@ -838,15 +834,14 @@ export const RegisterForm = () => {
               </svg>
             </div>
             <h2 className="text-2xl font-bold text-gray-800 mb-4">
-              Check your email
+              {t("Register.successTitle")}
             </h2>
             <p className="text-gray-600 mb-6">
-              We&apos;ve sent a verification link to <br />
+              {t("Register.successSent")} <br />
               <span className="font-semibold text-gray-800">{userEmail}</span>
             </p>
             <p className="text-sm text-gray-500 mb-6">
-              Please check your email and click the verification link to
-              activate your account.
+              {t("Register.successInstruction")}
             </p>
             <Button
               onClick={() => {
@@ -858,7 +853,7 @@ export const RegisterForm = () => {
               variant="outline"
               className="text-green-600 border-green-600 hover:bg-green-50"
             >
-              Register another account
+              {t("Register.registerAnother")}
             </Button>
           </div>
         )}

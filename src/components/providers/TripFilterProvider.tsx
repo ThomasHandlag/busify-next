@@ -4,7 +4,9 @@ import { ReactNode, useEffect, useState, useCallback } from "react";
 import { filterTripsClient, TripFilterQuery } from "@/lib/data/trip";
 
 import { TripItemProps } from "@/lib/data/trip";
-import TripFilterContext from "../../lib/contexts/TripFilterContext";
+import TripFilterContext, {
+  TripPagerType,
+} from "../../lib/contexts/TripFilterContext";
 
 interface TripFilterProviderProps {
   children: ReactNode;
@@ -12,10 +14,10 @@ interface TripFilterProviderProps {
 
 export const TripFilterProvider = ({ children }: TripFilterProviderProps) => {
   const [trips, setTrips] = useState<TripItemProps[]>([]);
-  const [page, setPage] = useState(1);
+  const [page, setPage] = useState(0);
   const [isLoading, setIsLoading] = useState(false);
   const [query, setQuery] = useState<TripFilterQuery | undefined>(undefined);
-  const [total, setTotal] = useState(0);
+  const [pager, setPager] = useState<TripPagerType | undefined>(undefined);
 
   const handleApplyFilters = useCallback(
     async (filters: TripFilterQuery | undefined) => {
@@ -52,7 +54,13 @@ export const TripFilterProvider = ({ children }: TripFilterProviderProps) => {
             page
           );
           setTrips(filteredTrips.data);
-          setTotal(filteredTrips.total);
+          setPager({
+            page: filteredTrips.page,
+            size: filteredTrips.size,
+            totalPages: filteredTrips.totalPages,
+            isFirst: filteredTrips.isFirst,
+            isLast: filteredTrips.isLast,
+          });
         }
       } catch (error) {
         console.error("Error fetching trips:", error);
@@ -76,8 +84,8 @@ export const TripFilterProvider = ({ children }: TripFilterProviderProps) => {
     isLoading,
     page,
     handlePageChange: setPage,
-    total,
-    query
+    pager,
+    query,
   };
 
   return (
