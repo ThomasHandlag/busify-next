@@ -17,7 +17,6 @@ import { Calendar28 } from "./date_picker";
 import { FilterLocationType } from "./search_filter_sidebar";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Separator } from "@radix-ui/react-select";
 import { useTranslations } from "next-intl";
 import { Search } from "lucide-react";
 
@@ -78,7 +77,7 @@ const HomeSearchForm = ({ locations }: { locations: FilterLocationType[] }) => {
   return (
     <Form {...form}>
       <form
-        className="grid grid-cols-1 justify-center items-center gap-2 "
+        className="flex justify-center items-center gap-2"
         onSubmit={form.handleSubmit(onSubmit)}
       >
         <FormField
@@ -148,17 +147,16 @@ const HomeSearchForm = ({ locations }: { locations: FilterLocationType[] }) => {
             </FormItem>
           )}
         />
-        <Separator />
-        <div className="grid grid-cols-3 w-full gap-2">
+        <FormItem className="mt-6">
           <Button
             type="submit"
-            className="h-10 col-span-1 bg-green-600 hover:bg-green-700 text-white px-6 rounded-md font-medium text-sm"
+            className="col-span-1 bg-green-600 hover:bg-green-700 text-white px-6 rounded-md font-medium text-sm"
             disabled={filter.isLoading}
             onClick={() => form.handleSubmit(onSubmit)()}
           >
             <Search className="w-4 h-4 mr-2" />
           </Button>
-        </div>
+        </FormItem>
       </form>
     </Form>
   );

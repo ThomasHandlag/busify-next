@@ -13,9 +13,9 @@ import { useTripFilter } from "@/lib/contexts/TripFilterContext";
 const Pager = () => {
   const filter = useTripFilter();
   return (
-    <Pagination>
+    <Pagination className="justify-center mt-4">
       <PaginationContent>
-        <PaginationItem>
+        <PaginationItem className="cursor-pointer">
           <PaginationPrevious
             onClick={() => {
               if (filter.page > 0) {
@@ -24,16 +24,26 @@ const Pager = () => {
             }}
           />
         </PaginationItem>
-
-        {filter.page > 1 &&
-          Array.from({ length: filter.page }, (_, i) => i).map((page) => (
-            <PaginationItem key={page}>
-              <PaginationLink onClick={() => filter.handlePageChange(page)} />
-            </PaginationItem>
-          ))}
-        <PaginationItem>
+        {filter.pager?.totalPages &&
+          Array.from({ length: filter.pager.totalPages }, (_, i) => i).map(
+            (page) => (
+              <PaginationItem key={page} className="cursor-pointer">
+                <PaginationLink
+                  isActive={filter.page === page}
+                  onClick={() => filter.handlePageChange(page)}
+                >
+                  {page + 1}
+                </PaginationLink>
+              </PaginationItem>
+            )
+          )}
+        <PaginationItem className="cursor-pointer">
           <PaginationNext
-            onClick={() => filter.handlePageChange(filter.page + 1)}
+            onClick={() => {
+              if (filter.pager && filter.page < filter.pager.totalPages - 1) {
+                filter.handlePageChange(filter.page + 1);
+              }
+            }}
           />
         </PaginationItem>
       </PaginationContent>

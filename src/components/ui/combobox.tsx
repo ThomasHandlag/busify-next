@@ -51,10 +51,9 @@ export function Combobox({
   // Filter options based on search
   const filteredOptions = React.useMemo(() => {
     if (!searchValue) return options; // Show all options when no search
-    return options
-      .filter((option) =>
-        option.label.toLowerCase().includes(searchValue.toLowerCase())
-      )
+    return options.filter((option) =>
+      option.label.toLowerCase().includes(searchValue.toLowerCase())
+    );
   }, [options, searchValue]);
 
   const selectedOption = options.find((option) => option.value === value);
@@ -66,7 +65,7 @@ export function Combobox({
           variant="outline"
           role="combobox"
           aria-expanded={open}
-          className={cn("w-full justify-between", className)}
+          className={cn(" justify-between w-[300px] text-ellipsis", className)}
           disabled={disabled}
         >
           {selectedOption ? selectedOption.label : placeholder}

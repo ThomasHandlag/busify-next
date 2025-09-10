@@ -48,62 +48,67 @@ const Home = async () => {
   return (
     <div className="h-full w-full">
       <section className="w-full relative">
-        <div
-          className="relative bg-gradient-to-r from-green-600 to-green-500 overflow-hidden rounded-b-3xl mx-4 md:mx-8"
-          style={{ minHeight: "540px" }}
-        >
+        <section className="relative overflow-hidden h-screen">
+          {/* Background Image with Enhanced Effects */}
           <div className="absolute inset-0 overflow-hidden">
-            <div className="absolute top-0 left-0 w-full h-full bg-gradient-to-br from-transparent via-green-400/10 to-transparent"></div>
-            <div className="absolute top-0 right-0 w-1/3 h-full bg-gradient-to-l from-green-300/20 to-transparent"></div>
+            <Image
+              src="/bus-photo.jpg"
+              fill
+              loading="eager"
+              placeholder="blur"
+              blurDataURL="..."
+              alt="Bus platform background"
+              className="object-cover scale-105 transition-transform duration-700 hover:scale-110"
+              style={{
+                filter: "brightness(0.4) contrast(1.1) saturate(1.2)",
+              }}
+            />
           </div>
-        </div>
-
-        <div
-          className="relative flex justify-center px-4"
-          style={{ zIndex: 20, marginTop: "-500px", marginBottom: "12px" }}
-        >
-          <div className="w-full max-w-6xl">
-            <div className="relative z-10 flex flex-col items-center justify-center text-center">
-              <div className="rounded-2xl px-6 py-8 md:px-12 md:py-10 flex flex-col items-center gap-4 shadow-2xl border border-white/20">
-                <div className="flex flex-col md:flex-row items-center justify-center gap-4 md:gap-6 mb-4">
-                  <span className="text-5xl md:text-7xl font-bold bg-gradient-to-br bg-green-500 bg-clip-text text-transparent drop-shadow-2xl">
-                    Bustify
+          <div className="relative py-4 z-30 h-screen flex items-center justify-center">
+            <div className="max-w-6xl mx-auto px-4">
+              <div className="flex flex-col md:flex-row items-center justify-center gap-6 md:gap-8 mb-12">
+                <div className="relative">
+                  <span className="text-4xl md:text-8xl font-black bg-primary bg-clip-text text-transparent drop-shadow-2xl tracking-tight">
+                    Busify
                   </span>
-                  <div className="text-center md:text-left">
-                    <div className="text-xl md:text-2xl font-bold text-green-500 drop-shadow-lg">
-                      <LocaleText string="slogan" name="Home" />
-                    </div>
-                    <div className="text-xl md:text-3xl font-bold text-green-500 drop-shadow-lg">
-                      <LocaleText string="slogan2" name="Home" />
-                    </div>
+                  {/* Logo glow effect */}
+                  <div className="absolute -inset-2 bg-gradient-to-r from-green-400/20 to-blue-400/20 rounded-2xl blur-xl -z-10"></div>
+                </div>
+
+                <div className="hidden md:block w-px h-16 bg-gradient-to-b from-white/60 to-transparent"></div>
+
+                <div className="text-center md:text-left space-y-1">
+                  <div className="text-2xl md:text-3xl font-bold text-white drop-shadow-lg leading-tight">
+                    <LocaleText string="slogan" name="Home" />
+                  </div>
+                  <div className="text-lg md:text-xl font-semibold text-green-100 drop-shadow-md leading-tight">
+                    <LocaleText string="slogan2" name="Home" />
                   </div>
                 </div>
-                <div className="-z-1 rounded-2xl h-[30px]">
-                  <Image
-                    src="/copy.jpg"
-                    fill
-                    loading="lazy"
-                    placeholder="blur"
-                    blurDataURL="..."
-                    alt="Bus platform background"
-                    className="object-cover rounded-2xl "
-                  />
-                  <div className="bg-black/10 backdrop:blur-xl absolute inset-0 rounded-2xl"></div>
-                </div>
+              </div>
+              <div className="relative">
+                <div className="absolute -inset-1 bg-gradient-to-r from-green-400 via-blue-500 to-green-400 rounded-3xl blur opacity-20 animate-pulse"></div>
+                <Card className="relative bg-green-100/65 backdrop-blur-xl shadow-2xl shadow-green-500/20 border-2 border-white/30 rounded-3xl overflow-hidden">
+                  <div className="absolute inset-0 bg-gradient-to-br from-white/50 via-transparent to-green-50/30"></div>
+                  <CardContent className="relative p-4 md:p-8">
+                    <div className="text-center mb-6">
+                      <h2 className="text-2xl md:text-3xl font-bold text-gray-800 mb-2">
+                        <LocaleText string="findBusTicket" name="Home" />
+                      </h2>
+                      <p className="text-gray-600 text-sm md:text-base">
+                        <LocaleText string="subtitle" name="Home" />
+                      </p>
+                    </div>
+                    <HomeSearchForm locations={locations} />
+                    <div className="mt-6 flex justify-center">
+                      <div className="w-54 h-1 bg-gradient-to-r from-green-100 to-green-500 rounded-full"></div>
+                    </div>
+                  </CardContent>
+                </Card>
               </div>
             </div>
           </div>
-        </div>
-
-        <div className="relative py-8 z-30">
-          <div className="max-w-3xl mx-auto px-4">
-            <Card className="bg-white shadow-xl shadow-green-500/25 border-2 border-green-500 rounded-2xl backdrop-blur-sm">
-              <CardContent className="p-6">
-                <HomeSearchForm locations={locations} />
-              </CardContent>
-            </Card>
-          </div>
-        </div>
+        </section>
       </section>
 
       {/* Popular Routes Section */}
@@ -297,7 +302,9 @@ const Home = async () => {
                   ))}
                 </div>
                 <p className="text-gray-700 italic">
-                    &quot;<LocaleText string="review2" name="Home" />.&quot;
+                  &quot;
+                  <LocaleText string="review2" name="Home" />
+                  .&quot;
                 </p>
               </CardContent>
             </Card>
@@ -331,7 +338,9 @@ const Home = async () => {
                   ))}
                 </div>
                 <p className="text-gray-700 italic">
-                  &quot;<LocaleText string="review3" name="Home" />&quot;
+                  &quot;
+                  <LocaleText string="review3" name="Home" />
+                  &quot;
                 </p>
               </CardContent>
             </Card>
