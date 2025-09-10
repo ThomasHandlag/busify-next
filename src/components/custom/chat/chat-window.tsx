@@ -39,7 +39,13 @@ export function ChatWindow({ onClose }: ChatWindowProps) {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
   };
 
+  // Auto-scroll to bottom when messages change
   useEffect(scrollToBottom, [messages]);
+
+  // Auto-scroll to bottom when component mounts (i.e., when chat opens)
+  useEffect(() => {
+    scrollToBottom();
+  }, []);
 
   useEffect(() => {
     const storedRoomId = localStorage.getItem("chatRoomId");
@@ -133,8 +139,8 @@ export function ChatWindow({ onClose }: ChatWindowProps) {
         );
         const formattedHistory = filteredHistory.map((msg) => ({
           text: msg.content,
-          isUser: msg.sender === session?.user?.email, // Thay name bằng email
-          timestamp: new Date(), // Lưu ý: Nên dùng timestamp từ backend nếu có (msg.timestamp)
+          isUser: msg.sender === session?.user?.email,
+          timestamp: new Date(msg.timestamp), // Sử dụng timestamp thực tế từ backend
           type: msg.type,
           sender: msg.sender,
         }));

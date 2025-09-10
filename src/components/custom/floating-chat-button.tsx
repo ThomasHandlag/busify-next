@@ -18,8 +18,9 @@ export function FloatingChatButton() {
     setIsVisible(!isDashboardPath);
   }, [pathname]);
 
+  // Toggle chat window open/close
   const handleChatClick = () => {
-    setIsChatOpen(true);
+    setIsChatOpen(!isChatOpen);
   };
 
   if (!isVisible) return null;
@@ -34,7 +35,9 @@ export function FloatingChatButton() {
         <MessageCircle className="size-6 text-white" />
       </Button>
 
-      {isChatOpen && <ChatWindow onClose={() => setIsChatOpen(false)} />}
+      <div className={isChatOpen ? "" : "hidden"}>
+        <ChatWindow onClose={() => setIsChatOpen(false)} />
+      </div>
     </>
   );
 }

@@ -24,6 +24,7 @@ export interface ChatMessage {
   sender: string;
   recipient?: string;
   type: MessageType;
+  timestamp: string; // Thêm trường này, giả định backend trả về string (ví dụ: ISO 8601)
 }
 
 interface WebSocketContextType {
