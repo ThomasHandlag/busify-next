@@ -97,7 +97,7 @@ export interface TripFilterResponse {
 export async function filterTrips(
   filters: TripFilterQuery,
   page: number,
-  size = 20
+  size = 10
 ): Promise<TripFilterResponse> {
   try {
     const res = await api.post(
@@ -110,9 +110,9 @@ export async function filterTrips(
       return {
         data: [],
         total: 0,
-        page: 1,
+        page: 0,
         size: 20,
-        totalPages: 1,
+        totalPages: 0,
         isFirst: true,
         isLast: true,
       };
@@ -122,9 +122,9 @@ export async function filterTrips(
     return {
       data: [],
       total: 0,
-      page: 1,
+      page: 0,
       size: 20,
-      totalPages: 1,
+      totalPages: 0,
       isFirst: true,
       isLast: true,
     };
@@ -156,9 +156,9 @@ export async function filterTripsClient(
     return {
       data: [],
       total: 0,
-      page: 1,
+      page: 0,
       size: 20,
-      totalPages: 1,
+      totalPages: 0,
       isFirst: true,
       isLast: true,
     };

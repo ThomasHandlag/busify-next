@@ -1,32 +1,34 @@
 "use client";
 
-import { Calendar, Home, Ticket, User } from "lucide-react";
+import { Calendar, Ticket, User } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-
-export const userMenuItems = [
-  {
-    title: "Profile",
-    url: "/user",
-    icon: User,
-  },
-  {
-    title: "Tickets",
-    url: "/user/my-tickets",
-    icon: Ticket,
-  },
-  {
-    title: "Redeem",
-    url: "/user/redeem",
-    icon: Calendar,
-  },
-];
+import { useTranslations } from "next-intl";
 
 export function UserSidebar() {
   const path = usePathname();
+  const t = useTranslations("UserDashboard");
   const isActive = (url: string): boolean => {
     return path === url;
   };
+
+  const userMenuItems = [
+    {
+      title: t("profile"),
+      url: "/user",
+      icon: User,
+    },
+    {
+      title: t("tickets"),
+      url: "/user/my-tickets",
+      icon: Ticket,
+    },
+    {
+      title: t("redeem"),
+      url: "/user/redeem",
+      icon: Calendar,
+    },
+  ];
   return (
     <div className="lg:flex lg:flex-col flex-row sticky gap-2 hidden w-64 p-4 bg-white ">
       {userMenuItems.map((item) => (

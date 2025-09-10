@@ -1,3 +1,5 @@
+"use client";
+
 import { Button } from "../ui/button";
 import { Label } from "../ui/label";
 import {
@@ -43,7 +45,7 @@ export type FilterLocationType = {
   locationName: string;
 };
 
-const SearchFilterSidebar = () => {
+const SearchFilterSidebar = ({ callback }: { callback?: () => void }) => {
   const {
     handleApplyFilters: onApplyFilters,
     isLoading,
@@ -320,51 +322,57 @@ const SearchFilterSidebar = () => {
 
           {/* Action Buttons */}
           <div className="pt-4 space-y-3">
-            <Button
-              className="w-full bg-green-600 hover:bg-green-700"
-              type="button"
-              disabled={isLoading}
-              onClick={() => {
-                const formData = form.getValues();
-                onApplyFilters({
-                  ...formData,
-                  timeZone: Intl.DateTimeFormat().resolvedOptions().timeZone,
-                });
-              }}
-            >
-              {isLoading ? (
-                <>
-                  <Loader2 className="w-4 h-4 mr-2 animate-spin" />
-                  Searching...
-                </>
-              ) : (
-                "Apply Filters"
-              )}
-            </Button>
-            <Button
-              variant="outline"
-              className="w-full"
-              type="button"
-              disabled={isLoading}
-              onClick={() => {
-                form.reset({
-                  startLocation: undefined,
-                  endLocation: undefined,
-                  departureDate: undefined,
-                  untilTime: undefined,
-                  operatorName: undefined,
-                  busModels: [],
-                  amenities: [],
-                  availableSeats: 0,
-                });
-                onApplyFilters({
-                  ...form.getValues(),
-                  timeZone: Intl.DateTimeFormat().resolvedOptions().timeZone,
-                });
-              }}
-            >
-              Clear All
-            </Button>
+            <FormItem>
+              <Button
+                className="w-full bg-green-600 hover:bg-green-700"
+                type="button"
+                disabled={isLoading}
+                onClick={() => {
+                  const formData = form.getValues();
+                  callback?.();
+                  onApplyFilters({
+                    ...formData,
+                    timeZone: Intl.DateTimeFormat().resolvedOptions().timeZone,
+                  });
+                }}
+              >
+                {isLoading ? (
+                  <>
+                    <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                    Searching...
+                  </>
+                ) : (
+                  "Apply Filters"
+                )}
+              </Button>
+            </FormItem>
+            <FormItem>
+              <Button
+                variant="outline"
+                className="w-full"
+                type="button"
+                disabled={isLoading}
+                onClick={() => {
+                  form.reset({
+                    startLocation: undefined,
+                    endLocation: undefined,
+                    departureDate: undefined,
+                    untilTime: undefined,
+                    operatorName: undefined,
+                    busModels: [],
+                    amenities: [],
+                    availableSeats: 0,
+                  });
+                  callback?.();
+                  onApplyFilters({
+                    ...form.getValues(),
+                    timeZone: Intl.DateTimeFormat().resolvedOptions().timeZone,
+                  });
+                }}
+              >
+                Clear All
+              </Button>
+            </FormItem>
           </div>
         </form>
       </Form>

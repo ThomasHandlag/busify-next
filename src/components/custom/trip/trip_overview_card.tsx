@@ -16,6 +16,7 @@ import { Separator } from "@radix-ui/react-separator";
 import dynamic from "next/dynamic";
 import { Badge } from "../../ui/badge";
 import { TripDetail } from "@/lib/data/trip";
+import LocaleText from "../locale_text";
 
 const RouteMap = dynamic(() => import("../google_map"), {
   ssr: false,
@@ -51,7 +52,9 @@ const TripOverviewCard = ({ tripDetail }: { tripDetail: TripDetail }) => {
       <CardHeader className="lg:px-6 md:px-6 px-0 sm:px-4">
         <CardTitle className="flex items-center space-x-2">
           <Bus className="w-5 h-5" />
-          <span>Thông tin chuyến</span>
+          <span>
+            <LocaleText string="tripInfo" name="TripDetail" />
+          </span>
         </CardTitle>
       </CardHeader>
       <CardContent className="lg:px-6 md:px-6 px-0 sm:px-4">
@@ -73,14 +76,18 @@ const TripOverviewCard = ({ tripDetail }: { tripDetail: TripDetail }) => {
               <p className="text-sm font-medium">
                 {tripDetail.route.estimated_duration}
               </p>
-              <p className="text-xs text-gray-500">Thời gian di chuyển</p>
+              <p className="text-xs text-gray-500">
+                <LocaleText string="duration" name="TripDetail" />
+              </p>
             </div>
           </div>
           <div className="flex items-center space-x-2">
             <Bus className="w-4 h-4 text-gray-400" />
             <div>
               <p className="text-sm font-medium">{tripDetail.bus.name}</p>
-              <p className="text-xs text-gray-500">Loại xe</p>
+              <p className="text-xs text-gray-500">
+                <LocaleText string="busType" name="TripDetail" />
+              </p>
             </div>
           </div>
           <div className="flex items-center space-x-2">
@@ -89,14 +96,18 @@ const TripOverviewCard = ({ tripDetail }: { tripDetail: TripDetail }) => {
               <p className="text-sm font-medium">
                 {tripDetail.available_seats}/{tripDetail.bus.total_seats}
               </p>
-              <p className="text-xs text-gray-500">Ghế trống</p>
+              <p className="text-xs text-gray-500">
+                <LocaleText string="empty" name="TripDetail" />
+              </p>
             </div>
           </div>
         </div>
         <Separator />
         {/* Route map */}
         <div className="mt-6">
-          <h3 className="font-semibold mb-4">Bản đồ hành trình</h3>
+          <h3 className="font-semibold mb-4">
+            <LocaleText string="journeyMap" name="TripDetail" />
+          </h3>
           <RouteMap
             startLocation={tripDetail.route.start_location}
             endLocation={tripDetail.route.end_location}
@@ -107,12 +118,16 @@ const TripOverviewCard = ({ tripDetail }: { tripDetail: TripDetail }) => {
         <Separator />
         {/* Pickup/Dropoff */}
         <div className="mt-6">
-          <h3 className="font-semibold mb-4">Điểm đón/trả</h3>
+          <h3 className="font-semibold mb-4">
+            <LocaleText string="pickAndDrop" name="TripDetail" />
+          </h3>
           <div className="space-y-4">
             <div className="flex items-start space-x-3">
               <div className="w-3 h-3 bg-green-500 rounded-full mt-2"></div>
               <div>
-                <p className="font-medium">Điểm đón</p>
+                <p className="font-medium">
+                  <LocaleText string="pickUp" name="TripDetail" />
+                </p>
                 <p className="text-gray-600">
                   {tripDetail.route.start_location.address}
                 </p>
@@ -124,7 +139,9 @@ const TripOverviewCard = ({ tripDetail }: { tripDetail: TripDetail }) => {
             <div className="flex items-start space-x-3">
               <div className="w-3 h-3 bg-red-500 rounded-full mt-2"></div>
               <div>
-                <p className="font-medium">Điểm trả</p>
+                <p className="font-medium">
+                  <LocaleText string="dropOff" name="TripDetail" />
+                </p>
                 <p className="text-gray-600">
                   {tripDetail.route.end_location.address}
                 </p>
@@ -138,7 +155,9 @@ const TripOverviewCard = ({ tripDetail }: { tripDetail: TripDetail }) => {
         <Separator />
         {/* Amenities */}
         <div className="mt-6">
-          <h3 className="font-semibold mb-4">Tiện ích</h3>
+          <h3 className="font-semibold mb-4">
+            <LocaleText string="amenities" name="TripDetail" />
+          </h3>
           <div className="flex flex-wrap gap-2">
             {tripDetail.bus.amenities.map((amenity, index) => (
               <Badge key={index} variant="secondary">

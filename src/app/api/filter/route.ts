@@ -6,7 +6,7 @@ export async function POST(req: Request) {
   const filters: TripFilterQuery = body;
   const trips = await filterTrips(
     filters,
-    Number(searchParams.get("page")) || 1
+    Number(searchParams.get("page")) || 0
   );
   return new Response(JSON.stringify({ result: trips }), {
     headers: {

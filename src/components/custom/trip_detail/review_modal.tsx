@@ -27,6 +27,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { useSession } from "next-auth/react";
 import z from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { useTranslations } from "next-intl";
 
 type ReviewFormValues = {
   comment: string;
@@ -42,6 +43,7 @@ export function ReviewModal({ tripId }: { tripId: number }) {
   const [loading, setLoading] = useState(false);
   const [open, setOpen] = useState(false);
   const session = useSession();
+  const t = useTranslations();
 
   const form = useForm<ReviewFormValues>({
     defaultValues: {
@@ -55,7 +57,7 @@ export function ReviewModal({ tripId }: { tripId: number }) {
   const handleSubmit = async (values: ReviewFormValues) => {
     if (!values.comment.trim()) return;
     if (session.status !== "authenticated") {
-      toast.error("Bạn cần đăng nhập để gửi đánh giá.");
+      toast.error(t("TripDetail.reviewRequire"));
       return;
     }
     setLoading(true);
@@ -83,13 +85,13 @@ export function ReviewModal({ tripId }: { tripId: number }) {
         type="button"
         className="bg-primary text-white px-4 py-2 rounded-md ml-2 lg:inset-0"
       >
-        Viết đánh giá
+        {t("TripDetail.writeReview")}
       </DialogTrigger>
       <DialogOverlay className="fixed h-screen inset-0 bg-black/50 z-40" />
       <DialogContent className="fixed top-1/2 left-1/2 z-50 w-full max-w-md p-6 bg-white rounded-md shadow-lg transform -translate-x-1/2 -translate-y-1/2">
         <DialogHeader>
           <DialogTitle className="text-lg font-bold mb-4">
-            Viết đánh giá chuyến đi
+            {t("TripDetail.writeReview")}
           </DialogTitle>
         </DialogHeader>
         <Form {...form}>
@@ -103,7 +105,7 @@ export function ReviewModal({ tripId }: { tripId: number }) {
               render={({ field }) => (
                 <FormItem>
                   <FormLabel className="block mb-1 font-medium">
-                    Số sao
+                    {t("TripDetail.rating")}
                   </FormLabel>
                   <FormControl>
                     <div className="flex space-x-1">
@@ -130,13 +132,13 @@ export function ReviewModal({ tripId }: { tripId: number }) {
               render={({ field }) => (
                 <FormItem>
                   <FormLabel className="block mb-1 font-medium">
-                    Nội dung đánh giá
+                    {t("TripDetail.reviewContent")}
                   </FormLabel>
                   <FormControl>
                     <Textarea
                       className="w-full border rounded p-2"
                       rows={3}
-                      placeholder="Nhập nhận xét của bạn..."
+                      placeholder={t("TripDetail.writeReview")}
                       {...field}
                       onChange={(e) => {
                         field.onChange(e);
@@ -154,7 +156,7 @@ export function ReviewModal({ tripId }: { tripId: number }) {
               disabled={form.getFieldState("comment").invalid || loading}
             >
               {loading && <Loader2 className="animate-spin mr-2" />}
-              Gửi đánh giá
+              {t("TripDetail.submitReview")}
             </Button>
           </form>
         </Form>
