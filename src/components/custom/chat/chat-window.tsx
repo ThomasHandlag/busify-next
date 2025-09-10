@@ -35,7 +35,6 @@ export function ChatWindow({ onClose }: ChatWindowProps) {
   const currentSubscription = useRef<any>(null);
   const { data: session } = useSession();
   const messagesEndRef = useRef<HTMLDivElement>(null);
-
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
   };
@@ -117,7 +116,7 @@ export function ChatWindow({ onClose }: ChatWindowProps) {
     setLoading(true);
     try {
       const response = await fetch(
-        `http://localhost:8080/api/chat/history/room/${currentRoomId}`,
+        `${process.env.NEXT_PUBLIC_API_URL}api/chat/history/room/${currentRoomId}`,
         {
           headers: {
             Authorization: `Bearer ${session?.user.accessToken}`,
@@ -154,7 +153,7 @@ export function ChatWindow({ onClose }: ChatWindowProps) {
     setLoading(true);
     try {
       const response = await fetch(
-        "http://localhost:8080/api/chat/createRoom",
+        `${process.env.NEXT_PUBLIC_API_URL}api/chat/createRoom`,
         {
           method: "POST",
           headers: {

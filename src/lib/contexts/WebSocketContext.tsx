@@ -7,7 +7,7 @@ import React, {
   useRef,
   useState,
 } from "react";
-import { Client, IMessage } from "@stomp/stompjs";
+import { Client, IMessage, StompSubscription } from "@stomp/stompjs";
 import SockJS from "sockjs-client";
 import { useSession } from "next-auth/react";
 import { toast } from "sonner";
@@ -34,8 +34,8 @@ interface WebSocketContextType {
   subscribe: (
     destination: string,
     callback: (message: IMessage) => void
-  ) => any;
-  unsubscribe: (subscription: any) => void;
+  ) => StompSubscription;
+  unsubscribe: (subscription: StompSubscription) => void;
   sendMessage: (destination: string, body: string) => void;
 }
 
@@ -53,7 +53,8 @@ export const WebSocketProvider: React.FC<{ children: React.ReactNode }> = ({
 
     try {
       const client = new Client({
-        webSocketFactory: () => new SockJS("http://localhost:8080/ws"),
+        webSocketFactory: () =>
+          new SockJS(`${process.env.NEXT_PUBLIC_API_URL}ws`),
         connectHeaders: {
           Authorization: `Bearer ${session?.user?.accessToken}`,
         },
@@ -95,15 +96,15 @@ export const WebSocketProvider: React.FC<{ children: React.ReactNode }> = ({
   const subscribe = (
     destination: string,
     callback: (message: IMessage) => void
-  ) => {
+  ): StompSubscription => {
     if (!clientRef.current?.connected) {
       toast.error("Chưa kết nối đến máy chủ chat");
-      return null;
+      return null as any; // Temporary fallback; ideally handle error differently
     }
     return clientRef.current.subscribe(destination, callback);
   };
 
-  const unsubscribe = (subscription: any) => {
+  const unsubscribe = (subscription: StompSubscription) => {
     if (subscription) {
       subscription.unsubscribe();
     }
