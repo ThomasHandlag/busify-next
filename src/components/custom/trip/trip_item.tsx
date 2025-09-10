@@ -124,9 +124,7 @@ const TripItem = ({ trip }: { trip: TripItemProps }) => {
               aria-label="View trip details"
               href={`/trips/${trip.trip_id}`}
               className="hidden sm:block"
-            >
-              
-            </Link>
+            ></Link>
 
             <Link aria-label="Book trip" href={`/trips/${trip.trip_id}`}>
               <Button
