@@ -14,6 +14,7 @@ import {
   SheetTrigger,
 } from "@/components/ui/sheet";
 import { Button } from "@/components/ui/button";
+import LocaleText from "@/components/custom/locale_text";
 
 const AppPage = () => {
   const { trips, isLoading } = useTripFilter();
@@ -28,12 +29,13 @@ const AppPage = () => {
               <CardHeader>
                 <CardTitle className="flex items-center gap-2">
                   <Filter className="w-5 h-5" />
-                  Search & Filter
+                  <LocaleText string="search" name="Trips" />
+                  &
+                  <LocaleText string="filter" name="Trips" />
                 </CardTitle>
               </CardHeader>
               <CardContent>
-                <SearchFilterSidebar
-                />
+                <SearchFilterSidebar />
               </CardContent>
             </Card>
           </div>
@@ -44,7 +46,7 @@ const AppPage = () => {
               <SheetTrigger asChild>
                 <Button variant="ghost">
                   <Filter className="w-5 h-5 mr-2" />
-                  Filter
+                  <LocaleText string="filter" name="Trips" />
                 </Button>
               </SheetTrigger>
               <SheetContent
@@ -54,15 +56,15 @@ const AppPage = () => {
                 <SheetHeader>
                   <SheetTitle className="flex items-center">
                     <Search className="w-5 h-5 mr-2" />
-                    Search & Filter
+                    <LocaleText string="search" name="Trips" />
+                    &
+                    <LocaleText string="filter" name="Trips" />
                   </SheetTitle>
                   <SheetDescription>
-                    Find the perfect bus trip by filtering routes, operators,
-                    and preferences.
+                    <LocaleText string="searchTitle" name="Trips" />
                   </SheetDescription>
                 </SheetHeader>
-                <SearchFilterSidebar
-                />
+                <SearchFilterSidebar />
               </SheetContent>
             </Sheet>
           </div>
@@ -72,10 +74,11 @@ const AppPage = () => {
             {/* Results Summary */}
             <div className="mb-6">
               <h1 className="text-2xl font-bold text-gray-900">
-                Available Trips
+                <LocaleText string="available" name="Trips" />
               </h1>
               <p className="text-gray-600 mt-2">
-                Found {trips.length} trips matching your criteria
+                <LocaleText string="found" name="Trips" /> {trips.length}{" "}
+                <LocaleText string="foundRex" name="Trips" />
               </p>
             </div>
 
@@ -106,10 +109,10 @@ const AppPage = () => {
                   ) : (
                     <div className="col-span-full text-center py-12">
                       <div className="text-gray-500 text-lg">
-                        Không tìm thấy chuyến đi phù hợp
+                        <LocaleText string="noTrips" name="Trips" />
                       </div>
                       <p className="text-gray-400 text-sm mt-2">
-                        Thử thay đổi tiêu chí tìm kiếm để xem thêm kết quả
+                        <LocaleText string="searchRecommend" name="Trips" />
                       </p>
                     </div>
                   )}

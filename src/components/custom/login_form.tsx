@@ -12,8 +12,11 @@ import Link from "next/link";
 import { signIn } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
+import LocaleText from "./locale_text";
+import { useTranslations } from "next-intl";
 
 const LoginForm = () => {
+  const t = useTranslations("Auth");
   const [showPassword, setShowPassword] = React.useState(false);
   const [isGoogleLoading, setIsGoogleLoading] = React.useState(false);
   const [showResendModal, setShowResendModal] = React.useState(false);
@@ -30,8 +33,8 @@ const LoginForm = () => {
 
   const router = useRouter();
   const formSchema = z.object({
-    email: z.string().email("Địa chỉ email không hợp lệ").min(2).max(50),
-    password: z.string().min(6, "Mật khẩu phải có ít nhất 6 ký tự").max(100),
+    email: z.string().email(t("login.invalidEmail")).min(2).max(50),
+    password: z.string().min(6, t("login.invalidPassword")).max(100),
   });
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -59,7 +62,7 @@ const LoginForm = () => {
         router.push("/");
       } else {
         console.error("Login failed:", result?.error);
-        toast.error("Invalid email or password");
+        toast.error(t("login.errorMessage"));
       }
     } catch (error) {
       console.error("Login error:", error);
@@ -92,17 +95,15 @@ const LoginForm = () => {
 
       if (response.ok) {
         setResendStatus("success");
-        setResendMessage(
-          "Verification email sent successfully! Please check your inbox."
-        );
+        setResendMessage(t("login.resendSuccess"));
       } else {
         setResendStatus("error");
-        setResendMessage(data.message || "Failed to send verification email");
+        setResendMessage(t("login.resendError"));
       }
     } catch (error) {
       console.error("Resend verification error:", error);
       setResendStatus("error");
-      setResendMessage("An error occurred. Please try again.");
+      setResendMessage(t("login.resendError"));
     }
   };
 
@@ -122,10 +123,10 @@ const LoginForm = () => {
             <span className="text-white text-xl sm:text-2xl font-bold">B</span>
           </div>
           <h2 className="text-2xl sm:text-3xl font-bold text-gray-800 mb-2">
-            Welcome Back
+            {t("login.title")}
           </h2>
           <p className="text-sm sm:text-base text-gray-500">
-            Sign in to continue to Busify
+            {t("login.subtitle")}
           </p>
         </div>
 
@@ -140,12 +141,12 @@ const LoginForm = () => {
               render={({ field }) => (
                 <FormItem>
                   <FormLabel className="text-gray-700 font-medium">
-                    Email Address
+                    {t("emailAddress")}
                   </FormLabel>
                   <Input
                     {...field}
                     type="email"
-                    placeholder="Enter your email"
+                    placeholder={t("emailAddress")}
                     required
                     className="h-12 bg-gray-50 border-gray-200 rounded-xl focus:ring-2 focus:ring-green-500 focus:border-transparent transition-all duration-200"
                   />
@@ -160,13 +161,13 @@ const LoginForm = () => {
               render={({ field }) => (
                 <FormItem>
                   <FormLabel className="text-gray-700 font-medium">
-                    Password
+                    {t("password")}
                   </FormLabel>
                   <div className="relative">
                     <Input
                       {...field}
                       type={showPassword ? "text" : "password"}
-                      placeholder="Enter your password"
+                      placeholder={t("password")}
                       required
                       className="h-12 bg-gray-50 border-gray-200 rounded-xl focus:ring-2 focus:ring-green-500 focus:border-transparent transition-all duration-200 pr-12"
                     />
@@ -194,14 +195,14 @@ const LoginForm = () => {
                   type="checkbox"
                   className="w-4 h-4 text-green-600 border-gray-300 rounded focus:ring-green-500"
                 />
-                <span className="ml-2 text-sm text-gray-600">Remember me</span>
+                <span className="ml-2 text-sm text-gray-600">{t("login.rememberMe")}</span>
               </label>
               <Link
                 aria-label="Forgot password"
                 href="/forgot-password"
                 className="text-sm text-green-600 hover:text-green-700 font-medium"
               >
-                Forgot password?
+                {t("forgotPassword")}
               </Link>
             </div>
 
@@ -209,7 +210,7 @@ const LoginForm = () => {
               type="submit"
               className="w-full h-12 bg-gradient-to-r from-green-600 to-green-700 hover:from-green-700 hover:to-green-800 text-white font-semibold rounded-xl transition-all duration-200 transform hover:scale-[1.02] shadow-lg"
             >
-              Sign In
+              {t("login.signIn")}
             </Button>
           </form>
         </Form>
@@ -218,6 +219,7 @@ const LoginForm = () => {
             onClick={() => signIn("google")}
             disabled={isGoogleLoading || !isMounted}
             className="flex items-center justify-center py-3 px-2 sm:px-4 border border-gray-200 rounded-xl hover:bg-gray-50 transition-colors duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
+            aria-label={t("login.google")}
           >
             {isMounted && isGoogleLoading ? (
               <div className="w-4 h-4 sm:w-5 sm:h-5 border-2 border-gray-300 border-t-green-600 rounded-full animate-spin"></div>
@@ -226,11 +228,17 @@ const LoginForm = () => {
             )}
           </button>
 
-          <button className="flex items-center justify-center py-3 px-2 sm:px-4 border border-gray-200 rounded-xl hover:bg-gray-50 transition-colors duration-200">
+          <button
+            className="flex items-center justify-center py-3 px-2 sm:px-4 border border-gray-200 rounded-xl hover:bg-gray-50 transition-colors duration-200"
+            aria-label={t("login.facebook")}
+          >
             <FaFacebook size={20} className="text-blue-600" />
           </button>
 
-          <button className="flex items-center justify-center py-3 px-2 sm:px-4 border border-gray-200 rounded-xl hover:bg-gray-50 transition-colors duration-200">
+          <button
+            className="flex items-center justify-center py-3 px-2 sm:px-4 border border-gray-200 rounded-xl hover:bg-gray-50 transition-colors duration-200"
+            aria-label={t("login.github")}
+          >
             <FaGithub size={20} className="text-gray-800" />
           </button>
         </div>
@@ -238,13 +246,13 @@ const LoginForm = () => {
         {/* Sign up link */}
         <div className="text-center mt-6">
           <p className="text-sm sm:text-base text-gray-600">
-            Don&apos;t have an account?{" "}
+            {t("dontHaveAccount")}{" "}
             <Link
               aria-label="Sign up"
               href="/signup"
               className="text-green-600 hover:text-green-700 font-semibold"
             >
-              Sign up
+              {t("createAccount")}
             </Link>
           </p>
           <p className="text-sm text-gray-600 mt-2">
@@ -253,7 +261,7 @@ const LoginForm = () => {
               onClick={() => setShowResendModal(true)}
               className="text-green-600 hover:text-green-700 font-semibold underline"
             >
-              Resend verification
+              {t("login.resendVerification")}
             </button>
           </p>
         </div>
@@ -264,7 +272,7 @@ const LoginForm = () => {
             <div className="bg-white rounded-2xl p-6 w-full max-w-md">
               <div className="text-center mb-6">
                 <h3 className="text-xl font-bold text-gray-800 mb-2">
-                  Resend Verification Email
+                  {t("verifyEmail")}
                 </h3>
                 <p className="text-gray-600 text-sm">
                   Enter your email address to receive a new verification link
@@ -274,11 +282,11 @@ const LoginForm = () => {
               <div className="space-y-4">
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-2">
-                    Email Address
+                    {t("emailAddress")}
                   </label>
                   <Input
                     type="email"
-                    placeholder="Enter your email"
+                    placeholder={t("emailAddress")}
                     value={resendEmail}
                     onChange={(e) => setResendEmail(e.target.value)}
                     className="h-12 bg-gray-50 border-gray-200 rounded-xl focus:ring-2 focus:ring-green-500 focus:border-transparent"
@@ -303,7 +311,7 @@ const LoginForm = () => {
                     variant="outline"
                     className="flex-1 h-12 border-gray-300 text-gray-700 hover:bg-gray-50"
                   >
-                    Cancel
+                    {t("Common.cancel")}
                   </Button>
                   <Button
                     onClick={handleResendVerification}
@@ -313,7 +321,7 @@ const LoginForm = () => {
                     {resendStatus === "loading" ? (
                       <div className="flex items-center justify-center">
                         <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-2"></div>
-                        Sending...
+                        {t("login.signingIn")}
                       </div>
                     ) : (
                       "Send Email"

@@ -18,7 +18,7 @@ const Pager = () => {
         <PaginationItem>
           <PaginationPrevious
             onClick={() => {
-              if (filter.page > 1) {
+              if (filter.page > 0) {
                 filter.handlePageChange(filter.page - 1);
               }
             }}

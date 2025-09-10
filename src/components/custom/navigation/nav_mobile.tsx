@@ -9,11 +9,10 @@ import {
   SheetTrigger,
 } from "@/components/ui/sheet";
 
-import { MenuIcon, Bus, Users, User } from "lucide-react";
+import { MenuIcon, Bus, Users, User, Calendar, Ticket } from "lucide-react";
 import { signOut, useSession } from "next-auth/react";
 import Logo from "@/components/custom/logo";
 import { useTranslations } from "next-intl";
-import { userMenuItems } from "./user_sidebar";
 
 const NavMobile = ({
   publicMenuItems,
@@ -22,7 +21,25 @@ const NavMobile = ({
 }: NavDataProps) => {
   const [isOpen, setIsOpen] = useState(false);
   const session = useSession();
-  const trans = useTranslations("Header");
+  const t = useTranslations();
+
+  const userMenuItems = [
+    {
+      title: t("UserDashboard.profile"),
+      url: "/user",
+      icon: User,
+    },
+    {
+      title: t("UserDashboard.tickets"),
+      url: "/user/my-tickets",
+      icon: Ticket,
+    },
+    {
+      title: t("UserDashboard.redeem"),
+      url: "/user/redeem",
+      icon: Calendar,
+    },
+  ];
 
   return (
     <div className="lg:hidden flex justify-between items-center w-full">
@@ -46,7 +63,7 @@ const NavMobile = ({
               {/* Main Navigation */}
               <nav className="space-y-2">
                 <h3 className="text-sm font-semibold text-gray-900 mb-2">
-                  Platform
+                  {"Platform"}
                 </h3>
                 {publicMenuItems.map((item) => {
                   return (
@@ -71,7 +88,7 @@ const NavMobile = ({
               <div className="border-t border-gray-200 pt-4">
                 <h3 className="text-sm font-semibold text-green-700 mb-3 flex items-center">
                   <Users className="w-4 h-4 mr-2" />
-                  {trans("contact")}
+                  {t("Header.contact")}
                 </h3>
                 {contactMenuItems.map((item) => {
                   const isExternal = item.href.startsWith("http");
@@ -106,7 +123,7 @@ const NavMobile = ({
               <div className="border-t border-gray-200 pt-4 block lg:hidden">
                 <h3 className="text-sm font-semibold text-green-700 mb-3 flex items-center">
                   <Users className="w-4 h-4 mr-2" />
-                  Quick Links
+                  {t("Footer.usefulLinks")}
                 </h3>
                 {session.status === "authenticated" &&
                   userMenuItems.map((item) => (
@@ -134,20 +151,20 @@ const NavMobile = ({
                     asChild
                   >
                     <Link
-                      aria-label="Sign in"
+                      aria-label={t("Header.signIn")}
                       href="/login"
                       className="flex items-center space-x-2"
                     >
                       <User className="w-4 h-4" />
-                      <span>Sign In</span>
+                      <span>{t("Header.signIn")}</span>
                     </Link>
                   </Button>
                   <Button
                     className="w-full bg-green-600 hover:bg-green-700"
                     asChild
                   >
-                    <Link aria-label="Get Started" href="/signup">
-                      Get Started
+                    <Link aria-label={t("Header.signUp")} href="/signup">
+                      {t("Header.signUp")}
                     </Link>
                   </Button>
                 </>
@@ -158,7 +175,7 @@ const NavMobile = ({
                   className="flex items-center space-x-2"
                 >
                   <User className="w-4 h-4" />
-                  <span>Log out</span>
+                  <span>{t("Profile.logout")}</span>
                 </Button>
               )}
             </div>
@@ -173,14 +190,14 @@ const NavMobile = ({
 
       {session.status === "authenticated" ? (
         <Button variant="ghost" size="sm" asChild>
-          <Link aria-label="User Dashboard" href={`/user`}>
+          <Link aria-label={t("Header.dashboard")} href={`/user`}>
             <User className="w-5 h-5" />
           </Link>
         </Button>
       ) : (
         <Button variant="ghost" size="sm" asChild>
-          <Link aria-label="Log in" href="/login">
-            Log in
+          <Link aria-label={t("Auth.login.title")} href="/login">
+            {t("Auth.login.title")}
           </Link>
         </Button>
       )}
