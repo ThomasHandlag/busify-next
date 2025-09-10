@@ -54,14 +54,37 @@ const formatCurrency = (amount: number) => {
   return new Intl.NumberFormat("vi-VN").format(amount) + "đ";
 };
 
+// Thêm hàm tính toán tỷ lệ hoàn tiền
+const calculateRefundPercentage = (
+  bookingDate: string,
+  departureTime: string
+) => {
+  const now = new Date();
+  const bookingTime = new Date(bookingDate);
+  const departure = new Date(departureTime);
+
+  const hoursSinceBooking =
+    (now.getTime() - bookingTime.getTime()) / (1000 * 60 * 60);
+  const hoursUntilDeparture =
+    (departure.getTime() - now.getTime()) / (1000 * 60 * 60);
+
+  if (hoursSinceBooking <= 24) {
+    return 100;
+  } else if (hoursUntilDeparture >= 24) {
+    return 70;
+  } else {
+    return 0;
+  }
+};
+
 export const TicketCard = ({
   booking,
   onViewDetails,
-  onBookingCancelled, // Thêm prop mới
+  onBookingCancelled,
 }: {
   booking: BookingData;
   onViewDetails?: () => void;
-  onBookingCancelled?: () => void; // Thêm prop mới
+  onBookingCancelled?: () => void;
 }) => {
   const { data: session } = useSession(); // Lấy session để lấy token
   const t = useTranslations("MyTickets");
@@ -117,6 +140,10 @@ export const TicketCard = ({
   const [isCancelConfirmOpen, setIsCancelConfirmOpen] = useState(false); // State cho dialog xác nhận hủy
 
   const isPast = new Date(booking.departure_time) < new Date();
+  const refundPercentage = calculateRefundPercentage(
+    booking.booking_date, // Thời gian đặt vé
+    booking.departure_time // Thời gian khởi hành
+  );
 
   const handleSubmitComplaint = async () => {
     if (!session?.user?.accessToken) {
@@ -377,7 +404,14 @@ export const TicketCard = ({
             <DialogHeader>
               <DialogTitle>{t("confirmCancelTitle")}</DialogTitle>
               <DialogDescription>
+
+<!--                 Bạn có chắc chắn muốn hủy vé này không? Hành động này không thể
+                hoàn tác và bạn sẽ được hoàn {refundPercentage}% tiền vé.
+                {refundPercentage === 0 &&
+                  " (Lưu ý: Không được hoàn tiền do hủy sát giờ khởi hành.)"} -->
+
                 {t("confirmCancelDescription")}
+
               </DialogDescription>
             </DialogHeader>
             <DialogFooter>
