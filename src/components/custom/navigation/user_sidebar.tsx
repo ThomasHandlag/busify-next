@@ -7,7 +7,7 @@ import { useTranslations } from "next-intl";
 
 export function UserSidebar() {
   const path = usePathname();
-  const t = useTranslations("UserSidebar");
+  const t = useTranslations("UserDashboard");
   const isActive = (url: string): boolean => {
     return path === url;
   };
@@ -19,7 +19,7 @@ export function UserSidebar() {
       icon: User,
     },
     {
-      title: t("myTickets"),
+      title: t("tickets"),
       url: "/user/my-tickets",
       icon: Ticket,
     },
