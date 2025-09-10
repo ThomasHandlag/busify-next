@@ -98,7 +98,7 @@ const HomeSearchForm = ({ locations }: { locations: FilterLocationType[] }) => {
                 value={field.value?.toString()}
               >
                 <FormControl>
-                  <SelectTrigger>
+                  <SelectTrigger className="w-full">
                     <SelectValue placeholder="Select a location" />
                   </SelectTrigger>
                 </FormControl>
@@ -131,7 +131,7 @@ const HomeSearchForm = ({ locations }: { locations: FilterLocationType[] }) => {
                 onValueChange={(e) => field.onChange(Number(e))}
               >
                 <FormControl>
-                  <SelectTrigger>
+                  <SelectTrigger className="w-full">
                     <SelectValue placeholder="Select a location" />
                   </SelectTrigger>
                 </FormControl>

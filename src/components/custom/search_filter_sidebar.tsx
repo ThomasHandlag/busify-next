@@ -129,7 +129,7 @@ const SearchFilterSidebar = () => {
                   value={field.value?.toString() || ""}
                   onValueChange={field.onChange}
                 >
-                  <SelectTrigger className="bg-gray-50">
+                  <SelectTrigger className="bg-gray-50 w-full">
                     <SelectValue placeholder="Select Location" />
                   </SelectTrigger>
                   <SelectContent>
@@ -156,7 +156,7 @@ const SearchFilterSidebar = () => {
                   value={field.value?.toString() || ""}
                   onValueChange={field.onChange}
                 >
-                  <SelectTrigger className="bg-gray-50">
+                  <SelectTrigger className="bg-gray-50 w-full">
                     <SelectValue placeholder="Select Location" />
                   </SelectTrigger>
                   <SelectContent>
@@ -355,7 +355,7 @@ const SearchFilterSidebar = () => {
                   operatorName: undefined,
                   busModels: [],
                   amenities: [],
-                  availableSeats: 0
+                  availableSeats: 0,
                 });
                 onApplyFilters({
                   ...form.getValues(),
