@@ -4,6 +4,14 @@ import { createContext, useContext } from "react";
 
 import { TripFilterQuery, TripItemProps } from "../data/trip";
 
+export interface TripPagerType {
+  page: number;
+  size: number;
+  totalPages: number;
+  isFirst: boolean;
+  isLast: boolean;
+}
+
 interface TripFilterContextType {
   query: TripFilterQuery | undefined;
   trips: TripItemProps[];
@@ -11,7 +19,7 @@ interface TripFilterContextType {
   handlePageChange: (page: number) => void;
   handleApplyFilters: (filters: TripFilterQuery | undefined) => Promise<void>;
   isLoading: boolean;
-  total: number;
+  pager: TripPagerType | undefined;
 }
 
 const TripFilterContext = createContext<TripFilterContextType | undefined>(

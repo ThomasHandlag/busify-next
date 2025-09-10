@@ -5,6 +5,7 @@ import { Separator } from "@radix-ui/react-separator";
 import { getReviewsByTripId } from "@/lib/data/reviews";
 import { Review } from "@/lib/data/reviews";
 import { TripDetail } from "@/lib/data/trip";
+import LocaleText from "./locale_text";
 
 export interface ReviewProps {
   id: number;
@@ -32,7 +33,9 @@ const ReviewSection = async ({
       <CardHeader>
         <CardTitle className="flex items-center space-x-2">
           <Star className="w-5 h-5 text-yellow-400" />
-          <span>Đánh giá chuyến đi</span>
+          <span>
+            <LocaleText string="reviewTrip" name="Review" />
+          </span>
         </CardTitle>
       </CardHeader>
       <CardContent>
@@ -55,9 +58,12 @@ const ReviewSection = async ({
             </div>
           </div>
           <div>
-            <p className="font-medium">Đánh giá trung bình</p>
+            <p className="font-medium">
+              <LocaleText string="avgRate" name="Review" />
+            </p>
             <p className="text-sm text-gray-500">
-              Dựa trên {reviews.length} đánh giá
+              <LocaleText string="basedOn" name="Based on" /> {reviews.length}{" "}
+              <LocaleText string="reviews" name="Reviews" />
             </p>
           </div>
         </div>
@@ -65,7 +71,9 @@ const ReviewSection = async ({
         <Separator className="my-4" />
         <div className="space-y-4">
           {reviews.length === 0 ? (
-            <p className="text-sm text-gray-500">Chưa có đánh giá nào.</p>
+            <p className="text-sm text-gray-500">
+              <LocaleText string="noReviews" name="Review" />.
+            </p>
           ) : (
             reviews.map((review) => (
               <ReviewItem key={review.reviewId} review={review} />

@@ -33,6 +33,7 @@ import Image from "next/image";
 import HomeSearchForm from "@/components/custom/home_search_form";
 import { getAllLocations } from "@/lib/data/location";
 import { toast } from "sonner";
+import LocaleText from "@/components/custom/locale_text";
 
 const Home = async () => {
   const popularRoutes = await getPopularRoutes({
@@ -43,72 +44,78 @@ const Home = async () => {
     callback: (msg: string) => toast.info(msg),
     localeMessage: "Failed to load locations",
   });
+
   return (
     <div className="h-full w-full">
       <section className="w-full relative">
-        <div
-          className="relative bg-gradient-to-r from-green-600 to-green-500 overflow-hidden rounded-b-3xl mx-4 md:mx-8"
-          style={{ minHeight: "140px" }}
-        >
+        <section className="relative overflow-hidden h-screen">
+          {/* Background Image with Enhanced Effects */}
           <div className="absolute inset-0 overflow-hidden">
-            <div className="absolute top-0 left-0 w-full h-full bg-gradient-to-br from-transparent via-green-400/10 to-transparent"></div>
-            <div className="absolute top-0 right-0 w-1/3 h-full bg-gradient-to-l from-green-300/20 to-transparent"></div>
+            <Image
+              src="/bus-photo.jpg"
+              fill
+              loading="eager"
+              placeholder="blur"
+              blurDataURL="..."
+              alt="Bus platform background"
+              className="object-cover scale-105 transition-transform duration-700 hover:scale-110"
+              style={{
+                filter: "brightness(0.4) contrast(1.1) saturate(1.2)",
+              }}
+            />
           </div>
-        </div>
-
-        <div
-          className="relative flex justify-center px-4"
-          style={{ zIndex: 20, marginTop: "-100px", marginBottom: "12px" }}
-        >
-          <div className="w-full max-w-6xl">
-            <div className="relative z-10 flex flex-col items-center justify-center text-center">
-              <div className="rounded-2xl px-6 py-8 md:px-12 md:py-10 flex flex-col items-center gap-4 shadow-2xl border border-white/20">
-                <div className="flex flex-col md:flex-row items-center justify-center gap-4 md:gap-6 mb-4">
-                  <span className="text-5xl md:text-7xl font-bold bg-gradient-to-br bg-green-500 bg-clip-text text-transparent drop-shadow-2xl">
-                    Bustify
+          <div className="relative py-4 z-30 h-screen flex items-center justify-center">
+            <div className="max-w-6xl mx-auto px-4">
+              <div className="flex flex-col md:flex-row items-center justify-center gap-6 md:gap-8 mb-12">
+                <div className="relative">
+                  <span className="text-4xl md:text-8xl font-black bg-primary bg-clip-text text-transparent drop-shadow-2xl tracking-tight">
+                    Busify
                   </span>
-                  <div className="text-center md:text-left">
-                    <div className="text-xl md:text-2xl font-bold text-green-500 drop-shadow-lg">
-                      ĐỒNG HÀNH - PHÁT TRIỂN
-                    </div>
-                    <div className="text-xl md:text-3xl font-bold text-green-500 drop-shadow-lg">
-                      VỮNG TIN - AN TOÀN
-                    </div>
+                  {/* Logo glow effect */}
+                  <div className="absolute -inset-2 bg-gradient-to-r from-green-400/20 to-blue-400/20 rounded-2xl blur-xl -z-10"></div>
+                </div>
+
+                <div className="hidden md:block w-px h-16 bg-gradient-to-b from-white/60 to-transparent"></div>
+
+                <div className="text-center md:text-left space-y-1">
+                  <div className="text-2xl md:text-3xl font-bold text-white drop-shadow-lg leading-tight">
+                    <LocaleText string="slogan" name="Home" />
+                  </div>
+                  <div className="text-lg md:text-xl font-semibold text-green-100 drop-shadow-md leading-tight">
+                    <LocaleText string="slogan2" name="Home" />
                   </div>
                 </div>
-                <div className="-z-1 rounded-2xl h-[30px]">
-                  <Image
-                    src="/copy.jpg"
-                    fill
-                    loading="lazy"
-                    placeholder="blur"
-                    blurDataURL="..."
-                    alt="Bus platform background"
-                    className="object-cover rounded-2xl "
-                  />
-                  <div className="bg-black/10 backdrop:blur-xl absolute inset-0 rounded-2xl"></div>
-                </div>
+              </div>
+              <div className="relative">
+                <div className="absolute -inset-1 bg-gradient-to-r from-green-400 via-blue-500 to-green-400 rounded-3xl blur opacity-20 animate-pulse"></div>
+                <Card className="relative bg-green-100/65 backdrop-blur-xl shadow-2xl shadow-green-500/20 border-2 border-white/30 rounded-3xl overflow-hidden">
+                  <div className="absolute inset-0 bg-gradient-to-br from-white/50 via-transparent to-green-50/30"></div>
+                  <CardContent className="relative p-4 md:p-8">
+                    <div className="text-center mb-6">
+                      <h2 className="text-2xl md:text-3xl font-bold text-gray-800 mb-2">
+                        <LocaleText string="findBusTicket" name="Home" />
+                      </h2>
+                      <p className="text-gray-600 text-sm md:text-base">
+                        <LocaleText string="subtitle" name="Home" />
+                      </p>
+                    </div>
+                    <HomeSearchForm locations={locations} />
+                    <div className="mt-6 flex justify-center">
+                      <div className="w-54 h-1 bg-gradient-to-r from-green-100 to-green-500 rounded-full"></div>
+                    </div>
+                  </CardContent>
+                </Card>
               </div>
             </div>
           </div>
-        </div>
-
-        <div className="relative py-8 z-30">
-          <div className="max-w-6xl mx-auto px-4">
-            <Card className="bg-white shadow-xl shadow-green-500/25 border-2 border-green-500 rounded-2xl backdrop-blur-sm">
-              <CardContent className="p-6">
-                <HomeSearchForm locations={locations} />
-              </CardContent>
-            </Card>
-          </div>
-        </div>
+        </section>
       </section>
 
       {/* Popular Routes Section */}
       <section className="py-16 bg-gray-50">
         <div className="max-w-6xl mx-auto px-4">
           <h2 className="text-3xl font-bold text-center text-green-700 mb-12">
-            Popular Routes
+            <LocaleText string="featuredRoutes" name="Home" />
           </h2>
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
             {popularRoutes?.slice(0, 6).map((route: BusifyRoute) => (
@@ -122,7 +129,9 @@ const Home = async () => {
               className="border-green-600 text-green-600 hover:bg-green-600 hover:text-white bg-transparent"
               asChild
             >
-              <Link href="/trips">View All Routes</Link>
+              <Link href="/trips">
+                <LocaleText string="viewAllRoutes" name="Home" />
+              </Link>
             </Button>
           </div>
         </div>
@@ -134,45 +143,51 @@ const Home = async () => {
           <div className="grid lg:grid-cols-2 gap-12 items-center">
             <div>
               <h2 className="text-3xl font-bold text-green-700 mb-6">
-                Book on the go with our Mobile App
+                <LocaleText string="recommendText1" name="Home" />
               </h2>
               <p className="text-lg text-gray-600 mb-8">
-                Download the Busify mobile app for seamless ticket booking,
-                real-time tracking, and exclusive mobile-only deals. Available
-                on both iOS and Android.
+                <LocaleText string="recommendText2" name="Home" />
               </p>
 
               <div className="space-y-4 mb-8">
                 <div className="flex items-center space-x-3">
                   <Smartphone className="w-6 h-6 text-green-600" />
                   <span className="text-gray-700">
-                    Easy booking in just a few taps
+                    <LocaleText string="platformDesc1" name="Home" />
                   </span>
                 </div>
                 <div className="flex items-center space-x-3">
                   <Navigation className="w-6 h-6 text-green-600" />
                   <span className="text-gray-700">
-                    Real-time bus tracking and notifications
+                    <LocaleText string="platformDesc2" name="Home" />
                   </span>
                 </div>
                 <div className="flex items-center space-x-3">
                   <CreditCard className="w-6 h-6 text-green-600" />
-                  <span className="text-gray-700">Secure mobile payments</span>
+                  <span className="text-gray-700">
+                    <LocaleText string="platformDesc3" name="Home" />
+                  </span>
                 </div>
                 <div className="flex items-center space-x-3">
                   <Globe className="w-6 h-6 text-green-600" />
-                  <span className="text-gray-700">Offline ticket access</span>
+                  <span className="text-gray-700">
+                    <LocaleText string="platformDesc4" name="Home" />
+                  </span>
                 </div>
               </div>
 
               <div className="flex flex-col sm:flex-row gap-4">
                 <Button className="bg-gray-900 text-white hover:bg-gray-800 flex items-center justify-center space-x-2 px-6 py-3 rounded-lg transition-colors">
                   <Download className="w-5 h-5" />
-                  <span>Download on App Store</span>
+                  <span>
+                    <LocaleText string="downloadAppStore" name="Home" />
+                  </span>
                 </Button>
                 <Button className="bg-green-600 text-white hover:bg-green-700 flex items-center justify-center space-x-2 px-6 py-3 rounded-lg transition-colors">
                   <Download className="w-5 h-5" />
-                  <span>Get it on Google Play</span>
+                  <span>
+                    <LocaleText string="downloadGooglePlay" name="Home" />
+                  </span>
                 </Button>
               </div>
             </div>
@@ -219,7 +234,7 @@ const Home = async () => {
       <section className="bg-gradient-to-b from-green-50 to-white py-16">
         <div className="max-w-6xl mx-auto px-4">
           <h2 className="text-3xl font-bold text-center text-green-800 mb-12">
-            What Our Customers Say
+            <LocaleText string="customerReviews" name="Home" />
           </h2>
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
             <Card className="border-green-200 bg-white shadow-lg hover:shadow-xl transition-shadow duration-300">
@@ -251,8 +266,9 @@ const Home = async () => {
                   ))}
                 </div>
                 <p className="text-gray-700 italic">
-                  &quot;Busify has made my business trips so much easier. I can
-                  compare prices and book tickets in minutes!&quot;
+                  &quot;
+                  <LocaleText string="review1" name="Home" />
+                  !&quot;
                 </p>
               </CardContent>
             </Card>
@@ -286,8 +302,9 @@ const Home = async () => {
                   ))}
                 </div>
                 <p className="text-gray-700 italic">
-                  &quot;Since joining Busify, our bookings increased by 40%. The
-                  platform is easy to use and the support is excellent.&quot;
+                  &quot;
+                  <LocaleText string="review2" name="Home" />
+                  .&quot;
                 </p>
               </CardContent>
             </Card>
@@ -321,8 +338,9 @@ const Home = async () => {
                   ))}
                 </div>
                 <p className="text-gray-700 italic">
-                  &quot;Real-time tracking and reliable service. I always know
-                  when my bus will arrive. Highly recommended!&quot;
+                  &quot;
+                  <LocaleText string="review3" name="Home" />
+                  &quot;
                 </p>
               </CardContent>
             </Card>
