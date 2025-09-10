@@ -13,8 +13,6 @@ export interface TripItemProps {
   available_seats: number;
   average_rating: number;
   price_per_seat: number;
-  original_price: number;
-  discount_amount: number;
   status: string;
   duration: string;
 }
@@ -33,8 +31,6 @@ export interface TripDetail {
     amenities: string[];
   };
   price_per_seat: number;
-  original_price: number;
-  discount_amount: number;
   route: {
     route_id: number;
     start_location: Location;
@@ -58,8 +54,6 @@ export interface Trip {
   available_seats: number;
   average_rating: number;
   price_per_seat: number;
-  original_price: number;
-  discount_amount: number;
   duration: string;
 }
 

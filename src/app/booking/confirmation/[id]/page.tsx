@@ -21,6 +21,7 @@ interface TripApiResponse {
       seats: number;
     };
     pricePerSeat: number;
+
     route: {
       start_location: {
         address: string;
@@ -305,12 +306,16 @@ export default function BookingConfirmation({ params }: PageProps) {
               </CardContent>
             </Card>
           </div>
-          <div className="space-y-6">
-            <BookingInteractiveSection
-              initialTotalPrice={bookingData.pricing.totalPrice}
-              mockData={bookingData}
-              tripId={tripId}
-            />
+
+          {/* Sidebar với sticky position và scroll */}
+          <div className="lg:sticky lg:top-4 lg:self-start">
+            <div className="max-h-[calc(100vh-4rem)] overflow-y-auto space-y-6 pr-2">
+              <BookingInteractiveSection
+                initialTotalPrice={bookingData.pricing.totalPrice}
+                mockData={bookingData}
+                tripId={tripId}
+              />
+            </div>
           </div>
         </div>
       </div>

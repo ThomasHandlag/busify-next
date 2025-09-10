@@ -1,9 +1,10 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useCallback } from "react";
 import { useSession } from "next-auth/react";
 import PromoCodeSection from "./PromoCodeSection";
 import PaymentMethods from "./PaymentMethods";
+import AutoPromotionSection from "../promotion/AutoPromotionSection";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
 import { CreditCard } from "lucide-react";
@@ -23,12 +24,12 @@ interface BookingData {
 
 interface BookingAddRequestDTO {
   tripId: number;
-  customerId?: number | null;
   guestFullName: string;
   guestEmail: string;
   guestPhone: string;
   guestAddress?: string | null;
   discountCode?: string | null;
+  promotionId?: number | null; // Add promotionId field for auto promotions
   seatNumber: string;
   totalAmount: number;
 }
@@ -52,12 +53,20 @@ export default function BookingInteractiveSection({
   const { data: session } = useSession();
   const [discount, setDiscount] = useState(0);
   const [discountInfo, setDiscountInfo] = useState<DiscountInfo | null>(null);
+  const [autoPromotionDiscount, setAutoPromotionDiscount] = useState(0);
+  const [selectedAutoPromotion, setSelectedAutoPromotion] = useState<{
+    id: number;
+    code: string | null;
+    discountType: string;
+    discountValue: number;
+  } | null>(null);
   const [paymentMethod, setPaymentMethod] = useState<string>("vnpay"); // Mặc định là VNPAY
   const [paymentLoading, setPaymentLoading] = useState(false);
   const [paymentError, setPaymentError] = useState<string | null>(null);
   const [paymentLink, setPaymentLink] = useState<string | null>(null);
 
-  const finalAmount = initialTotalPrice - discount;
+  // Calculate final amount with both manual discount and auto promotion
+  const finalAmount = initialTotalPrice - discount - autoPromotionDiscount;
 
   const handleDiscountChange = (
     newDiscount: number,
@@ -65,7 +74,27 @@ export default function BookingInteractiveSection({
   ) => {
     setDiscount(newDiscount);
     setDiscountInfo(newDiscountInfo);
+    // No longer reset auto promotion when manual code is applied
+    // Both can be applied together now
   };
+
+  const handleAutoPromotionSelect = useCallback(
+    (
+      promotion: {
+        id: number;
+        code: string | null;
+        discountType: string;
+        discountValue: number;
+      } | null,
+      discountAmount: number
+    ) => {
+      setSelectedAutoPromotion(promotion);
+      setAutoPromotionDiscount(discountAmount);
+      // No longer reset manual discount when auto promotion is selected
+      // Both can be applied together now
+    },
+    []
+  );
 
   // Hàm xử lý xác nhận thanh toán
   const handleConfirmPayment = async () => {
@@ -98,15 +127,28 @@ export default function BookingInteractiveSection({
     setPaymentLink(null);
 
     try {
+      // Combine both discount codes if available
+      let combinedDiscountCode = null;
+      const manualCode = discountInfo?.code;
+      const autoCode = selectedAutoPromotion?.code;
+
+      if (manualCode && autoCode) {
+        combinedDiscountCode = `${manualCode},${autoCode}`;
+      } else if (manualCode) {
+        combinedDiscountCode = manualCode;
+      } else if (autoCode) {
+        combinedDiscountCode = autoCode;
+      }
+
       // Bước 1: Gửi POST request tới API bookings
       const bookingRequest: BookingAddRequestDTO = {
         tripId: Number(tripId),
-        customerId: session.user.id ? Number(session.user.id) : null, // Sử dụng customerId từ session
         guestFullName: mockData.passenger.fullName,
         guestEmail: mockData.passenger.email,
         guestPhone: mockData.passenger.phone,
         guestAddress: null,
-        discountCode: discountInfo?.code || null,
+        discountCode: combinedDiscountCode,
+        promotionId: selectedAutoPromotion?.id || null, // Add promotionId for auto promotion tracking
         seatNumber: mockData.selectedSeats.join(","),
         totalAmount: finalAmount,
       };
@@ -198,6 +240,12 @@ export default function BookingInteractiveSection({
 
   return (
     <>
+      {/* Auto Promotion Section */}
+      <AutoPromotionSection
+        originalPrice={initialTotalPrice}
+        onPromotionSelect={handleAutoPromotionSelect}
+      />
+
       <Card>
         <CardHeader>
           <CardTitle>Mã giảm giá</CardTitle>
@@ -223,7 +271,7 @@ export default function BookingInteractiveSection({
             <div className="flex justify-between">
               <span>Giá vé ({mockData.selectedSeats.length} ghế)</span>
               <div className="text-right">
-                {discount > 0 ? (
+                {discount > 0 || autoPromotionDiscount > 0 ? (
                   <>
                     <span className="text-gray-400 line-through text-sm">
                       {mockData.pricing.totalPrice.toLocaleString("vi-VN")}đ
@@ -239,13 +287,27 @@ export default function BookingInteractiveSection({
             {discount > 0 && discountInfo && (
               <div className="flex justify-between text-red-600">
                 <span>
-                  Giảm giá (
+                  Giảm giá - {discountInfo.code} (
                   {discountInfo.discountType === "PERCENTAGE"
                     ? `${discountInfo.discountValue}%`
                     : `${discountInfo.discountValue.toLocaleString("vi-VN")}đ`}
                   )
                 </span>
                 <span>-{discount.toLocaleString("vi-VN")}đ</span>
+              </div>
+            )}
+            {autoPromotionDiscount > 0 && selectedAutoPromotion && (
+              <div className="flex justify-between text-red-600">
+                <span>
+                  Khuyến mãi tự động (
+                  {selectedAutoPromotion.discountType === "PERCENTAGE"
+                    ? `${selectedAutoPromotion.discountValue}%`
+                    : `${selectedAutoPromotion.discountValue.toLocaleString(
+                        "vi-VN"
+                      )}đ`}
+                  )
+                </span>
+                <span>-{autoPromotionDiscount.toLocaleString("vi-VN")}đ</span>
               </div>
             )}
             <Separator />

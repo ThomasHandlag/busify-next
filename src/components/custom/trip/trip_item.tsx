@@ -72,33 +72,9 @@ const TripItem = ({ trip }: { trip: TripItemProps }) => {
 
             {/* Price Display Logic */}
             <div className="text-right">
-              {trip.discount_amount > 0 ? (
-                <div className="flex flex-col items-end">
-                  <div className="flex items-center gap-2">
-                    <p className="text-sm text-gray-400 line-through">
-                      {new Intl.NumberFormat("vi-VN").format(
-                        trip.original_price
-                      )}
-                      đ
-                    </p>
-                    <span className="text-xs bg-red-100 text-red-600 px-1.5 py-0.5 rounded font-medium">
-                      -
-                      {new Intl.NumberFormat("vi-VN").format(
-                        trip.discount_amount
-                      )}
-                      đ
-                    </span>
-                  </div>
-                  <p className="text-lg font-bold text-green-600">
-                    {new Intl.NumberFormat("vi-VN").format(trip.price_per_seat)}
-                    đ
-                  </p>
-                </div>
-              ) : (
-                <p className="text-lg font-bold text-green-600">
-                  {new Intl.NumberFormat("vi-VN").format(trip.price_per_seat)}đ
-                </p>
-              )}
+              <p className="text-lg font-bold text-green-600">
+                {new Intl.NumberFormat("vi-VN").format(trip.price_per_seat)}đ
+              </p>
             </div>
           </div>
         </div>

@@ -43,8 +43,6 @@ interface SeatSelectionTabsCardProps {
   seats: Seat[];
   layout: BusLayout | null;
   pricePerSeat: number;
-  originalPrice: number;
-  discountAmount: number;
   onSeatSelection?: (selectedSeats: string[], totalPrice: number) => void;
 }
 
@@ -53,8 +51,6 @@ export function SeatSelectionTabsCard({
   seats,
   layout,
   pricePerSeat,
-  originalPrice,
-  discountAmount,
   onSeatSelection,
 }: SeatSelectionTabsCardProps) {
   const [selectedSeats, setSelectedSeats] = useState<string[]>([]);
@@ -439,32 +435,9 @@ export function SeatSelectionTabsCard({
               )}
             </div>
             <div className="text-right">
-              {discountAmount > 0 ? (
-                <div>
-                  <div className="flex items-center justify-end gap-2 mb-1">
-                    <p className="text-sm text-gray-400 line-through">
-                      {(selectedSeats.length * originalPrice).toLocaleString(
-                        "vi-VN"
-                      )}
-                      đ
-                    </p>
-                    <span className="text-xs bg-red-100 text-red-600 px-1.5 py-0.5 rounded font-medium">
-                      -
-                      {(selectedSeats.length * discountAmount).toLocaleString(
-                        "vi-VN"
-                      )}
-                      đ
-                    </span>
-                  </div>
-                  <p className="text-lg font-bold text-green-600">
-                    {totalPrice.toLocaleString("vi-VN")}đ
-                  </p>
-                </div>
-              ) : (
-                <p className="text-lg font-bold text-green-600">
-                  {totalPrice.toLocaleString("vi-VN")}đ
-                </p>
-              )}
+              <p className="text-lg font-bold text-green-600">
+                {totalPrice.toLocaleString("vi-VN")}đ
+              </p>
               <p className="text-xs text-gray-500">
                 {selectedSeats.length} ghế ×{" "}
                 {pricePerSeat.toLocaleString("vi-VN")}đ

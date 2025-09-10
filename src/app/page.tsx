@@ -33,6 +33,7 @@ import Image from "next/image";
 import HomeSearchForm from "@/components/custom/home_search_form";
 import { getAllLocations } from "@/lib/data/location";
 import { toast } from "sonner";
+import DiscountSlider from "@/components/custom/discount_slider";
 
 const Home = async () => {
   const popularRoutes = await getPopularRoutes({
@@ -101,6 +102,21 @@ const Home = async () => {
               </CardContent>
             </Card>
           </div>
+        </div>
+      </section>
+
+      {/* Discount Campaigns Slider Section */}
+      <section className="py-16 bg-gradient-to-b from-gray-50 to-white">
+        <div className="max-w-7xl mx-auto px-4">
+          <div className="text-center mb-12">
+            <h2 className="text-4xl font-bold text-gray-800 mb-4">
+              🎉 Ưu đãi đặc biệt
+            </h2>
+            <p className="text-xl text-gray-600">
+              Khám phá những chương trình khuyến mãi hấp dẫn nhất
+            </p>
+          </div>
+          <DiscountSlider />
         </div>
       </section>
 

@@ -59,23 +59,23 @@ const addReviewClient = async (
   accessToken: string,
   callBack: (value: string) => void
 ) => {
-    const response = await fetch(`/api/review`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${accessToken}`,
-      },
-      body: JSON.stringify(review),
-    });
-    if (!response.ok) {
-      const errorData = (await response.json()) as ResponseError;
-      console.log(errorData);
-      callBack(errorData.message || "Failed to add review");
-      return;
-    }
-    const data = await response.json();
-    callBack("Add review successfully");
-    return data.result;
+  const response = await fetch(`/api/review`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${accessToken}`,
+    },
+    body: JSON.stringify(review),
+  });
+  if (!response.ok) {
+    const errorData = (await response.json()) as ResponseError;
+    console.log(errorData);
+    callBack(errorData.message || "Failed to add review");
+    return;
+  }
+  const data = await response.json();
+  callBack("Add review successfully");
+  return data.result;
 };
 
 export {
