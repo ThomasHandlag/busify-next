@@ -307,7 +307,7 @@ export function SeatSelectionTabsCard({
 
       <CardContent className="space-y-6">
         {/* Seat Legend */}
-        <div className="flex justify-center gap-6 text-sm">
+        <div className="grid grid-cols-2 gap-x-6 gap-y-2 text-sm justify-items-start">
           <div className="flex items-center gap-2">
             <div className="w-4 h-4 bg-white border-2 border-green-300 rounded"></div>
             <span>
