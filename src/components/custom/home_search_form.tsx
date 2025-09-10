@@ -11,22 +11,14 @@ import {
 } from "../ui/form";
 import { useTripFilter } from "@/lib/contexts/TripFilterContext";
 import { useRouter } from "next/navigation";
-import {
-  Select,
-  SelectContent,
-  SelectTrigger,
-  SelectValue,
-  SelectItem,
-  SelectGroup,
-  SelectLabel,
-} from "../ui/select";
+import { Combobox } from "../ui/combobox";
 import { Button } from "../ui/button";
 import { Calendar28 } from "./date_picker";
 import { FilterLocationType } from "./search_filter_sidebar";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Input } from "../ui/input";
-import { Separator } from "@radix-ui/react-select";
+import { useTranslations } from "next-intl";
+import { Search } from "lucide-react";
 
 type HomeSearchFormValues = {
   departureDate?: Date | undefined;
@@ -55,6 +47,7 @@ const schema = z
   }, "Start and end location must be different");
 
 const HomeSearchForm = ({ locations }: { locations: FilterLocationType[] }) => {
+  const t = useTranslations();
   const filter = useTripFilter();
   const navigate = useRouter();
 
@@ -84,7 +77,7 @@ const HomeSearchForm = ({ locations }: { locations: FilterLocationType[] }) => {
   return (
     <Form {...form}>
       <form
-        className="grid grid-cols-2 justify-center items-center gap-2 "
+        className="flex justify-center items-center gap-2"
         onSubmit={form.handleSubmit(onSubmit)}
       >
         <FormField
@@ -92,30 +85,22 @@ const HomeSearchForm = ({ locations }: { locations: FilterLocationType[] }) => {
           name="startLocation"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Departure Location</FormLabel>
-              <Select
-                onValueChange={(e) => field.onChange(Number(e))}
-                value={field.value?.toString()}
-              >
-                <FormControl>
-                  <SelectTrigger>
-                    <SelectValue placeholder="Select a location" />
-                  </SelectTrigger>
-                </FormControl>
-                <SelectContent>
-                  <SelectGroup>
-                    <SelectLabel>Start Location</SelectLabel>
-                    {locations.map((loc) => (
-                      <SelectItem
-                        key={loc.locationId}
-                        value={loc.locationId.toString()}
-                      >
-                        {loc.locationName}
-                      </SelectItem>
-                    ))}
-                  </SelectGroup>
-                </SelectContent>
-              </Select>
+              <FormLabel>{t("Home.from")}</FormLabel>
+              <FormControl>
+                <Combobox
+                  options={locations.map((loc) => ({
+                    value: loc.locationId.toString(),
+                    label: loc.locationName,
+                  }))}
+                  value={field.value?.toString()}
+                  onValueChange={(value) =>
+                    field.onChange(value ? Number(value) : undefined)
+                  }
+                  placeholder={t("Home.from")}
+                  searchPlaceholder={t("Home.searchLocations")}
+                  emptyMessage={t("Home.noLocationsFound")}
+                />
+              </FormControl>
               <FormMessage />
             </FormItem>
           )}
@@ -125,30 +110,22 @@ const HomeSearchForm = ({ locations }: { locations: FilterLocationType[] }) => {
           name="endLocation"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Arrival Location</FormLabel>
-              <Select
-                value={field.value?.toString()}
-                onValueChange={(e) => field.onChange(Number(e))}
-              >
-                <FormControl>
-                  <SelectTrigger>
-                    <SelectValue placeholder="Select a location" />
-                  </SelectTrigger>
-                </FormControl>
-                <SelectContent>
-                  <SelectGroup>
-                    <SelectLabel>End Location</SelectLabel>
-                    {locations.map((loc) => (
-                      <SelectItem
-                        key={loc.locationId}
-                        value={loc.locationId.toString()}
-                      >
-                        {loc.locationName}
-                      </SelectItem>
-                    ))}
-                  </SelectGroup>
-                </SelectContent>
-              </Select>
+              <FormLabel>{t("Home.to")}</FormLabel>
+              <FormControl>
+                <Combobox
+                  options={locations.map((loc) => ({
+                    value: loc.locationId.toString(),
+                    label: loc.locationName,
+                  }))}
+                  value={field.value?.toString()}
+                  onValueChange={(value) =>
+                    field.onChange(value ? Number(value) : undefined)
+                  }
+                  placeholder={t("Home.to")}
+                  searchPlaceholder={t("Home.searchLocations")}
+                  emptyMessage={t("Home.noLocationsFound")}
+                />
+              </FormControl>
               <FormMessage />
             </FormItem>
           )}
@@ -160,8 +137,8 @@ const HomeSearchForm = ({ locations }: { locations: FilterLocationType[] }) => {
             <FormItem>
               <Calendar28
                 picker={{
-                  placeholder: "Select a date",
-                  label: "From Date",
+                  placeholder: t("Home.departDate"),
+                  label: t("Home.departDate"),
                   initialDate: field.value,
                   onDateChange: (date) => field.onChange(date),
                 }}
@@ -170,53 +147,16 @@ const HomeSearchForm = ({ locations }: { locations: FilterLocationType[] }) => {
             </FormItem>
           )}
         />
-        <FormField
-          name="untilTime"
-          control={form.control}
-          render={({ field }) => (
-            <FormItem>
-              <Calendar28
-                picker={{
-                  placeholder: "Select a date",
-                  label: "Until Date",
-                  initialDate: field.value,
-                  onDateChange: (date) => field.onChange(date),
-                }}
-              />
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-        <FormField
-          control={form.control}
-          name="availableSeats"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel htmlFor="availableSeats">Available Seats</FormLabel>
-              <FormControl>
-                <Input
-                  type="number"
-                  max={40}
-                  min={0}
-                  value={field.value}
-                  onChange={field.onChange}
-                />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-        <Separator />
-        <div className="grid grid-cols-3 w-full gap-2">
+        <FormItem className="mt-6">
           <Button
             type="submit"
-            className="h-10 col-span-2 bg-green-600 hover:bg-green-700 text-white px-6 rounded-md font-medium text-sm"
+            className="col-span-1 bg-green-600 hover:bg-green-700 text-white px-6 rounded-md font-medium text-sm"
             disabled={filter.isLoading}
             onClick={() => form.handleSubmit(onSubmit)()}
           >
-            TÌM CHUYẾN
+            <Search className="w-4 h-4 mr-2" />
           </Button>
-        </div>
+        </FormItem>
       </form>
     </Form>
   );

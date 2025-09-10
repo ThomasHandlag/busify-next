@@ -9,8 +9,10 @@ import { Separator } from "@/components/ui/separator";
 import { CreditCard } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { DiscountInfo } from "@/lib/data/discount";
+import { useTranslations } from "next-intl";
 import PointsSection from "./PointsSession";
 import { getScore, usePoints } from "@/lib/data/score";
+
 
 interface BookingData {
   trip: { route: string };
@@ -52,6 +54,7 @@ export default function BookingInteractiveSection({
   tripId,
 }: BookingInteractiveSectionProps) {
   const { data: session } = useSession();
+  const t = useTranslations("Booking");
   const [discount, setDiscount] = useState(0);
   const [discountInfo, setDiscountInfo] = useState<DiscountInfo | null>(null);
   const [usedPoints, setUsedPoints] = useState(0);
@@ -93,7 +96,7 @@ export default function BookingInteractiveSection({
   const handleConfirmPayment = async () => {
     // Kiểm tra dữ liệu trước khi gửi
     if (!mockData.selectedSeats.length) {
-      setPaymentError("Vui lòng chọn ít nhất một ghế.");
+      setPaymentError(t("selectSeatsError"));
       return;
     }
     if (
@@ -101,17 +104,17 @@ export default function BookingInteractiveSection({
       !mockData.passenger.email ||
       !mockData.passenger.phone
     ) {
-      setPaymentError("Thông tin hành khách không đầy đủ.");
+      setPaymentError(t("passengerInfoIncomplete"));
       return;
     }
     if (finalAmount <= 0) {
-      setPaymentError("Số tiền thanh toán không hợp lệ.");
+      setPaymentError(t("invalidPaymentAmount"));
       return;
     }
 
     // Kiểm tra session
     if (!session?.user?.accessToken) {
-      setPaymentError("Vui lòng đăng nhập để tiếp tục thanh toán.");
+      setPaymentError(t("loginRequired"));
       return;
     }
 
@@ -244,7 +247,7 @@ export default function BookingInteractiveSection({
     <>
       <Card>
         <CardHeader>
-          <CardTitle>Mã giảm giá</CardTitle>
+          <CardTitle>{t("promoCode")}</CardTitle>
         </CardHeader>
         <CardContent>
           <PromoCodeSection
@@ -273,13 +276,13 @@ export default function BookingInteractiveSection({
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
             <CreditCard className="w-5 h-5 text-green-600" />
-            Tóm tắt thanh toán
+            {t("paymentSummary")}
           </CardTitle>
         </CardHeader>
         <CardContent className="space-y-4">
           <div className="space-y-2">
             <div className="flex justify-between">
-              <span>Giá vé ({mockData.selectedSeats.length} ghế)</span>
+              <span>{t("ticketPrice")} ({mockData.selectedSeats.length} {t("seats")})</span>
               <div className="text-right">
                 {discount > 0 ? (
                   <>
@@ -301,7 +304,7 @@ export default function BookingInteractiveSection({
             {discount > 0 && discountInfo && (
               <div className="flex justify-between text-green-600">
                 <span>
-                  Giảm giá (
+                  {t("discount")} (
                   {discountInfo.discountType === "PERCENTAGE"
                     ? `${discountInfo.discountValue}%`
                     : `${discountInfo.discountValue.toLocaleString("vi-VN")}đ`}
@@ -318,7 +321,7 @@ export default function BookingInteractiveSection({
             )}
             <Separator />
             <div className="flex justify-between font-semibold text-lg">
-              <span>Tổng tiền</span>
+              <span>{t("totalAmount")}</span>
               <span className="text-green-600">
                 {finalAmount.toLocaleString("vi-VN")}đ
               </span>
@@ -340,14 +343,14 @@ export default function BookingInteractiveSection({
             onClick={handleConfirmPayment}
             disabled={paymentLoading || !!paymentLink}
           >
-            {paymentLoading ? "Đang xử lý..." : "Xác nhận và thanh toán"} •
+            {paymentLoading ? t("processing") : t("confirmAndPay")} •
             <span className="ml-2">{finalAmount.toLocaleString("vi-VN")}đ</span>
           </Button>
 
           {paymentLink && (
             <div className="mt-4">
               <p className="text-sm text-gray-600 mb-2">
-                Nhấn vào link dưới đây để tiến hành thanh toán:
+                {t("paymentLinkText")}
               </p>
               <a
                 href={paymentLink}
@@ -355,16 +358,16 @@ export default function BookingInteractiveSection({
                 rel="noopener noreferrer"
                 className="inline-block w-full text-center bg-blue-600 hover:bg-blue-700 text-white py-2 rounded-md"
               >
-                Thanh toán qua VNPAY
+                {t("payWithVNPay")}
               </a>
             </div>
           )}
 
           <div className="text-xs text-gray-500 space-y-1 w-full">
-            <p>• Chính sách hủy vé linh hoạt</p>
-            <p>• Hỗ trợ 24/7 qua hotline</p>
-            <p>• Đảm bảo ghế đã đặt</p>
-            <p>• Thanh toán an toàn</p>
+            <p>• {t("flexibleCancellation")}</p>
+            <p>• {t("support247")}</p>
+            <p>• {t("guaranteedSeats")}</p>
+            <p>• {t("securePayment")}</p>
           </div>
         </CardContent>
       </Card>

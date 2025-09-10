@@ -12,6 +12,7 @@ import SeatSelectionTabsCard from "@/components/custom/trip_detail/seat_selectio
 import { getTripDetail } from "@/lib/data/trip";
 import { getTripSeatById, Seat, TripSeatsStatus } from "@/lib/data/trip_seats";
 import { BusLayout, getBusSeatsLayout } from "@/lib/data/bus";
+import LocaleText from "@/components/custom/locale_text";
 
 const generateSeats = ({
   busLayout,
@@ -122,10 +123,18 @@ export default async function TripDetailPage({
               <Card>
                 <CardContent className="pt-4">
                   <div className="text-sm text-gray-600 space-y-2">
-                    <p>• Chính sách hủy vé linh hoạt</p>
-                    <p>• Hỗ trợ 24/7 qua hotline</p>
-                    <p>• Đảm bảo ghế đã đặt</p>
-                    <p>• Thanh toán an toàn</p>
+                    <p>
+                      • <LocaleText string="policyDesc1" name="Policies" />
+                    </p>
+                    <p>
+                      • <LocaleText string="policyDesc2" name="Policies" />
+                    </p>
+                    <p>
+                      • <LocaleText string="policyDesc3" name="Policies" />
+                    </p>
+                    <p>
+                      • <LocaleText string="policyDesc4" name="Policies" />
+                    </p>
                   </div>
                 </CardContent>
               </Card>
