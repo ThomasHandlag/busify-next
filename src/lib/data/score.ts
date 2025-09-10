@@ -53,4 +53,5 @@ const makeUsePoints = async (
     throw error;
   }
 };
+
 export { getScore, makeUsePoints };
