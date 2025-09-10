@@ -25,7 +25,9 @@ export default function PaymentCallback() {
         }
 
         const response = await fetch(
-          `http://localhost:8080/api/payments/vnpay/callback?${new URLSearchParams(queryParams)}`,
+          `http://localhost:8080/api/payments/vnpay/callback?${new URLSearchParams(
+            queryParams
+          )}`,
           {
             method: "GET",
             headers: { "Content-Type": "application/json" },
@@ -44,7 +46,11 @@ export default function PaymentCallback() {
         const result = await response.json();
         console.log("Backend callback response:", result);
 
-        if (result?.code === 200 && responseCode === "00" && result?.result?.status === "completed") {
+        if (
+          result?.code === 200 &&
+          responseCode === "00" &&
+          result?.result?.status === "completed"
+        ) {
           const paymentId = result.result?.paymentId;
           if (paymentId) {
             console.log("Redirecting to:", `/bookingresult/${paymentId}`);

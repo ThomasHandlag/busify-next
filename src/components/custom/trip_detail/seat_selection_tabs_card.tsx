@@ -31,6 +31,7 @@ import { Badge } from "@/components/ui/badge";
 
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
+import LocaleText from "../locale_text";
 
 interface PassengerInfo {
   phone: string;
@@ -183,8 +184,13 @@ export function SeatSelectionTabsCard({
   };
 
   const getFloorName = (floor: number) => {
-    if (layout?.floors === 1) return "Tầng duy nhất";
-    return floor === 1 ? "Tầng dưới" : "Tầng trên";
+    if (layout?.floors === 1)
+      return <LocaleText string="singleFloor" name="TripDetail" />;
+    return floor === 1 ? (
+      <LocaleText string="lowerFloor" name="TripDetail" />
+    ) : (
+      <LocaleText string="upperFloor" name="TripDetail" />
+    );
   };
 
   const renderSeatGrid = (floorSeats: Seat[]) => {
@@ -205,8 +211,8 @@ export function SeatSelectionTabsCard({
               className="bg-green-50 text-green-700 z-20"
             >
               <Users className="w-4 h-4 mr-1" />
-              {floorSeats.filter((s) => s.status === "available").length} ghế
-              trống
+              {floorSeats.filter((s) => s.status === "available").length}{" "}
+              <LocaleText string="seatsAvailable" name="TripDetail" />
             </Badge>
           </div>
 
@@ -290,31 +296,41 @@ export function SeatSelectionTabsCard({
       <CardHeader>
         <CardTitle className="flex items-center space-x-2">
           <Armchair className="w-5 h-5" />
-          <span>Chọn ghế ngồi</span>
+          <span>
+            <LocaleText string="selectSeat" name="TripDetail" />
+          </span>
         </CardTitle>
         <CardDescription>
-          Chọn ghế phù hợp cho chuyến đi của bạn
+          <LocaleText string="selectSeatDesc" name="TripDetail" />
         </CardDescription>
       </CardHeader>
 
       <CardContent className="space-y-6">
         {/* Seat Legend */}
-        <div className="flex justify-center gap-6 text-sm">
+        <div className="grid grid-cols-2 gap-x-6 gap-y-2 text-sm justify-items-start">
           <div className="flex items-center gap-2">
             <div className="w-4 h-4 bg-white border-2 border-green-300 rounded"></div>
-            <span>Trống</span>
+            <span>
+              <LocaleText string="empty" name="TripDetail" />
+            </span>
           </div>
           <div className="flex items-center gap-2">
             <div className="w-4 h-4 bg-green-500 border-2 border-green-600 rounded"></div>
-            <span>Đã chọn</span>
+            <span>
+              <LocaleText string="selected" name="TripDetail" />
+            </span>
           </div>
           <div className="flex items-center gap-2">
             <div className="w-4 h-4 bg-yellow-500 border-2 border-yellow-200 rounded"></div>
-            <span>Đang chọn</span>
+            <span>
+              <LocaleText string="selecting" name="TripDetail" />
+            </span>
           </div>
           <div className="flex items-center gap-2">
             <div className="w-4 h-4 bg-gray-200 border-2 border-gray-300 rounded"></div>
-            <span>Đã đặt</span>
+            <span>
+              <LocaleText string="booked" name="TripDetail" />
+            </span>
           </div>
         </div>
 
@@ -361,6 +377,7 @@ export function SeatSelectionTabsCard({
               </span>
             )}
             {session?.user && !isLoadingProfile}
+            {session?.user && !isLoadingProfile}
           </div>
           <Form {...form}>
             <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
@@ -369,7 +386,9 @@ export function SeatSelectionTabsCard({
                 name="fullName"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Họ và tên</FormLabel>
+                    <FormLabel>
+                      <LocaleText string="fullName" name="Form" />
+                    </FormLabel>
                     <FormControl>
                       <Input
                         placeholder="Nhập họ và tên"
@@ -387,7 +406,9 @@ export function SeatSelectionTabsCard({
                 name="phone"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Số điện thoại</FormLabel>
+                    <FormLabel>
+                      <LocaleText string="phone" name="Form" />
+                    </FormLabel>
                     <FormControl>
                       <Input
                         placeholder="Nhập số điện thoại"
@@ -429,9 +450,14 @@ export function SeatSelectionTabsCard({
           <div className="flex justify-between items-center">
             <div className="text-sm text-gray-600">
               {selectedSeats.length > 0 ? (
-                <span>Đã chọn: {selectedSeats.join(", ")}</span>
+                <span>
+                  <LocaleText string="selected" name="TripDetail" />:{" "}
+                  {selectedSeats.join(", ")}
+                </span>
               ) : (
-                <span>Chưa chọn ghế nào</span>
+                <span>
+                  <LocaleText string="noSelected" name="TripDetail" />
+                </span>
               )}
             </div>
             <div className="text-right">
@@ -450,7 +476,7 @@ export function SeatSelectionTabsCard({
             onClick={form.handleSubmit(onSubmit)}
             disabled={selectedSeats.length === 0}
           >
-            Tiếp tục đặt vé
+            <LocaleText string="continueBooking" name="TripDetail" />
           </Button>
         </div>
       </CardFooter>
