@@ -4,7 +4,7 @@
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { X, Send, Loader2 } from "lucide-react";
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, useCallback } from "react";
 import { useSession } from "next-auth/react";
 import { IMessage } from "@stomp/stompjs";
 import { toast } from "sonner";
@@ -12,10 +12,12 @@ import {
   ChatMessage,
   MessageType,
   useWebSocket,
+  ChatNotification,
 } from "@/lib/contexts/WebSocketContext";
 
 interface ChatWindowProps {
   onClose: () => void;
+  onNewMessage?: () => void;
 }
 
 interface DisplayMessage {
@@ -26,13 +28,14 @@ interface DisplayMessage {
   sender: string;
 }
 
-export function ChatWindow({ onClose }: ChatWindowProps) {
+export function ChatWindow({ onClose, onNewMessage }: ChatWindowProps) {
   const [message, setMessage] = useState("");
   const [loading, setLoading] = useState(false);
   const [messages, setMessages] = useState<DisplayMessage[]>([]);
   const [roomId, setRoomId] = useState<string | null>(null);
   const { isConnected, subscribe, unsubscribe, sendMessage } = useWebSocket();
   const currentSubscription = useRef<any>(null);
+  const notificationSubscription = useRef<any>(null);
   const { data: session } = useSession();
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const scrollToBottom = () => {
@@ -46,6 +49,112 @@ export function ChatWindow({ onClose }: ChatWindowProps) {
   useEffect(() => {
     scrollToBottom();
   }, []);
+
+  const fetchHistory = useCallback(
+    async (currentRoomId: string) => {
+      setLoading(true);
+      try {
+        const response = await fetch(
+          `${process.env.NEXT_PUBLIC_API_URL}api/chat/history/room/${currentRoomId}`,
+          {
+            headers: {
+              Authorization: `Bearer ${session?.user.accessToken}`,
+            },
+          }
+        );
+        if (response.ok) {
+          const history: ChatMessage[] = await response.json();
+          // Chỉ thêm messages có type CHAT và SYSTEM_ASSIGN, bỏ qua JOIN/LEAVE để tránh hiển thị rỗng
+          const filteredHistory = history.filter(
+            (msg) =>
+              msg.type === MessageType.CHAT ||
+              msg.type === MessageType.SYSTEM_ASSIGN
+          );
+          const formattedHistory = filteredHistory.map((msg) => ({
+            text: msg.content,
+            isUser: msg.sender === session?.user?.email,
+            timestamp: new Date(msg.timestamp), // Sử dụng timestamp thực tế từ backend
+            type: msg.type,
+            sender: msg.sender,
+          }));
+          setMessages(formattedHistory);
+        } else {
+          toast.error("Không thể tải lịch sử tin nhắn.");
+        }
+      } catch (error) {
+        console.error("Failed to fetch chat history:", error);
+      } finally {
+        setLoading(false);
+      }
+    },
+    [session?.user.accessToken, session?.user?.email]
+  );
+
+  const subscribeToRoom = useCallback(
+    (newRoomId: string) => {
+      // Unsubscribe from previous room if any
+      if (currentSubscription.current) {
+        unsubscribe(currentSubscription.current);
+        currentSubscription.current = null;
+      }
+
+      // Subscribe to new room
+      const subscription = subscribe(
+        `/topic/public/${newRoomId}`,
+        (message: IMessage) => {
+          const chatMessage: ChatMessage = JSON.parse(message.body);
+          const isCurrentUser = chatMessage.sender === session?.user?.email;
+
+          // Handle JOIN and LEAVE messages
+          if (chatMessage.type === MessageType.JOIN) {
+            if (!isCurrentUser) {
+              toast(`${chatMessage.sender} đã tham gia phòng chat.`);
+            }
+            return;
+          }
+          if (chatMessage.type === MessageType.LEAVE) {
+            toast(`${chatMessage.sender} đã rời phòng chat.`);
+            return;
+          }
+
+          // Skip adding the user's own messages as they were already added when sending
+          if (isCurrentUser && chatMessage.type === MessageType.CHAT) {
+            return;
+          }
+
+          // Add only other users' messages or system messages
+          setMessages((prev) => [
+            ...prev,
+            {
+              text: chatMessage.content,
+              isUser: isCurrentUser,
+              timestamp: new Date(),
+              type: chatMessage.type,
+              sender: chatMessage.sender,
+            },
+          ]);
+
+          // Notify parent component about the new message
+          if (onNewMessage) {
+            onNewMessage();
+          }
+        }
+      );
+
+      currentSubscription.current = subscription;
+
+      // Announce user joining
+      sendMessage(
+        `/app/chat.addUser/${newRoomId}`,
+        JSON.stringify({
+          sender: session?.user?.email || "Anonymous",
+          type: MessageType.JOIN,
+          content: `${session?.user?.email || "Anonymous"} joined!`,
+        })
+      );
+    },
+    [session?.user?.email, subscribe, unsubscribe, sendMessage, onNewMessage]
+  );
 
   useEffect(() => {
     const storedRoomId = localStorage.getItem("chatRoomId");
@@ -63,144 +172,33 @@ export function ChatWindow({ onClose }: ChatWindowProps) {
         currentSubscription.current = null;
       }
     };
-  }, [isConnected, session]);
+  }, [isConnected, session, subscribeToRoom, fetchHistory, unsubscribe]);
 
-  const subscribeToRoom = (newRoomId: string) => {
-    // Unsubscribe from previous room if any
-    if (currentSubscription.current) {
-      unsubscribe(currentSubscription.current);
-      currentSubscription.current = null;
-    }
-
-    // Subscribe to new room
-    const subscription = subscribe(
-      `/topic/public/${newRoomId}`,
-      (message: IMessage) => {
-        const chatMessage: ChatMessage = JSON.parse(message.body);
-        const isCurrentUser = chatMessage.sender === session?.user?.email;
-
-        // Handle JOIN and LEAVE messages
-        if (chatMessage.type === MessageType.JOIN) {
-          if (!isCurrentUser) {
-            toast(`${chatMessage.sender} đã tham gia phòng chat.`);
+  useEffect(() => {
+    if (isConnected && session?.user?.email) {
+      const sub = subscribe(
+        `/topic/user/${session.user.email}/notifications`,
+        (message: IMessage) => {
+          const notification: ChatNotification = JSON.parse(message.body);
+          // Show toast only for notifications from other rooms or when no room is active
+          if (!roomId || notification.roomId !== roomId) {
+            toast(
+              `Tin nhắn mới từ ${notification.sender}: ${notification.contentPreview}`
+            );
+            onNewMessage?.(); // Notify parent of new message
           }
-          return;
-        }
-        if (chatMessage.type === MessageType.LEAVE) {
-          toast(`${chatMessage.sender} đã rời phòng chat.`);
-          return;
-        }
-
-        // Skip adding the user's own messages as they were already added when sending
-        if (isCurrentUser && chatMessage.type === MessageType.CHAT) {
-          return;
-        }
-
-        // Add only other users' messages or system messages
-        setMessages((prev) => [
-          ...prev,
-          {
-            text: chatMessage.content,
-            isUser: isCurrentUser,
-            timestamp: new Date(),
-            type: chatMessage.type,
-            sender: chatMessage.sender,
-          },
-        ]);
-      }
-    );
-
-    currentSubscription.current = subscription;
-
-    // Announce user joining
-    sendMessage(
-      `/app/chat.addUser/${newRoomId}`,
-      JSON.stringify({
-        sender: session?.user?.email || "Anonymous",
-        type: MessageType.JOIN,
-        content: `${session?.user?.email || "Anonymous"} joined!`,
-      })
-    );
-  };
-
-  const fetchHistory = async (currentRoomId: string) => {
-    setLoading(true);
-    try {
-      const response = await fetch(
-        `${process.env.NEXT_PUBLIC_API_URL}api/chat/history/room/${currentRoomId}`,
-        {
-          headers: {
-            Authorization: `Bearer ${session?.user.accessToken}`,
-          },
         }
       );
-      if (response.ok) {
-        const history: ChatMessage[] = await response.json();
-        // Chỉ thêm messages có type CHAT và SYSTEM_ASSIGN, bỏ qua JOIN/LEAVE để tránh hiển thị rỗng
-        const filteredHistory = history.filter(
-          (msg) =>
-            msg.type === MessageType.CHAT ||
-            msg.type === MessageType.SYSTEM_ASSIGN
-        );
-        const formattedHistory = filteredHistory.map((msg) => ({
-          text: msg.content,
-          isUser: msg.sender === session?.user?.email,
-          timestamp: new Date(msg.timestamp), // Sử dụng timestamp thực tế từ backend
-          type: msg.type,
-          sender: msg.sender,
-        }));
-        setMessages(formattedHistory);
-      } else {
-        toast.error("Không thể tải lịch sử tin nhắn.");
-      }
-    } catch (error) {
-      console.error("Failed to fetch chat history:", error);
-    } finally {
-      setLoading(false);
+      notificationSubscription.current = sub;
     }
-  };
 
-  const createRoomAndSendMessage = async () => {
-    setLoading(true);
-    try {
-      const response = await fetch(
-        `${process.env.NEXT_PUBLIC_API_URL}api/chat/createRoom`,
-        {
-          method: "POST",
-          headers: {
-            Authorization: `Bearer ${session?.user.accessToken}`,
-          },
-        }
-      );
-
-      if (!response.ok) throw new Error("Failed to create room");
-
-      const newRoomId = await response.text();
-      localStorage.setItem("chatRoomId", newRoomId);
-      setRoomId(newRoomId);
-
-      if (isConnected) {
-        subscribeToRoom(newRoomId);
-        // Fix: Include message content as second parameter
-        sendMessage(
-          `/app/chat.sendMessage/${newRoomId}`,
-          JSON.stringify({
-            sender: session?.user?.email || "Anonymous",
-            type: MessageType.CHAT,
-            content: message,
-          })
-        );
-        setMessage(""); // Clear the input after sending
-      } else {
-        toast.error("Chưa kết nối tới server chat. Đang thử lại...");
+    return () => {
+      if (notificationSubscription.current) {
+        unsubscribe(notificationSubscription.current);
+        notificationSubscription.current = null;
       }
-    } catch (error) {
-      console.error("Error creating room:", error);
-      toast.error("Không thể tạo phòng chat. Vui lòng thử lại.");
-    } finally {
-      setLoading(false);
-    }
-  };
+    };
+  }, [isConnected, session, roomId, subscribe, unsubscribe, onNewMessage]);
 
   const handleSendMessage = async (e: React.FormEvent) => {
     e.preventDefault();

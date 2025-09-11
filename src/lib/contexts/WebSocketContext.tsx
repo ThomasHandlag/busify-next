@@ -6,6 +6,7 @@ import React, {
   useEffect,
   useRef,
   useState,
+  useCallback,
 } from "react";
 import { Client, IMessage, StompSubscription } from "@stomp/stompjs";
 import SockJS from "sockjs-client";
@@ -25,6 +26,14 @@ export interface ChatMessage {
   recipient?: string;
   type: MessageType;
   timestamp: string; // Thêm trường này, giả định backend trả về string (ví dụ: ISO 8601)
+}
+
+export interface ChatNotification {
+  roomId: string;
+  sender: string;
+  contentPreview: string;
+  type: MessageType;
+  timestamp: string;
 }
 
 interface WebSocketContextType {
@@ -49,7 +58,7 @@ export const WebSocketProvider: React.FC<{ children: React.ReactNode }> = ({
   const clientRef = useRef<Client | null>(null);
   const { data: session } = useSession();
 
-  const connect = () => {
+  const connect = useCallback(() => {
     if (clientRef.current?.connected) return;
 
     try {
@@ -85,7 +94,7 @@ export const WebSocketProvider: React.FC<{ children: React.ReactNode }> = ({
       toast.error("Không thể kết nối đến máy chủ chat.");
       setIsConnected(false);
     }
-  };
+  }, [session?.user?.accessToken]);
 
   const disconnect = () => {
     if (clientRef.current?.connected) {
@@ -100,7 +109,7 @@ export const WebSocketProvider: React.FC<{ children: React.ReactNode }> = ({
   ): StompSubscription => {
     if (!clientRef.current?.connected) {
       toast.error("Chưa kết nối đến máy chủ chat");
-      return null as any; // Temporary fallback; ideally handle error differently
+      throw new Error("WebSocket not connected");
     }
     return clientRef.current.subscribe(destination, callback);
   };
@@ -128,7 +137,7 @@ export const WebSocketProvider: React.FC<{ children: React.ReactNode }> = ({
     return () => {
       disconnect();
     };
-  }, [session?.user?.accessToken]);
+  }, [session?.user?.accessToken, connect]);
 
   return (
     <WebSocketContext.Provider
