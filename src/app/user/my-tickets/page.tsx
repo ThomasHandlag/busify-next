@@ -20,7 +20,7 @@ import {
   BookingData,
 } from "@/lib/data/booking";
 import { TicketCard } from "../../../components/custom/my_tickets/ticket_card";
-import { getBookingDetails } from "@/lib/data/booking";
+import { getBookingDetails, getBookingHistory } from "@/lib/data/booking";
 import { BookingDetailSheet } from "@/components/custom/my_tickets/booking_detail_sheet";
 import { useSession } from "next-auth/react";
 import { toast } from "sonner";
@@ -67,21 +67,22 @@ export default function MyTicketsPage() {
 
       setIsLoading(true);
       try {
-        const response = await fetch(
-          `http://localhost:8080/api/bookings?page=${page}&size=${size}`,
-          {
-            headers: {
-              Authorization: `Bearer ${session.user.accessToken}`,
-            },
-          }
-        );
+        const data = await getBookingHistory({
+          page,
+          size,
+          accessToken: session.user.accessToken,
+          callback: (msg: string) => toast.error(msg),
+          localeMessage: "Failed to fetch bookings",
+        });
 
-        if (!response.ok) {
-          throw new Error(`HTTP error! status: ${response.status}`);
-        }
+        // Sắp xếp dữ liệu theo thời gian đặt gần nhất (booking_date giảm dần)
+        const sortedResult = data.result.sort((a, b) => {
+          const dateA = new Date(a.booking_date).getTime();
+          const dateB = new Date(b.booking_date).getTime();
+          return dateB - dateA; // Giảm dần: mới nhất trước
+        });
 
-        const data = await response.json();
-        setBookingResponse(data.result || data);
+        setBookingResponse({ ...data, result: sortedResult });
       } catch (error) {
         console.error("Error fetching bookings:", error);
         setBookingResponse({

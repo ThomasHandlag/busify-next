@@ -62,12 +62,20 @@ export interface BookingDetailResponse {
   };
 }
 
-export async function getBookingHistory(
-  params: ApiFnParams
-): Promise<BookingResponse> {
+export async function getBookingHistory(params: {
+  page: number;
+  size: number;
+  accessToken: string;
+  callback: (message: string) => void;
+  localeMessage?: string;
+}): Promise<BookingResponse> {
   const response = await api.get(
     `api/bookings?page=${params.page}&size=${params.size}`,
-    {}
+    {
+      headers: {
+        Authorization: `Bearer ${params.accessToken}`,
+      },
+    }
   );
   if (response.status !== 200) {
     params.callback(
