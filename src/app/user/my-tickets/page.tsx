@@ -24,8 +24,11 @@ import { getBookingDetails } from "@/lib/data/booking";
 import { BookingDetailSheet } from "@/components/custom/my_tickets/booking_detail_sheet";
 import { useSession } from "next-auth/react";
 import { toast } from "sonner";
+import LocaleText from "@/components/custom/locale_text";
+import { useTranslations } from "next-intl";
 
 export default function MyTicketsPage() {
+  const t = useTranslations("MyTickets");
   const [selectedBookingDetail, setSelectedBookingDetail] =
     useState<BookingDetailResponse | null>(null);
   const [isDetailSheetOpen, setIsDetailSheetOpen] = useState(false);
@@ -117,7 +120,7 @@ export default function MyTicketsPage() {
         callback: (message: string) => {
           toast.error(message);
         },
-        localeMessage: "Failed to fetch booking details",
+  localeMessage: t("fetchDetailsError"),
       });
       setSelectedBookingDetail(detailedBooking);
       setIsDetailSheetOpen(true);
@@ -138,16 +141,14 @@ export default function MyTicketsPage() {
   const PaginationControls = () => (
     <div className="flex flex-col space-y-3 sm:flex-row sm:items-center sm:justify-between sm:space-y-0 mt-4 sm:mt-6">
       <div className="text-xs sm:text-sm text-gray-600 text-center sm:text-left">
-        Hiển thị{" "}
-        <span className="font-medium">
-          {(bookingResponse.pageNumber - 1) * bookingResponse.pageSize + 1} -{" "}
-          {Math.min(
+        {t("pagination.showing", {
+          from: (bookingResponse.pageNumber - 1) * bookingResponse.pageSize + 1,
+          to: Math.min(
             bookingResponse.pageNumber * bookingResponse.pageSize,
             bookingResponse.totalRecords
-          )}
-        </span>{" "}
-        trong tổng số{" "}
-        <span className="font-medium">{bookingResponse.totalRecords}</span> vé
+          ),
+          total: bookingResponse.totalRecords,
+        })}
       </div>
       <div className="flex items-center justify-center gap-2">
         <Button
@@ -158,11 +159,14 @@ export default function MyTicketsPage() {
           className="text-xs sm:text-sm px-2 sm:px-3"
         >
           <ChevronLeft className="w-3 h-3 sm:w-4 sm:h-4" />
-          <span className="hidden sm:inline ml-1">Trước</span>
+          <span className="hidden sm:inline ml-1">
+            <LocaleText string="previous" name="Common" />
+          </span>
         </Button>
         <span className="text-xs sm:text-sm font-medium px-2">
-          <span className="hidden sm:inline">Trang </span>
-          {bookingResponse.pageNumber} / {bookingResponse.totalPages}
+          <span className="hidden sm:inline">
+            {t("pagination.pageLabel")} {bookingResponse.pageNumber} / {bookingResponse.totalPages}
+          </span>
         </span>
         <Button
           variant="outline"
@@ -171,7 +175,9 @@ export default function MyTicketsPage() {
           disabled={!bookingResponse.hasNext || isLoading}
           className="text-xs sm:text-sm px-2 sm:px-3"
         >
-          <span className="hidden sm:inline mr-1">Sau</span>
+          <span className="hidden sm:inline mr-1">
+            <LocaleText string="next" name="Common" />
+          </span>
           <ChevronRight className="w-3 h-3 sm:w-4 sm:h-4" />
         </Button>
       </div>
@@ -187,7 +193,9 @@ export default function MyTicketsPage() {
             <Home className="w-4 h-4" />
           </Link>
           <ChevronRightIcon className="w-4 h-4" />
-          <span className="font-medium text-gray-900">Vé của tôi</span>
+          <span className="font-medium text-gray-900">
+            <LocaleText string="breadcrumb" name="MyTickets" />
+          </span>
         </nav>
       </div>
 
@@ -196,10 +204,10 @@ export default function MyTicketsPage() {
         <div className="flex flex-col space-y-4 lg:flex-row lg:items-center lg:justify-between lg:space-y-0 gap-4">
           <div className="min-w-0 flex-1">
             <h1 className="text-xl sm:text-2xl font-bold text-gray-900 truncate">
-              Vé của tôi
+              <LocaleText string="pageTitle" name="MyTickets" />
             </h1>
             <p className="text-sm sm:text-base text-gray-600 mt-1 hidden sm:block">
-              Quản lý và theo dõi tất cả các vé đã đặt
+              <LocaleText string="pageSubtitle" name="MyTickets" />
             </p>
           </div>
         </div>
@@ -214,8 +222,12 @@ export default function MyTicketsPage() {
               className="flex flex-col sm:flex-row items-center gap-1 sm:gap-2 py-2 sm:py-3 text-xs sm:text-sm"
             >
               <Clock className="w-3 h-3 sm:w-4 sm:h-4" />
-              <span className="hidden sm:inline">Sắp tới</span>
-              <span className="sm:hidden">Sắp tới</span>
+              <span className="hidden sm:inline">
+                <LocaleText string="tabs.upcoming" name="MyTickets" />
+              </span>
+              <span className="sm:hidden">
+                <LocaleText string="tabs.upcoming" name="MyTickets" />
+              </span>
               <span className="text-xs">({upcomingBookings.length})</span>
             </TabsTrigger>
             <TabsTrigger
@@ -223,8 +235,12 @@ export default function MyTicketsPage() {
               className="flex flex-col sm:flex-row items-center gap-1 sm:gap-2 py-2 sm:py-3 text-xs sm:text-sm"
             >
               <CheckCircle className="w-3 h-3 sm:w-4 sm:h-4" />
-              <span className="hidden sm:inline">Đã hoàn thành</span>
-              <span className="sm:hidden">Hoàn thành</span>
+              <span className="hidden sm:inline">
+                <LocaleText string="tabs.completed" name="MyTickets" />
+              </span>
+              <span className="sm:hidden">
+                <LocaleText string="tabs.completed" name="MyTickets" />
+              </span>
               <span className="text-xs">({completedBookings.length})</span>
             </TabsTrigger>
             <TabsTrigger
@@ -232,8 +248,12 @@ export default function MyTicketsPage() {
               className="flex flex-col sm:flex-row items-center gap-1 sm:gap-2 py-2 sm:py-3 text-xs sm:text-sm"
             >
               <XCircle className="w-3 h-3 sm:w-4 sm:h-4" />
-              <span className="hidden sm:inline">Đã hủy</span>
-              <span className="sm:hidden">Đã hủy</span>
+              <span className="hidden sm:inline">
+                <LocaleText string="tabs.canceled" name="MyTickets" />
+              </span>
+              <span className="sm:hidden">
+                <LocaleText string="tabs.canceled" name="MyTickets" />
+              </span>
               <span className="text-xs">({canceledBookings.length})</span>
             </TabsTrigger>
           </TabsList>
@@ -243,7 +263,7 @@ export default function MyTicketsPage() {
               <div className="text-center py-8 sm:py-12">
                 <div className="animate-spin rounded-full h-6 w-6 sm:h-8 sm:w-8 border-b-2 border-green-600 mx-auto"></div>
                 <p className="mt-2 text-sm sm:text-base text-gray-600">
-                  Đang tải...
+                  <LocaleText string="loading" name="Common" />...
                 </p>
               </div>
             ) : upcomingBookings.length > 0 ? (
@@ -258,15 +278,14 @@ export default function MyTicketsPage() {
                 <CardContent className="px-4 sm:px-6">
                   <Clock className="w-12 h-12 sm:w-16 sm:h-16 text-gray-300 mx-auto mb-3 sm:mb-4" />
                   <h3 className="text-base sm:text-lg font-semibold text-gray-900 mb-2">
-                    Không có vé sắp tới
+                    <LocaleText string="empty.upcomingTitle" name="MyTickets" />
                   </h3>
                   <p className="text-sm sm:text-base text-gray-600 mb-4 max-w-md mx-auto">
-                    Bạn chưa có chuyến đi nào được lên lịch. Hãy đặt vé ngay để
-                    khám phá những điểm đến mới!
+                    <LocaleText string="empty.upcomingDesc" name="MyTickets" />
                   </p>
                   <Link aria-label="Book a Ticket" href="/trips">
                     <Button className="bg-green-600 hover:bg-green-700 text-sm sm:text-base">
-                      Đặt vé ngay
+                      <LocaleText string="empty.bookNow" name="MyTickets" />
                     </Button>
                   </Link>
                 </CardContent>
@@ -279,7 +298,7 @@ export default function MyTicketsPage() {
               <div className="text-center py-8 sm:py-12">
                 <div className="animate-spin rounded-full h-6 w-6 sm:h-8 sm:w-8 border-b-2 border-green-600 mx-auto"></div>
                 <p className="mt-2 text-sm sm:text-base text-gray-600">
-                  Đang tải...
+                  <LocaleText string="loading" name="Common" />...
                 </p>
               </div>
             ) : completedBookings.length > 0 ? (
@@ -294,10 +313,10 @@ export default function MyTicketsPage() {
                 <CardContent className="px-4 sm:px-6">
                   <CheckCircle className="w-12 h-12 sm:w-16 sm:h-16 text-gray-300 mx-auto mb-3 sm:mb-4" />
                   <h3 className="text-base sm:text-lg font-semibold text-gray-900 mb-2">
-                    Chưa có chuyến đi nào hoàn thành
+                    <LocaleText string="empty.completedTitle" name="MyTickets" />
                   </h3>
                   <p className="text-sm sm:text-base text-gray-600 max-w-md mx-auto">
-                    Các chuyến đi đã hoàn thành sẽ được hiển thị tại đây.
+                    <LocaleText string="empty.completedDesc" name="MyTickets" />
                   </p>
                 </CardContent>
               </Card>
@@ -309,7 +328,7 @@ export default function MyTicketsPage() {
               <div className="text-center py-8 sm:py-12">
                 <div className="animate-spin rounded-full h-6 w-6 sm:h-8 sm:w-8 border-b-2 border-green-600 mx-auto"></div>
                 <p className="mt-2 text-sm sm:text-base text-gray-600">
-                  Đang tải...
+                  <LocaleText string="loading" name="Common" />...
                 </p>
               </div>
             ) : canceledBookings.length > 0 ? (
@@ -324,10 +343,10 @@ export default function MyTicketsPage() {
                 <CardContent className="px-4 sm:px-6">
                   <XCircle className="w-12 h-12 sm:w-16 sm:h-16 text-gray-300 mx-auto mb-3 sm:mb-4" />
                   <h3 className="text-base sm:text-lg font-semibold text-gray-900 mb-2">
-                    Không có vé đã hủy
+                    <LocaleText string="empty.canceledTitle" name="MyTickets" />
                   </h3>
                   <p className="text-sm sm:text-base text-gray-600 max-w-md mx-auto">
-                    Các vé đã hủy sẽ được hiển thị tại đây.
+                    <LocaleText string="empty.canceledDesc" name="MyTickets" />
                   </p>
                 </CardContent>
               </Card>

@@ -100,6 +100,7 @@ export const WebSocketProvider: React.FC<{ children: React.ReactNode }> = ({
   ): StompSubscription => {
     if (!clientRef.current?.connected) {
       toast.error("Chưa kết nối đến máy chủ chat");
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       return null as any; // Temporary fallback; ideally handle error differently
     }
     return clientRef.current.subscribe(destination, callback);

@@ -1,4 +1,4 @@
-import api from "./axios-instance";
+import api, { ApiFnParams } from "./axios-instance";
 import { Location } from "./location";
 
 export interface TripItemProps {
@@ -188,4 +188,26 @@ export async function getSimilarTrips(
 
     return [];
   }
+}
+
+export enum LocationRegion {
+  NORTH = "NORTH",
+  CENTRAL = "CENTRAL",
+  SOUTH = "SOUTH",
+}
+
+export interface TripsByRegion {
+  [key: string]: TripItemProps[];
+}
+
+export async function getTripsByRegions(
+  params: ApiFnParams
+): Promise<TripsByRegion> {
+  const res = await api.get("api/trips/by-regions");
+  const response = await res.data;
+  if (res.status !== 200) {
+    params.callback(response.message ?? params.localeMessage);
+    return {};
+  }
+  return response.result.tripsByRegion as TripsByRegion;
 }

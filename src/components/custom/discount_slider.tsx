@@ -18,7 +18,10 @@ interface DiscountCampaign {
   banner: string;
 }
 
+import { useTranslations } from "next-intl";
+
 export default function DiscountSlider() {
+  const t = useTranslations();
   const [campaigns, setCampaigns] = useState<DiscountCampaign[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -111,7 +114,7 @@ export default function DiscountSlider() {
             <div className="text-center">
               <Loader2 className="w-8 h-8 animate-spin text-gray-400 mx-auto mb-3" />
               <span className="text-gray-500 text-base font-medium">
-                Đang tải khuyến mãi...
+                {t("Promotion.loading")}
               </span>
             </div>
           </div>
@@ -123,10 +126,8 @@ export default function DiscountSlider() {
   if (error && campaigns.length === 0) {
     return (
       <div className="text-center py-16">
-        <p className="text-red-600 mb-4">{error}</p>
-        <p className="text-gray-600">
-          Không thể tải dữ liệu khuyến mãi. Vui lòng thử lại sau.
-        </p>
+  <p className="text-red-600 mb-4">{t("Promotion.loadErrorShort")}</p>
+  <p className="text-gray-600">{t("Promotion.loadErrorLong")}</p>
       </div>
     );
   }
@@ -200,14 +201,14 @@ export default function DiscountSlider() {
           <button
             onClick={scrollPrev}
             className="absolute left-4 top-1/2 -translate-y-1/2 bg-white/20 hover:bg-white/30 text-white p-3 rounded-full backdrop-blur-md transition-all duration-300 shadow-lg border border-white/20 hover:scale-110 opacity-0 group-hover:opacity-100"
-            aria-label="Previous campaign"
+            aria-label={t("Promotion.prevCampaign")}
           >
             <ChevronLeft className="w-5 h-5" />
           </button>
           <button
             onClick={scrollNext}
             className="absolute right-4 top-1/2 -translate-y-1/2 bg-white/20 hover:bg-white/30 text-white p-3 rounded-full backdrop-blur-md transition-all duration-300 shadow-lg border border-white/20 hover:scale-110 opacity-0 group-hover:opacity-100"
-            aria-label="Next campaign"
+            aria-label={t("Promotion.nextCampaign")}
           >
             <ChevronRight className="w-5 h-5" />
           </button>
@@ -225,7 +226,7 @@ export default function DiscountSlider() {
                   ? "bg-white shadow-white/50"
                   : "bg-white/40 hover:bg-white/80"
               }`}
-              aria-label={`Go to campaign ${index + 1}`}
+              aria-label={t("Promotion.gotoCampaign", { number: index + 1 })}
               onClick={() => emblaApi?.scrollTo(index)}
             />
           ))}

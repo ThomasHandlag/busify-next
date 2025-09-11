@@ -2,6 +2,7 @@
 
 import { Label } from "@/components/ui/label";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
+import { useTranslations } from "next-intl";
 import Image from "next/image";
 
 export default function PaymentMethods({
@@ -16,9 +17,10 @@ export default function PaymentMethods({
     selectedSeats: string[];
   };
 }) {
+  const t = useTranslations();
   return (
     <div className="space-y-4">
-      <Label className="text-base font-medium">Phương thức thanh toán</Label>
+      <Label className="text-base font-medium">{t("Booking.paymentMethod")}</Label>
       <RadioGroup value={paymentMethod} onValueChange={onPaymentMethodChange}>
         <div className="grid grid-cols-1 gap-3">
           <div className="flex items-center space-x-2 p-3 border rounded-lg hover:bg-gray-50">

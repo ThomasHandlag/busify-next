@@ -32,6 +32,7 @@ import { Badge } from "@/components/ui/badge";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 import LocaleText from "../locale_text";
+import { useTranslations } from "next-intl";
 
 interface PassengerInfo {
   phone: string;
@@ -56,7 +57,7 @@ export function SeatSelectionTabsCard({
 }: SeatSelectionTabsCardProps) {
   const [selectedSeats, setSelectedSeats] = useState<string[]>([]);
   const [isLoadingProfile, setIsLoadingProfile] = useState(false);
-
+  const t = useTranslations();
   const { data: session } = useSession();
   const router = useRouter();
 
@@ -212,7 +213,7 @@ export function SeatSelectionTabsCard({
             >
               <Users className="w-4 h-4 mr-1" />
               {floorSeats.filter((s) => s.status === "available").length}{" "}
-              <LocaleText string="seatsAvailable" name="TripDetail" />
+              <LocaleText string="availableSeat" name="TripDetail" />
             </Badge>
           </div>
 
@@ -370,10 +371,10 @@ export function SeatSelectionTabsCard({
         {/* Passenger Information Form */}
         <div className="border-t pt-6">
           <div className="flex items-center justify-between mb-4">
-            <h3 className="font-semibold">Thông tin hành khách</h3>
+            <h3 className="font-semibold">{t("MyTickets.passengerInfo")}</h3>
             {session?.user && isLoadingProfile && (
               <span className="text-sm text-gray-500">
-                Đang tải thông tin...
+                {t("Common.loading")}
               </span>
             )}
             {session?.user && !isLoadingProfile}
@@ -391,7 +392,7 @@ export function SeatSelectionTabsCard({
                     </FormLabel>
                     <FormControl>
                       <Input
-                        placeholder="Nhập họ và tên"
+                        placeholder={`${t("Form.fullName")}`}
                         {...field}
                         disabled={isLoadingProfile}
                       />
@@ -411,7 +412,7 @@ export function SeatSelectionTabsCard({
                     </FormLabel>
                     <FormControl>
                       <Input
-                        placeholder="Nhập số điện thoại"
+                        placeholder={`${t("Form.phone")}`}
                         {...field}
                         disabled={isLoadingProfile}
                       />
@@ -429,7 +430,7 @@ export function SeatSelectionTabsCard({
                     <FormLabel>Email</FormLabel>
                     <FormControl>
                       <Input
-                        placeholder="Nhập email"
+                        placeholder={`${t("Form.email")}`}
                         type="email"
                         {...field}
                         disabled={isLoadingProfile}
@@ -465,7 +466,7 @@ export function SeatSelectionTabsCard({
                 {totalPrice.toLocaleString("vi-VN")}đ
               </p>
               <p className="text-xs text-gray-500">
-                {selectedSeats.length} ghế ×{" "}
+                {selectedSeats.length} ${t("Booking.seats")} ×{" "}
                 {pricePerSeat.toLocaleString("vi-VN")}đ
               </p>
             </div>

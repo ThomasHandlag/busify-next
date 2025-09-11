@@ -317,18 +317,12 @@ export const TicketCard = ({
                 disabled={isCancelling} // Vô hiệu hóa khi đang hủy
                 className="h-8 px-3 text-xs"
               >
-                {isCancelling ? t("MyTickets.cancelling") : t("MyTickets.cancel")} {/* Text động */}
+                {isCancelling
+                  ? t("MyTickets.cancelling")
+                  : t("MyTickets.cancel")}{" "}
+                {/* Text động */}
               </Button>
             )}
-          {booking.status === "confirmed" && !isPast && (
-            <Button
-              variant="destructive"
-              size="sm"
-              className="h-8 px-3 text-xs"
-            >
-              Hủy
-            </Button>
-          )}
           {booking.status === "completed" && (
             <>
               <Button
@@ -336,7 +330,7 @@ export const TicketCard = ({
                 size="sm"
                 className="bg-green-600 hover:bg-green-700 h-8 px-3 text-xs"
               >
-                Đánh giá
+                {t("TripDetail.rateTrip")}
               </Button>
               <Dialog
                 open={isComplaintModalOpen}
@@ -388,7 +382,9 @@ export const TicketCard = ({
                         !complaintDescription.trim()
                       }
                     >
-                      {isSubmittingComplaint ? t("MyTickets.sending") : t("MyTickets.send")}
+                      {isSubmittingComplaint
+                        ? t("MyTickets.sending")
+                        : t("MyTickets.send")}
                     </Button>
                   </div>
                 </DialogContent>

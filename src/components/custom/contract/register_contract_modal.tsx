@@ -19,7 +19,7 @@ import { FileText, Upload, Building2 } from "lucide-react";
 import { toast } from "sonner";
 import { ContractFormData, createContract } from "@/lib/data/contract";
 import { DialogClose } from "@radix-ui/react-dialog";
-import Policy from "../policy/policy";
+import { useTranslations } from "next-intl";
 
 // Validation patterns
 export const VALIDATION_PATTERNS = {
@@ -42,6 +42,7 @@ export const VALIDATION_MESSAGES = {
 } as const;
 
 const RegisterContractModal = () => {
+  const t = useTranslations();
   const [isLoading, setIsLoading] = useState(false);
   const [acceptedPolicy, setAcceptedPolicy] = useState(false);
   const [formData, setFormData] = useState<ContractFormData>({
@@ -86,25 +87,25 @@ const RegisterContractModal = () => {
     e.preventDefault();
 
     if (!acceptedPolicy) {
-      toast.error(VALIDATION_MESSAGES.POLICY_REQUIRED);
+  toast.error(t("Form.Register.errors.acceptPolicy"));
       return;
     }
 
     // Validate VATCode format
     if (!VALIDATION_PATTERNS.VAT_CODE.test(formData.VATCode)) {
-      toast.error(VALIDATION_MESSAGES.VAT_CODE);
+  toast.error(t("Form.Register.errors.invalidVat"));
       return;
     }
 
     // Validate phone format
     if (!VALIDATION_PATTERNS.PHONE.test(formData.phone)) {
-      toast.error(VALIDATION_MESSAGES.PHONE);
+  toast.error(t("Form.Register.errors.invalidPhone"));
       return;
     }
 
     // Validate email format
     if (!VALIDATION_PATTERNS.EMAIL.test(formData.email)) {
-      toast.error(VALIDATION_MESSAGES.EMAIL);
+  toast.error(t("Form.invalidEmail"));
       return;
     }
 
@@ -114,12 +115,12 @@ const RegisterContractModal = () => {
     const now = new Date();
 
     if (startDate < now) {
-      toast.error(VALIDATION_MESSAGES.START_DATE);
+  toast.error(t("Form.Register.errors.startDateInvalid"));
       return;
     }
 
     if (endDate <= startDate) {
-      toast.error(VALIDATION_MESSAGES.END_DATE);
+  toast.error(t("Form.Register.errors.endDateInvalid"));
       return;
     }
 
@@ -144,9 +145,7 @@ const RegisterContractModal = () => {
       console.log("Contract created:", response);
 
       if (response.code === 201 || response.code === 200) {
-        toast.success(
-          "Đăng ký hợp đồng thành công! Chờ xác nhận từ quản trị viên."
-        );
+  toast.success(t("Form.Register.errors.contractSuccess"));
         // Reset form
         setFormData({
           email: "",
@@ -160,11 +159,11 @@ const RegisterContractModal = () => {
         });
         setAcceptedPolicy(false);
       } else {
-        toast.error("Có lỗi xảy ra khi đăng ký hợp đồng");
+  toast.error(t("Form.Register.errors.contractFailed"));
       }
     } catch (error) {
       console.error("Error submitting contract:", error);
-      toast.error("Có lỗi xảy ra khi đăng ký hợp đồng");
+  toast.error(t("Form.Register.errors.contractFailed"));
     } finally {
       setIsLoading(false);
     }
@@ -179,7 +178,7 @@ const RegisterContractModal = () => {
             className="bg-purple-600 hover:bg-purple-700 text-white"
           >
             <FileText className="w-4 h-4 mr-2" />
-            Đăng ký hợp đồng
+            {t("Form.Register.createContractButton")}
           </Button>
         </DialogTrigger>
         <DialogContent
@@ -205,17 +204,17 @@ const RegisterContractModal = () => {
           <DialogHeader>
             <DialogTitle className="flex items-center gap-2">
               <Building2 className="w-5 h-5" />
-              Đăng ký hợp đồng nhà xe
+              {t("Form.Register.contractInfoTitle")}
             </DialogTitle>
             <DialogDescription>
-              Điền thông tin để đăng ký trở thành đối tác nhà xe của Busify
+              {t("Form.Register.busOperatorNote")}
             </DialogDescription>
           </DialogHeader>
 
           <form onSubmit={handleSubmit} className="space-y-6">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div className="space-y-2">
-                <Label htmlFor="email">Email *</Label>
+                <Label htmlFor="email">{t("Form.email")} *</Label>
                 <Input
                   id="email"
                   name="email"
@@ -224,13 +223,13 @@ const RegisterContractModal = () => {
                   value={formData.email}
                   onChange={handleInputChange}
                   onFocus={handleInputFocus}
-                  placeholder="hoaicoder2605@gmail.com"
+                  placeholder={t("Form.Register.placeholderEmail")}
                   required
                 />
               </div>
 
               <div className="space-y-2">
-                <Label htmlFor="phone">Số điện thoại *</Label>
+                <Label htmlFor="phone">{t("Form.phone")} *</Label>
                 <Input
                   id="phone"
                   name="phone"
@@ -241,31 +240,29 @@ const RegisterContractModal = () => {
                   onFocus={handleInputFocus}
                   placeholder="0123456789"
                   pattern="^[\+]?[0-9]{10,15}$"
-                  title="Số điện thoại phải từ 10-15 chữ số (có thể có dấu +)"
+                  title={t("Form.Register.phoneOperatorNote")}
                   required
                 />
-                <p className="text-xs text-gray-500">
-                  Số điện thoại từ 10-15 chữ số (có thể bắt đầu bằng +)
-                </p>
+                <p className="text-xs text-gray-500">{t("Form.Register.phoneOperatorNote")}</p>
               </div>
             </div>
 
             <div className="space-y-2">
-              <Label htmlFor="address">Địa chỉ *</Label>
+              <Label htmlFor="address">{t("Form.Register.addressLabel")} *</Label>
               <Textarea
                 id="address"
                 name="address"
                 autoComplete="street-address"
                 value={formData.address}
                 onChange={handleInputChange}
-                placeholder="123 ABC Street, Ho Chi Minh City"
+                placeholder={t("Form.Register.addressPlaceholder")}
                 required
               />
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div className="space-y-2">
-                <Label htmlFor="startDate">Ngày bắt đầu *</Label>
+                <Label htmlFor="startDate">{t("Form.Register.startDateLabel")} *</Label>
                 <Input
                   id="startDate"
                   name="startDate"
@@ -277,7 +274,7 @@ const RegisterContractModal = () => {
               </div>
 
               <div className="space-y-2">
-                <Label htmlFor="endDate">Ngày kết thúc *</Label>
+                <Label htmlFor="endDate">{t("Form.Register.endDateLabel")} *</Label>
                 <Input
                   id="endDate"
                   name="endDate"
@@ -290,36 +287,34 @@ const RegisterContractModal = () => {
             </div>
 
             <div className="space-y-2">
-              <Label htmlFor="operationArea">Khu vực hoạt động *</Label>
+              <Label htmlFor="operationArea">{t("Form.Register.operationAreaLabel")} *</Label>
               <Input
                 id="operationArea"
                 name="operationArea"
                 value={formData.operationArea}
                 onChange={handleInputChange}
-                placeholder="Ho Chi Minh - Da Nang"
+                placeholder={t("Form.Register.operationAreaPlaceholder")}
                 required
               />
             </div>
 
             <div className="space-y-2">
-              <Label htmlFor="VATCode">Mã số thuế *</Label>
+              <Label htmlFor="VATCode">{t("Form.Register.vatCodeLabel")} *</Label>
               <Input
                 id="VATCode"
                 name="VATCode"
                 value={formData.VATCode}
                 onChange={handleInputChange}
-                placeholder="0101234562"
+                placeholder={t("Form.Register.vatCodePlaceholder")}
                 pattern="^[0-9]{10,15}$"
                 title="Mã số thuế phải từ 10-15 chữ số"
                 required
               />
-              <p className="text-xs text-gray-500">
-                Mã số thuế phải từ 10-15 chữ số
-              </p>
+              <p className="text-xs text-gray-500">{t("Form.Register.vatCodeNote")}</p>
             </div>
 
             <div className="space-y-2">
-              <Label htmlFor="attachmentUrl">Tài liệu đính kèm</Label>
+              <Label htmlFor="attachmentUrl">{t("Form.Register.attachmentLabel")}</Label>
               <div className="flex items-center gap-2">
                 <Input
                   id="attachmentUrl"
@@ -332,9 +327,7 @@ const RegisterContractModal = () => {
                 <Upload className="w-4 h-4 text-gray-400" />
               </div>
               {formData.attachmentUrl && (
-                <p className="text-sm text-green-600">
-                  Đã chọn: {formData.attachmentUrl.name}
-                </p>
+                <p className="text-sm text-green-600">{formData.attachmentUrl.name}</p>
               )}
             </div>
 
@@ -349,21 +342,21 @@ const RegisterContractModal = () => {
                   }
                 />
                 <Label htmlFor="policy" className="text-sm">
-                  Tôi đồng ý với <Policy /> của Busify *
+                  {t("Form.Register.termsAgreement")}
                 </Label>
               </div>
             </div>
 
             <DialogFooter>
               <DialogClose asChild>
-                <Button variant="outline">Hủy</Button>
+                <Button variant="outline">{t("Common.cancel")}</Button>
               </DialogClose>
               <Button
                 type="submit"
                 disabled={!acceptedPolicy || isLoading}
                 className="bg-green-600 hover:bg-green-700"
               >
-                {isLoading ? "Đang xử lý..." : "Đăng ký hợp đồng"}
+                {isLoading ? t("Common.processing") : t("Form.Register.createContractButton")}
               </Button>
             </DialogFooter>
           </form>

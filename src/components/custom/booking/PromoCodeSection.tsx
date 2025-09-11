@@ -10,6 +10,7 @@ import {
   MIN_BOOKING_AMOUNT,
 } from "@/lib/data/discount";
 import { Loader2, X } from "lucide-react";
+import { useTranslations } from "next-intl";
 
 interface PromoCodeSectionProps {
   initialDiscount: number;
@@ -25,6 +26,7 @@ export default function PromoCodeSection({
   onDiscountChange,
   originalPrice,
 }: PromoCodeSectionProps) {
+  const t = useTranslations();
   const [promoCode, setPromoCode] = useState("");
   const [discount, setDiscount] = useState(initialDiscount);
   const [discountInfo, setDiscountInfo] = useState<DiscountInfo | null>(null);
@@ -33,7 +35,7 @@ export default function PromoCodeSection({
 
   const handleApplyPromoCode = useCallback(async () => {
     if (!promoCode.trim()) {
-      setError("Vui lòng nhập mã giảm giá");
+      setError(t("Discount.enterCode"));
       return;
     }
 
@@ -55,9 +57,7 @@ export default function PromoCodeSection({
 
         if (finalPrice < MIN_BOOKING_AMOUNT) {
           throw new Error(
-            `Mã giảm giá này không thể áp dụng cho booking này vì giá trị quá lớn. Giá sau khi giảm phải tối thiểu ${MIN_BOOKING_AMOUNT.toLocaleString(
-              "vi-VN"
-            )} VND.`
+            t("Discount.cannotApplyMin", { min: MIN_BOOKING_AMOUNT.toLocaleString() })
           );
         }
 
@@ -66,14 +66,14 @@ export default function PromoCodeSection({
         onDiscountChange(finalDiscountAmount, response.discount);
         setError(null);
       } else {
-        throw new Error("Mã giảm giá không hợp lệ");
+        throw new Error(t("Discount.invalidCode"));
       }
     } catch (error) {
       console.error("Error applying promo code:", error);
       const errorMessage =
         error instanceof Error
           ? error.message
-          : "Mã giảm giá không tồn tại hoặc đã hết hạn";
+          : t("Discount.notFoundOrExpired");
       setError(errorMessage);
       setDiscount(0);
       setDiscountInfo(null);
@@ -81,7 +81,7 @@ export default function PromoCodeSection({
     } finally {
       setIsLoading(false);
     }
-  }, [promoCode, originalPrice, onDiscountChange]);
+  }, [promoCode, originalPrice, onDiscountChange, t]);
 
   const handleRemovePromoCode = useCallback(() => {
     setPromoCode("");
@@ -104,7 +104,7 @@ export default function PromoCodeSection({
     <div className="space-y-3">
       <div className="flex gap-2">
         <Input
-          placeholder="Nhập mã giảm giá"
+          placeholder={t("Discount.enterCode")}
           value={promoCode}
           onChange={(e) => setPromoCode(e.target.value.toUpperCase())}
           onKeyPress={handleKeyPress}
@@ -120,10 +120,10 @@ export default function PromoCodeSection({
           {isLoading ? (
             <>
               <Loader2 className="w-4 h-4 mr-2 animate-spin" />
-              Đang kiểm tra...
+              {t("Discount.checking")}
             </>
           ) : (
-            "Áp dụng"
+            t("Discount.apply")
           )}
         </Button>
       </div>
@@ -135,7 +135,7 @@ export default function PromoCodeSection({
           <div className="flex items-center justify-between">
             <div className="flex-1">
               <p className="text-green-700 font-medium text-sm">
-                ✓ Đã áp dụng mã &quot;{discountInfo.code}&quot;
+                {t("Discount.applied", { code: discountInfo.code })}
               </p>
             </div>
             <Button

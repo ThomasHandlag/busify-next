@@ -113,7 +113,7 @@ export default function BookingInteractiveSection({
         const score = await getScore();
         setAvailablePoints(score.points);
       } catch (error) {
-        console.error("Failed to load score:", error);
+  console.error("Failed to load score:", error);
       }
     }
     loadScore();
@@ -192,17 +192,14 @@ export default function BookingInteractiveSection({
 
       if (!bookingResponse.ok) {
         const errorData = await bookingResponse.json().catch(() => null);
-        const errorMessage =
-          errorData?.message ||
-          `Lỗi khi gửi yêu cầu đặt vé: ${bookingResponse.status}`;
         console.error("Booking API error response:", errorData);
-        throw new Error(errorMessage);
+        throw new Error(t("Booking.error.bookingFailed"));
       }
 
       const bookingResult = await bookingResponse.json();
       const bookingId = bookingResult.result?.bookingId;
       if (!bookingId) {
-        throw new Error("Không nhận được booking_id từ API bookings");
+        throw new Error(t("Booking.error.missingBookingId"));
       }
       console.log("Booking created successfully, booking_id:", bookingId);
 
@@ -228,17 +225,14 @@ export default function BookingInteractiveSection({
 
       if (!paymentResponse.ok) {
         const errorData = await paymentResponse.json().catch(() => null);
-        const errorMessage =
-          errorData?.message ||
-          `Lỗi khi tạo thanh toán: ${paymentResponse.status}`;
         console.error("Payment API error response:", errorData);
-        throw new Error(errorMessage);
+        throw new Error(t("Payment.paymentFailed"));
       }
 
       const paymentResult = await paymentResponse.json();
       const paymentUrl = paymentResult.result?.paymentUrl;
       if (!paymentUrl) {
-        throw new Error("Không nhận được link thanh toán từ API payments");
+        throw new Error(t("Booking.error.missingPaymentLink"));
       }
       console.log("Payment link received:", paymentUrl);
 
@@ -271,11 +265,10 @@ export default function BookingInteractiveSection({
       // router.push(`/booking/success/${bookingId}`);
     } catch (e) {
       const error = e as Error;
-      console.error("Lỗi khi xử lý thanh toán:", error.message);
+      console.error("Payment processing error:", error.message);
       let userFriendlyMessage = error.message;
       if (error.message.includes("409")) {
-        userFriendlyMessage =
-          "Ghế đã được đặt hoặc thông tin không hợp lệ. Vui lòng chọn ghế khác hoặc kiểm tra lại.";
+        userFriendlyMessage = t("Booking.error.seatConflict409");
       }
       setPaymentError(userFriendlyMessage);
     } finally {
@@ -304,9 +297,9 @@ export default function BookingInteractiveSection({
         </CardContent>
       </Card>
 
-      <Card>
+    <Card>
         <CardHeader>
-          <CardTitle>Sử dụng điểm</CardTitle>
+      <CardTitle>{t("Points.title")}</CardTitle>
         </CardHeader>
         <CardContent>
           <PointsSection
@@ -359,10 +352,10 @@ export default function BookingInteractiveSection({
                 <span>-{discount.toLocaleString("vi-VN")}đ</span>
               </div>
             )}
-            {autoPromotionDiscount > 0 && selectedAutoPromotion && (
+    {autoPromotionDiscount > 0 && selectedAutoPromotion && (
               <div className="flex justify-between text-red-600">
                 <span>
-                  Khuyến mãi tự động (
+      {t("Booking.autoPromotion")} (
                   {selectedAutoPromotion.discountType === "PERCENTAGE"
                     ? `${selectedAutoPromotion.discountValue}%`
                     : `${selectedAutoPromotion.discountValue.toLocaleString(
@@ -373,9 +366,9 @@ export default function BookingInteractiveSection({
                 <span>-{autoPromotionDiscount.toLocaleString("vi-VN")}đ</span>
               </div>
             )}
-            {pointsDiscount > 0 && (
+    {pointsDiscount > 0 && (
               <div className="flex justify-between text-blue-600">
-                <span>Sử dụng điểm ({usedPoints})</span>
+        <span>{t("Points.usedPointsLabel", { count: usedPoints })}</span>
                 <span>-{pointsDiscount.toLocaleString("vi-VN")}đ</span>
               </div>
             )}
