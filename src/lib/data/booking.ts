@@ -93,6 +93,37 @@ export async function getBookingDetails(
   return response.data.result[0];
 }
 
+// Thêm hàm mới để tải vé PDF
+export async function downloadBookingPdf(params: {
+  bookingCode: string;
+  accessToken: string;
+  callback: (message: string) => void;
+  localeMessage?: string;
+}): Promise<Blob | null> {
+  try {
+    const response = await api.get(`api/bookings/${params.bookingCode}/pdf`, {
+      headers: {
+        Authorization: `Bearer ${params.accessToken}`,
+      },
+      responseType: "blob", // Yêu cầu axios trả về dữ liệu dạng blob
+    });
+
+    if (response.status !== 200) {
+      params.callback(
+        params.localeMessage ?? "Không thể tải vé. Vui lòng thử lại."
+      );
+      return null;
+    }
+    return response.data;
+  } catch (error) {
+    console.error("Error downloading PDF:", error);
+    params.callback(
+      params.localeMessage ?? "Có lỗi xảy ra khi tải vé. Vui lòng thử lại."
+    );
+    return null;
+  }
+}
+
 // Thêm hàm mới để hủy vé
 export async function cancelBooking(params: {
   bookingCode: string;

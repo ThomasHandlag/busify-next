@@ -48,7 +48,7 @@ import { Input } from "@/components/ui/input"; // Thêm import cho Input
 import { useSession } from "next-auth/react"; // Thêm import useSession
 import { createComplaint, ComplaintAddDTO } from "@/lib/data/complaints"; // Thêm import createComplaint
 import { toast } from "sonner"; // Thêm import toast cho thông báo
-import { cancelBooking } from "@/lib/data/booking"; // Thêm import cancelBooking
+import { cancelBooking, downloadBookingPdf } from "@/lib/data/booking"; // Thêm import cancelBooking và downloadBookingPdf
 import { useRouter } from "next/navigation"; // Thêm import useRouter
 
 interface BookingDetailSheetProps {
@@ -174,9 +174,40 @@ export function BookingDetailSheet({
     }
   };
 
-  const handleDownloadTicket = () => {
-    // Generate and download PDF ticket
-    console.log("Downloading ticket...");
+  const handleDownloadTicket = async () => {
+    if (!session?.user?.accessToken) {
+      toast.error("Bạn cần đăng nhập để tải vé.");
+      return;
+    }
+    setIsLoading(true);
+    try {
+      const pdfBlob = await downloadBookingPdf({
+        bookingCode: booking.booking_code,
+        accessToken: session.user.accessToken,
+        callback: (message: string) => toast.error(message),
+        localeMessage: "Không thể tải xuống vé PDF.",
+      });
+
+      if (pdfBlob) {
+        // Tạo URL tạm thời cho blob
+        const url = window.URL.createObjectURL(pdfBlob);
+        // Tạo một thẻ a ẩn để kích hoạt tải xuống
+        const a = document.createElement("a");
+        a.href = url;
+        a.download = `ve-xe-${booking.booking_code}.pdf`; // Tên file tải về
+        document.body.appendChild(a);
+        a.click();
+        // Dọn dẹp
+        a.remove();
+        window.URL.revokeObjectURL(url);
+        toast.success("Đã bắt đầu tải xuống vé PDF.");
+      }
+    } catch (error) {
+      console.error("Error in handleDownloadTicket:", error);
+      // Thông báo lỗi đã được xử lý trong hàm downloadBookingPdf
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   const handleWriteReview = () => {
@@ -468,9 +499,10 @@ export function BookingDetailSheet({
                     onClick={handleDownloadTicket}
                     variant="outline"
                     className="w-full"
+                    disabled={isLoading}
                   >
                     <Download className="w-4 h-4 mr-2" />
-                    Tải vé/hóa đơn PDF
+                    {isLoading ? "Đang tải..." : "Tải vé/hóa đơn PDF"}
                   </Button>
                 )}
 
