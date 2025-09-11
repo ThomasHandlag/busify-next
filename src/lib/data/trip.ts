@@ -4,6 +4,7 @@ import { Location } from "./location";
 export interface TripItemProps {
   trip_id: number;
   operator_name: string;
+  operator_avatar: string;
   route: {
     start_location: string;
     end_location: string;
