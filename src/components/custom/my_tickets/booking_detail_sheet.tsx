@@ -49,6 +49,7 @@ import { useSession } from "next-auth/react"; // Thêm import useSession
 import { createComplaint, ComplaintAddDTO } from "@/lib/data/complaints"; // Thêm import createComplaint
 import { toast } from "sonner"; // Thêm import toast cho thông báo
 import { cancelBooking } from "@/lib/data/booking"; // Thêm import cancelBooking
+import { useRouter } from "next/navigation"; // Thêm import useRouter
 
 interface BookingDetailSheetProps {
   booking: BookingDetailResponse;
@@ -136,6 +137,7 @@ export function BookingDetailSheet({
   const statusInfo = getStatusInfo(booking.status);
   const StatusIcon = statusInfo.icon;
   const { data: session } = useSession(); // Lấy session để lấy token
+  const router = useRouter(); // Khởi tạo router
 
   const handleCancelBooking = async () => {
     if (!session?.user?.accessToken) {
@@ -179,7 +181,12 @@ export function BookingDetailSheet({
 
   const handleWriteReview = () => {
     // Navigate to review page or open review modal
-    console.log("Opening review modal...");
+    if (booking.trip_id) {
+      router.push(`/trips/${booking.trip_id}`);
+    } else {
+      console.error("Trip ID is missing, cannot redirect to review page.");
+      toast.error("Không thể mở trang đánh giá do thiếu thông tin chuyến đi.");
+    }
   };
 
   const handleSubmitComplaint = async () => {

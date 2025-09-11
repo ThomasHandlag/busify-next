@@ -11,7 +11,6 @@ import {
   AlertCircle,
   Navigation,
   Users,
-  Download,
   AlertTriangle, // Đổi từ MessageSquare sang AlertTriangle cho biểu tượng khiếu nại
 } from "lucide-react";
 import { BookingData } from "@/lib/data/booking";
@@ -50,7 +49,6 @@ const formatTime = (dateString: string) => {
     minute: "2-digit",
   });
 };
-
 
 const formatCurrency = (amount: number) => {
   return new Intl.NumberFormat("vi-VN").format(amount) + "đ";
@@ -91,7 +89,6 @@ export const TicketCard = ({
   const { data: session } = useSession(); // Lấy session để lấy token
   const t = useTranslations("MyTickets");
   const router = useRouter(); // Thêm useRouter hook
-  console.log("Booking in TicketCard:", booking.trip_id);
 
   const getStatusInfo = (status: BookingData["status"]) => {
     switch (status) {

@@ -27,6 +27,7 @@ export interface BookingResponse {
 }
 
 export interface BookingDetailResponse {
+  trip_id: string;
   passenger_name: string;
   phone: string;
   email: string;
