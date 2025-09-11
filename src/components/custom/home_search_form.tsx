@@ -1,6 +1,6 @@
 "use client";
 
-import { SubmitHandler, useForm } from "react-hook-form";
+import { useForm } from "react-hook-form";
 import {
   Form,
   FormControl,
@@ -15,8 +15,6 @@ import { Combobox } from "../ui/combobox";
 import { Button } from "../ui/button";
 import { Calendar28 } from "./date_picker";
 import { FilterLocationType } from "./search_filter_sidebar";
-import { z } from "zod";
-import { zodResolver } from "@hookform/resolvers/zod";
 import { useTranslations } from "next-intl";
 import { Search } from "lucide-react";
 
@@ -27,24 +25,6 @@ type HomeSearchFormValues = {
   endLocation?: number | undefined;
   availableSeats?: number;
 };
-
-const schema = z
-  .object({
-    departureDate: z.date().optional(),
-    startLocation: z.number().min(1).optional(),
-    endLocation: z.number().min(1).optional(),
-    availableSeats: z
-      .number()
-      .min(0, { message: "Invalid number of seats" })
-      .optional(),
-  })
-  .refine((schema) => {
-    return !(
-      (schema.startLocation === undefined &&
-        schema.endLocation === undefined) ||
-      (schema.endLocation !== undefined && schema.startLocation !== undefined)
-    );
-  }, "Start and end location must be different");
 
 const HomeSearchForm = ({ locations }: { locations: FilterLocationType[] }) => {
   const t = useTranslations();
@@ -59,25 +39,25 @@ const HomeSearchForm = ({ locations }: { locations: FilterLocationType[] }) => {
       endLocation: filter.query?.endLocation,
       availableSeats: filter.query?.availableSeats || 1,
     },
-    resolver: zodResolver(schema),
   });
 
-  const onSubmit: SubmitHandler<HomeSearchFormValues> = async (data) => {
+  const onSubmit = async () => {
+    const allValues = form.getValues();
     filter.handleApplyFilters({
-      departureDate: data.departureDate,
-      startLocation: data.startLocation,
-      endLocation: data.endLocation,
-      availableSeats: data.availableSeats ?? 1,
+      departureDate: allValues.departureDate,
+      startLocation: allValues.startLocation,
+      endLocation: allValues.endLocation,
+      availableSeats: allValues.availableSeats ?? 1,
       timeZone: Intl.DateTimeFormat().resolvedOptions().timeZone,
     });
-    console.log("Form Data:", data);
+    console.log("Form Data:", allValues);
     navigate.push("/trips");
   };
 
   return (
     <Form {...form}>
       <form
-        className="flex justify-center items-center gap-2"
+        className="flex lg:flex-row flex-col justify-center items-center gap-2"
         onSubmit={form.handleSubmit(onSubmit)}
       >
         <FormField
@@ -152,7 +132,6 @@ const HomeSearchForm = ({ locations }: { locations: FilterLocationType[] }) => {
             type="submit"
             className="col-span-1 bg-green-600 hover:bg-green-700 text-white px-6 rounded-md font-medium text-sm"
             disabled={filter.isLoading}
-            onClick={() => form.handleSubmit(onSubmit)()}
           >
             <Search className="w-4 h-4 mr-2" />
           </Button>

@@ -9,6 +9,7 @@ import { MapPin, Clock, User } from "lucide-react";
 import { Label } from "@radix-ui/react-label";
 import React from "react";
 import { toast } from "sonner";
+import { useTranslations } from "next-intl";
 
 interface TripApiResponse {
   code: number;
@@ -21,6 +22,7 @@ interface TripApiResponse {
       seats: number;
     };
     pricePerSeat: number;
+
     route: {
       start_location: {
         address: string;
@@ -93,6 +95,7 @@ export default function BookingConfirmation({ params }: PageProps) {
   // State để lưu dữ liệu
   const [bookingData, setBookingData] = useState<BookingData | null>(null);
   const [loading, setLoading] = useState(true);
+  const t = useTranslations();
 
   useEffect(() => {
     // Kiểm tra query params
@@ -122,7 +125,7 @@ export default function BookingConfirmation({ params }: PageProps) {
 
         // Chuyển đổi estimatedDuration từ chuỗi sang số phút
         const durationMatch = data.result.route.estimated_duration.match(
-          /(\d+)\s*giờ\s*(\d+)\s*phút|(\d+)\s*giờ|(\d+)\s*phút/
+          /(\d+)\s*${t("Common.hours")}\s*(\d+)\s*${t("Common.minutes")}|(\d+)\s*${t("Common.hours")}|(\d+)\s*${t("Common.minutes")}/
         );
         let totalMinutes = 0;
         if (durationMatch) {
@@ -157,8 +160,8 @@ export default function BookingConfirmation({ params }: PageProps) {
         });
         const durationHours = Math.floor(totalMinutes / 60);
         const durationMinutes = totalMinutes % 60;
-        const durationString = `${durationHours} giờ${
-          durationMinutes > 0 ? ` ${durationMinutes} phút` : ""
+        const durationString = `${durationHours} ${t("Common.hours")}${
+          durationMinutes > 0 ? ` ${durationMinutes} ${t("Common.minutes")}` : ""
         }`;
 
         setBookingData({
@@ -185,7 +188,7 @@ export default function BookingConfirmation({ params }: PageProps) {
         });
       } catch (error) {
         const errMessage = error as Error;
-        toast.error(`${errMessage.message ?? "Không tìm thấy thông tin."}`);
+        toast.error(`${errMessage.message ?? t("Common.infoNotFound")}`);
       } finally {
         setLoading(false);
       }
@@ -194,11 +197,11 @@ export default function BookingConfirmation({ params }: PageProps) {
     fetchTripData();
   }, [tripId, searchParams]);
 
-  if (loading) return <div className="text-center py-8">Đang tải...</div>;
+  if (loading) return <div className="text-center py-8">{t("Common.loading")}</div>;
   if (!bookingData)
     return (
       <div className="flex justify-center text-center py-8">
-        Không có dữ liệu để hiển thị
+        {t("Common.infoNotFound")}
       </div>
     );
 
@@ -207,7 +210,7 @@ export default function BookingConfirmation({ params }: PageProps) {
       <div className="bg-white shadow-sm border-b w-full">
         <div className="px-4 py-4">
           <div className="flex items-center gap-4">
-            <span className="text-gray-600">Xác nhận thông tin đặt vé</span>
+            <span className="text-gray-600">{t("Booking.confirmation.title")}</span>
           </div>
         </div>
       </div>
@@ -219,7 +222,7 @@ export default function BookingConfirmation({ params }: PageProps) {
               <CardHeader>
                 <CardTitle className="flex items-center gap-2">
                   <MapPin className="w-5 h-5 text-green-600" />
-                  Chi tiết chuyến đi
+                  {t("Booking.confirmation.tripDetails")}
                 </CardTitle>
               </CardHeader>
               <CardContent className="space-y-4">
@@ -241,7 +244,7 @@ export default function BookingConfirmation({ params }: PageProps) {
                   <div className="flex items-center gap-3">
                     <Clock className="w-4 h-4 text-gray-500" />
                     <div>
-                      <p className="text-sm text-gray-500">Khởi hành</p>
+                      <p className="text-sm text-gray-500">{t("Booking.departure")}</p>
                       <p className="font-medium">
                         {bookingData.trip.departureTime} -
                         {bookingData.trip.date}
@@ -251,7 +254,7 @@ export default function BookingConfirmation({ params }: PageProps) {
                   <div className="flex items-center gap-3">
                     <Clock className="w-4 h-4 text-gray-500" />
                     <div>
-                      <p className="text-sm text-gray-500">Dự kiến đến</p>
+                      <p className="text-sm text-gray-500">{t("Booking.arrival")}</p>
                       <p className="font-medium">
                         {bookingData.trip.arrivalTime} - {bookingData.trip.date}
                       </p>
@@ -263,7 +266,7 @@ export default function BookingConfirmation({ params }: PageProps) {
 
             <Card>
               <CardHeader>
-                <CardTitle>Ghế đã chọn</CardTitle>
+                <CardTitle>{t("Booking.seatSelected")}</CardTitle>
               </CardHeader>
               <CardContent>
                 <div className="flex gap-2">
@@ -273,7 +276,7 @@ export default function BookingConfirmation({ params }: PageProps) {
                       variant="secondary"
                       className="bg-green-100 text-green-700"
                     >
-                      Ghế {seat}
+                      {t("Booking.seats")} {seat}
                     </Badge>
                   ))}
                 </div>
@@ -284,33 +287,37 @@ export default function BookingConfirmation({ params }: PageProps) {
               <CardHeader>
                 <CardTitle className="flex items-center gap-2">
                   <User className="w-5 h-5 text-green-600" />
-                  Thông tin hành khách
+                  {t("MyTickets.passengerInfo")}
                 </CardTitle>
               </CardHeader>
               <CardContent className="space-y-3">
                 <div>
-                  <Label className="text-sm text-gray-500">Họ và tên</Label>
+                  <Label className="text-sm text-gray-500">{t("Form.fullName")}</Label>
                   <p className="font-medium">
                     {bookingData.passenger.fullName}
                   </p>
                 </div>
                 <div>
-                  <Label className="text-sm text-gray-500">Số điện thoại</Label>
+                  <Label className="text-sm text-gray-500">{t("Form.phone")}</Label>
                   <p className="font-medium">{bookingData.passenger.phone}</p>
                 </div>
                 <div>
-                  <Label className="text-sm text-gray-500">Email</Label>
+                  <Label className="text-sm text-gray-500">{t("Form.email")}</Label>
                   <p className="font-medium">{bookingData.passenger.email}</p>
                 </div>
               </CardContent>
             </Card>
           </div>
-          <div className="space-y-6">
-            <BookingInteractiveSection
-              initialTotalPrice={bookingData.pricing.totalPrice}
-              mockData={bookingData}
-              tripId={tripId}
-            />
+
+          {/* Sidebar với sticky position và scroll */}
+          <div className="lg:sticky lg:top-4 lg:self-start">
+            <div className="max-h-[calc(100vh-4rem)] overflow-y-auto space-y-6 pr-2">
+              <BookingInteractiveSection
+                initialTotalPrice={bookingData.pricing.totalPrice}
+                mockData={bookingData}
+                tripId={tripId}
+              />
+            </div>
           </div>
         </div>
       </div>

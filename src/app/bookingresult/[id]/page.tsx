@@ -20,6 +20,7 @@ import {
   Phone,
 } from "lucide-react";
 import Link from "next/link";
+import { useTranslations } from "next-intl";
 
 interface PaymentDetails {
   paymentId: number;
@@ -50,6 +51,7 @@ export default function BookingResult() {
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
   const [copied, setCopied] = useState(false);
+  const t = useTranslations();
 
   useEffect(() => {
     const fetchPaymentDetails = async () => {
@@ -64,7 +66,7 @@ export default function BookingResult() {
         );
 
         if (!response.ok) {
-          throw new Error("Không thể lấy chi tiết thanh toán");
+          throw new Error(t("BookingResult.fetchError"));
         }
 
         const result = await response.json();
@@ -72,7 +74,7 @@ export default function BookingResult() {
         setPaymentDetails(result.result);
       } catch (err) {
         console.error("Error fetching payment details:", err);
-        setError("Giao dịch không tồn tại hoặc chưa thanh toán !");
+        setError(t("BookingResult.notFound"));
       } finally {
         setLoading(false);
       }
@@ -81,7 +83,7 @@ export default function BookingResult() {
     if (id) {
       fetchPaymentDetails();
     }
-  }, [id]);
+  }, [id, t]);
 
   // Copy booking code to clipboard
   const copyBookingCode = async () => {
@@ -141,22 +143,22 @@ export default function BookingResult() {
       case "completed":
         return {
           className: "bg-green-500 text-white",
-          text: "Đã xác nhận",
+          text: t("Booking.confirmed"),
         };
       case "pending":
         return {
           className: "bg-yellow-500 text-white",
-          text: "Đang chờ",
+          text: t("Booking.pending"),
         };
       case "cancelled":
         return {
           className: "bg-red-500 text-white",
-          text: "Đã hủy",
+          text: t("Booking.canceled"),
         };
       default:
         return {
           className: "bg-gray-500 text-white",
-          text: status,
+          text: t("Booking.unknown"),
         };
     }
   };
@@ -168,7 +170,7 @@ export default function BookingResult() {
           <CardContent className="p-6 text-center">
             <div className="flex flex-col items-center space-y-4">
               <Clock className="w-8 h-8 text-blue-600 animate-spin" />
-              <p className="text-gray-600">Đang tải thông tin đặt vé...</p>
+              <p className="text-gray-600">{t("BookingResult.loading")}</p>
             </div>
           </CardContent>
         </Card>
@@ -184,14 +186,14 @@ export default function BookingResult() {
             <div className="flex flex-col items-center space-y-4">
               <AlertCircle className="w-8 h-8 text-red-600" />
               <p className="text-red-700">
-                {error || "Không tìm thấy thông tin đặt vé."}
+                {error || t("Common.bookingNotFound")}
               </p>
               <Button
                 onClick={() => window.location.reload()}
                 variant="outline"
                 className="border-red-300 text-red-700 hover:bg-red-100"
               >
-                Thử lại
+                {t("Error.tryAgain")}
               </Button>
             </div>
           </CardContent>
@@ -212,7 +214,7 @@ export default function BookingResult() {
       <div className="bg-white shadow-sm border-b">
         <div className="px-4 py-4 w-full">
           <div className="flex items-center gap-4">
-            <span className="text-gray-600">Kết quả đặt vé</span>
+            <span className="text-gray-600">{t("BookingResult.title")}</span>
           </div>
         </div>
       </div>
@@ -246,7 +248,7 @@ export default function BookingResult() {
                       isSuccess ? "text-green-800" : "text-yellow-800"
                     } mb-2`}
                   >
-                    {isSuccess ? "Đặt vé thành công!" : "Đặt vé đang xử lý!"}
+                    {isSuccess ? t("BookingResult.successTitle") : t("BookingResult.processingTitle")}
                   </h1>
                   <p
                     className={isSuccess ? "text-green-700" : "text-yellow-700"}
@@ -254,10 +256,10 @@ export default function BookingResult() {
                     {isSuccess
                       ? (
                           <>
-                            Kiểm tra email <span className="font-bold text-green-800">{paymentDetails.customerEmail}</span>, SMS xác nhận đã được gửi đến <span className="font-bold text-green-800">{paymentDetails.customerPhone}</span>.
+                            {t("BookingResult.successDesc", { email: paymentDetails.customerEmail, phone: paymentDetails.customerPhone })}
                           </>
                         )
-                      : "Đặt vé của bạn đang được xử lý. Vui lòng chờ xác nhận."}
+                      : t("BookingResult.processingDesc")}
                   </p>
                 </div>
               </div>
@@ -271,7 +273,7 @@ export default function BookingResult() {
               {/* Booking Code */}
               <Card>
                 <CardHeader>
-                  <CardTitle className="text-lg">Mã đặt vé</CardTitle>
+                  <CardTitle className="text-lg">{t("BookingResult.bookingCodeTitle")}</CardTitle>
                 </CardHeader>
                 <CardContent>
                   <div className="flex items-center justify-between p-4 bg-gray-50 rounded-lg">
@@ -279,9 +281,7 @@ export default function BookingResult() {
                       <p className="text-2xl font-bold text-green-600">
                         {paymentDetails.bookingDetails.bookingCode}
                       </p>
-                      <p className="text-sm text-gray-500">
-                        Vui lòng lưu mã này để tra cứu
-                      </p>
+                      <p className="text-sm text-gray-500">{t("BookingResult.bookingCodeHint")}</p>
                     </div>
                     <Button
                       variant="outline"
@@ -290,7 +290,7 @@ export default function BookingResult() {
                       className="flex items-center gap-2 bg-transparent"
                     >
                       <Copy className="w-4 h-4" />
-                      {copied ? "Đã sao chép" : "Sao chép"}
+                      {copied ? t("BookingResult.copied") : t("BookingResult.copy")}
                     </Button>
                   </div>
                 </CardContent>
@@ -301,13 +301,13 @@ export default function BookingResult() {
                 <CardHeader>
                   <CardTitle className="flex items-center gap-2">
                     <MapPin className="w-5 h-5 text-blue-600" />
-                    Thông tin chuyến đi
+                    {t("BookingResult.tripInfo")}
                   </CardTitle>
                 </CardHeader>
                 <CardContent className="space-y-4">
                   <div className="flex items-center justify-between p-3 bg-blue-50 rounded-lg">
                     <div className="text-center">
-                      <p className="text-sm text-gray-500">Điểm đi</p>
+                      <p className="text-sm text-gray-500">{t("Booking.confirmation.startPoint")}</p>
                       <p className="font-semibold text-blue-800">
                         {paymentDetails.bookingDetails.departureName}
                       </p>
@@ -321,7 +321,7 @@ export default function BookingResult() {
                       <ArrowRight className="w-6 h-6 text-blue-600" />
                     </div>
                     <div className="text-center">
-                      <p className="text-sm text-gray-500">Điểm đến</p>
+                      <p className="text-sm text-gray-500">{t("Booking.confirmation.endPoint")}</p>
                       <p className="font-semibold text-blue-800">
                         {paymentDetails.bookingDetails.arrivalName}
                       </p>
@@ -333,7 +333,7 @@ export default function BookingResult() {
 
                   <div className="grid grid-cols-2 gap-4">
                     <div>
-                      <p className="text-sm text-gray-500">Ngày khởi hành</p>
+                      <p className="text-sm text-gray-500">{t("BookingResult.departureDate")}</p>
                       <p className="font-semibold">
                         {formatDate(
                           paymentDetails.bookingDetails.departureTime
@@ -341,7 +341,7 @@ export default function BookingResult() {
                       </p>
                     </div>
                     <div>
-                      <p className="text-sm text-gray-500">Ngày đến</p>
+                      <p className="text-sm text-gray-500">{t("BookingResult.arrivalDate")}</p>
                       <p className="font-semibold">
                         {formatDate(paymentDetails.bookingDetails.arrivalTime)}
                       </p>
@@ -358,12 +358,12 @@ export default function BookingResult() {
                 <CardHeader>
                   <CardTitle className="flex items-center gap-2">
                     <CheckCircle className="w-5 h-5 text-green-600" />
-                    Trạng thái đặt vé
+                    {t("BookingResult.statusTitle")}
                   </CardTitle>
                 </CardHeader>
                 <CardContent>
                   <div className="flex items-center justify-between">
-                    <span>Trạng thái</span>
+                    <span>{t("BookingResult.status")}</span>
                     <Badge className={statusBadgeProps.className}>
                       {statusBadgeProps.text}
                     </Badge>
@@ -376,15 +376,13 @@ export default function BookingResult() {
                 <CardHeader>
                   <CardTitle className="flex items-center gap-2">
                     <CreditCard className="w-5 h-5 text-blue-600" />
-                    Thông tin thanh toán
+                    {t("BookingResult.paymentInfoTitle")}
                   </CardTitle>
                 </CardHeader>
                 <CardContent className="space-y-4">
                   <div className="space-y-3">
                     <div>
-                      <p className="text-sm text-gray-500">
-                        Phương thức thanh toán
-                      </p>
+                      <p className="text-sm text-gray-500">{t("BookingResult.paymentMethod")}</p>
                       <div className="flex items-center gap-2 mt-1">
                         <Banknote className="w-4 h-4 text-blue-600" />
                         <span className="font-semibold">
@@ -394,9 +392,7 @@ export default function BookingResult() {
                     </div>
 
                     <div>
-                      <p className="text-sm text-gray-500">
-                        Số tiền đã thanh toán
-                      </p>
+                      <p className="text-sm text-gray-500">{t("BookingResult.amountPaid")}</p>
                       <p className="font-semibold text-green-600 text-lg">
                         {formatCurrency(paymentDetails.amount)}
                       </p>
@@ -404,7 +400,7 @@ export default function BookingResult() {
 
                     {paymentDetails.paidAt && (
                       <div>
-                        <p className="text-sm text-gray-500">Ngày thanh toán</p>
+                        <p className="text-sm text-gray-500">{t("BookingResult.paidAt")}</p>
                         <p className="font-semibold">
                           {formatDateTime(paymentDetails.paidAt)}
                         </p>
@@ -412,7 +408,7 @@ export default function BookingResult() {
                     )}
 
                     <div>
-                      <p className="text-sm text-gray-500">Mã giao dịch</p>
+                      <p className="text-sm text-gray-500">{t("BookingResult.transactionCode")}</p>
                       <p className="font-semibold text-blue-600">
                         {paymentDetails.transactionCode}
                       </p>
@@ -424,7 +420,7 @@ export default function BookingResult() {
                       <div className="flex items-center gap-2">
                         <CheckCircle className="w-4 h-4 text-green-600" />
                         <span className="text-sm font-medium text-green-800">
-                          Thanh toán thành công
+                          {t("Payment.paymentSuccess")}
                         </span>
                       </div>
                     </div>
@@ -437,18 +433,18 @@ export default function BookingResult() {
                 <CardHeader>
                   <CardTitle className="flex items-center gap-2">
                     <User className="w-5 h-5 text-purple-600" />
-                    Thông tin khách hàng
+                    {t("BookingResult.customerInfoTitle")}
                   </CardTitle>
                 </CardHeader>
                 <CardContent className="space-y-3">
                   <div>
-                    <p className="text-sm text-gray-500">Họ và tên</p>
+                    <p className="text-sm text-gray-500">{t("Profile.fullName")}</p>
                     <p className="font-semibold">
                       {paymentDetails.customerName}
                     </p>
                   </div>
                   <div>
-                    <p className="text-sm text-gray-500">Số điện thoại</p>
+                    <p className="text-sm text-gray-500">{t("Booking.phoneNumber")}</p>
                     <div className="flex items-center gap-2">
                       <Phone className="w-4 h-4 text-gray-400" />
                       <p className="font-semibold">
@@ -457,7 +453,7 @@ export default function BookingResult() {
                     </div>
                   </div>
                   <div>
-                    <p className="text-sm text-gray-500">Email</p>
+                    <p className="text-sm text-gray-500">{t("Profile.email")}</p>
                     <div className="flex items-center gap-2">
                       <Mail className="w-4 h-4 text-gray-400" />
                       <p className="font-semibold">
@@ -477,7 +473,7 @@ export default function BookingResult() {
             <Link aria-label="View Booking History" href="/user/my-tickets">
               <Button className="bg-green-600 hover:bg-green-700 text-white flex items-center gap-2">
                 <Calendar className="w-4 h-4" />
-                Xem lịch sử đặt vé
+                {t("BookingResult.viewHistory")}
                 <ArrowRight className="w-4 h-4" />
               </Button>
             </Link>
@@ -488,7 +484,7 @@ export default function BookingResult() {
                 className="flex items-center gap-2"
               >
                 <Clock className="w-4 h-4" />
-                Kiểm tra lại
+                {t("BookingResult.checkAgain")}
               </Button>
             )}
           </div>
@@ -497,12 +493,7 @@ export default function BookingResult() {
           <Card className="bg-gray-50">
             <CardContent className="p-4 text-center">
               <p className="text-sm text-gray-600">
-                Cần hỗ trợ? Liên hệ hotline:{" "}
-                <span className="font-semibold text-green-600">1900 1234</span>{" "}
-                hoặc email:{" "}
-                <span className="font-semibold text-green-600">
-                  support@busify.vn
-                </span>
+                {t("BookingResult.supportText", { phone: "1900 1234", email: "support@busify.vn" })}
               </p>
             </CardContent>
           </Card>

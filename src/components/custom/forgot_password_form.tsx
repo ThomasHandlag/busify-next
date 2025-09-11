@@ -9,8 +9,10 @@ import React, { useState, useEffect } from "react";
 import Link from "next/link";
 import { FaArrowLeft, FaEnvelope, FaClock } from "react-icons/fa";
 import { forgotPassword } from "@/lib/data/auth";
+import { useTranslations } from "next-intl";
 
 const ForgotPasswordForm = () => {
+  const t = useTranslations();
   const [isLoading, setIsLoading] = useState(false);
   const [isSuccess, setIsSuccess] = useState(false);
   const [message, setMessage] = useState("");
@@ -19,7 +21,11 @@ const ForgotPasswordForm = () => {
   const [isMounted, setIsMounted] = useState(false);
 
   const formSchema = z.object({
-    email: z.string().email("Địa chỉ email không hợp lệ").min(2).max(50),
+    email: z
+      .string()
+      .email(t("Form.invalidEmail"))
+      .min(2)
+      .max(50),
   });
 
   const form = useForm<z.infer<typeof formSchema>>({
@@ -69,21 +75,19 @@ const ForgotPasswordForm = () => {
 
       if (response.code === 200) {
         setIsSuccess(true);
-        setMessage(
-          "Email reset password đã được gửi! Vui lòng kiểm tra hộp thư của bạn."
-        );
+        setMessage(t("Auth.forgot.success"));
 
         // Start countdown timer (60 seconds)
         setCountdown(60);
         setCanResend(false);
       } else {
         setIsSuccess(false);
-        setMessage(response.message || "Có lỗi xảy ra. Vui lòng thử lại.");
+        setMessage(response.message || t("Auth.forgot.errorGeneric"));
       }
     } catch (error) {
       console.error("Forgot password error:", error);
       setIsSuccess(false);
-      setMessage("Có lỗi xảy ra khi gửi email. Vui lòng thử lại.");
+      setMessage(t("Auth.forgot.errorGeneric"));
     } finally {
       setIsLoading(false);
     }
@@ -103,12 +107,12 @@ const ForgotPasswordForm = () => {
           {/* Back button */}
           <div className="flex justify-start mb-4">
             <Link
-              aria-label="Back to login"
+              aria-label={t("Auth.backToLogin")}
               href="/login"
               className="flex items-center text-gray-600 hover:text-gray-800 transition-colors duration-200"
             >
               <FaArrowLeft className="mr-2" size={16} />
-              <span className="text-sm font-medium">Quay lại đăng nhập</span>
+              <span className="text-sm font-medium">{t("Auth.backToLogin")}</span>
             </Link>
           </div>
 
@@ -116,10 +120,10 @@ const ForgotPasswordForm = () => {
             <FaEnvelope className="text-white text-lg sm:text-xl" />
           </div>
           <h2 className="text-2xl sm:text-3xl font-bold text-gray-800 mb-2">
-            Quên mật khẩu?
+            {t("Auth.forgot.title")}
           </h2>
           <p className="text-sm sm:text-base text-gray-500">
-            Nhập email của bạn để nhận liên kết đặt lại mật khẩu
+            {t("Auth.forgot.subtitle")}
           </p>
         </div>
 
@@ -135,12 +139,12 @@ const ForgotPasswordForm = () => {
               render={({ field }) => (
                 <FormItem>
                   <FormLabel className="text-gray-700 font-medium">
-                    Địa chỉ Email
+                    {t("Auth.emailAddress")}
                   </FormLabel>
                   <Input
                     {...field}
                     type="email"
-                    placeholder="Nhập email của bạn"
+                    placeholder={t("Home.emailPlaceholder")}
                     required
                     className="h-12 bg-gray-50 border-gray-200 rounded-xl focus:ring-2 focus:ring-orange-500 focus:border-transparent transition-all duration-200"
                   />
@@ -204,27 +208,27 @@ const ForgotPasswordForm = () => {
               {isLoading ? (
                 <div className="flex items-center justify-center">
                   <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-2"></div>
-                  Đang gửi...
+                  {t("Auth.forgot.sending")}
                 </div>
               ) : !canResend && isMounted ? (
                 <div className="flex items-center justify-center">
                   <FaClock className="mr-2" size={16} />
-                  Gửi lại sau {formatTime(countdown)}
+                  {t("Auth.forgot.resendAfter", { time: formatTime(countdown) })}
                 </div>
               ) : (
-                "Gửi email reset"
+                t("Auth.forgot.sendEmail")
               )}
             </Button>
 
             {/* Resend button (only show when countdown is finished and there was a successful send) */}
-            {isMounted && isSuccess && canResend && countdown === 0 && (
+      {isMounted && isSuccess && canResend && countdown === 0 && (
               <Button
                 type="button"
                 onClick={handleResend}
                 variant="outline"
                 className="w-full h-12 border-orange-300 text-orange-700 hover:bg-orange-50 rounded-xl transition-all duration-200"
               >
-                Gửi lại email
+        {t("Auth.forgot.resendEmail")}
               </Button>
             )}
           </form>
@@ -233,23 +237,21 @@ const ForgotPasswordForm = () => {
         {/* Additional help text */}
         <div className="text-center mt-6">
           <p className="text-sm text-gray-600">
-            Không nhận được email?{" "}
-            <span className="text-gray-500">
-              Kiểm tra thư mục spam hoặc thử lại với email khác.
-            </span>
+            {t("Auth.forgot.notReceived")} {" "}
+            <span className="text-gray-500">{t("Auth.forgot.checkSpam")}</span>
           </p>
         </div>
 
         {/* Back to login link */}
         <div className="text-center mt-4">
           <p className="text-sm text-gray-600">
-            Nhớ mật khẩu rồi?{" "}
+            {t("Auth.forgot.remembered")} {" "}
             <Link
-              aria-label="Back to login"
+              aria-label={t("Auth.backToLogin")}
               href="/login"
               className="text-orange-600 hover:text-orange-700 font-semibold"
             >
-              Đăng nhập ngay
+              {t("Auth.login.signIn")}
             </Link>
           </p>
         </div>

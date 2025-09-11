@@ -1,21 +1,7 @@
 import api, { ApiFnParams } from "./axios-instance";
 
 export interface BookingData {
-  booking_id: string;
-  route_name: string;
-  departure_time: string;
-  arrival_time: string;
-  departure_address: string;
-  arrival_address: string;
-  booking_code: string;
-  status: string;
-  total_amount: number;
-  booking_date: string;
-  passenger_count: number;
-  payment_method: string;
-}
-
-export interface Booking {
+  trip_id: string;
   booking_id: string;
   route_name: string;
   departure_time: string;
@@ -31,7 +17,7 @@ export interface Booking {
 }
 
 export interface BookingResponse {
-  result: Booking[];
+  result: BookingData[];
   pageNumber: number;
   pageSize: number;
   totalRecords: number;
@@ -41,6 +27,7 @@ export interface BookingResponse {
 }
 
 export interface BookingDetailResponse {
+  trip_id: string;
   passenger_name: string;
   phone: string;
   email: string;
@@ -75,12 +62,20 @@ export interface BookingDetailResponse {
   };
 }
 
-export async function getBookingHistory(
-  params: ApiFnParams
-): Promise<BookingResponse> {
+export async function getBookingHistory(params: {
+  page: number;
+  size: number;
+  accessToken: string;
+  callback: (message: string) => void;
+  localeMessage?: string;
+}): Promise<BookingResponse> {
   const response = await api.get(
     `api/bookings?page=${params.page}&size=${params.size}`,
-    {}
+    {
+      headers: {
+        Authorization: `Bearer ${params.accessToken}`,
+      },
+    }
   );
   if (response.status !== 200) {
     params.callback(
@@ -104,6 +99,37 @@ export async function getBookingDetails(
     );
   }
   return response.data.result[0];
+}
+
+// Thêm hàm mới để tải vé PDF
+export async function downloadBookingPdf(params: {
+  bookingCode: string;
+  accessToken: string;
+  callback: (message: string) => void;
+  localeMessage?: string;
+}): Promise<Blob | null> {
+  try {
+    const response = await api.get(`api/bookings/${params.bookingCode}/pdf`, {
+      headers: {
+        Authorization: `Bearer ${params.accessToken}`,
+      },
+      responseType: "blob", // Yêu cầu axios trả về dữ liệu dạng blob
+    });
+
+    if (response.status !== 200) {
+      params.callback(
+        params.localeMessage ?? "Không thể tải vé. Vui lòng thử lại."
+      );
+      return null;
+    }
+    return response.data;
+  } catch (error) {
+    console.error("Error downloading PDF:", error);
+    params.callback(
+      params.localeMessage ?? "Có lỗi xảy ra khi tải vé. Vui lòng thử lại."
+    );
+    return null;
+  }
 }
 
 // Thêm hàm mới để hủy vé

@@ -11,7 +11,6 @@ import {
   AlertCircle,
   Navigation,
   Users,
-  Download,
   AlertTriangle, // Đổi từ MessageSquare sang AlertTriangle cho biểu tượng khiếu nại
 } from "lucide-react";
 import { BookingData } from "@/lib/data/booking";
@@ -32,6 +31,7 @@ import { createComplaint, ComplaintAddDTO } from "@/lib/data/complaints"; // Th�
 import { toast } from "sonner"; // Thêm import toast cho thông báo
 import { cancelBooking } from "@/lib/data/booking"; // Thêm import cho cancelBooking
 import { useTranslations } from "next-intl";
+import { useRouter } from "next/navigation"; // Thêm import useRouter
 
 const formatDate = (dateString: string) => {
   const date = new Date(dateString);
@@ -54,37 +54,61 @@ const formatCurrency = (amount: number) => {
   return new Intl.NumberFormat("vi-VN").format(amount) + "đ";
 };
 
+// Thêm hàm tính toán tỷ lệ hoàn tiền
+const calculateRefundPercentage = (
+  bookingDate: string,
+  departureTime: string
+) => {
+  const now = new Date();
+  const bookingTime = new Date(bookingDate);
+  const departure = new Date(departureTime);
+
+  const hoursSinceBooking =
+    (now.getTime() - bookingTime.getTime()) / (1000 * 60 * 60);
+  const hoursUntilDeparture =
+    (departure.getTime() - now.getTime()) / (1000 * 60 * 60);
+
+  if (hoursSinceBooking <= 24) {
+    return 100;
+  } else if (hoursUntilDeparture >= 24) {
+    return 70;
+  } else {
+    return 0;
+  }
+};
+
 export const TicketCard = ({
   booking,
   onViewDetails,
-  onBookingCancelled, // Thêm prop mới
+  onBookingCancelled,
 }: {
   booking: BookingData;
   onViewDetails?: () => void;
-  onBookingCancelled?: () => void; // Thêm prop mới
+  onBookingCancelled?: () => void;
 }) => {
   const { data: session } = useSession(); // Lấy session để lấy token
-  const t = useTranslations("MyTickets");
+  const t = useTranslations();
+  const router = useRouter(); // Thêm useRouter hook
 
   const getStatusInfo = (status: BookingData["status"]) => {
     switch (status) {
       case "confirmed":
         return {
-          label: t("confirmed"),
+          label: t("Booking.confirmed"),
           variant: "default" as const,
           icon: CheckCircle,
           color: "text-green-600",
         };
       case "pending":
         return {
-          label: t("pending"),
+          label: t("Booking.pending"),
           variant: "secondary" as const,
           icon: AlertCircle,
           color: "text-yellow-600",
         };
       case "completed":
         return {
-          label: t("completed"),
+          label: t("Booking.completed"),
           variant: "default" as const,
           icon: CheckCircle,
           color: "text-blue-600",
@@ -92,14 +116,14 @@ export const TicketCard = ({
       case "canceled_by_user":
       case "canceled_by_operator":
         return {
-          label: t("cancelled"),
+          label: t("Booking.canceled"),
           variant: "destructive" as const,
           icon: XCircle,
           color: "text-red-600",
         };
       default:
         return {
-          label: t("unknown"),
+          label: t("Booking.unknown"),
           variant: "outline" as const,
           icon: AlertCircle,
           color: "text-gray-600",
@@ -117,15 +141,19 @@ export const TicketCard = ({
   const [isCancelConfirmOpen, setIsCancelConfirmOpen] = useState(false); // State cho dialog xác nhận hủy
 
   const isPast = new Date(booking.departure_time) < new Date();
+  const refundPercentage = calculateRefundPercentage(
+    booking.booking_date, // Thời gian đặt vé
+    booking.departure_time // Thời gian khởi hành
+  );
 
   const handleSubmitComplaint = async () => {
     if (!session?.user?.accessToken) {
-      toast.error(t("loginRequired"));
+      toast.error(t("MyTickets.loginRequired"));
       return;
     }
 
     if (!complaintTitle.trim() || !complaintDescription.trim()) {
-      toast.error(t("complaintValidationError"));
+      toast.error(t("MyTickets.complaintValidationError"));
       return;
     }
 
@@ -144,16 +172,16 @@ export const TicketCard = ({
       );
 
       if (result) {
-        toast.success(t("complaintSubmitted"));
+        toast.success(t("MyTickets.complaintSubmitted"));
         setComplaintTitle("");
         setComplaintDescription("");
         setIsComplaintModalOpen(false);
       } else {
-        toast.error(t("complaintError"));
+        toast.error(t("MyTickets.complaintError"));
       }
     } catch (error) {
       console.error("Error submitting complaint:", error);
-      toast.error("Có lỗi xảy ra khi gửi khiếu nại. Vui lòng thử lại.");
+      toast.error(t("MyTickets.complaintError"));
     } finally {
       setIsSubmittingComplaint(false);
     }
@@ -162,7 +190,7 @@ export const TicketCard = ({
   // Thêm hàm xử lý hủy vé
   const handleCancelBooking = async () => {
     if (!session?.user?.accessToken) {
-      toast.error(t("loginRequired"));
+      toast.error(t("MyTickets.loginRequired"));
       return;
     }
 
@@ -174,11 +202,11 @@ export const TicketCard = ({
         callback: (message: string) => {
           toast.error(message);
         },
-        localeMessage: "Không thể hủy vé. Vui lòng thử lại.",
+        localeMessage: t("MyTickets.cannotCancelNotice"),
       });
 
       if (success) {
-        toast.success(t("bookingCancelled"));
+        toast.success(t("MyTickets.cancelSuccess"));
         // Thông báo cho parent component để làm mới danh sách
         if (onBookingCancelled) {
           onBookingCancelled();
@@ -187,7 +215,7 @@ export const TicketCard = ({
       }
     } catch (error) {
       console.error("Error cancelling booking:", error);
-      toast.error(t("cancellationError"));
+      toast.error(t("MyTickets.cancelError"));
     } finally {
       setIsCancelling(false);
     }
@@ -274,14 +302,15 @@ export const TicketCard = ({
 
         {/* Actions Row - Compact */}
         <div className="flex gap-2">
-            <Button
-              variant="outline"
-              size="sm"
-              onClick={onViewDetails}
-              className="flex-1 h-8 text-xs"
-            >
-              {t("details")}
-            </Button>          {(booking.status === "confirmed" || booking.status === "pending") &&
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={onViewDetails}
+            className="flex-1 h-8 text-xs"
+          >
+            {t("MyTickets.details")}
+          </Button>
+          {(booking.status === "confirmed" || booking.status === "pending") &&
             !isPast && (
               <Button
                 variant="destructive"
@@ -290,28 +319,21 @@ export const TicketCard = ({
                 disabled={isCancelling} // Vô hiệu hóa khi đang hủy
                 className="h-8 px-3 text-xs"
               >
-                {isCancelling ? t("cancelling") : t("cancel")} {/* Text động */}
+                {isCancelling
+                  ? t("MyTickets.cancelling")
+                  : t("MyTickets.cancel")}
+                {/* Text động */}
               </Button>
             )}
-
-          {booking.status === "confirmed" && !isPast && (
-            <Button
-              variant="destructive"
-              size="sm"
-              className="h-8 px-3 text-xs"
-            >
-              Hủy
-            </Button>
-          )}
-
           {booking.status === "completed" && (
             <>
               <Button
                 variant="default"
                 size="sm"
+                onClick={() => router.push(`/trips/${booking.trip_id}`)} // Thêm onClick để redirect đến /trips/{id}
                 className="bg-green-600 hover:bg-green-700 h-8 px-3 text-xs"
               >
-                Đánh giá
+                {t("TripDetail.rateTrip")}
               </Button>
               <Dialog
                 open={isComplaintModalOpen}
@@ -328,22 +350,26 @@ export const TicketCard = ({
                 </DialogTrigger>
                 <DialogContent>
                   <DialogHeader>
-                    <DialogTitle>{t("submitComplaint")}</DialogTitle>
+                    <DialogTitle>{t("MyTickets.submitComplaint")}</DialogTitle>
                   </DialogHeader>
                   <div className="space-y-4">
                     <div>
-                      <label className="text-sm font-medium">{t("title")}</label>
+                      <label className="text-sm font-medium">
+                        {t("MyTickets.title")}
+                      </label>
                       <Input
-                        placeholder={t("complaintTitlePlaceholder")}
+                        placeholder={t("MyTickets.complaintTitlePlaceholder")}
                         value={complaintTitle}
                         onChange={(e) => setComplaintTitle(e.target.value)}
                         disabled={isSubmittingComplaint}
                       />
                     </div>
                     <div>
-                      <label className="text-sm font-medium">{t("description")}</label>
+                      <label className="text-sm font-medium">
+                        {t("MyTickets.description")}
+                      </label>
                       <Textarea
-                        placeholder={t("complaintDescriptionPlaceholder")}
+                        placeholder={t("MyTickets.complaintDescPlaceholder")}
                         value={complaintDescription}
                         onChange={(e) =>
                           setComplaintDescription(e.target.value)
@@ -359,7 +385,9 @@ export const TicketCard = ({
                         !complaintDescription.trim()
                       }
                     >
-                      {isSubmittingComplaint ? t("sending") : t("send")}
+                      {isSubmittingComplaint
+                        ? t("MyTickets.sending")
+                        : t("MyTickets.send")}
                     </Button>
                   </div>
                 </DialogContent>
@@ -375,9 +403,11 @@ export const TicketCard = ({
         >
           <DialogContent>
             <DialogHeader>
-              <DialogTitle>{t("confirmCancelTitle")}</DialogTitle>
+              <DialogTitle>{t("MyTickets.confirmCancelTitle")}</DialogTitle>
               <DialogDescription>
-                {t("confirmCancelDescription")}
+                {t("MyTickets.confirmCancelDescription")}
+                {refundPercentage}% {t("MyTickets.refundNotice")}.
+                {refundPercentage === 0 && t("MyTickets.cancelNotice")}
               </DialogDescription>
             </DialogHeader>
             <DialogFooter>
@@ -386,14 +416,16 @@ export const TicketCard = ({
                 onClick={() => setIsCancelConfirmOpen(false)}
                 disabled={isCancelling}
               >
-                {t("cancel")}
+                {t("Common.cancel")}
               </Button>
               <Button
                 variant="destructive"
                 onClick={handleCancelBooking}
                 disabled={isCancelling}
               >
-                {isCancelling ? t("processing") : t("confirmCancel")}
+                {isCancelling
+                  ? t("MyTickets.processing")
+                  : t("MyTickets.confirmCancel")}
               </Button>
             </DialogFooter>
           </DialogContent>
