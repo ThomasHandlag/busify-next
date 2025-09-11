@@ -395,6 +395,38 @@
     "policyDesc3": "보장된좌석예약",
     "policyDesc4": "안전한결제"
   },
+  "PolicyDialog": {
+    "trigger": "이용 약관 및 정책",
+    "title": "이용 약관 및 정책",
+    "general": {
+      "title": "일반 약관",
+      "text": "Busify와 계약을 등록함으로써, 본 문서에 명시된 모든 약관에 동의하는 것으로 간주됩니다."
+    },
+    "operator": {
+      "title": "운송 사업자의 권리와 의무",
+      "point1": "안전하고 품질 높은 운송 서비스 제공",
+      "point2": "약속된 일정 준수",
+      "point3": "차량 기준 및 운전 인력 유지",
+      "point4": "영업 활동 정기 보고"
+    },
+    "commission": {
+      "title": "수수료 정책",
+      "text": "Busify는 플랫폼을 통해 판매된 각 티켓에 대해 5~10%의 수수료를 부과합니다. 정산은 매월 진행됩니다."
+    },
+    "termination": {
+      "title": "계약 해지 정책",
+      "text": "양 당사자는 30일 전 통지로 계약을 해지할 수 있습니다. 중대한 위반 시 즉시 해지될 수 있습니다."
+    },
+    "privacy": {
+      "title": "개인정보 보호",
+      "text": "Busify는 고객 정보를 보호하며 동의 없이 제3자와 공유하지 않습니다."
+    },
+    "dispute": {
+      "title": "분쟁 해결",
+      "text": "모든 분쟁은 협상을 통해 해결합니다. 합의에 이르지 못할 경우 관할 법원에 회부합니다."
+    },
+    "understood": "확인"
+  },
   "TripDetail": {
     "busLayout": "버스배치도",
     "selectSeat": "좌석선택",
@@ -515,7 +547,8 @@
       "vatCodeNote": "VAT코드는10-15자리여야합니다",
       "attachmentLabel": "첨부파일",
       "attachmentNote": "PDF,DOC,DOCX,JPG,PNG지원(최대10MB)",
-      "policyAgreement": "Busify의{policy}에동의합니다",
+      "policyAgreement1": "Busify웹사이트및 ",
+      "policyAgreement2": " Busify의운영자계약조건에동의합니다",
       "termsAgreement": "이용약관및개인정보처리방침에동의합니다",
       "newsletterText": "업데이트및마케팅커뮤니케이션을받고싶습니다",
       "creatingContract": "계약생성중...",
