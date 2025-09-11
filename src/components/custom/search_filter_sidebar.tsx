@@ -131,7 +131,7 @@ const SearchFilterSidebar = ({ callback }: { callback?: () => void }) => {
                   value={field.value?.toString() || ""}
                   onValueChange={field.onChange}
                 >
-                  <SelectTrigger className="bg-gray-50">
+                  <SelectTrigger className="bg-gray-50 w-full">
                     <SelectValue placeholder="Select Location" />
                   </SelectTrigger>
                   <SelectContent>
@@ -158,7 +158,7 @@ const SearchFilterSidebar = ({ callback }: { callback?: () => void }) => {
                   value={field.value?.toString() || ""}
                   onValueChange={field.onChange}
                 >
-                  <SelectTrigger className="bg-gray-50">
+                  <SelectTrigger className="bg-gray-50 w-full">
                     <SelectValue placeholder="Select Location" />
                   </SelectTrigger>
                   <SelectContent>

@@ -1,6 +1,6 @@
 "use client";
 
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "../../ui/card";
 import {
   Bus,
@@ -14,12 +14,14 @@ import {
   Snowflake,
   Tv,
   BatteryCharging,
-  Toilet, // Thêm import cho Toilet icon
+  Toilet,
 } from "lucide-react";
 import { Separator } from "../../ui/separator";
 import { TripDetail } from "@/lib/data/trip";
 import Image from "next/image";
 import dynamic from "next/dynamic";
+import "react-image-lightbox/style.css";
+import Lightbox from "react-image-lightbox";
 
 const RouteMap = dynamic(() => import("../google_map"), {
   ssr: false,
@@ -29,6 +31,44 @@ const RouteMap = dynamic(() => import("../google_map"), {
 });
 
 const TripInfoCard = ({ tripDetail }: { tripDetail: TripDetail }) => {
+  const [isOpen, setIsOpen] = useState(false);
+  const [photoIndex, setPhotoIndex] = useState(0);
+  const [imagesLoaded, setImagesLoaded] = useState<boolean[]>([]);
+
+  const busImages = tripDetail.bus.images?.map((img) => img.url) || [];
+
+  // Preload tất cả ảnh ngay từ đầu
+  useEffect(() => {
+    if (busImages.length > 0) {
+      const loadedStatus = new Array(busImages.length).fill(false);
+      setImagesLoaded(loadedStatus);
+
+      busImages.forEach((url, index) => {
+        const img = new window.Image();
+        img.onload = () => {
+          setImagesLoaded((prev) => {
+            const newStatus = [...prev];
+            newStatus[index] = true;
+            return newStatus;
+          });
+        };
+        img.onerror = () => {
+          setImagesLoaded((prev) => {
+            const newStatus = [...prev];
+            newStatus[index] = false;
+            return newStatus;
+          });
+        };
+        img.src = url;
+      });
+    }
+  }, [busImages]);
+
+  const openLightbox = (index: number) => {
+    setPhotoIndex(index);
+    setIsOpen(true);
+  };
+
   const formatTime = (dateString: string) => {
     const date = new Date(dateString);
     return date.toLocaleTimeString("vi-VN", {
@@ -46,7 +86,6 @@ const TripInfoCard = ({ tripDetail }: { tripDetail: TripDetail }) => {
     });
   };
 
-  // Mapping cho amenities: key là string từ amenities array, value là config hiển thị
   const amenityMap: Record<
     string,
     {
@@ -68,13 +107,11 @@ const TripInfoCard = ({ tripDetail }: { tripDetail: TripDetail }) => {
       label: "Điều hòa",
       color: "text-blue-500",
     },
-    // Có thể thêm các amenities khác nếu cần (ví dụ: coffee, shield, etc.)
   };
 
-  // Lọc và render amenities dựa trên tripDetail.bus.amenities
   const renderAmenities = () => {
     const availableAmenities = tripDetail.bus.amenities
-      .filter((amenity) => amenityMap[amenity]) // Chỉ lấy những amenity có trong map
+      .filter((amenity) => amenityMap[amenity])
       .map((amenity) => {
         const config = amenityMap[amenity];
         const IconComponent = config.icon;
@@ -86,7 +123,6 @@ const TripInfoCard = ({ tripDetail }: { tripDetail: TripDetail }) => {
         );
       });
 
-    // Nếu không có amenities nào, hiển thị thông báo mặc định
     if (availableAmenities.length === 0) {
       return (
         <div className="text-sm text-gray-500">
@@ -118,7 +154,6 @@ const TripInfoCard = ({ tripDetail }: { tripDetail: TripDetail }) => {
             Lộ trình & Thời gian
           </h3>
 
-          {/* Route visualization */}
           <div className="grid grid-cols-3 gap-4 items-center mb-4">
             <div className="text-center">
               <div className="bg-green-500 text-white p-3 rounded-lg mb-2">
@@ -214,7 +249,7 @@ const TripInfoCard = ({ tripDetail }: { tripDetail: TripDetail }) => {
           </div>
         </div>
 
-        {/* Pickup Points */}
+        {/* Pickup & Drop-off Points */}
         <div>
           <h3 className="font-semibold mb-4 flex items-center gap-2">
             <MapPin className="w-4 h-4" />
@@ -222,51 +257,57 @@ const TripInfoCard = ({ tripDetail }: { tripDetail: TripDetail }) => {
           </h3>
 
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+            {/* Pickup Points */}
             <div className="border border-green-200 rounded-lg p-4 bg-green-50">
               <h4 className="font-medium text-green-800 mb-2 flex items-center gap-1">
                 <div className="w-2 h-2 bg-green-500 rounded-full"></div>
                 Điểm đón
               </h4>
               <div className="space-y-2">
-                {tripDetail.route_stops?.slice(0, 3).map((point, index) => (
+                {/* Start location */}
+                <div className="text-sm">
+                  <p className="font-medium">
+                    {tripDetail.route.start_location.address}
+                  </p>
+                  <p className="text-gray-600">
+                    {tripDetail.route.start_location.city}
+                  </p>
+                </div>
+
+                {/* Route stops */}
+                {tripDetail.route_stops?.map((stop, index) => (
                   <div key={`pickup-${index}`} className="text-sm">
-                    <p className="font-medium">{point.name}</p>
-                    <p className="text-gray-600">{point.address}</p>
+                    <p className="font-medium">{stop.address}</p>
+                    <p className="text-gray-600">{stop.city}</p>
                   </div>
-                )) || (
-                  <div className="text-sm">
-                    <p className="font-medium">
-                      {tripDetail.route.start_location.name}
-                    </p>
-                    <p className="text-gray-600">
-                      {tripDetail.route.start_location.address}
-                    </p>
-                  </div>
-                )}
+                ))}
               </div>
             </div>
 
+            {/* Drop-off Points */}
             <div className="border border-red-200 rounded-lg p-4 bg-red-50">
               <h4 className="font-medium text-red-800 mb-2 flex items-center gap-1">
                 <div className="w-2 h-2 bg-red-500 rounded-full"></div>
                 Điểm trả
               </h4>
               <div className="space-y-2">
-                {tripDetail.route_stops?.slice(-3).map((point, index) => (
+                {/* Route stops */}
+                {tripDetail.route_stops?.map((stop, index) => (
                   <div key={`dropoff-${index}`} className="text-sm">
-                    <p className="font-medium">{point.name}</p>
-                    <p className="text-gray-600">{point.address}</p>
+                    <p className="font-medium">{stop.address}</p>
+                    <p className="text-gray-600">{stop.city}</p>
                   </div>
-                )) || (
-                  <div className="text-sm">
-                    <p className="font-medium">
-                      {tripDetail.route.end_location.name}
-                    </p>
-                    <p className="text-gray-600">
-                      {tripDetail.route.end_location.address}
-                    </p>
-                  </div>
-                )}
+                ))}
+
+                {/* End location */}
+                <div className="text-sm">
+                  <p className="font-medium">
+                    {tripDetail.route.end_location.address}
+                  </p>
+                  <p className="text-gray-600">
+                    {tripDetail.route.end_location.city}
+                  </p>
+                </div>
               </div>
             </div>
           </div>
@@ -292,23 +333,55 @@ const TripInfoCard = ({ tripDetail }: { tripDetail: TripDetail }) => {
           {/* Bus Images */}
           <div>
             <h4 className="font-semibold text-gray-900 mb-3">Hình ảnh xe</h4>
-            <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
-              <div className="aspect-video bg-gray-200 rounded-lg overflow-hidden">
-                <Image
-                  src="/bus-photo.jpg"
-                  alt="Xe khách"
-                  width={200}
-                  height={120}
-                  className="w-full h-full object-cover"
-                />
+            {busImages.length > 0 ? (
+              <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
+                {busImages.map((url, index) => (
+                  <div
+                    key={index}
+                    className="aspect-video rounded-lg overflow-hidden cursor-pointer hover:opacity-90 relative group"
+                    onClick={() => openLightbox(index)}
+                  >
+                    <Image
+                      src={url}
+                      alt={tripDetail.bus.name}
+                      width={400}
+                      height={240}
+                      className="w-full h-full object-cover transition-opacity duration-200"
+                      loading={index < 2 ? "eager" : "lazy"}
+                      placeholder="blur"
+                      blurDataURL="data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAYEBQYFBAYGBQYHBwYIChAKCgkJChQODwwQFxQYGBcUFhYaHSUfGhsjHBYWICwgIyYnKSopGR8tMC0oMCUoKSj/2wBDAQcHBwoIChMKChMoGhYaKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCj/wAARCAABAAEDASIAAhEBAxEB/8QAFQABAQAAAAAAAAAAAAAAAAAAAAv/xAAhEAACAQMDBQAAAAAAAAAAAAABAgMABAUGIWGRkqGx0f/EABUBAQEAAAAAAAAAAAAAAAAAAAMF/8QAGhEAAgIDAAAAAAAAAAAAAAAAAAECEgMRkf/aAAwDAQACEQMRAD8AltJagyeH0AthI5xdrLcNM91BF5pX2HaH9bcfaSXWGaRmknyJckliyjqTzSlT54b6bk+h0R+Cd9nd+YVzg2KhOzuIQhBWsFoElT0kQNVZJkJJjYz1z4kZvS8SYWLVG3TLGOxKBTa5kAANZQGMRjALsQ=="
+                    />
+                  </div>
+                ))}
               </div>
-              <div className="aspect-video bg-gray-100 rounded-lg flex items-center justify-center">
-                <Bus className="w-8 h-8 text-gray-400" />
-              </div>
-              <div className="aspect-video bg-gray-100 rounded-lg flex items-center justify-center">
-                <Car className="w-8 h-8 text-gray-400" />
-              </div>
-            </div>
+            ) : (
+              <p className="text-sm text-gray-500">Chưa có hình ảnh xe</p>
+            )}
+
+            {isOpen && (
+              <Lightbox
+                mainSrc={busImages[photoIndex]}
+                nextSrc={busImages[(photoIndex + 1) % busImages.length]}
+                prevSrc={
+                  busImages[
+                    (photoIndex + busImages.length - 1) % busImages.length
+                  ]
+                }
+                onCloseRequest={() => setIsOpen(false)}
+                onMovePrevRequest={() =>
+                  setPhotoIndex(
+                    (photoIndex + busImages.length - 1) % busImages.length
+                  )
+                }
+                onMoveNextRequest={() =>
+                  setPhotoIndex((photoIndex + 1) % busImages.length)
+                }
+                imageTitle={`${photoIndex + 1} / ${busImages.length}`}
+                imageCaption={tripDetail.bus.name}
+                enableZoom={true}
+                animationDuration={200}
+              />
+            )}
           </div>
 
           {/* Amenities */}
