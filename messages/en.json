@@ -32,7 +32,8 @@
     "error": "Error",
     "warning": "Warning",
     "info": "Information",
-    "viewAll": "View All"
+    "viewAll": "View All",
+    "notice": "Notice"
   },
   "Home": {
     "title": "Find and Book Bus Tickets",
@@ -191,7 +192,27 @@
       "paymentSuccessful": "Payment Successful",
       "paymentFailed": "Payment Failed",
       "processingPayment": "Processing Payment"
-    }
+    },
+    "confirmed": "Confirmed",
+    "pending": "Pending",
+    "canceled": "Canceled",
+    "completed": "Completed",
+    "unknown": "Unknown",
+    "error": {
+      "noSeats": "Please select at least one seat to proceed with booking.",
+      "bookingFailed": "Booking failed. Please try again.",
+      "noRequiredInfo": "Require passenger info.",
+      "invalidPaymentAmount": "Amount is invalid.",
+      "loginRequired": "You must be logged in to Booking this trip"
+    },
+    "paymentSummary": "Payment Summary",
+    "ticketPrice": "Ticket Price",
+    "seats": "Seats",
+    "discount": "Discount",
+    "processing": "Processing...",
+    "confirmPay": "Confirm and pay",
+    "payWithVNPay": "Pay with VNPAY",
+    "paymentLinkText": "Payment"
   },
   "Trips": {
     "available": "Available Trips",
@@ -461,5 +482,43 @@
   "Complaint": {
     "complaint": "Complaint",
     "noComplaints": "No complaints yet"
+  },
+  "MyTickets": {
+    "cancelNotice": "Can not refund if you cancel ticket before 1 hour of departure time",
+    "confirmCancelTitle": "Confirm Ticket Cancellation",
+    "confirmCancelDescription": "Are you sure you want to cancel this ticket? This action cannot be undone and you will be refunded",
+    "cancelTicket": "Cancel Ticket",
+    "refundNotice": "of the ticket price.",
+    "processing": "Processing...",
+    "confirmCancel": "Confirm Cancellation",
+    "sending": "Sending cancellation request...",
+    "send": "Send Request",
+    "cancelSuccess": "Ticket cancelled successfully!",
+    "cancelError": "Error cancelling ticket. Please try again.",
+    "complaintTitle": "Submit a Complaint",
+    "complaintDesc": "Describe your issue and we will address it promptly.",
+    "complaintDescPlaceholder": "Enter your complaint details here...",
+    "description": "Description",
+    "complaintTitlePlaceholder": "Enter a brief title for your complaint",
+    "submitComplaint": "Submit Complaint",
+    "title": "Title",
+    "cancelling": "Cancelling...",
+    "cancel": "Cancel",
+    "details": "Details",
+    "cannotCancelNotice": "Can not cancel ticket, please try again later",
+    "loginRequired": "You must be logged in to view your tickets",
+    "complaintSubmitted": "Complaint submitted successfully!",
+    "complaintError": "Error submitting complaint. Please try again.",
+    "complaintValidationError": "Please fill in both title and description for the complaint."
+  },
+  "Points": {
+    "invalid": "Invalid points",
+    "amountNotice1": "You only have ",
+    "points": "Points",
+    "exceedLimit": "Your point exceed charge limit. You can use maximum",
+    "enterPoint": "Enter number of points",
+    "applying": "Applying",
+    "usePoints": "Use points",
+    "youve": "You have"
   }
 }

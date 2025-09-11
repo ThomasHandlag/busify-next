@@ -54,7 +54,7 @@ export default function BookingInteractiveSection({
   tripId,
 }: BookingInteractiveSectionProps) {
   const { data: session } = useSession();
-  const t = useTranslations("Booking");
+  const t = useTranslations();
   const [discount, setDiscount] = useState(0);
   const [discountInfo, setDiscountInfo] = useState<DiscountInfo | null>(null);
   const [autoPromotionDiscount, setAutoPromotionDiscount] = useState(0);
@@ -123,7 +123,7 @@ export default function BookingInteractiveSection({
   const handleConfirmPayment = async () => {
     // Kiểm tra dữ liệu trước khi gửi
     if (!mockData.selectedSeats.length) {
-      setPaymentError(t("selectSeatsError"));
+      setPaymentError(t("Booking.error.noSeats"));
       return;
     }
     if (
@@ -131,17 +131,17 @@ export default function BookingInteractiveSection({
       !mockData.passenger.email ||
       !mockData.passenger.phone
     ) {
-      setPaymentError(t("passengerInfoIncomplete"));
+      setPaymentError(t("Booking.error.noRequiredInfo"));
       return;
     }
     if (finalAmount <= 0) {
-      setPaymentError(t("invalidPaymentAmount"));
+      setPaymentError(t("Booking.error.invalidPaymentAmount"));
       return;
     }
 
     // Kiểm tra session
     if (!session?.user?.accessToken) {
-      setPaymentError(t("loginRequired"));
+      setPaymentError(t("Booking.error.loginRequired"));
       return;
     }
 
@@ -293,7 +293,7 @@ export default function BookingInteractiveSection({
 
       <Card>
         <CardHeader>
-          <CardTitle>{t("promoCode")}</CardTitle>
+          <CardTitle>{t("Booking.promoCode")}</CardTitle>
         </CardHeader>
         <CardContent>
           <PromoCodeSection
@@ -322,15 +322,15 @@ export default function BookingInteractiveSection({
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
             <CreditCard className="w-5 h-5 text-green-600" />
-            {t("paymentSummary")}
+            {t("Booking.paymentSummary")}
           </CardTitle>
         </CardHeader>
         <CardContent className="space-y-4">
           <div className="space-y-2">
             <div className="flex justify-between">
               <span>
-                {t("ticketPrice")} ({mockData.selectedSeats.length} {t("seats")}
-                )
+                {t("Booking.ticketPrice")} ({mockData.selectedSeats.length}{" "}
+                {t("Booking.seats")})
               </span>
               <div className="text-right">
                 {discount > 0 || autoPromotionDiscount > 0 ? (
@@ -349,7 +349,7 @@ export default function BookingInteractiveSection({
             {discount > 0 && discountInfo && (
               <div className="flex justify-between text-red-600">
                 <span>
-                  {t("discount")}
+                  {t("Booking.discount")}
                   {discountInfo.code} (
                   {discountInfo.discountType === "PERCENTAGE"
                     ? `${discountInfo.discountValue}%`
@@ -381,7 +381,7 @@ export default function BookingInteractiveSection({
             )}
             <Separator />
             <div className="flex justify-between font-semibold text-lg">
-              <span>{t("totalAmount")}</span>
+              <span>{t("Booking.totalAmount")}</span>
               <span className="text-green-600">
                 {finalAmount.toLocaleString("vi-VN")}đ
               </span>
@@ -403,14 +403,15 @@ export default function BookingInteractiveSection({
             onClick={handleConfirmPayment}
             disabled={paymentLoading || !!paymentLink}
           >
-            {paymentLoading ? t("processing") : t("confirmAndPay")} •
+            {paymentLoading ? t("Booking.processing") : t("Booking.confirmPay")}{" "}
+            •
             <span className="ml-2">{finalAmount.toLocaleString("vi-VN")}đ</span>
           </Button>
 
           {paymentLink && (
             <div className="mt-4">
               <p className="text-sm text-gray-600 mb-2">
-                {t("paymentLinkText")}
+                {t("Booking.paymentLinkText")}
               </p>
               <a
                 href={paymentLink}
@@ -418,16 +419,16 @@ export default function BookingInteractiveSection({
                 rel="noopener noreferrer"
                 className="inline-block w-full text-center bg-blue-600 hover:bg-blue-700 text-white py-2 rounded-md"
               >
-                {t("payWithVNPay")}
+                {t("Booking.payWithVNPay")}
               </a>
             </div>
           )}
 
           <div className="text-xs text-gray-500 space-y-1 w-full">
-            <p>• {t("flexibleCancellation")}</p>
-            <p>• {t("support247")}</p>
-            <p>• {t("guaranteedSeats")}</p>
-            <p>• {t("securePayment")}</p>
+            <p>• {t("Policies.policyDesc1")}</p>
+            <p>• {t("Policies.policyDesc2")}</p>
+            <p>• {t("Policies.policyDesc3")}</p>
+            <p>• {t("Policies.policyDesc4")}</p>
           </div>
         </CardContent>
       </Card>
