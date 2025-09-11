@@ -309,7 +309,7 @@ export const TicketCard = ({
             className="flex-1 h-8 text-xs"
           >
             {t("MyTickets.details")}
-          </Button>{" "}
+          </Button>
           {(booking.status === "confirmed" || booking.status === "pending") &&
             !isPast && (
               <Button
@@ -321,19 +321,10 @@ export const TicketCard = ({
               >
                 {isCancelling
                   ? t("MyTickets.cancelling")
-                  : t("MyTickets.cancel")}{" "}
+                  : t("MyTickets.cancel")}
                 {/* Text động */}
               </Button>
             )}
-          {booking.status === "confirmed" && !isPast && (
-            <Button
-              variant="destructive"
-              size="sm"
-              className="h-8 px-3 text-xs"
-            >
-              Hủy
-            </Button>
-          )}
           {booking.status === "completed" && (
             <>
               <Button
