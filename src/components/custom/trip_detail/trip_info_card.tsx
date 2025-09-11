@@ -5,7 +5,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "../../ui/card";
 import {
   Bus,
   Clock,
-  Navigation,
+  Navigation as NavigationIcon,
   Users,
   MapPin,
   ArrowRight,
@@ -19,9 +19,13 @@ import { Separator } from "../../ui/separator";
 import { TripDetail } from "@/lib/data/trip";
 import Image from "next/image";
 import dynamic from "next/dynamic";
-import "react-image-lightbox/style.css";
-import Lightbox from "react-image-lightbox";
 import { useTranslations } from "next-intl";
+
+import { Swiper, SwiperSlide } from "swiper/react";
+import { Navigation as SwiperNavigation, Pagination } from "swiper/modules";
+import "swiper/css";
+import "swiper/css/navigation";
+import "swiper/css/pagination";
 
 const RouteMap = dynamic(() => import("../google_map"), {
   ssr: false,
@@ -31,29 +35,9 @@ const RouteMap = dynamic(() => import("../google_map"), {
 });
 
 const TripInfoCard = ({ tripDetail }: { tripDetail: TripDetail }) => {
-  const [isOpen, setIsOpen] = useState(false);
-  const [photoIndex, setPhotoIndex] = useState(0);
-  const busImages = useMemo(
-    () => tripDetail.bus.images?.map((img) => img.url) || [],
-    [tripDetail.bus.images]
-  );
-
-  // Preload tất cả ảnh ngay từ đầu
-  useEffect(() => {
-    if (busImages.length > 0) {
-      busImages.forEach((url) => {
-        const img = new window.Image();
-        img.src = url;
-      });
-    }
-  }, [busImages]);
-
   const t = useTranslations();
 
-  const openLightbox = (index: number) => {
-    setPhotoIndex(index);
-    setIsOpen(true);
-  };
+  const busImages = tripDetail.bus.images?.map((img) => img.url) || [];
 
   const formatTime = (dateString: string) => {
     const date = new Date(dateString);
@@ -80,9 +64,13 @@ const TripInfoCard = ({ tripDetail }: { tripDetail: TripDetail }) => {
       color: string;
     }
   > = {
-  wifi: { icon: Wifi, label: t("Amenities.wifi"), color: "text-blue-500" },
-  tv: { icon: Tv, label: t("Amenities.tv"), color: "text-purple-500" },
-  toilet: { icon: Toilet, label: t("Amenities.toilet"), color: "text-green-500" },
+    wifi: { icon: Wifi, label: t("Amenities.wifi"), color: "text-blue-500" },
+    tv: { icon: Tv, label: t("Amenities.tv"), color: "text-purple-500" },
+    toilet: {
+      icon: Toilet,
+      label: t("Amenities.toilet"),
+      color: "text-green-500",
+    },
     charging: {
       icon: BatteryCharging,
       label: t("Amenities.charging"),
@@ -124,6 +112,60 @@ const TripInfoCard = ({ tripDetail }: { tripDetail: TripDetail }) => {
     );
   };
 
+  const renderRouteTimeline = () => {
+    const routeStops = tripDetail.route_stops || [];
+    const allStops = [
+      tripDetail.route.start_location,
+      ...routeStops,
+      tripDetail.route.end_location,
+    ];
+
+    return (
+      <div className="w-full overflow-x-auto scrollbar-thin scrollbar-thumb-gray-400 scrollbar-track-gray-100">
+        <div className="flex items-center min-w-max px-4 py-2">
+          {allStops.map((stop, index) => {
+            const isStart = index === 0;
+            const isEnd = index === allStops.length - 1;
+            const isLast = index === allStops.length - 1;
+
+            return (
+              <React.Fragment key={index}>
+                {/* Stop point */}
+                <div className="flex flex-col items-center text-center flex-shrink-0 relative gap-y-2">
+                  <div
+                    className={`w-5 h-5 sm:w-6 sm:h-6 rounded-full border-2 transition-all duration-200 flex-shrink-0
+                    ${
+                      isStart
+                        ? "bg-green-500 border-green-500 shadow-lg shadow-green-200"
+                        : isEnd
+                        ? "bg-red-500 border-red-500 shadow-lg shadow-red-200"
+                        : "bg-yellow-500 border-yellow-500 shadow-lg shadow-yellow-200"
+                    }`}
+                  />
+                  <div className="inline-block whitespace-nowrap">
+                    <p className="text-xs sm:text-sm font-medium text-gray-800">
+                      {stop.address || stop.name}
+                    </p>
+                    <p className="text-xs text-gray-500 mt-0.5">{stop.city}</p>
+                  </div>
+                </div>
+
+                {/* Connection line */}
+                {!isLast && (
+                  <div className="flex items-center mx-3 sm:mx-4 min-w-[60px] sm:min-w-[80px]">
+                    <div className="h-px bg-gray-300 flex-1" />
+                    <ArrowRight className="w-4 h-4 text-gray-400 mx-2 flex-shrink-0" />
+                    <div className="h-px bg-gray-300 flex-1" />
+                  </div>
+                )}
+              </React.Fragment>
+            );
+          })}
+        </div>
+      </div>
+    );
+  };
+
   return (
     <Card className="px-4 py-6">
       <CardHeader className="lg:px-6 md:px-6 px-0 sm:px-4">
@@ -153,7 +195,9 @@ const TripInfoCard = ({ tripDetail }: { tripDetail: TripDetail }) => {
               <p className="text-sm font-medium">
                 {tripDetail.route.start_location.name}
               </p>
-              <p className="text-xs text-gray-500">{t("Booking.confirmation.startPoint")}</p>
+              <p className="text-xs text-gray-500">
+                {t("Booking.confirmation.startPoint")}
+              </p>
             </div>
 
             <div className="text-center">
@@ -182,7 +226,9 @@ const TripInfoCard = ({ tripDetail }: { tripDetail: TripDetail }) => {
               <p className="text-sm font-medium">
                 {tripDetail.route.end_location.name}
               </p>
-              <p className="text-xs text-gray-500">{t("Booking.confirmation.endPoint")}</p>
+              <p className="text-xs text-gray-500">
+                {t("Booking.confirmation.endPoint")}
+              </p>
             </div>
           </div>
         </div>
@@ -201,7 +247,9 @@ const TripInfoCard = ({ tripDetail }: { tripDetail: TripDetail }) => {
               <Bus className="w-5 h-5 text-blue-600" />
               <div>
                 <p className="font-medium">{tripDetail.bus.name}</p>
-                <p className="text-sm text-gray-500">{t("TripDetail.busType")}</p>
+                <p className="text-sm text-gray-500">
+                  {t("TripDetail.busType")}
+                </p>
               </div>
             </div>
 
@@ -209,17 +257,22 @@ const TripInfoCard = ({ tripDetail }: { tripDetail: TripDetail }) => {
               <Users className="w-5 h-5 text-green-600" />
               <div>
                 <p className="font-medium">
-                  {tripDetail.available_seats}/{tripDetail.bus.total_seats} {t("Trips.tripItem.seats")}
+                  {tripDetail.available_seats}/{tripDetail.bus.total_seats}{" "}
+                  {t("Trips.tripItem.seats")}
                 </p>
-                <p className="text-sm text-gray-500">{t("TripDetail.seatsAvailableTotal")}</p>
+                <p className="text-sm text-gray-500">
+                  {t("TripDetail.seatsAvailableTotal")}
+                </p>
               </div>
             </div>
 
             <div className="flex items-center space-x-3 p-3 bg-gray-50 rounded-lg">
-              <Navigation className="w-5 h-5 text-purple-600" />
+              <NavigationIcon className="w-5 h-5 text-purple-600" />
               <div>
                 <p className="font-medium">{t("Booking.confirmation.route")}</p>
-                <p className="text-sm text-gray-500">{t("TripDetail.distance")}</p>
+                <p className="text-sm text-gray-500">
+                  {t("TripDetail.distance")}
+                </p>
               </div>
             </div>
 
@@ -229,13 +282,15 @@ const TripInfoCard = ({ tripDetail }: { tripDetail: TripDetail }) => {
                 <p className="font-medium">
                   {tripDetail.route.estimated_duration}
                 </p>
-                <p className="text-sm text-gray-500">{t("TripDetail.duration")}</p>
+                <p className="text-sm text-gray-500">
+                  {t("TripDetail.duration")}
+                </p>
               </div>
             </div>
           </div>
         </div>
 
-        {/* Pickup & Drop-off Points */}
+        {/* Route Timeline */}
         <div>
           <h3 className="font-semibold mb-4 flex items-center gap-2">
             <MapPin className="w-4 h-4" />
@@ -298,7 +353,16 @@ const TripInfoCard = ({ tripDetail }: { tripDetail: TripDetail }) => {
             </div>
           </div>
         </div>
+        <div>
+          <h3 className="font-semibold mb-4 flex items-center gap-2">
+            <MapPin className="w-4 h-4" />
+            Lộ trình chi tiết
+          </h3>
 
+          <div className="bg-gray-50 rounded-lg p-4 overflow-x-auto">
+            {renderRouteTimeline()}
+          </div>
+        </div>
         {/* Bus Images and Amenities */}
         <div className="space-y-4">
           <Separator />
@@ -318,61 +382,45 @@ const TripInfoCard = ({ tripDetail }: { tripDetail: TripDetail }) => {
 
           {/* Bus Images */}
           <div>
-            <h4 className="font-semibold text-gray-900 mb-3">{t("TripDetail.busImages")}</h4>
+            <h4 className="font-semibold text-gray-900 mb-3">
+              {t("TripDetail.busImages")}
+            </h4>
             {busImages.length > 0 ? (
-              <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
+              <Swiper
+                modules={[SwiperNavigation, Pagination]}
+                spaceBetween={16}
+                slidesPerView={1}
+                navigation
+                pagination={{ clickable: true }}
+                className="rounded-lg overflow-hidden"
+              >
                 {busImages.map((url, index) => (
-                  <div
-                    key={index}
-                    className="aspect-video rounded-lg overflow-hidden cursor-pointer hover:opacity-90 relative group"
-                    onClick={() => openLightbox(index)}
-                  >
+                  <SwiperSlide key={index}>
                     <Image
                       src={url}
                       alt={tripDetail.bus.name}
-                      width={400}
-                      height={240}
-                      className="w-full h-full object-cover transition-opacity duration-200"
-                      loading={index < 2 ? "eager" : "lazy"}
+                      width={800}
+                      height={450}
+                      className="w-full h-64 md:h-100 object-cover rounded-lg"
+                      loading={index === 0 ? "eager" : "lazy"}
                       placeholder="blur"
-                      blurDataURL="data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAYEBQYFBAYGBQYHBwYIChAKCgkJChQODwwQFxQYGBcUFhYaHSUfGhsjHBYWICwgIyYnKSopGR8tMC0oMCUoKSj/2wBDAQcHBwoIChMKChMoGhYaKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCj/wAARCAABAAEDASIAAhEBAxEB/8QAFQABAQAAAAAAAAAAAAAAAAAAAAv/xAAhEAACAQMDBQAAAAAAAAAAAAABAgMABAUGIWGRkqGx0f/EABUBAQEAAAAAAAAAAAAAAAAAAAMF/8QAGhEAAgIDAAAAAAAAAAAAAAAAAAECEgMRkf/aAAwDAQACEQMRAD8AltJagyeH0AthI5xdrLcNM91BF5pX2HaH9bcfaSXWGaRmknyJckliyjqTzSlT54b6bk+h0R+Cd9nd+YVzg2KhOzuIQhBWsFoElT0kQNVZJkJJjYz1z4kZvS8SYWLVG3TLGOxKBTa5kAANZQGMRjALsQ=="
+                      blurDataURL="data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD..."
                     />
-                  </div>
+                  </SwiperSlide>
                 ))}
-              </div>
+              </Swiper>
             ) : (
-              <p className="text-sm text-gray-500">{t("TripDetail.noBusImages")}</p>
-            )}
-
-            {isOpen && (
-              <Lightbox
-                mainSrc={busImages[photoIndex]}
-                nextSrc={busImages[(photoIndex + 1) % busImages.length]}
-                prevSrc={
-                  busImages[
-                    (photoIndex + busImages.length - 1) % busImages.length
-                  ]
-                }
-                onCloseRequest={() => setIsOpen(false)}
-                onMovePrevRequest={() =>
-                  setPhotoIndex(
-                    (photoIndex + busImages.length - 1) % busImages.length
-                  )
-                }
-                onMoveNextRequest={() =>
-                  setPhotoIndex((photoIndex + 1) % busImages.length)
-                }
-                imageTitle={`${photoIndex + 1} / ${busImages.length}`}
-                imageCaption={tripDetail.bus.name}
-                enableZoom={true}
-                animationDuration={200}
-              />
+              <p className="text-sm text-gray-500">
+                {t("TripDetail.noBusImages")}
+              </p>
             )}
           </div>
 
           {/* Amenities */}
           <div>
-            <h4 className="font-semibold text-gray-900 mb-3">{t("TripDetail.amenities")}</h4>
+            <h4 className="font-semibold text-gray-900 mb-3">
+              {t("TripDetail.amenities")}
+            </h4>
             {renderAmenities()}
           </div>
         </div>
