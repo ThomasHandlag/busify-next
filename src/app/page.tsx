@@ -25,25 +25,29 @@ import {
   CreditCard,
   Navigation,
 } from "lucide-react";
-import { getPopularRoutes } from "@/lib/data/route_api";
-import type { BusifyRoute } from "@/lib/data/route_api";
 import Link from "next/link";
-import BusifyRouteItem from "@/components/custom/route/busify_route_item";
 import Image from "next/image";
 import HomeSearchForm from "@/components/custom/home_search_form";
 import { getAllLocations } from "@/lib/data/location";
 import { toast } from "sonner";
 import LocaleText from "@/components/custom/locale_text";
+import DiscountSlider from "@/components/custom/discount_slider";
+import { getTripsByRegions, TripItemProps } from "@/lib/data/trip";
+import TripItem from "@/components/custom/trip/trip_item";
 
 const Home = async () => {
-  const popularRoutes = await getPopularRoutes({
+  const trips = await getTripsByRegions({
     callback: (msg: string) => toast.error(msg),
-    localeMessage: "Failed to load popular routes",
+    localeMessage: "Failed to load trips",
   });
   const locations = await getAllLocations({
     callback: (msg: string) => toast.info(msg),
     localeMessage: "Failed to load locations",
   });
+
+  const northTrips = trips?.NORTH || [];
+  const centralTrips = trips?.CENTRAL || [];
+  const southTrips = trips?.SOUTH || [];
 
   return (
     <div className="h-full w-full">
@@ -111,29 +115,88 @@ const Home = async () => {
         </section>
       </section>
 
-      {/* Popular Routes Section */}
+      {/* Discount Campaigns Slider Section */}
+      <section className="py-16 bg-gradient-to-b from-gray-50 to-white">
+        <div className="max-w-7xl mx-auto px-4">
+          <div className="text-center mb-12">
+            <h2 className="text-4xl font-bold text-gray-800 mb-4">
+              🎉 <LocaleText string="discountCampaigns" name="Home" />
+            </h2>
+            <p className="text-xl text-gray-600">
+              <LocaleText string="specialOffers" name="Home" />
+            </p>
+          </div>
+          <DiscountSlider />
+        </div>
+      </section>
+
+      {/* Trips By Regions */}
       <section className="py-16 bg-gray-50">
-        <div className="max-w-6xl mx-auto px-4">
-          <h2 className="text-3xl font-bold text-center text-green-700 mb-12">
-            <LocaleText string="featuredRoutes" name="Home" />
+        <div className="max-w-6xl mx-auto p-4">
+          <h2 className="text-3xl font-bold text-center text-green-700 mb-2">
+            <LocaleText string="north" name="Home" />
           </h2>
-          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {popularRoutes?.slice(0, 6).map((route: BusifyRoute) => (
-              <BusifyRouteItem key={route.routeId} item={route} />
-            ))}
+          <div className="flex justify-center items-center gap-6">
+            {northTrips?.length < 1 ? (
+              <p>
+                <LocaleText string="noTrips" name="Home" />
+              </p>
+            ) : (
+              northTrips
+                .slice(0, 3)
+                .map((trip: TripItemProps) => (
+                  <TripItem key={trip.trip_id} trip={trip} />
+                ))
+            )}
           </div>
-          <div className="text-center mt-12">
-            <Button
-              size="lg"
-              variant="outline"
-              className="border-green-600 text-green-600 hover:bg-green-600 hover:text-white bg-transparent"
-              asChild
-            >
-              <Link href="/trips">
-                <LocaleText string="viewAllRoutes" name="Home" />
-              </Link>
-            </Button>
+        </div>
+        <div className="max-w-6xl mx-auto p-4">
+          <h2 className="text-3xl font-bold text-center text-green-700 mb-2">
+            <LocaleText string="central" name="Home" />
+          </h2>
+          <div className="flex justify-center items-center gap-6">
+            {centralTrips?.length < 1 ? (
+              <p>
+                <LocaleText string="noTrips" name="Home" />
+              </p>
+            ) : (
+              centralTrips
+                .slice(0, 3)
+                .map((trip: TripItemProps) => (
+                  <TripItem key={trip.trip_id} trip={trip} />
+                ))
+            )}
           </div>
+        </div>
+        <div className="max-w-6xl mx-auto p-4">
+          <h2 className="text-3xl font-bold text-center text-green-700 mb-2">
+            <LocaleText string="south" name="Home" />
+          </h2>
+          <div className="flex justify-center items-center gap-6">
+            {southTrips?.length < 1 ? (
+              <p>
+                <LocaleText string="noTrips" name="Home" />
+              </p>
+            ) : (
+              southTrips
+                .slice(0, 3)
+                .map((trip: TripItemProps) => (
+                  <TripItem key={trip.trip_id} trip={trip} />
+                ))
+            )}
+          </div>
+        </div>
+        <div className="text-center mt-12">
+          <Button
+            size="lg"
+            variant="outline"
+            className="border-green-600 text-green-600 hover:bg-green-600 hover:text-white bg-transparent"
+            asChild
+          >
+            <Link href="/trips">
+              <LocaleText string="moreTrips" name="Home" />
+            </Link>
+          </Button>
         </div>
       </section>
 
@@ -193,7 +256,7 @@ const Home = async () => {
             </div>
 
             <div className="relative lg:pl-8">
-              <div className="bg-gradient-to-br from-green-500 to-green-700 rounded-2xl p-8 shadow-2xl transform rotate-1 hover:rotate-0 transition-transform duration-300">
+              <div className="bg-gradient-to-br from-green-500 to-green-700 rounded-2xl p-8 shadow-2xl">
                 <div className="bg-white rounded-xl p-6 shadow-lg">
                   <div className="flex items-center space-x-3 mb-4">
                     <div className="w-12 h-12 bg-gradient-to-br from-green-500 to-green-600 rounded-lg flex items-center justify-center shadow-md">
@@ -352,7 +415,7 @@ const Home = async () => {
       <section className="py-16 bg-gray-50">
         <div className="max-w-4xl mx-auto px-4">
           <h2 className="text-3xl font-bold text-center text-green-800 mb-12">
-            Frequently Asked Questions
+            <LocaleText string="frequentlyAskedQuestions" name="Home" />
           </h2>
 
           <Accordion type="single" collapsible className="w-full">
@@ -421,11 +484,10 @@ const Home = async () => {
 
         <div className="max-w-4xl mx-auto px-4 text-center relative z-10">
           <h2 className="text-3xl font-bold mb-4 text-white">
-            Stay Updated with Busify
+            <LocaleText string="getUpdate" name="Home" />
           </h2>
           <p className="text-lg text-green-50 mb-8">
-            Get the latest deals, new routes, and travel tips delivered to your
-            inbox.
+            <LocaleText string="getUpdateDesc" name="Home" />
           </p>
 
           <div className="flex flex-col sm:flex-row gap-4 max-w-md mx-auto">
@@ -434,13 +496,12 @@ const Home = async () => {
               className="bg-white/95 text-gray-900 border-0 flex-1 placeholder:text-gray-500 focus:bg-white transition-colors"
             />
             <Button className="bg-white text-green-700 hover:bg-green-50 font-semibold px-6 transition-colors">
-              Subscribe
+              <LocaleText string="subscribe" name="Home" />
             </Button>
           </div>
 
           <p className="text-sm text-green-100 mt-6">
-            By subscribing, you agree to receive marketing emails. Unsubscribe
-            at any time.
+            <LocaleText string="subscribeTerm" name="Home" />
           </p>
         </div>
       </section>

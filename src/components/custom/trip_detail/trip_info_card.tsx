@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "../../ui/card";
 import {
   Bus,
@@ -19,6 +19,7 @@ import { Separator } from "../../ui/separator";
 import { TripDetail } from "@/lib/data/trip";
 import Image from "next/image";
 import dynamic from "next/dynamic";
+import { useTranslations } from "next-intl";
 
 import { Swiper, SwiperSlide } from "swiper/react";
 import { Navigation as SwiperNavigation, Pagination } from "swiper/modules";
@@ -34,6 +35,8 @@ const RouteMap = dynamic(() => import("../google_map"), {
 });
 
 const TripInfoCard = ({ tripDetail }: { tripDetail: TripDetail }) => {
+  const t = useTranslations();
+
   const busImages = tripDetail.bus.images?.map((img) => img.url) || [];
 
   const formatTime = (dateString: string) => {
@@ -61,17 +64,21 @@ const TripInfoCard = ({ tripDetail }: { tripDetail: TripDetail }) => {
       color: string;
     }
   > = {
-    wifi: { icon: Wifi, label: "WiFi miễn phí", color: "text-blue-500" },
-    tv: { icon: Tv, label: "TV giải trí", color: "text-purple-500" },
-    toilet: { icon: Toilet, label: "Nhà vệ sinh", color: "text-green-500" },
+    wifi: { icon: Wifi, label: t("Amenities.wifi"), color: "text-blue-500" },
+    tv: { icon: Tv, label: t("Amenities.tv"), color: "text-purple-500" },
+    toilet: {
+      icon: Toilet,
+      label: t("Amenities.toilet"),
+      color: "text-green-500",
+    },
     charging: {
       icon: BatteryCharging,
-      label: "Sạc điện thoại",
+      label: t("Amenities.charging"),
       color: "text-green-500",
     },
     air_conditioner: {
       icon: Snowflake,
-      label: "Điều hòa",
+      label: t("Amenities.air_conditioner"),
       color: "text-blue-500",
     },
   };
@@ -93,7 +100,7 @@ const TripInfoCard = ({ tripDetail }: { tripDetail: TripDetail }) => {
     if (availableAmenities.length === 0) {
       return (
         <div className="text-sm text-gray-500">
-          Không có tiện ích nào được liệt kê.
+          {t("Amenities.noAmenities")}
         </div>
       );
     }
@@ -164,7 +171,7 @@ const TripInfoCard = ({ tripDetail }: { tripDetail: TripDetail }) => {
       <CardHeader className="lg:px-6 md:px-6 px-0 sm:px-4">
         <CardTitle className="flex items-center space-x-2">
           <Bus className="w-5 h-5" />
-          <span>Thông tin chuyến đi</span>
+          <span>{t("TripDetail.tripInfo")}</span>
         </CardTitle>
       </CardHeader>
       <CardContent className="lg:px-6 md:px-6 px-0 sm:px-4 space-y-6">
@@ -172,7 +179,7 @@ const TripInfoCard = ({ tripDetail }: { tripDetail: TripDetail }) => {
         <div className="bg-blue-50 rounded-lg p-4">
           <h3 className="font-semibold mb-4 flex items-center gap-2">
             <MapPin className="w-4 h-4" />
-            Lộ trình & Thời gian
+            {t("TripDetail.routeAndTime")}
           </h3>
 
           <div className="grid grid-cols-3 gap-4 items-center mb-4">
@@ -188,7 +195,9 @@ const TripInfoCard = ({ tripDetail }: { tripDetail: TripDetail }) => {
               <p className="text-sm font-medium">
                 {tripDetail.route.start_location.name}
               </p>
-              <p className="text-xs text-gray-500">Điểm đi</p>
+              <p className="text-xs text-gray-500">
+                {t("Booking.confirmation.startPoint")}
+              </p>
             </div>
 
             <div className="text-center">
@@ -217,7 +226,9 @@ const TripInfoCard = ({ tripDetail }: { tripDetail: TripDetail }) => {
               <p className="text-sm font-medium">
                 {tripDetail.route.end_location.name}
               </p>
-              <p className="text-xs text-gray-500">Điểm đến</p>
+              <p className="text-xs text-gray-500">
+                {t("Booking.confirmation.endPoint")}
+              </p>
             </div>
           </div>
         </div>
@@ -228,7 +239,7 @@ const TripInfoCard = ({ tripDetail }: { tripDetail: TripDetail }) => {
         <div>
           <h3 className="font-semibold mb-4 flex items-center gap-2">
             <Bus className="w-4 h-4" />
-            Chi tiết chuyến xe
+            {t("TripDetail.tripDetails")}
           </h3>
 
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
@@ -236,7 +247,9 @@ const TripInfoCard = ({ tripDetail }: { tripDetail: TripDetail }) => {
               <Bus className="w-5 h-5 text-blue-600" />
               <div>
                 <p className="font-medium">{tripDetail.bus.name}</p>
-                <p className="text-sm text-gray-500">Loại xe</p>
+                <p className="text-sm text-gray-500">
+                  {t("TripDetail.busType")}
+                </p>
               </div>
             </div>
 
@@ -244,17 +257,22 @@ const TripInfoCard = ({ tripDetail }: { tripDetail: TripDetail }) => {
               <Users className="w-5 h-5 text-green-600" />
               <div>
                 <p className="font-medium">
-                  {tripDetail.available_seats}/{tripDetail.bus.total_seats} ghế
+                  {tripDetail.available_seats}/{tripDetail.bus.total_seats}{" "}
+                  {t("Trips.tripItem.seats")}
                 </p>
-                <p className="text-sm text-gray-500">Ghế trống/Tổng ghế</p>
+                <p className="text-sm text-gray-500">
+                  {t("TripDetail.seatsAvailableTotal")}
+                </p>
               </div>
             </div>
 
             <div className="flex items-center space-x-3 p-3 bg-gray-50 rounded-lg">
               <NavigationIcon className="w-5 h-5 text-purple-600" />
               <div>
-                <p className="font-medium">Theo lộ trình</p>
-                <p className="text-sm text-gray-500">Khoảng cách</p>
+                <p className="font-medium">{t("Booking.confirmation.route")}</p>
+                <p className="text-sm text-gray-500">
+                  {t("TripDetail.distance")}
+                </p>
               </div>
             </div>
 
@@ -264,13 +282,77 @@ const TripInfoCard = ({ tripDetail }: { tripDetail: TripDetail }) => {
                 <p className="font-medium">
                   {tripDetail.route.estimated_duration}
                 </p>
-                <p className="text-sm text-gray-500">Thời gian di chuyển</p>
+                <p className="text-sm text-gray-500">
+                  {t("TripDetail.duration")}
+                </p>
               </div>
             </div>
           </div>
         </div>
 
         {/* Route Timeline */}
+        <div>
+          <h3 className="font-semibold mb-4 flex items-center gap-2">
+            <MapPin className="w-4 h-4" />
+            {t("TripDetail.pickAndDrop")}
+          </h3>
+
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+            {/* Pickup Points */}
+            <div className="border border-green-200 rounded-lg p-4 bg-green-50">
+              <h4 className="font-medium text-green-800 mb-2 flex items-center gap-1">
+                <div className="w-2 h-2 bg-green-500 rounded-full"></div>
+                {t("TripDetail.pickUp")}
+              </h4>
+              <div className="space-y-2">
+                {/* Start location */}
+                <div className="text-sm">
+                  <p className="font-medium">
+                    {tripDetail.route.start_location.address}
+                  </p>
+                  <p className="text-gray-600">
+                    {tripDetail.route.start_location.city}
+                  </p>
+                </div>
+
+                {/* Route stops */}
+                {tripDetail.route_stops?.map((stop, index) => (
+                  <div key={`pickup-${index}`} className="text-sm">
+                    <p className="font-medium">{stop.address}</p>
+                    <p className="text-gray-600">{stop.city}</p>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            {/* Drop-off Points */}
+            <div className="border border-red-200 rounded-lg p-4 bg-red-50">
+              <h4 className="font-medium text-red-800 mb-2 flex items-center gap-1">
+                <div className="w-2 h-2 bg-red-500 rounded-full"></div>
+                {t("TripDetail.dropPoint")}
+              </h4>
+              <div className="space-y-2">
+                {/* Route stops */}
+                {tripDetail.route_stops?.map((stop, index) => (
+                  <div key={`dropoff-${index}`} className="text-sm">
+                    <p className="font-medium">{stop.address}</p>
+                    <p className="text-gray-600">{stop.city}</p>
+                  </div>
+                ))}
+
+                {/* End location */}
+                <div className="text-sm">
+                  <p className="font-medium">
+                    {tripDetail.route.end_location.address}
+                  </p>
+                  <p className="text-gray-600">
+                    {tripDetail.route.end_location.city}
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
         <div>
           <h3 className="font-semibold mb-4 flex items-center gap-2">
             <MapPin className="w-4 h-4" />
@@ -281,7 +363,6 @@ const TripInfoCard = ({ tripDetail }: { tripDetail: TripDetail }) => {
             {renderRouteTimeline()}
           </div>
         </div>
-
         {/* Bus Images and Amenities */}
         <div className="space-y-4">
           <Separator />
@@ -289,7 +370,7 @@ const TripInfoCard = ({ tripDetail }: { tripDetail: TripDetail }) => {
           {/* Route Map */}
           <div>
             <h4 className="font-semibold text-gray-900 mb-3">
-              Bản đồ hành trình
+              {t("TripDetail.journeyMap")}
             </h4>
             <RouteMap
               startLocation={tripDetail.route.start_location}
@@ -301,7 +382,9 @@ const TripInfoCard = ({ tripDetail }: { tripDetail: TripDetail }) => {
 
           {/* Bus Images */}
           <div>
-            <h4 className="font-semibold text-gray-900 mb-3">Hình ảnh xe</h4>
+            <h4 className="font-semibold text-gray-900 mb-3">
+              {t("TripDetail.busImages")}
+            </h4>
             {busImages.length > 0 ? (
               <Swiper
                 modules={[SwiperNavigation, Pagination]}
@@ -327,13 +410,17 @@ const TripInfoCard = ({ tripDetail }: { tripDetail: TripDetail }) => {
                 ))}
               </Swiper>
             ) : (
-              <p className="text-sm text-gray-500">Chưa có hình ảnh xe</p>
+              <p className="text-sm text-gray-500">
+                {t("TripDetail.noBusImages")}
+              </p>
             )}
           </div>
 
           {/* Amenities */}
           <div>
-            <h4 className="font-semibold text-gray-900 mb-3">Tiện ích</h4>
+            <h4 className="font-semibold text-gray-900 mb-3">
+              {t("TripDetail.amenities")}
+            </h4>
             {renderAmenities()}
           </div>
         </div>

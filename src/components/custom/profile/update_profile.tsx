@@ -19,6 +19,7 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { updateUserProfileClient, UserProfileResponse } from "@/lib/data/users";
 import { toast } from "sonner";
+import { useTranslations } from "next-intl";
 
 type UserProfileForm = {
   fullName: string;
@@ -34,6 +35,7 @@ type UpdateProfileDialogProps = {
 const UpdateProfileDialog = ({ userProfile }: UpdateProfileDialogProps) => {
   const [open, setOpen] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+  const t = useTranslations("Profile");
 
   const form = useForm<UserProfileForm>({
     defaultValues: {
@@ -72,48 +74,46 @@ const UpdateProfileDialog = ({ userProfile }: UpdateProfileDialogProps) => {
       <DialogTrigger asChild>
         <Button className="bg-green-600 hover:bg-green-700">
           <Edit className="w-4 h-4 mr-2" />
-          Update Profile
+          {t("editProfile")}
         </Button>
       </DialogTrigger>
       <DialogContent className="sm:max-w-[425px]">
         <DialogHeader>
-          <DialogTitle>Update Profile</DialogTitle>
-          <DialogDescription>
-            Make changes to your profile information here.
-          </DialogDescription>
+          <DialogTitle>{t("updateProfile")}</DialogTitle>
+          <DialogDescription>{t("updateProfileDescription")}</DialogDescription>
         </DialogHeader>
         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
           <div className="space-y-2">
-            <Label htmlFor="fullName">Full Name</Label>
+            <Label htmlFor="fullName">{t("fullName")}</Label>
             <Input
               id="fullName"
               {...form.register("fullName", { required: true })}
-              placeholder="Enter your full name"
+              placeholder={t("enterFullName")}
             />
           </div>
           <div className="space-y-2">
-            <Label htmlFor="email">Email</Label>
+            <Label htmlFor="email">{t("email")}</Label>
             <Input
               id="email"
               type="email"
               {...form.register("email", { required: true })}
-              placeholder="Enter your email"
+              placeholder={t("enterEmail")}
             />
           </div>
           <div className="space-y-2">
-            <Label htmlFor="phone">Phone</Label>
+            <Label htmlFor="phone">{t("phone")}</Label>
             <Input
               id="phone"
               {...form.register("phone")}
-              placeholder="Enter your phone number"
+              placeholder={t("enterPhone")}
             />
           </div>
           <div className="space-y-2">
-            <Label htmlFor="address">Address</Label>
+            <Label htmlFor="address">{t("address")}</Label>
             <Textarea
               id="address"
               {...form.register("address")}
-              placeholder="Enter your address"
+              placeholder={t("enterAddress")}
               rows={3}
             />
           </div>
@@ -131,7 +131,7 @@ const UpdateProfileDialog = ({ userProfile }: UpdateProfileDialogProps) => {
               disabled={isLoading}
             >
               {isLoading && <Loader2 className="animate-spin mr-2" />}
-              Update Profile
+              {t("updateProfile")}
             </Button>
           </DialogFooter>
         </form>

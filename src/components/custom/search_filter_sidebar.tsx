@@ -23,6 +23,7 @@ import { getAllBusModelsClient } from "@/lib/data/bus";
 import { getAllLocationsClient } from "@/lib/data/location";
 import { toast } from "sonner";
 import { useTripFilter } from "@/lib/contexts/TripFilterContext";
+import { useTranslations } from "next-intl";
 
 export type SearchFilterSidebarProps = {
   onApplyFilters: (filters: TripFilterQuery | undefined) => void;
@@ -117,6 +118,8 @@ const SearchFilterSidebar = ({ callback }: { callback?: () => void }) => {
     });
   };
 
+  const t = useTranslations();
+
   return (
     <div className="space-y-6">
       <Form {...form}>
@@ -126,7 +129,7 @@ const SearchFilterSidebar = ({ callback }: { callback?: () => void }) => {
             name="startLocation"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Start Location</FormLabel>
+                <FormLabel>{t("Filter.startLocation")}</FormLabel>
                 <Select
                   value={field.value?.toString() || ""}
                   onValueChange={field.onChange}
@@ -153,13 +156,13 @@ const SearchFilterSidebar = ({ callback }: { callback?: () => void }) => {
             name="endLocation"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>End Location</FormLabel>
+                <FormLabel>{t("Filter.endLocation")}</FormLabel>
                 <Select
                   value={field.value?.toString() || ""}
                   onValueChange={field.onChange}
                 >
                   <SelectTrigger className="bg-gray-50 w-full">
-                    <SelectValue placeholder="Select Location" />
+                    <SelectValue placeholder={`${t("Filter.startLocation")}`} />
                   </SelectTrigger>
                   <SelectContent>
                     {locations?.map((route: FilterLocationType) => (
@@ -183,10 +186,10 @@ const SearchFilterSidebar = ({ callback }: { callback?: () => void }) => {
             name="departureDate"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>From Date</FormLabel>
+                <FormLabel>{t("Filter.departureDate")}</FormLabel>
                 <Calendar28
                   picker={{
-                    placeholder: "Select a date",
+                    placeholder: t("Filter.selectDate"),
                     initialDate: field.value,
                     onDateChange: (date) => field.onChange(date),
                   }}
@@ -199,10 +202,10 @@ const SearchFilterSidebar = ({ callback }: { callback?: () => void }) => {
             name="untilTime"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>To Date</FormLabel>
+                <FormLabel>{t("Filter.untilTime")}</FormLabel>
                 <Calendar28
                   picker={{
-                    placeholder: "Select a date",
+                    placeholder: t("Filter.selectDate"),
                     initialDate: field.value,
                     onDateChange: (date) => field.onChange(date),
                   }}
@@ -218,9 +221,9 @@ const SearchFilterSidebar = ({ callback }: { callback?: () => void }) => {
             name="operatorName"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Operator Name</FormLabel>
+                <FormLabel>{t("Filter.operatorName")}</FormLabel>
                 <Input
-                  placeholder="Enter operator name"
+                  placeholder={t("Filter.enterOperator")}
                   value={field.value || ""}
                   onChange={field.onChange}
                 />
@@ -235,7 +238,7 @@ const SearchFilterSidebar = ({ callback }: { callback?: () => void }) => {
             name="busModels"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Bus Models</FormLabel>
+                <FormLabel>{t("Filter.busModels")}</FormLabel>
                 <div className="space-y-3">
                   {busModels?.map((model) => (
                     <div key={model} className="flex items-center space-x-3">
@@ -273,7 +276,7 @@ const SearchFilterSidebar = ({ callback }: { callback?: () => void }) => {
             name="amenities"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Amenities</FormLabel>
+                <FormLabel>{t("Filter.amenities")}</FormLabel>
                 <div className="space-y-3">
                   {amenities.map((amenity) => (
                     <div key={amenity} className="flex items-center space-x-3">
@@ -308,7 +311,9 @@ const SearchFilterSidebar = ({ callback }: { callback?: () => void }) => {
             name="availableSeats"
             render={({ field }) => (
               <FormItem>
-                <Label htmlFor="availableSeats">Available Seats</Label>
+                <Label htmlFor="availableSeats">
+                  {t("Filter.availableSeats")}
+                </Label>
                 <Input
                   type="number"
                   value={field.value}
@@ -339,10 +344,10 @@ const SearchFilterSidebar = ({ callback }: { callback?: () => void }) => {
                 {isLoading ? (
                   <>
                     <Loader2 className="w-4 h-4 mr-2 animate-spin" />
-                    Searching...
+                    {t("Filter.searching")}...
                   </>
                 ) : (
-                  "Apply Filters"
+                  t("Filter.applyFilters")
                 )}
               </Button>
             </FormItem>
@@ -370,7 +375,7 @@ const SearchFilterSidebar = ({ callback }: { callback?: () => void }) => {
                   });
                 }}
               >
-                Clear All
+                {t("Filter.reset")}
               </Button>
             </FormItem>
           </div>
