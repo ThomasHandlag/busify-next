@@ -32,6 +32,7 @@ import { createComplaint, ComplaintAddDTO } from "@/lib/data/complaints"; // Th�
 import { toast } from "sonner"; // Thêm import toast cho thông báo
 import { cancelBooking } from "@/lib/data/booking"; // Thêm import cho cancelBooking
 import { useTranslations } from "next-intl";
+import { useRouter } from "next/navigation"; // Thêm import useRouter
 
 const formatDate = (dateString: string) => {
   const date = new Date(dateString);
@@ -49,6 +50,7 @@ const formatTime = (dateString: string) => {
     minute: "2-digit",
   });
 };
+
 
 const formatCurrency = (amount: number) => {
   return new Intl.NumberFormat("vi-VN").format(amount) + "đ";
@@ -88,6 +90,8 @@ export const TicketCard = ({
 }) => {
   const { data: session } = useSession(); // Lấy session để lấy token
   const t = useTranslations("MyTickets");
+  const router = useRouter(); // Thêm useRouter hook
+  console.log("Booking in TicketCard:", booking.trip_id);
 
   const getStatusInfo = (status: BookingData["status"]) => {
     switch (status) {
@@ -301,14 +305,15 @@ export const TicketCard = ({
 
         {/* Actions Row - Compact */}
         <div className="flex gap-2">
-            <Button
-              variant="outline"
-              size="sm"
-              onClick={onViewDetails}
-              className="flex-1 h-8 text-xs"
-            >
-              {t("details")}
-            </Button>          {(booking.status === "confirmed" || booking.status === "pending") &&
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={onViewDetails}
+            className="flex-1 h-8 text-xs"
+          >
+            {t("details")}
+          </Button>{" "}
+          {(booking.status === "confirmed" || booking.status === "pending") &&
             !isPast && (
               <Button
                 variant="destructive"
@@ -320,7 +325,6 @@ export const TicketCard = ({
                 {isCancelling ? t("cancelling") : t("cancel")} {/* Text động */}
               </Button>
             )}
-
           {booking.status === "confirmed" && !isPast && (
             <Button
               variant="destructive"
@@ -330,12 +334,12 @@ export const TicketCard = ({
               Hủy
             </Button>
           )}
-
           {booking.status === "completed" && (
             <>
               <Button
                 variant="default"
                 size="sm"
+                onClick={() => router.push(`/trips/${booking.trip_id}`)} // Thêm onClick để redirect đến /trips/{id}
                 className="bg-green-600 hover:bg-green-700 h-8 px-3 text-xs"
               >
                 Đánh giá
@@ -359,7 +363,9 @@ export const TicketCard = ({
                   </DialogHeader>
                   <div className="space-y-4">
                     <div>
-                      <label className="text-sm font-medium">{t("title")}</label>
+                      <label className="text-sm font-medium">
+                        {t("title")}
+                      </label>
                       <Input
                         placeholder={t("complaintTitlePlaceholder")}
                         value={complaintTitle}
@@ -368,7 +374,9 @@ export const TicketCard = ({
                       />
                     </div>
                     <div>
-                      <label className="text-sm font-medium">{t("description")}</label>
+                      <label className="text-sm font-medium">
+                        {t("description")}
+                      </label>
                       <Textarea
                         placeholder={t("complaintDescriptionPlaceholder")}
                         value={complaintDescription}
@@ -404,14 +412,11 @@ export const TicketCard = ({
             <DialogHeader>
               <DialogTitle>{t("confirmCancelTitle")}</DialogTitle>
               <DialogDescription>
-
-<!--                 Bạn có chắc chắn muốn hủy vé này không? Hành động này không thể
+                Bạn có chắc chắn muốn hủy vé này không? Hành động này không thể
                 hoàn tác và bạn sẽ được hoàn {refundPercentage}% tiền vé.
                 {refundPercentage === 0 &&
-                  " (Lưu ý: Không được hoàn tiền do hủy sát giờ khởi hành.)"} -->
-
+                  " (Lưu ý: Không được hoàn tiền do hủy sát giờ khởi hành.)"}
                 {t("confirmCancelDescription")}
-
               </DialogDescription>
             </DialogHeader>
             <DialogFooter>

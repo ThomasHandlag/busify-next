@@ -1,21 +1,7 @@
 import api, { ApiFnParams } from "./axios-instance";
 
 export interface BookingData {
-  booking_id: string;
-  route_name: string;
-  departure_time: string;
-  arrival_time: string;
-  departure_address: string;
-  arrival_address: string;
-  booking_code: string;
-  status: string;
-  total_amount: number;
-  booking_date: string;
-  passenger_count: number;
-  payment_method: string;
-}
-
-export interface Booking {
+  trip_id: string;
   booking_id: string;
   route_name: string;
   departure_time: string;
@@ -31,7 +17,7 @@ export interface Booking {
 }
 
 export interface BookingResponse {
-  result: Booking[];
+  result: BookingData[];
   pageNumber: number;
   pageSize: number;
   totalRecords: number;
