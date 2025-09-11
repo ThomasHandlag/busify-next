@@ -37,8 +37,8 @@
     "bookingNotFound": "예약정보를찾을수없습니다.",
     "infoNotFound": "정보를찾을수없습니다.",
     "hours": "시간",
-  "minutes": "분",
-  "processing": "처리 중..."
+    "minutes": "분",
+    "processing": "처리 중..."
   },
   "Home": {
     "title": "버스 티켓 검색 및 예약",
@@ -245,8 +245,8 @@
     "processing": "처리 중...",
     "confirmPay": "확인하고 결제",
     "payWithVNPay": "VNPAY로 결제",
-  "paymentLinkText": "결제",
-  "autoPromotion": "자동 프로모션"
+    "paymentLinkText": "결제",
+    "autoPromotion": "자동 프로모션"
   },
   "Trips": {
     "available": "이용 가능한 여정",
@@ -350,9 +350,9 @@
     "payLater": "나중에결제",
     "processingPayment": "결제처리중...",
     "paymentSuccess": "결제성공!",
-  "paymentFailed": "결제실패!",
-  "processingCallback": "결제 결과를 처리하는 중...",
-  "doNotClose": "이 페이지를 닫지 마세요"
+    "paymentFailed": "결제실패!",
+    "processingCallback": "결제 결과를 처리하는 중...",
+    "doNotClose": "이 페이지를 닫지 마세요"
   },
   "Footer": {
     "support": "지원",
@@ -458,7 +458,8 @@
     "seatsAvailableTotal": "잔여/총 좌석",
     "distance": "거리",
     "busImages": "버스 이미지",
-    "noBusImages": "버스 이미지가 없습니다"
+    "noBusImages": "버스 이미지가 없습니다",
+    "tripTimeline": "여정 타임라인"
   },
   "Amenities": {
     "wifi": "Wi‑Fi",
@@ -681,16 +682,16 @@
     }
   },
   "Points": {
-  "title": "포인트 사용",
-  "invalid": "유효하지 않은 포인트",
+    "title": "포인트 사용",
+    "invalid": "유효하지 않은 포인트",
     "amountNotice1": "당신은 아직 ",
     "points": "포인트",
     "exceedLimit": "포인트가 충전 제한을 초과했습니다. 최대 {limit}까지 사용할 수 있습니다.",
     "enterPoint": "포인트 수를 입력하세요",
     "applying": "적용 중",
     "usePoints": "포인트 사용",
-  "youve": "당신은 가지고 있습니다",
-  "usedPointsLabel": "사용 포인트 ({count})"
+    "youve": "당신은 가지고 있습니다",
+    "usedPointsLabel": "사용 포인트 ({count})"
   },
   "BookingResult": {
     "title": "예약 결과",

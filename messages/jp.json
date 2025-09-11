@@ -37,8 +37,8 @@
     "bookingNotFound": "予約情報が見つかりません。",
     "infoNotFound": "情報が見つかりません。",
     "hours": "時間",
-  "minutes": "分",
-  "processing": "処理中..."
+    "minutes": "分",
+    "processing": "処理中..."
   },
   "Home": {
     "title": "バスチケットの検索と予約",
@@ -245,8 +245,8 @@
     "processing": "処理中...",
     "confirmPay": "確認して支払う",
     "payWithVNPay": "VNPAYで支払う",
-  "paymentLinkText": "支払い",
-  "autoPromotion": "自動プロモーション"
+    "paymentLinkText": "支払い",
+    "autoPromotion": "自動プロモーション"
   },
   "Trips": {
     "available": "利用可能な旅程",
@@ -350,9 +350,9 @@
     "payLater": "後で支払う",
     "processingPayment": "お支払い処理中...",
     "paymentSuccess": "お支払いが完了しました！",
-  "paymentFailed": "お支払いに失敗しました！",
-  "processingCallback": "支払い結果を処理中...",
-  "doNotClose": "このページを閉じないでください"
+    "paymentFailed": "お支払いに失敗しました！",
+    "processingCallback": "支払い結果を処理中...",
+    "doNotClose": "このページを閉じないでください"
   },
   "Footer": {
     "support": "サポート",
@@ -458,7 +458,8 @@
     "seatsAvailableTotal": "空席/総座席",
     "distance": "距離",
     "busImages": "バスの画像",
-    "noBusImages": "バスの画像はありません"
+    "noBusImages": "バスの画像はありません",
+    "tripTimeline": "旅程タイムライン"
   },
   "Amenities": {
     "wifi": "Wi‑Fi",
@@ -681,7 +682,7 @@
     }
   },
   "Points": {
-  "title": "ポイントを使用",
+    "title": "ポイントを使用",
     "invalid": "無効なポイント",
     "amountNotice1": "あなたはまだ ",
     "points": "ポイント",
@@ -689,8 +690,8 @@
     "enterPoint": "ポイント数を入力してください",
     "applying": "適用中",
     "usePoints": "ポイントを使用",
-  "youve": "あなたは持っています",
-  "usedPointsLabel": "使用ポイント ({count})"
+    "youve": "あなたは持っています",
+    "usedPointsLabel": "使用ポイント ({count})"
   },
   "BookingResult": {
     "title": "予約結果",

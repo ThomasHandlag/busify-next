@@ -37,8 +37,8 @@
     "bookingNotFound": "Booking information not found.",
     "infoNotFound": "Information not found.",
     "hours": "hours",
-  "minutes": "minutes",
-  "processing": "Processing..."
+    "minutes": "minutes",
+    "processing": "Processing..."
   },
   "Home": {
     "title": "Find and Book Bus Tickets",
@@ -245,8 +245,8 @@
     "processing": "Processing...",
     "confirmPay": "Confirm and pay",
     "payWithVNPay": "Pay with VNPAY",
-  "paymentLinkText": "Payment",
-  "autoPromotion": "Auto promotion"
+    "paymentLinkText": "Payment",
+    "autoPromotion": "Auto promotion"
   },
   "Trips": {
     "available": "Available Trips",
@@ -348,11 +348,11 @@
     "creditCard": "Credit Card",
     "payNow": "Pay Now",
     "payLater": "Pay Later",
-  "processingPayment": "Processing your payment...",
-  "paymentSuccess": "Payment successful!",
-  "paymentFailed": "Payment failed!",
-  "processingCallback": "Processing payment result...",
-  "doNotClose": "Please do not close this page"
+    "processingPayment": "Processing your payment...",
+    "paymentSuccess": "Payment successful!",
+    "paymentFailed": "Payment failed!",
+    "processingCallback": "Processing payment result...",
+    "doNotClose": "Please do not close this page"
   },
   "Footer": {
     "support": "Support",
@@ -457,9 +457,10 @@
     "tripDetails": "Trip Details",
     "busType": "Bus Type",
     "seatsAvailableTotal": "Available/Total Seats",
-  "distance": "Distance",
-  "busImages": "Bus Images",
-  "noBusImages": "No bus images available"
+    "distance": "Distance",
+    "busImages": "Bus Images",
+    "noBusImages": "No bus images available",
+    "tripTimeline": "Trip Timeline"
   },
   "Amenities": {
     "wifi": "Wi-Fi",
@@ -601,7 +602,6 @@
     "invalidCode": "Invalid promo code",
     "notFoundOrExpired": "Promo code does not exist or has expired"
   },
-  
   "MyTickets": {
     "breadcrumb": "My Tickets",
     "pageTitle": "My Tickets",
@@ -683,16 +683,16 @@
     }
   },
   "Points": {
-  "title": "Use points",
-  "invalid": "Invalid points",
+    "title": "Use points",
+    "invalid": "Invalid points",
     "amountNotice1": "You only have ",
     "points": "Points",
     "exceedLimit": "Your point exceed charge limit. You can use maximum",
     "enterPoint": "Enter number of points",
     "applying": "Applying",
     "usePoints": "Use points",
-  "youve": "You have",
-  "usedPointsLabel": "Used points ({count})"
+    "youve": "You have",
+    "usedPointsLabel": "Used points ({count})"
   },
   "BookingResult": {
     "title": "Booking Result",

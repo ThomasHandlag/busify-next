@@ -48,8 +48,9 @@ import { Input } from "@/components/ui/input"; // Thêm import cho Input
 import { useSession } from "next-auth/react"; // Thêm import useSession
 import { createComplaint, ComplaintAddDTO } from "@/lib/data/complaints"; // Thêm import createComplaint
 import { toast } from "sonner"; // Thêm import toast cho thông báo
-import { cancelBooking } from "@/lib/data/booking"; // Thêm import cancelBooking
 import { useTranslations } from "next-intl";
+import { cancelBooking, downloadBookingPdf } from "@/lib/data/booking"; // Thêm import cancelBooking và downloadBookingPdf
+import { useRouter } from "next/navigation"; // Thêm import useRouter
 
 interface BookingDetailSheetProps {
   booking: BookingDetailResponse;
@@ -138,6 +139,7 @@ export function BookingDetailSheet({
   const StatusIcon = statusInfo.icon;
   const { data: session } = useSession(); // Lấy session để lấy token
   const t = useTranslations();
+  const router = useRouter(); // Khởi tạo router
 
   const handleCancelBooking = async () => {
     if (!session?.user?.accessToken) {
@@ -174,14 +176,50 @@ export function BookingDetailSheet({
     }
   };
 
-  const handleDownloadTicket = () => {
-    // Generate and download PDF ticket
-    console.log("Downloading ticket...");
+  const handleDownloadTicket = async () => {
+    if (!session?.user?.accessToken) {
+      toast.error("Bạn cần đăng nhập để tải vé.");
+      return;
+    }
+    setIsLoading(true);
+    try {
+      const pdfBlob = await downloadBookingPdf({
+        bookingCode: booking.booking_code,
+        accessToken: session.user.accessToken,
+        callback: (message: string) => toast.error(message),
+        localeMessage: "Không thể tải xuống vé PDF.",
+      });
+
+      if (pdfBlob) {
+        // Tạo URL tạm thời cho blob
+        const url = window.URL.createObjectURL(pdfBlob);
+        // Tạo một thẻ a ẩn để kích hoạt tải xuống
+        const a = document.createElement("a");
+        a.href = url;
+        a.download = `ve-xe-${booking.booking_code}.pdf`; // Tên file tải về
+        document.body.appendChild(a);
+        a.click();
+        // Dọn dẹp
+        a.remove();
+        window.URL.revokeObjectURL(url);
+        toast.success("Đã bắt đầu tải xuống vé PDF.");
+      }
+    } catch (error) {
+      console.error("Error in handleDownloadTicket:", error);
+      // Thông báo lỗi đã được xử lý trong hàm downloadBookingPdf
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   const handleWriteReview = () => {
     // Navigate to review page or open review modal
-    console.log("Opening review modal...");
+    if (booking.trip_id) {
+      router.push(`/trips/${booking.trip_id}`);
+    } else {
+      console.error("Trip ID is missing, cannot redirect to review page.");
+      toast.error("Không thể mở trang đánh giá do thiếu thông tin chuyến đi.");
+    }
   };
 
   const handleSubmitComplaint = async () => {
@@ -490,6 +528,7 @@ export function BookingDetailSheet({
                     onClick={handleDownloadTicket}
                     variant="outline"
                     className="w-full"
+                    disabled={isLoading}
                   >
                     <Download className="w-4 h-4 mr-2" />
                     {t("MyTickets.downloadPdf")}

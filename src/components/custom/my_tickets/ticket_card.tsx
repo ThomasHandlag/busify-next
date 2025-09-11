@@ -31,6 +31,7 @@ import { createComplaint, ComplaintAddDTO } from "@/lib/data/complaints"; // Th�
 import { toast } from "sonner"; // Thêm import toast cho thông báo
 import { cancelBooking } from "@/lib/data/booking"; // Thêm import cho cancelBooking
 import { useTranslations } from "next-intl";
+import { useRouter } from "next/navigation"; // Thêm import useRouter
 
 const formatDate = (dateString: string) => {
   const date = new Date(dateString);
@@ -87,6 +88,7 @@ export const TicketCard = ({
 }) => {
   const { data: session } = useSession(); // Lấy session để lấy token
   const t = useTranslations();
+  const router = useRouter(); // Thêm useRouter hook
 
   const getStatusInfo = (status: BookingData["status"]) => {
     switch (status) {
@@ -323,11 +325,21 @@ export const TicketCard = ({
                 {/* Text động */}
               </Button>
             )}
+          {booking.status === "confirmed" && !isPast && (
+            <Button
+              variant="destructive"
+              size="sm"
+              className="h-8 px-3 text-xs"
+            >
+              Hủy
+            </Button>
+          )}
           {booking.status === "completed" && (
             <>
               <Button
                 variant="default"
                 size="sm"
+                onClick={() => router.push(`/trips/${booking.trip_id}`)} // Thêm onClick để redirect đến /trips/{id}
                 className="bg-green-600 hover:bg-green-700 h-8 px-3 text-xs"
               >
                 {t("TripDetail.rateTrip")}
