@@ -29,6 +29,11 @@ export interface TripDetail {
     name: string;
     total_seats: number;
     amenities: string[];
+    images: {
+      id: number;
+      url: string;
+      is_primary: boolean;
+    }[];
   };
   price_per_seat: number;
   route: {
