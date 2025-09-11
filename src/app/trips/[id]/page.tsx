@@ -7,12 +7,12 @@ import { OperatorInfoCard } from "@/components/custom/trip_detail/operator_info_
 import { SimilarTripsSection } from "@/components/custom/trip_detail/similar_trip_section";
 import { ReviewModal } from "@/components/custom/trip_detail/review_modal";
 import TripInfoCard from "@/components/custom/trip_detail/trip_info_card";
-import SeatSelectionTabsCard from "@/components/custom/trip_detail/seat_selection_tabs_card";
 // import ComplaintSection from "@/components/custom/trip_detail/complaint_section";
 import { getTripDetail } from "@/lib/data/trip";
 import { getTripSeatById, Seat, TripSeatsStatus } from "@/lib/data/trip_seats";
 import { BusLayout, getBusSeatsLayout } from "@/lib/data/bus";
 import LocaleText from "@/components/custom/locale_text";
+import SeatSelectionTabsCard from "@/components/custom/trip_detail/seat_selection_tabs_card";
 
 const generateSeats = ({
   busLayout,

@@ -1,3 +1,4 @@
+"use client";
 import { useTranslations } from "next-intl";
 
 const LocaleText = ({ string, name }: { string: string; name: string }) => {

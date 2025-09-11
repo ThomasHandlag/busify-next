@@ -3,10 +3,12 @@
 import { useTripFilter } from "@/lib/contexts/TripFilterContext";
 import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
+import { useTranslations } from "next-intl";
 
 export const ViewTripBtn = ({ name }: { name: string }) => {
   const filter = useTripFilter();
   const navigate = useRouter();
+  const t = useTranslations("TripDetail");
   return (
     <Button
       variant="outline"
@@ -21,7 +23,7 @@ export const ViewTripBtn = ({ name }: { name: string }) => {
         navigate.push("/trips");
       }}
     >
-      Xem tất cả chuyến của nhà xe này
+      {t("viewAllTrips")}
     </Button>
   );
 };
