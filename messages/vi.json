@@ -37,8 +37,9 @@
     "bookingNotFound": "Không tìm thấy thông tin đặt vé.",
     "infoNotFound": "Không tìm thấy thông tin.",
     "hours": "giờ",
-  "minutes": "phút",
-  "processing": "Đang xử lý..."
+    "minutes": "phút",
+    "processing": "Đang xử lý...",
+    "tripTimeline": "Lộ Trình Chuyến"
   },
   "Home": {
     "title": "Tìm và Đặt Vé Xe",
@@ -245,8 +246,8 @@
     "processing": "Đang Xử Lý...",
     "confirmPay": "Xác Nhận và Thanh Toán",
     "payWithVNPay": "Thanh Toán Bằng VNPAY",
-  "paymentLinkText": "Thanh Toán",
-  "autoPromotion": "Khuyến mãi tự động"
+    "paymentLinkText": "Thanh Toán",
+    "autoPromotion": "Khuyến mãi tự động"
   },
   "Trips": {
     "available": "Các Chuyến Đi Có Sẵn",
@@ -350,9 +351,9 @@
     "payLater": "Thanh Toán Sau",
     "processingPayment": "Đang Xử Lý Thanh Toán...",
     "paymentSuccess": "Thanh Toán Thành Công!",
-  "paymentFailed": "Thanh Toán Thất Bại!",
-  "processingCallback": "Đang xử lý kết quả thanh toán...",
-  "doNotClose": "Vui lòng không đóng trang này"
+    "paymentFailed": "Thanh Toán Thất Bại!",
+    "processingCallback": "Đang xử lý kết quả thanh toán...",
+    "doNotClose": "Vui lòng không đóng trang này"
   },
   "Footer": {
     "support": "Hỗ trợ",
@@ -458,10 +459,10 @@
     "busType": "Loại Xe",
     "seatsAvailableTotal": "Ghế trống/Tổng ghế",
     "distance": "Khoảng cách",
-  "durationText": "Thời gian di chuyển",
-  "pickAndDropText": "Điểm Đón và Trả Khách",
-  "pickUpText": "Điểm Đón",
-  "dropPointText": "Điểm Trả Khách",
+    "durationText": "Thời gian di chuyển",
+    "pickAndDropText": "Điểm Đón và Trả Khách",
+    "pickUpText": "Điểm Đón",
+    "dropPointText": "Điểm Trả Khách",
     "busImages": "Hình ảnh xe",
     "noBusImages": "Chưa có hình ảnh xe"
   },
@@ -686,7 +687,7 @@
     }
   },
   "Points": {
-  "title": "Sử dụng điểm",
+    "title": "Sử dụng điểm",
     "invalid": "Điểm không hợp lệ",
     "amountNotice1": "Bạn chỉ có ",
     "points": "Điểm",
@@ -694,8 +695,8 @@
     "enterPoint": "Nhập số điểm",
     "applying": "Đang Áp Dụng",
     "usePoints": "Sử dụng điểm",
-  "youve": "Bạn có",
-  "usedPointsLabel": "Sử dụng điểm ({count})"
+    "youve": "Bạn có",
+    "usedPointsLabel": "Sử dụng điểm ({count})"
   },
   "BookingResult": {
     "title": "Kết quả đặt vé",

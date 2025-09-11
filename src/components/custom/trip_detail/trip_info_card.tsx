@@ -356,7 +356,7 @@ const TripInfoCard = ({ tripDetail }: { tripDetail: TripDetail }) => {
         <div>
           <h3 className="font-semibold mb-4 flex items-center gap-2">
             <MapPin className="w-4 h-4" />
-            Lộ trình chi tiết
+            {t("TripDetail.tripTimeline")}
           </h3>
 
           <div className="bg-gray-50 rounded-lg p-4 overflow-x-auto">
