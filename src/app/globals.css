@@ -49,6 +49,7 @@
   --animate-fade-in-right: 2s fade-in-right;
   --animate-fade-in-up: 2s fade-in-up;
   --animate-float: 3s float;
+  --animate-shake: 3s shake 1;
 }
 
 :root {
@@ -171,6 +172,18 @@
   }
   50% {
     transform: translateY(-10px);
+  }
+}
+
+@keyframes shake {
+  0%, 100% {
+    transform: translateX(0);
+  }
+  10%, 30%, 50%, 70%, 90% {
+    transform: translateX(-2px);
+  }
+  20%, 40%, 60%, 80% {
+    transform: translateX(2px);
   }
 }
 
