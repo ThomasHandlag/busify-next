@@ -1,4 +1,4 @@
-import {BusifyRoute} from "@/lib/data/route_api";
+import { BusifyRoute } from "@/lib/data/route_api";
 import {
   Card,
   CardContent,
@@ -11,7 +11,6 @@ import { Badge } from "../../ui/badge";
 import { Button } from "../../ui/button";
 
 const BusifyRouteItem = ({ item }: { item: BusifyRoute }) => {
-
   return (
     <Card className="hover:shadow-lg transition-shadow flex flex-col justify-between">
       <CardHeader className="pb-3">
@@ -41,7 +40,11 @@ const BusifyRouteItem = ({ item }: { item: BusifyRoute }) => {
               }).format(item.startingPrice)}
             </p>
           </div>
-          <Button size="sm" className="bg-green-600 hover:bg-green-700">
+          <Button
+            aria-label={`View routes for ${item.routeName}`}
+            size="sm"
+            className="bg-green-600 hover:bg-green-700"
+          >
             View Routes
           </Button>
         </div>

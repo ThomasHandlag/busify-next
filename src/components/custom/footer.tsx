@@ -15,7 +15,7 @@ const Footer = () => {
           {/* Company Info */}
           <div className="space-y-4">
             <div className="flex items-center space-x-2">
-              <Image src="/logo.svg" width={40} height={40} alt="Busify Logo" />
+              <Image aria-label="Image for page" src="/logo.svg" width={40} height={40} alt="Busify Logo" />
               <span className="text-2xl font-bold text-green-300">Busify</span>
             </div>
             <p className="text-green-100 text-sm leading-relaxed">

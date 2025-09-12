@@ -291,7 +291,9 @@ export function ChatWindow({ onClose, onNewMessage }: ChatWindowProps) {
         <p className="text-sm text-gray-600 mb-4">
           Vui lòng đăng nhập để bắt đầu trò chuyện với nhân viên hỗ trợ.
         </p>
-        <Button onClick={onClose}>Đã hiểu</Button>
+        <Button aria-label="Close Chat" variant="outline" onClick={onClose}>
+          Đã hiểu
+        </Button>
       </div>
     );
   }
@@ -302,6 +304,7 @@ export function ChatWindow({ onClose, onNewMessage }: ChatWindowProps) {
       <div className="p-3 border-b bg-green-600 text-white rounded-t-lg flex items-center justify-between">
         <h3 className="font-semibold">Trò chuyện với Busify</h3>
         <Button
+          aria-label="Close Chat"
           variant="ghost"
           size="icon"
           onClick={onClose}
@@ -354,6 +357,7 @@ export function ChatWindow({ onClose, onNewMessage }: ChatWindowProps) {
             disabled={loading || !isConnected} // Sử dụng isConnected thay vì stompClient.current?.connected
           />
           <Button
+            aria-label="Send Message"
             type="submit"
             size="icon"
             disabled={

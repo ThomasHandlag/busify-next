@@ -25,7 +25,7 @@ export async function SimilarTripsSection({ routeId }: { routeId: number }) {
         <h2 className="text-xl font-semibold px-4">
           <LocaleText string="similarTrips" name="Trips" />
         </h2>
-        <Button variant="link" size="sm">
+        <Button aria-label="View all" variant="link" size="sm">
           <Link aria-label="Xem tất cả" href="/trips">
             <LocaleText string="viewAll" name="Common" />
           </Link>

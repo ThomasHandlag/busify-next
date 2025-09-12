@@ -106,7 +106,7 @@ const NavDesktop = ({
       {/* If authenticated hide this part */}
       {session.status !== "authenticated" ? (
         <div className="flex items-center space-x-4">
-          <Button variant="outline" size="sm" asChild>
+          <Button aria-label="Sign In" variant="outline" size="sm" asChild>
             <Link
               aria-label={t("Header.signIn")}
               href="/login"
@@ -116,7 +116,12 @@ const NavDesktop = ({
               <span>{t("Header.signIn")}</span>
             </Link>
           </Button>
-          <Button size="sm" className="bg-green-600 hover:bg-green-700" asChild>
+          <Button
+            aria-label="Sign Up"
+            size="sm"
+            className="bg-green-600 hover:bg-green-700"
+            asChild
+          >
             <Link aria-label={t("Header.signUp")} href="/signup">
               {t("Header.signUp")}
             </Link>

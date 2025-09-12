@@ -329,6 +329,7 @@ const SearchFilterSidebar = ({ callback }: { callback?: () => void }) => {
           <div className="pt-4 space-y-3">
             <FormItem>
               <Button
+                aria-label={t("Filter.applyFilters")}
                 className="w-full bg-green-600 hover:bg-green-700"
                 type="button"
                 disabled={isLoading}
@@ -353,6 +354,7 @@ const SearchFilterSidebar = ({ callback }: { callback?: () => void }) => {
             </FormItem>
             <FormItem>
               <Button
+                aria-label={t("Filter.reset")}
                 variant="outline"
                 className="w-full"
                 type="button"

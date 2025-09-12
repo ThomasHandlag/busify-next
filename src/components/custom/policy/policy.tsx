@@ -18,6 +18,7 @@ const Policy = () => {
     <Dialog>
       <DialogTrigger asChild>
         <Button
+          aria-label="View policy"
           variant="link"
           className="p-0 h-auto text-green-600 hover:text-green-700 underline"
         >
@@ -59,7 +60,9 @@ const Policy = () => {
 
         <DialogFooter>
           <DialogClose asChild>
-            <Button variant="outline">{t("PolicyDialog.understood")}</Button>
+            <Button aria-label="Understood" variant="outline">
+              {t("PolicyDialog.understood")}
+            </Button>
           </DialogClose>
         </DialogFooter>
       </DialogContent>

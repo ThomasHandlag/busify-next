@@ -51,6 +51,7 @@ const AboutPage = async () => {
       {/* Hero Section */}
       <section className="bg-gradient-to-br w-full relative from-green-600 to-green-700 h-screen flex flex-col justify-center items-center text-white">
         <Image
+          aria-label="background image"
           src="/bus-photo.jpg"
           fill
           loading="lazy"
@@ -74,6 +75,7 @@ const AboutPage = async () => {
           <FadeinWrapper effect="animate-fade-in-l400">
             <div className="flex flex-col sm:flex-row gap-4">
               <Button
+                aria-label="Book Your Journey"
                 size="lg"
                 className="bg-white text-green-600 hover:bg-green-50 flex items-center space-x-2"
                 asChild
@@ -84,6 +86,7 @@ const AboutPage = async () => {
                 </Link>
               </Button>
               <Button
+                aria-label="Grow Your Business"
                 size="lg"
                 variant="outline"
                 className="border-white bg-transparent text-white hover:bg-white hover:text-green-600 flex items-center space-x-2"
@@ -190,6 +193,7 @@ const AboutPage = async () => {
                     </div>
                   </div>
                   <Button
+                    aria-label="Explore Passenger Portal"
                     className="w-full bg-green-600 hover:bg-green-700"
                     asChild
                   >
@@ -273,6 +277,7 @@ const AboutPage = async () => {
                     </div>
                   </div>
                   <Button
+                    aria-label="Explore Operator Portal"
                     className="w-full bg-green-700 hover:bg-green-800"
                     asChild
                   >
@@ -385,14 +390,18 @@ const AboutPage = async () => {
                   className="flex items-center space-x-2 data-[state=active]:bg-green-600 data-[state=active]:text-white"
                 >
                   <Users className="w-4 h-4" />
-                  <span><LocaleText string="forPassengers" name="About" /></span>
+                  <span>
+                    <LocaleText string="forPassengers" name="About" />
+                  </span>
                 </TabsTrigger>
                 <TabsTrigger
                   value="operators"
                   className="flex items-center space-x-2 data-[state=active]:bg-green-600 data-[state=active]:text-white"
                 >
                   <Building2 className="w-4 h-4" />
-                  <span><LocaleText string="forOperators" name="About" /></span>
+                  <span>
+                    <LocaleText string="forOperators" name="About" />
+                  </span>
                 </TabsTrigger>
               </TabsList>
 
@@ -609,7 +618,11 @@ const AboutPage = async () => {
             </FadeinWrapper>
           </div>
           <div className="text-center mt-12">
-            <Button size="lg" className="bg-green-600 hover:bg-green-700">
+            <Button
+              aria-label="Contact Business Team"
+              size="lg"
+              className="bg-green-600 hover:bg-green-700"
+            >
               Contact Business Team
             </Button>
           </div>
@@ -653,11 +666,17 @@ const AboutPage = async () => {
                   </div>
                 </div>
                 <div className="flex flex-col sm:flex-row gap-4">
-                  <Button className="bg-black text-white hover:bg-gray-800 flex items-center space-x-2">
+                  <Button
+                    aria-label="Download on App Store"
+                    className="bg-black text-white hover:bg-gray-800 flex items-center space-x-2"
+                  >
                     <Download className="w-5 h-5" />
                     <span>Download on App Store</span>
                   </Button>
-                  <Button className="bg-black text-white hover:bg-gray-800 flex items-center space-x-2">
+                  <Button
+                    aria-label="Get it on Google Play"
+                    className="bg-black text-white hover:bg-gray-800 flex items-center space-x-2"
+                  >
                     <Download className="w-5 h-5" />
                     <span>Get it on Google Play</span>
                   </Button>
@@ -716,7 +735,7 @@ const AboutPage = async () => {
               <CardHeader>
                 <div className="flex items-center space-x-4">
                   <Avatar>
-                    <AvatarImage src="/placeholder-user.jpg" />
+                    <AvatarImage alt="User Avatar" src="/placeholder-user.jpg" />
                     <AvatarFallback className="bg-green-100 text-green-700">
                       JD
                     </AvatarFallback>
@@ -751,7 +770,7 @@ const AboutPage = async () => {
               <CardHeader>
                 <div className="flex items-center space-x-4">
                   <Avatar>
-                    <AvatarImage src="/placeholder-user.jpg" />
+                    <AvatarImage alt="User Avatar" src="/placeholder-user.jpg" />
                     <AvatarFallback className="bg-green-100 text-green-700">
                       SM
                     </AvatarFallback>
@@ -786,7 +805,7 @@ const AboutPage = async () => {
               <CardHeader>
                 <div className="flex items-center space-x-4">
                   <Avatar>
-                    <AvatarImage src="/placeholder-user.jpg" />
+                    <AvatarImage alt="User Avatar" src="/placeholder-user.jpg" />
                     <AvatarFallback className="bg-green-100 text-green-700">
                       MJ
                     </AvatarFallback>
@@ -898,7 +917,10 @@ const AboutPage = async () => {
               placeholder="Enter your email address"
               className="bg-white text-gray-900 border-0 flex-1"
             />
-            <Button className="bg-green-500 hover:bg-green-400 text-white">
+            <Button
+              aria-label="Subscribe to Newsletter"
+              className="bg-green-500 hover:bg-green-400 text-white"
+            >
               Subscribe
             </Button>
           </div>

@@ -129,6 +129,7 @@ const HomeSearchForm = ({ locations }: { locations: FilterLocationType[] }) => {
         />
         <FormItem className="mt-6">
           <Button
+            aria-label="Search"
             type="submit"
             className="col-span-1 bg-green-600 hover:bg-green-700 text-white px-6 rounded-md font-medium text-sm"
             disabled={filter.isLoading}

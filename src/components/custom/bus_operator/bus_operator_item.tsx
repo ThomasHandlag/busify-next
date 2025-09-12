@@ -34,7 +34,9 @@ const BusOperatorItem = ({
           Contact: {busOperator.hotline}
         </CardDescription>
         <CardAction>
-          <Button>View Details</Button>
+          <Button aria-label={`View details of ${busOperator.name}`}>
+            View Details
+          </Button>
         </CardAction>
       </CardHeader>
       <CardContent>

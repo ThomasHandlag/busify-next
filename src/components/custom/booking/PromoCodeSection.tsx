@@ -57,7 +57,9 @@ export default function PromoCodeSection({
 
         if (finalPrice < MIN_BOOKING_AMOUNT) {
           throw new Error(
-            t("Discount.cannotApplyMin", { min: MIN_BOOKING_AMOUNT.toLocaleString() })
+            t("Discount.cannotApplyMin", {
+              min: MIN_BOOKING_AMOUNT?.toLocaleString(),
+            })
           );
         }
 
@@ -112,6 +114,7 @@ export default function PromoCodeSection({
           disabled={isLoading}
         />
         <Button
+          aria-label="Apply Promo Code"
           variant="outline"
           onClick={handleApplyPromoCode}
           className="w-auto"
@@ -139,6 +142,7 @@ export default function PromoCodeSection({
               </p>
             </div>
             <Button
+              aria-label="Remove Promo Code"
               variant="ghost"
               size="sm"
               onClick={handleRemovePromoCode}
