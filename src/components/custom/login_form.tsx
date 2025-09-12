@@ -12,7 +12,6 @@ import Link from "next/link";
 import { signIn } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
-import LocaleText from "./locale_text";
 import { useTranslations } from "next-intl";
 
 const LoginForm = () => {
