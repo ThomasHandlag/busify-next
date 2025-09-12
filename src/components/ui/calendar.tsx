@@ -188,6 +188,7 @@ function CalendarDayButton({
 
   return (
     <Button
+      aria-label={`Select ${day.date.toDateString()}`}
       ref={ref}
       variant="ghost"
       size="icon"

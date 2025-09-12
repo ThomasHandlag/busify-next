@@ -15,9 +15,9 @@ import { toast } from "sonner";
 import { useTranslations } from "next-intl";
 
 const LoginForm = () => {
-  const t = useTranslations("Auth");
+  const t = useTranslations();
   const [showPassword, setShowPassword] = React.useState(false);
-  const [isGoogleLoading, setIsGoogleLoading] = React.useState(false);
+  const [isGoogleLoading] = React.useState(false);
   const [showResendModal, setShowResendModal] = React.useState(false);
   const [resendEmail, setResendEmail] = React.useState("");
   const [resendStatus, setResendStatus] = React.useState<
@@ -32,8 +32,8 @@ const LoginForm = () => {
 
   const router = useRouter();
   const formSchema = z.object({
-    email: z.email(t("login.invalidEmail")).min(2).max(50),
-    password: z.string().min(6, t("login.invalidPassword")).max(100),
+    email: z.email(t("Auth.login.invalidEmail")).min(2).max(50),
+    password: z.string().min(6, t("Auth.login.invalidPassword")).max(100),
   });
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -58,10 +58,10 @@ const LoginForm = () => {
 
       if (result?.ok && !result?.error) {
         console.log("Login successful, redirecting...");
-        router.back(); 
+        router.back();
       } else {
         console.error("Login failed:", result?.error);
-        toast.error(t("login.errorMessage"));
+        toast.error(t("Auth.login.errorMessage"));
       }
     } catch (error) {
       console.error("Login error:", error);
@@ -92,15 +92,15 @@ const LoginForm = () => {
 
       if (response.ok) {
         setResendStatus("success");
-        setResendMessage(t("login.resendSuccess"));
+        setResendMessage(t("Auth.login.resendSuccess"));
       } else {
         setResendStatus("error");
-        setResendMessage(t("login.resendError"));
+        setResendMessage(t("Auth.login.resendError"));
       }
     } catch (error) {
       console.error("Resend verification error:", error);
       setResendStatus("error");
-      setResendMessage(t("login.resendError"));
+      setResendMessage(t("Auth.login.resendError"));
     }
   };
 
@@ -120,10 +120,10 @@ const LoginForm = () => {
             <span className="text-white text-xl sm:text-2xl font-bold">B</span>
           </div>
           <h2 className="text-2xl sm:text-3xl font-bold text-gray-800 mb-2">
-            {t("login.title")}
+            {t("Auth.login.title")}
           </h2>
           <p className="text-sm sm:text-base text-gray-500">
-            {t("login.subtitle")}
+            {t("Auth.login.subtitle")}
           </p>
         </div>
 
@@ -138,12 +138,12 @@ const LoginForm = () => {
               render={({ field }) => (
                 <FormItem>
                   <FormLabel className="text-gray-700 font-medium">
-                    {t("emailAddress")}
+                    {t("Auth.emailAddress")}
                   </FormLabel>
                   <Input
                     {...field}
                     type="email"
-                    placeholder={t("emailAddress")}
+                    placeholder={t("Auth.emailAddress")}
                     required
                     className="h-12 bg-gray-50 border-gray-200 rounded-xl focus:ring-2 focus:ring-green-500 focus:border-transparent transition-all duration-200"
                   />
@@ -158,13 +158,13 @@ const LoginForm = () => {
               render={({ field }) => (
                 <FormItem>
                   <FormLabel className="text-gray-700 font-medium">
-                    {t("password")}
+                    {t("Auth.password")}
                   </FormLabel>
                   <div className="relative">
                     <Input
                       {...field}
                       type={showPassword ? "text" : "password"}
-                      placeholder={t("password")}
+                      placeholder={t("Auth.password")}
                       required
                       className="h-12 bg-gray-50 border-gray-200 rounded-xl focus:ring-2 focus:ring-green-500 focus:border-transparent transition-all duration-200 pr-12"
                     />
@@ -193,7 +193,7 @@ const LoginForm = () => {
                   className="w-4 h-4 text-green-600 border-gray-300 rounded focus:ring-green-500"
                 />
                 <span className="ml-2 text-sm text-gray-600">
-                  {t("login.rememberMe")}
+                  {t("Auth.login.rememberMe")}
                 </span>
               </label>
               <Link
@@ -201,15 +201,16 @@ const LoginForm = () => {
                 href="/forgot-password"
                 className="text-sm text-green-600 hover:text-green-700 font-medium"
               >
-                {t("forgotPassword")}
+                {t("Auth.forgotPassword")}
               </Link>
             </div>
 
             <Button
+              aria-label="Sign In"
               type="submit"
               className="w-full h-12 bg-gradient-to-r from-green-600 to-green-700 hover:from-green-700 hover:to-green-800 text-white font-semibold rounded-xl transition-all duration-200 transform hover:scale-[1.02] shadow-lg"
             >
-              {t("login.signIn")}
+              {t("Auth.login.signIn")}
             </Button>
           </form>
         </Form>
@@ -218,7 +219,7 @@ const LoginForm = () => {
             onClick={() => signIn("google")}
             disabled={isGoogleLoading || !isMounted}
             className="flex items-center justify-center py-3 px-2 sm:px-4 border border-gray-200 rounded-xl hover:bg-gray-50 transition-colors duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
-            aria-label={t("login.google")}
+            aria-label={t("Auth.login.google")}
           >
             {isMounted && isGoogleLoading ? (
               <div className="w-4 h-4 sm:w-5 sm:h-5 border-2 border-gray-300 border-t-green-600 rounded-full animate-spin"></div>
@@ -229,14 +230,14 @@ const LoginForm = () => {
 
           <button
             className="flex items-center justify-center py-3 px-2 sm:px-4 border border-gray-200 rounded-xl hover:bg-gray-50 transition-colors duration-200"
-            aria-label={t("login.facebook")}
+            aria-label={t("Auth.login.facebook")}
           >
             <FaFacebook size={20} className="text-blue-600" />
           </button>
 
           <button
             className="flex items-center justify-center py-3 px-2 sm:px-4 border border-gray-200 rounded-xl hover:bg-gray-50 transition-colors duration-200"
-            aria-label={t("login.github")}
+            aria-label={t("Auth.login.github")}
           >
             <FaGithub size={20} className="text-gray-800" />
           </button>
@@ -245,13 +246,13 @@ const LoginForm = () => {
         {/* Sign up link */}
         <div className="text-center mt-6">
           <p className="text-sm sm:text-base text-gray-600">
-            {t("dontHaveAccount")}{" "}
+            {t("Auth.dontHaveAccount")}{" "}
             <Link
               aria-label="Sign up"
               href="/signup"
               className="text-green-600 hover:text-green-700 font-semibold"
             >
-              {t("createAccount")}
+              {t("Auth.createAccount")}
             </Link>
           </p>
           <p className="text-sm text-gray-600 mt-2">
@@ -260,7 +261,7 @@ const LoginForm = () => {
               onClick={() => setShowResendModal(true)}
               className="text-green-600 hover:text-green-700 font-semibold underline"
             >
-              {t("login.resendVerification")}
+              {t("Auth.login.resendVerification")}
             </button>
           </p>
         </div>
@@ -271,7 +272,7 @@ const LoginForm = () => {
             <div className="bg-white rounded-2xl p-6 w-full max-w-md">
               <div className="text-center mb-6">
                 <h3 className="text-xl font-bold text-gray-800 mb-2">
-                  {t("verifyEmail")}
+                  {t("Auth.verifyEmail")}
                 </h3>
                 <p className="text-gray-600 text-sm">
                   Enter your email address to receive a new verification link
@@ -281,11 +282,11 @@ const LoginForm = () => {
               <div className="space-y-4">
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-2">
-                    {t("emailAddress")}
+                    {t("Auth.emailAddress")}
                   </label>
                   <Input
                     type="email"
-                    placeholder={t("emailAddress")}
+                    placeholder={t("Auth.emailAddress")}
                     value={resendEmail}
                     onChange={(e) => setResendEmail(e.target.value)}
                     className="h-12 bg-gray-50 border-gray-200 rounded-xl focus:ring-2 focus:ring-green-500 focus:border-transparent"
@@ -306,6 +307,7 @@ const LoginForm = () => {
 
                 <div className="flex space-x-3">
                   <Button
+                    aria-label="Cancel"
                     onClick={resetResendModal}
                     variant="outline"
                     className="flex-1 h-12 border-gray-300 text-gray-700 hover:bg-gray-50"
@@ -313,6 +315,7 @@ const LoginForm = () => {
                     {t("Common.cancel")}
                   </Button>
                   <Button
+                    aria-label="Send Email"
                     onClick={handleResendVerification}
                     disabled={resendStatus === "loading"}
                     className="flex-1 h-12 bg-gradient-to-r from-green-600 to-green-700 hover:from-green-700 hover:to-green-800 text-white"
@@ -320,7 +323,7 @@ const LoginForm = () => {
                     {resendStatus === "loading" ? (
                       <div className="flex items-center justify-center">
                         <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-2"></div>
-                        {t("login.signingIn")}
+                        {t("Auth.login.signingIn")}
                       </div>
                     ) : (
                       "Send Email"

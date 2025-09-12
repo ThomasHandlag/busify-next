@@ -466,6 +466,7 @@ export const RegisterForm = () => {
                             <Popover>
                               <PopoverTrigger asChild>
                                 <Button
+                                  aria-label={t("Register.startDateLabel")}
                                   variant={"outline"}
                                   className={cn(
                                     "h-12 bg-white border-gray-200 rounded-xl focus:ring-2 focus:ring-green-500 focus:border-transparent transition-all duration-200 justify-start text-left font-normal",
@@ -556,6 +557,7 @@ export const RegisterForm = () => {
                             <Popover>
                               <PopoverTrigger asChild>
                                 <Button
+                                  aria-label={t("Register.endDateLabel")}
                                   variant={"outline"}
                                   className={cn(
                                     "h-12 bg-white border-gray-200 rounded-xl focus:ring-2 focus:ring-green-500 focus:border-transparent transition-all duration-200 justify-start text-left font-normal",
@@ -755,6 +757,7 @@ export const RegisterForm = () => {
                 )}
 
                 <Button
+                  aria-label={t("Register.creatingAccount")}
                   type="submit"
                   className="w-full h-12 bg-gradient-to-r from-green-600 to-green-700 hover:from-green-700 hover:to-green-800 text-white font-semibold rounded-xl transition-all duration-200 transform hover:scale-[1.02] shadow-lg disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none"
                   disabled={
@@ -835,6 +838,7 @@ export const RegisterForm = () => {
               {t("Register.successInstruction")}
             </p>
             <Button
+              aria-label={t("Register.registerAnother")}
               onClick={() => {
                 setRegistrationSuccess(false);
                 setIsBusOperator(false);

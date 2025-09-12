@@ -151,6 +151,7 @@ export function ReviewModal({ tripId }: { tripId: number }) {
             />
 
             <Button
+              aria-label="Submit Review"
               type="submit"
               className="w-full"
               disabled={form.getFieldState("comment").invalid || loading}

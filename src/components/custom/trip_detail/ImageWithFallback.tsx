@@ -12,14 +12,14 @@ interface ImageWithFallbackProps {
 
 export function ImageWithFallback({ src, alt, width, height, className }: ImageWithFallbackProps) {
   return (
-    <Image
+    <Image aria-label="Image11"
       src={src}
       alt={alt}
       width={width}
       height={height}
       className={className}
       onError={(e) => {
-        (e.target as HTMLImageElement).src = "/place-holder.png"; // Fallback khi ảnh lỗi
+        (e.target as HTMLImageElement).src = "/avatar-holder.png"; // Fallback khi ảnh lỗi
       }}
     />
   );

@@ -65,6 +65,7 @@ export default function PointsSection({
     originalPrice,
     discountAmount,
     onPointsChange,
+    t,
   ]);
 
   const handleRemovePoints = useCallback(() => {
@@ -86,6 +87,7 @@ export default function PointsSection({
           type="number"
         />
         <Button
+          aria-label="Apply Points"
           variant="outline"
           onClick={handleApplyPoints}
           disabled={loading || !pointsInput.trim()}
@@ -116,6 +118,7 @@ export default function PointsSection({
             {(usedPoints * 1000)?.toLocaleString("vi-VN")}đ)
           </p>
           <Button
+            aria-label="Remove Points"
             variant="ghost"
             size="sm"
             onClick={handleRemovePoints}

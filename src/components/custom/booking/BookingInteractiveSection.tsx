@@ -392,6 +392,7 @@ export default function BookingInteractiveSection({
           )}
 
           <Button
+            aria-label="Confirm Payment"
             className="w-full bg-green-600 hover:bg-green-700 text-white py-3"
             onClick={handleConfirmPayment}
             disabled={paymentLoading || !!paymentLink}

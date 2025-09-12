@@ -52,6 +52,7 @@ export function OperatorMultiSelect({
     <Popover open={open} onOpenChange={setOpen}>
       <PopoverTrigger asChild>
         <Button
+          aria-label="Select operators"
           variant="outline"
           role="combobox"
           aria-expanded={open}

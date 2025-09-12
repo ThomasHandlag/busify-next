@@ -132,6 +132,7 @@ const TripItem = ({ trip }: { trip: TripItemProps }) => {
 
             <Link aria-label="Book trip" href={`/trips/${trip.trip_id}`}>
               <Button
+                aria-label="Book Trip"
                 size="sm"
                 className="bg-green-600 hover:bg-green-700 text-white text-xs h-7 px-3"
               >

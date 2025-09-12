@@ -36,7 +36,7 @@ export function OperatorMultiSelect({
 
   const handleSelect = (operatorId: string) => {
     const currentValue = [...(value || [])];
-    
+
     if (currentValue.includes(operatorId)) {
       onChange(currentValue.filter((id) => id !== operatorId));
     } else {
@@ -52,6 +52,7 @@ export function OperatorMultiSelect({
     <Popover open={open} onOpenChange={setOpen}>
       <PopoverTrigger asChild>
         <Button
+          aria-label="Select operators"
           variant="outline"
           role="combobox"
           aria-expanded={open}
@@ -98,11 +99,7 @@ export function OperatorMultiSelect({
       {selectedOperators.length > 0 && (
         <div className="flex flex-wrap gap-1 mt-2">
           {selectedOperators.map((operator) => (
-            <Badge
-              key={operator.id}
-              variant="secondary"
-              className="mr-1 mb-1"
-            >
+            <Badge key={operator.id} variant="secondary" className="mr-1 mb-1">
               {operator.name}
               <button
                 type="button"

@@ -45,6 +45,7 @@ export function TripHeroSection({
         </div>
         <div className="flex items-center space-x-2">
           <Button
+            aria-label="Toggle Favorite"
             variant="ghost"
             size="sm"
             onClick={onToggleFavorite}
