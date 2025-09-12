@@ -109,7 +109,7 @@ export default function BookingResult() {
 
   // Format date time
   const formatDateTime = (dateString: string) => {
-    return new Date(dateString).toLocaleString("vi-VN", {
+    return new Date(dateString)?.toLocaleString("vi-VN", {
       day: "2-digit",
       month: "2-digit",
       year: "numeric",

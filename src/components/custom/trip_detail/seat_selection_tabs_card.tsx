@@ -463,11 +463,11 @@ export function SeatSelectionTabsCard({
             </div>
             <div className="text-right">
               <p className="text-lg font-bold text-green-600">
-                {totalPrice.toLocaleString("vi-VN")}đ
+                {totalPrice?.toLocaleString("vi-VN")}đ
               </p>
               <p className="text-xs text-gray-500">
                 {selectedSeats.length} ${t("Booking.seats")} ×{" "}
-                {pricePerSeat.toLocaleString("vi-VN")}đ
+                {pricePerSeat?.toLocaleString("vi-VN")}đ
               </p>
             </div>
           </div>

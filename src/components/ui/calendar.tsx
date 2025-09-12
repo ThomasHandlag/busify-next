@@ -38,7 +38,7 @@ function Calendar({
       formatters={{
         // Use a fixed locale so server and client render the same month label
         formatMonthDropdown: (date) =>
-          date.toLocaleString("vi-VN", { month: "short" }),
+          date?.toLocaleString("vi-VN", { month: "short" }),
         ...formatters,
       }}
       classNames={{

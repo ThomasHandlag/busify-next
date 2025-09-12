@@ -57,7 +57,7 @@ export default function PromoCodeSection({
 
         if (finalPrice < MIN_BOOKING_AMOUNT) {
           throw new Error(
-            t("Discount.cannotApplyMin", { min: MIN_BOOKING_AMOUNT.toLocaleString() })
+            t("Discount.cannotApplyMin", { min: MIN_BOOKING_AMOUNT?.toLocaleString() })
           );
         }
 

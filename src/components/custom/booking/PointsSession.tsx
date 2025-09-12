@@ -113,7 +113,7 @@ export default function PointsSection({
         <div className="bg-blue-50 border border-blue-200 rounded-lg p-3 flex items-center justify-between">
           <p className="text-blue-700 text-sm">
             ✓ Đã dùng {usedPoints} điểm (-
-            {(usedPoints * 1000).toLocaleString("vi-VN")}đ)
+            {(usedPoints * 1000)?.toLocaleString("vi-VN")}đ)
           </p>
           <Button
             variant="ghost"

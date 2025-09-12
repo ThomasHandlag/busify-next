@@ -205,14 +205,14 @@ export default function AutoPromotionSection({
     if (promotion.discountType === "PERCENTAGE") {
       return `${promotion.discountValue}%`;
     } else {
-      return `${promotion.discountValue.toLocaleString("vi-VN")}đ`;
+      return `${promotion.discountValue?.toLocaleString("vi-VN")}đ`;
     }
   };
 
   const getDiscountDisplay = (promotion: Promotion): string => {
     const discount = calculateDiscount(promotion, originalPrice);
     return discount > 0
-      ? `Giảm ${discount.toLocaleString("vi-VN")}đ`
+      ? `Giảm ${discount?.toLocaleString("vi-VN")}đ`
       : "Không đủ điều kiện";
   };
 
@@ -305,7 +305,7 @@ export default function AutoPromotionSection({
                       </p>
                       <p className="text-xs text-gray-500 mt-1">
                         Đơn hàng từ{" "}
-                        {promotion.minOrderValue.toLocaleString("vi-VN")}đ
+                        {promotion.minOrderValue?.toLocaleString("vi-VN")}đ
                       </p>
                     </div>
                   </div>
@@ -324,7 +324,7 @@ export default function AutoPromotionSection({
                 {calculateDiscount(
                   selectedPromotion,
                   originalPrice
-                ).toLocaleString("vi-VN")}
+                )?.toLocaleString("vi-VN")}
                 đ
               </span>
             </div>
