@@ -83,9 +83,13 @@ const TripItem = ({ trip }: { trip: TripItemProps }) => {
             >
               {getAvailabilityText(trip.available_seats)}
             </Badge>
-            <p className="text-lg font-bold text-green-600">
-              {new Intl.NumberFormat("vi-VN").format(trip.price_per_seat)}đ
-            </p>
+
+            {/* Price Display Logic */}
+            <div className="text-right">
+              <p className="text-lg font-bold text-green-600">
+                {new Intl.NumberFormat("vi-VN").format(trip.price_per_seat)}đ
+              </p>
+            </div>
           </div>
         </div>
 

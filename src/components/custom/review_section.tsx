@@ -62,8 +62,8 @@ const ReviewSection = async ({
               <LocaleText string="avgRate" name="Review" />
             </p>
             <p className="text-sm text-gray-500">
-              <LocaleText string="basedOn" name="Based on" /> {reviews.length}{" "}
-              <LocaleText string="reviews" name="Reviews" />
+              <LocaleText string="basedOn" name="Review" /> {reviews.length}{" "}
+              <LocaleText string="reviews" name="TripDetail" />
             </p>
           </div>
         </div>

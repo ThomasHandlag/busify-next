@@ -1,5 +1,8 @@
 import api from "./axios-instance";
 
+// Constants
+export const MIN_BOOKING_AMOUNT = 50000; // Minimum booking amount after discount
+
 export interface DiscountInfo {
   id: number;
   code: string;

@@ -10,8 +10,10 @@ import {
 import { FileText } from "lucide-react";
 import React from "react";
 import { Button } from "@/components/ui/button";
+import { useTranslations } from "next-intl";
 
 const Policy = () => {
+  const t = useTranslations();
   return (
     <Dialog>
       <DialogTrigger asChild>
@@ -19,61 +21,45 @@ const Policy = () => {
           variant="link"
           className="p-0 h-auto text-green-600 hover:text-green-700 underline"
         >
-          chính sách và điều khoản
+          {t("PolicyDialog.trigger")}
         </Button>
       </DialogTrigger>
       <DialogContent className="max-w-4xl max-h-[80vh] overflow-y-auto">
         <DialogHeader>
           <DialogTitle className="flex items-center gap-2">
             <FileText className="w-5 h-5" />
-            Chính sách và Điều khoản sử dụng
+            {t("PolicyDialog.title")}
           </DialogTitle>
         </DialogHeader>
 
         <div className="prose prose-sm max-w-none">
-          <h3>1. Điều khoản chung</h3>
-          <p>
-            Bằng việc đăng ký hợp đồng với Busify, bạn đồng ý tuân thủ tất cả
-            các điều khoản và điều kiện được quy định trong tài liệu này.
-          </p>
+          <h3>1. {t("PolicyDialog.general.title")}</h3>
+          <p>{t("PolicyDialog.general.text")}</p>
 
-          <h3>2. Quyền và nghĩa vụ của nhà xe</h3>
+          <h3>2. {t("PolicyDialog.operator.title")}</h3>
           <ul>
-            <li>Cung cấp dịch vụ vận chuyển chất lượng và an toàn</li>
-            <li>Tuân thủ lịch trình đã cam kết</li>
-            <li>Duy trì tiêu chuẩn xe và đội ngũ lái xe</li>
-            <li>Báo cáo định kỳ về hoạt động kinh doanh</li>
+            <li>{t("PolicyDialog.operator.point1")}</li>
+            <li>{t("PolicyDialog.operator.point2")}</li>
+            <li>{t("PolicyDialog.operator.point3")}</li>
+            <li>{t("PolicyDialog.operator.point4")}</li>
           </ul>
 
-          <h3>3. Chính sách hoa hồng</h3>
-          <p>
-            Busify sẽ thu phí hoa hồng 5-10% trên mỗi vé bán được thông qua nền
-            tảng. Việc thanh toán sẽ được thực hiện hàng tháng.
-          </p>
+          <h3>3. {t("PolicyDialog.commission.title")}</h3>
+          <p>{t("PolicyDialog.commission.text")}</p>
 
-          <h3>4. Chính sách hủy hợp đồng</h3>
-          <p>
-            Cả hai bên có quyền chấm dứt hợp đồng với thông báo trước 30 ngày.
-            Trong trường hợp vi phạm nghiêm trọng, hợp đồng có thể bị chấm dứt
-            ngay lập tức.
-          </p>
+          <h3>4. {t("PolicyDialog.termination.title")}</h3>
+          <p>{t("PolicyDialog.termination.text")}</p>
 
-          <h3>5. Bảo mật thông tin</h3>
-          <p>
-            Busify cam kết bảo mật thông tin khách hàng và không chia sẻ với bên
-            thứ ba mà không có sự đồng ý.
-          </p>
+          <h3>5. {t("PolicyDialog.privacy.title")}</h3>
+          <p>{t("PolicyDialog.privacy.text")}</p>
 
-          <h3>6. Giải quyết tranh chấp</h3>
-          <p>
-            Mọi tranh chấp phát sinh sẽ được giải quyết thông qua thương lượng.
-            Nếu không đạt được thỏa thuận, sẽ đưa ra tòa án có thẩm quyền.
-          </p>
+          <h3>6. {t("PolicyDialog.dispute.title")}</h3>
+          <p>{t("PolicyDialog.dispute.text")}</p>
         </div>
 
         <DialogFooter>
           <DialogClose asChild>
-            <Button variant="outline">Đã hiểu</Button>
+            <Button variant="outline">{t("PolicyDialog.understood")}</Button>
           </DialogClose>
         </DialogFooter>
       </DialogContent>

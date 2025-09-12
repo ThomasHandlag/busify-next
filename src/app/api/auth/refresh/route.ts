@@ -16,7 +16,7 @@ export async function POST(request: NextRequest) {
     console.log("Calling backend refresh token API...");
 
     // Gọi API backend để refresh token
-    const response = await fetch(`${BASE_URL}/api/auth/refresh-token`, {
+    const response = await fetch(`${BASE_URL}api/auth/refresh-token`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",

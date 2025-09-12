@@ -718,18 +718,9 @@ export const RegisterForm = () => {
                         className="mt-1"
                       />
                       <label htmlFor="policy" className="text-sm text-gray-700">
-                        {(() => {
-                          const parts = t("Register.policyAgreement").split(
-                            "{policy}"
-                          );
-                          return (
-                            <>
-                              {parts[0]}
-                              <Policy />
-                              {parts[1]}
-                            </>
-                          );
-                        })()}{" "}
+                        {t("Register.policyAgreement1")}
+                        <Policy />
+                        {t("Register.policyAgreement2")}
                         <span className="text-red-500">*</span>
                       </label>
                     </div>

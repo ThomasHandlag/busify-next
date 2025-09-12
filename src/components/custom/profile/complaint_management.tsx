@@ -10,6 +10,7 @@ import {
   AlertTriangle,
 } from "lucide-react";
 import { Complaint } from "@/lib/data/complaints"; // Import Complaint từ complaints.ts
+import { useTranslations } from "next-intl";
 
 interface ComplaintManagementProps {
   userId?: string;
@@ -19,13 +20,14 @@ interface ComplaintManagementProps {
 export default function ComplaintManagement({
   complaints = [], // Mặc định là mảng rỗng nếu không truyền
 }: ComplaintManagementProps) {
+  const t = useTranslations();
   const getStatusBadge = (status: Complaint["status"]) => {
     switch (status) {
       case "New":
         return (
           <Badge variant="outline" className="text-blue-600 border-blue-600">
             <Clock className="w-3 h-3 mr-1" />
-            Mới
+            {t("Complaint.status.new")}
           </Badge>
         );
       case "in_progress":
@@ -35,7 +37,7 @@ export default function ComplaintManagement({
             className="text-orange-600 border-orange-600"
           >
             <Clock className="w-3 h-3 mr-1" />
-            Đang xử lý
+            {t("Complaint.status.in_progress")}
           </Badge>
         );
       case "pending":
@@ -45,21 +47,21 @@ export default function ComplaintManagement({
             className="text-yellow-600 border-yellow-600"
           >
             <Clock className="w-3 h-3 mr-1" />
-            Chờ xử lý
+            {t("Complaint.status.pending")}
           </Badge>
         );
       case "resolved":
         return (
           <Badge variant="outline" className="text-green-600 border-green-600">
             <CheckCircle className="w-3 h-3 mr-1" />
-            Đã giải quyết
+            {t("Complaint.status.resolved")}
           </Badge>
         );
       case "rejected":
         return (
           <Badge variant="outline" className="text-red-600 border-red-600">
             <XCircle className="w-3 h-3 mr-1" />
-            Bị từ chối
+            {t("Complaint.status.rejected")}
           </Badge>
         );
       default:
@@ -73,13 +75,13 @@ export default function ComplaintManagement({
         <CardHeader>
           <CardTitle className="flex items-center space-x-2">
             <MessageSquareWarning className="w-5 h-5 text-orange-500" />
-            <span>Quản lý khiếu nại</span>
+            <span>{t("Complaint.management")}</span>
           </CardTitle>
         </CardHeader>
         <CardContent>
           <div className="text-center py-8">
             <AlertTriangle className="w-12 h-12 text-gray-400 mx-auto mb-4" />
-            <p className="text-gray-500 mb-4">Bạn chưa có khiếu nại nào</p>
+            <p className="text-gray-500 mb-4">{t("Complaint.noComplaints")}</p>
           </div>
         </CardContent>
       </Card>
@@ -91,12 +93,12 @@ export default function ComplaintManagement({
       <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-4">
         <CardTitle className="flex items-center space-x-2">
           <MessageSquareWarning className="w-5 h-5 text-orange-500" />
-          <span>Quản lý khiếu nại</span>
+          <span>{t("Complaint.management")}</span>
         </CardTitle>
       </CardHeader>
 
       <CardContent>
-        <div className="space-y-4">
+        <div className="max-h-96 overflow-y-auto space-y-4">
           {complaints.map((complaint) => (
             <div
               key={complaint.id}
@@ -110,9 +112,9 @@ export default function ComplaintManagement({
                     </h4>
                     {getStatusBadge(complaint.status)}
                   </div>
-                  {complaint.tripId && (
+          {complaint.tripId && (
                     <p className="text-xs text-gray-500 mb-2">
-                      Chuyến đi #{complaint.tripId}
+            {t("Complaint.tripId", { id: complaint.tripId })}
                     </p>
                   )}
                 </div>
