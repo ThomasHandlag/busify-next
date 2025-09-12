@@ -28,6 +28,7 @@ import { useSession } from "next-auth/react";
 import z from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useTranslations } from "next-intl";
+import { useRouter } from "next/navigation";
 
 type ReviewFormValues = {
   comment: string;
@@ -35,7 +36,11 @@ type ReviewFormValues = {
 };
 
 const commentSchema = z.object({
-  comment: z.string().min(4, "At least 4 characters").max(500, "Too long"),
+  comment: z
+    .string()
+    .min(4, "At least 4 characters")
+    .max(500, "Too long")
+    .regex(/^[^<>/\\&*^@#+-:]*$/, "No special characters allowed"),
   rating: z.number().min(1).max(5),
 });
 
@@ -53,6 +58,8 @@ export function ReviewModal({ tripId }: { tripId: number }) {
     mode: "onBlur",
     resolver: zodResolver(commentSchema),
   });
+
+  const router = useRouter();
 
   const handleSubmit = async (values: ReviewFormValues) => {
     if (!values.comment.trim()) return;
@@ -74,7 +81,7 @@ export function ReviewModal({ tripId }: { tripId: number }) {
       comment: "",
       rating: 5,
     });
-
+    router.refresh();
     setOpen(false);
     setLoading(false);
   };

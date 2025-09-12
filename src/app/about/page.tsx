@@ -735,7 +735,7 @@ const AboutPage = async () => {
               <CardHeader>
                 <div className="flex items-center space-x-4">
                   <Avatar>
-                    <AvatarImage src="/placeholder-user.jpg" />
+                    <AvatarImage alt="User Avatar" src="/placeholder-user.jpg" />
                     <AvatarFallback className="bg-green-100 text-green-700">
                       JD
                     </AvatarFallback>
@@ -770,7 +770,7 @@ const AboutPage = async () => {
               <CardHeader>
                 <div className="flex items-center space-x-4">
                   <Avatar>
-                    <AvatarImage src="/placeholder-user.jpg" />
+                    <AvatarImage alt="User Avatar" src="/placeholder-user.jpg" />
                     <AvatarFallback className="bg-green-100 text-green-700">
                       SM
                     </AvatarFallback>
@@ -805,7 +805,7 @@ const AboutPage = async () => {
               <CardHeader>
                 <div className="flex items-center space-x-4">
                   <Avatar>
-                    <AvatarImage src="/placeholder-user.jpg" />
+                    <AvatarImage alt="User Avatar" src="/placeholder-user.jpg" />
                     <AvatarFallback className="bg-green-100 text-green-700">
                       MJ
                     </AvatarFallback>

@@ -58,6 +58,7 @@ const Home = async () => {
             <Image aria-label="background image2"
               src="/bus-photo.jpg"
               fill
+              // fetchPriority="high"
               loading="eager"
               placeholder="blur"
               blurDataURL="..."
@@ -311,7 +312,7 @@ const Home = async () => {
               <CardHeader>
                 <div className="flex items-center space-x-4">
                   <Avatar className="ring-2 ring-green-200">
-                    <AvatarImage src="/avatar-holder.png" />
+                    <AvatarImage alt="User Avatar" src="/avatar-holder.png" />
                     <AvatarFallback className="bg-green-100 text-green-800 font-semibold">
                       JD
                     </AvatarFallback>
@@ -347,7 +348,7 @@ const Home = async () => {
               <CardHeader>
                 <div className="flex items-center space-x-4">
                   <Avatar className="ring-2 ring-green-200">
-                    <AvatarImage src="/avatar-holder.png" />
+                    <AvatarImage alt="User Avatar" src="/avatar-holder.png" />
                     <AvatarFallback className="bg-green-100 text-green-800 font-semibold">
                       SM
                     </AvatarFallback>
@@ -383,7 +384,7 @@ const Home = async () => {
               <CardHeader>
                 <div className="flex items-center space-x-4">
                   <Avatar className="ring-2 ring-green-200">
-                    <AvatarImage src="/avatar-holder.png" />
+                    <AvatarImage alt="User Avatar" src="/avatar-holder.png" />
                     <AvatarFallback className="bg-green-100 text-green-800 font-semibold">
                       MJ
                     </AvatarFallback>
