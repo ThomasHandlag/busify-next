@@ -32,7 +32,7 @@ const LoginForm = () => {
 
   const router = useRouter();
   const formSchema = z.object({
-    email: z.string().email(t("login.invalidEmail")).min(2).max(50),
+    email: z.email(t("login.invalidEmail")).min(2).max(50),
     password: z.string().min(6, t("login.invalidPassword")).max(100),
   });
   const form = useForm<z.infer<typeof formSchema>>({
@@ -58,7 +58,7 @@ const LoginForm = () => {
 
       if (result?.ok && !result?.error) {
         console.log("Login successful, redirecting...");
-        router.push("/");
+        router.back(); 
       } else {
         console.error("Login failed:", result?.error);
         toast.error(t("login.errorMessage"));
@@ -89,8 +89,6 @@ const LoginForm = () => {
           body: JSON.stringify({ email: resendEmail }),
         }
       );
-
-      const data = await response.json();
 
       if (response.ok) {
         setResendStatus("success");
@@ -194,7 +192,9 @@ const LoginForm = () => {
                   type="checkbox"
                   className="w-4 h-4 text-green-600 border-gray-300 rounded focus:ring-green-500"
                 />
-                <span className="ml-2 text-sm text-gray-600">{t("login.rememberMe")}</span>
+                <span className="ml-2 text-sm text-gray-600">
+                  {t("login.rememberMe")}
+                </span>
               </label>
               <Link
                 aria-label="Forgot password"

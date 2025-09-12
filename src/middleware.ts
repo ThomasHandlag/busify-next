@@ -10,10 +10,6 @@ export default withAuth(
     // For example, redirect to localized paths or set headers
     
     // Redirect if user is authenticated
-    if (request.nextauth.token && request.nextUrl.pathname === "/login") {
-      return NextResponse.redirect(new URL("/", request.url));
-    }
-
     if (!request.nextauth.token && request.nextUrl.pathname.includes("/user")) {
       return NextResponse.redirect(new URL("/login", request.url));
     }
