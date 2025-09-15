@@ -54,7 +54,7 @@ export default function BookingInteractiveSection({
   tripId,
 }: BookingInteractiveSectionProps) {
   const { data: session } = useSession();
-  const t = useTranslations("Booking");
+  const t = useTranslations();
   const [discount, setDiscount] = useState(0);
   const [discountInfo, setDiscountInfo] = useState<DiscountInfo | null>(null);
   const [autoPromotionDiscount, setAutoPromotionDiscount] = useState(0);
@@ -113,7 +113,7 @@ export default function BookingInteractiveSection({
         const score = await getScore();
         setAvailablePoints(score.points);
       } catch (error) {
-        console.error("Failed to load score:", error);
+  console.error("Failed to load score:", error);
       }
     }
     loadScore();
@@ -123,7 +123,7 @@ export default function BookingInteractiveSection({
   const handleConfirmPayment = async () => {
     // Kiểm tra dữ liệu trước khi gửi
     if (!mockData.selectedSeats.length) {
-      setPaymentError(t("selectSeatsError"));
+      setPaymentError(t("Booking.error.noSeats"));
       return;
     }
     if (
@@ -131,17 +131,17 @@ export default function BookingInteractiveSection({
       !mockData.passenger.email ||
       !mockData.passenger.phone
     ) {
-      setPaymentError(t("passengerInfoIncomplete"));
+      setPaymentError(t("Booking.error.noRequiredInfo"));
       return;
     }
     if (finalAmount <= 0) {
-      setPaymentError(t("invalidPaymentAmount"));
+      setPaymentError(t("Booking.error.invalidPaymentAmount"));
       return;
     }
 
     // Kiểm tra session
     if (!session?.user?.accessToken) {
-      setPaymentError(t("loginRequired"));
+      setPaymentError(t("Booking.error.loginRequired"));
       return;
     }
 
@@ -192,17 +192,14 @@ export default function BookingInteractiveSection({
 
       if (!bookingResponse.ok) {
         const errorData = await bookingResponse.json().catch(() => null);
-        const errorMessage =
-          errorData?.message ||
-          `Lỗi khi gửi yêu cầu đặt vé: ${bookingResponse.status}`;
         console.error("Booking API error response:", errorData);
-        throw new Error(errorMessage);
+        throw new Error(t("Booking.error.bookingFailed"));
       }
 
       const bookingResult = await bookingResponse.json();
       const bookingId = bookingResult.result?.bookingId;
       if (!bookingId) {
-        throw new Error("Không nhận được booking_id từ API bookings");
+        throw new Error(t("Booking.error.missingBookingId"));
       }
       console.log("Booking created successfully, booking_id:", bookingId);
 
@@ -228,17 +225,14 @@ export default function BookingInteractiveSection({
 
       if (!paymentResponse.ok) {
         const errorData = await paymentResponse.json().catch(() => null);
-        const errorMessage =
-          errorData?.message ||
-          `Lỗi khi tạo thanh toán: ${paymentResponse.status}`;
         console.error("Payment API error response:", errorData);
-        throw new Error(errorMessage);
+        throw new Error(t("Payment.paymentFailed"));
       }
 
       const paymentResult = await paymentResponse.json();
       const paymentUrl = paymentResult.result?.paymentUrl;
       if (!paymentUrl) {
-        throw new Error("Không nhận được link thanh toán từ API payments");
+        throw new Error(t("Booking.error.missingPaymentLink"));
       }
       console.log("Payment link received:", paymentUrl);
 
@@ -271,11 +265,10 @@ export default function BookingInteractiveSection({
       // router.push(`/booking/success/${bookingId}`);
     } catch (e) {
       const error = e as Error;
-      console.error("Lỗi khi xử lý thanh toán:", error.message);
+      console.error("Payment processing error:", error.message);
       let userFriendlyMessage = error.message;
       if (error.message.includes("409")) {
-        userFriendlyMessage =
-          "Ghế đã được đặt hoặc thông tin không hợp lệ. Vui lòng chọn ghế khác hoặc kiểm tra lại.";
+        userFriendlyMessage = t("Booking.error.seatConflict409");
       }
       setPaymentError(userFriendlyMessage);
     } finally {
@@ -293,7 +286,7 @@ export default function BookingInteractiveSection({
 
       <Card>
         <CardHeader>
-          <CardTitle>{t("promoCode")}</CardTitle>
+          <CardTitle>{t("Booking.promoCode")}</CardTitle>
         </CardHeader>
         <CardContent>
           <PromoCodeSection
@@ -304,9 +297,9 @@ export default function BookingInteractiveSection({
         </CardContent>
       </Card>
 
-      <Card>
+    <Card>
         <CardHeader>
-          <CardTitle>Sử dụng điểm</CardTitle>
+      <CardTitle>{t("Points.title")}</CardTitle>
         </CardHeader>
         <CardContent>
           <PointsSection
@@ -322,15 +315,15 @@ export default function BookingInteractiveSection({
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
             <CreditCard className="w-5 h-5 text-green-600" />
-            {t("paymentSummary")}
+            {t("Booking.paymentSummary")}
           </CardTitle>
         </CardHeader>
         <CardContent className="space-y-4">
           <div className="space-y-2">
             <div className="flex justify-between">
               <span>
-                {t("ticketPrice")} ({mockData.selectedSeats.length} {t("seats")}
-                )
+                {t("Booking.ticketPrice")} ({mockData.selectedSeats.length}{" "}
+                {t("Booking.seats")})
               </span>
               <div className="text-right">
                 {discount > 0 || autoPromotionDiscount > 0 ? (
@@ -349,7 +342,7 @@ export default function BookingInteractiveSection({
             {discount > 0 && discountInfo && (
               <div className="flex justify-between text-red-600">
                 <span>
-                  {t("discount")}
+                  {t("Booking.discount")}
                   {discountInfo.code} (
                   {discountInfo.discountType === "PERCENTAGE"
                     ? `${discountInfo.discountValue}%`
@@ -359,10 +352,10 @@ export default function BookingInteractiveSection({
                 <span>-{discount.toLocaleString("vi-VN")}đ</span>
               </div>
             )}
-            {autoPromotionDiscount > 0 && selectedAutoPromotion && (
+    {autoPromotionDiscount > 0 && selectedAutoPromotion && (
               <div className="flex justify-between text-red-600">
                 <span>
-                  Khuyến mãi tự động (
+      {t("Booking.autoPromotion")} (
                   {selectedAutoPromotion.discountType === "PERCENTAGE"
                     ? `${selectedAutoPromotion.discountValue}%`
                     : `${selectedAutoPromotion.discountValue.toLocaleString(
@@ -373,15 +366,15 @@ export default function BookingInteractiveSection({
                 <span>-{autoPromotionDiscount.toLocaleString("vi-VN")}đ</span>
               </div>
             )}
-            {pointsDiscount > 0 && (
+    {pointsDiscount > 0 && (
               <div className="flex justify-between text-blue-600">
-                <span>Sử dụng điểm ({usedPoints})</span>
+        <span>{t("Points.usedPointsLabel", { count: usedPoints })}</span>
                 <span>-{pointsDiscount.toLocaleString("vi-VN")}đ</span>
               </div>
             )}
             <Separator />
             <div className="flex justify-between font-semibold text-lg">
-              <span>{t("totalAmount")}</span>
+              <span>{t("Booking.totalAmount")}</span>
               <span className="text-green-600">
                 {finalAmount.toLocaleString("vi-VN")}đ
               </span>
@@ -403,14 +396,15 @@ export default function BookingInteractiveSection({
             onClick={handleConfirmPayment}
             disabled={paymentLoading || !!paymentLink}
           >
-            {paymentLoading ? t("processing") : t("confirmAndPay")} •
+            {paymentLoading ? t("Booking.processing") : t("Booking.confirmPay")}{" "}
+            •
             <span className="ml-2">{finalAmount.toLocaleString("vi-VN")}đ</span>
           </Button>
 
           {paymentLink && (
             <div className="mt-4">
               <p className="text-sm text-gray-600 mb-2">
-                {t("paymentLinkText")}
+                {t("Booking.paymentLinkText")}
               </p>
               <a
                 href={paymentLink}
@@ -418,16 +412,16 @@ export default function BookingInteractiveSection({
                 rel="noopener noreferrer"
                 className="inline-block w-full text-center bg-blue-600 hover:bg-blue-700 text-white py-2 rounded-md"
               >
-                {t("payWithVNPay")}
+                {t("Booking.payWithVNPay")}
               </a>
             </div>
           )}
 
           <div className="text-xs text-gray-500 space-y-1 w-full">
-            <p>• {t("flexibleCancellation")}</p>
-            <p>• {t("support247")}</p>
-            <p>• {t("guaranteedSeats")}</p>
-            <p>• {t("securePayment")}</p>
+            <p>• {t("Policies.policyDesc1")}</p>
+            <p>• {t("Policies.policyDesc2")}</p>
+            <p>• {t("Policies.policyDesc3")}</p>
+            <p>• {t("Policies.policyDesc4")}</p>
           </div>
         </CardContent>
       </Card>

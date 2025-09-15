@@ -1,11 +1,13 @@
 "use client";
 
 import { useEffect } from "react";
+import { useTranslations } from "next-intl";
 import { useRouter, useSearchParams } from "next/navigation";
 
 export default function PaymentCallback() {
   const router = useRouter();
   const searchParams = useSearchParams();
+  const t = useTranslations();
 
   useEffect(() => {
     const handleCallback = async () => {
@@ -85,10 +87,10 @@ export default function PaymentCallback() {
           <div className="w-12 h-12 border-4 border-blue-200 border-t-blue-600 rounded-full animate-spin"></div>
         </div>
         <p className="text-lg font-medium text-gray-700 text-center">
-          Đang xử lý kết quả thanh toán...
+          {t("Payment.processingCallback")}
         </p>
         <p className="text-sm text-gray-500 text-center">
-          Vui lòng không đóng trang này
+          {t("Payment.doNotClose")}
         </p>
       </div>
     </div>

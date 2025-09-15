@@ -15,6 +15,7 @@ import {
   Theme,
   usePreferences,
 } from "@/lib/contexts/PreferenceContext";
+import { useTranslations } from "next-intl";
 import { useTheme } from "next-themes";
 import { useForm } from "react-hook-form";
 
@@ -34,6 +35,8 @@ const PreferencesForm = () => {
     },
   });
 
+  const t = useTranslations("Profile");
+
   return (
     <Form {...form}>
       <div className="flex flex-col lg:flex-row gap-2">
@@ -42,7 +45,7 @@ const PreferencesForm = () => {
           control={form.control}
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Language</FormLabel>
+              <FormLabel>{t("language")}</FormLabel>
               <Select
                 {...field}
                 onValueChange={(value: Language) => {
@@ -53,15 +56,15 @@ const PreferencesForm = () => {
                 }}
               >
                 <SelectTrigger className="w-[150px]">
-                  <SelectValue placeholder="Select a language" />
+                  <SelectValue placeholder={t("selectLanguage")} />
                 </SelectTrigger>
                 <SelectContent>
                   <SelectGroup>
-                    <SelectLabel>Language</SelectLabel>
-                    <SelectItem value="en">English</SelectItem>
-                    <SelectItem value="vi">Vietnamese</SelectItem>
-                    <SelectItem value="ko">Korean</SelectItem>
-                    <SelectItem value="jp">Japanese</SelectItem>
+                    <SelectLabel>{t("language")}</SelectLabel>
+                    <SelectItem value="en">{t("english")}</SelectItem>
+                    <SelectItem value="vi">{t("vietnamese")}</SelectItem>
+                    <SelectItem value="ko">{t("korean")}</SelectItem>
+                    <SelectItem value="jp">{t("japanese")}</SelectItem>
                   </SelectGroup>
                 </SelectContent>
               </Select>
@@ -73,7 +76,7 @@ const PreferencesForm = () => {
           control={form.control}
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Theme</FormLabel>
+              <FormLabel>{t("theme")}</FormLabel>
               <Select
                 {...field}
                 onValueChange={(value: Theme) => {
@@ -85,14 +88,14 @@ const PreferencesForm = () => {
                 }}
               >
                 <SelectTrigger className="w-[150px]">
-                  <SelectValue placeholder="Select a theme" />
+                  <SelectValue placeholder={t("selectTheme")} />
                 </SelectTrigger>
                 <SelectContent>
                   <SelectGroup>
-                    <SelectLabel>Theme</SelectLabel>
-                    <SelectItem value="light">Light</SelectItem>
-                    <SelectItem value="dark">Dark</SelectItem>
-                    <SelectItem value="system">System</SelectItem>
+                    <SelectLabel>{t("theme")}</SelectLabel>
+                    <SelectItem value="light">{t("light")}</SelectItem>
+                    <SelectItem value="dark">{t("dark")}</SelectItem>
+                    <SelectItem value="system">{t("system")}</SelectItem>
                   </SelectGroup>
                 </SelectContent>
               </Select>

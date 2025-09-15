@@ -4,6 +4,7 @@ import { useState, useCallback } from "react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Loader2, X } from "lucide-react";
+import { useTranslations } from "next-intl";
 
 interface PointsSectionProps {
   availablePoints: number; // số điểm hiện có (fetch từ API /scores/user/:id)
@@ -22,17 +23,20 @@ export default function PointsSection({
   const [usedPoints, setUsedPoints] = useState(0);
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
+  const t = useTranslations();
 
   const handleApplyPoints = useCallback(() => {
     const enteredPoints = parseInt(pointsInput, 10);
 
     if (isNaN(enteredPoints) || enteredPoints <= 0) {
-      setError("Vui lòng nhập số điểm hợp lệ");
+      setError(t("Points.invalid"));
       return;
     }
 
     if (enteredPoints > availablePoints) {
-      setError(`Bạn chỉ có ${availablePoints} điểm khả dụng`);
+      setError(
+        `${t("Points.amountNotice1")} ${availablePoints} ${t("Points.points")}`
+      );
       return;
     }
 
@@ -41,9 +45,9 @@ export default function PointsSection({
 
     if (discountFromPoints > maxUsable) {
       setError(
-        `Số điểm vượt quá số tiền cần thanh toán. Bạn chỉ có thể dùng tối đa ${Math.floor(
-          maxUsable / 1000
-        )} điểm`
+        `${t("Points.exceedLimit")} ${Math.floor(maxUsable / 1000)} ${t(
+          "Points.points"
+        )}`
       );
       return;
     }
@@ -74,7 +78,7 @@ export default function PointsSection({
     <div className="space-y-3">
       <div className="flex gap-2">
         <Input
-          placeholder="Nhập số điểm muốn sử dụng"
+          placeholder={t("Points.enterPoint")}
           value={pointsInput}
           onChange={(e) => setPointsInput(e.target.value.replace(/\D/g, ""))}
           className="w-full"
@@ -89,17 +93,18 @@ export default function PointsSection({
           {loading ? (
             <>
               <Loader2 className="w-4 h-4 mr-2 animate-spin" />
-              Đang áp dụng...
+              {t("Points.applying")}...
             </>
           ) : (
-            "Dùng điểm"
+            t("Points.usePoints")
           )}
         </Button>
       </div>
 
       <p className="text-sm text-gray-500">
-        Bạn đang có <span className="font-semibold">{availablePoints}</span>{" "}
-        điểm khả dụng (1 điểm = 1,000đ)
+        {t("Points.youve")}{" "}
+        <span className="font-semibold">{availablePoints}</span>
+        {t("Points.points")} (1 điểm = 1,000đ)
       </p>
 
       {error && <p className="text-red-500 text-sm">{error}</p>}

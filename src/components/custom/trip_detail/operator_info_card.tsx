@@ -1,18 +1,20 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { getBusOperatorById } from "@/lib/data/bus_operator";
 import { Bus, Star, Phone, MapPin } from "lucide-react";
+import { getTranslations } from "next-intl/server";
 
 import Image from "next/image";
 import ViewTripBtn from "./view_trip_btn";
 
 export async function OperatorInfoCard({ id }: { id: number }) {
   const operatorDetail = await getBusOperatorById(id);
+  const t = await getTranslations("TripDetail");
 
   if (!operatorDetail) {
     return (
       <Card>
         <CardContent>
-          <p>Không tìm thấy thông tin nhà xe.</p>
+          <p>{t("operatorNotFound")}</p>
         </CardContent>
       </Card>
     );
@@ -23,7 +25,7 @@ export async function OperatorInfoCard({ id }: { id: number }) {
       <CardHeader>
         <CardTitle className="flex items-center space-x-2">
           <Bus className="w-5 h-5" />
-          <span>Nhà xe</span>
+          <span>{t("busOperator")}</span>
         </CardTitle>
       </CardHeader>
       <CardContent>
@@ -40,8 +42,7 @@ export async function OperatorInfoCard({ id }: { id: number }) {
             <div className="flex items-center space-x-2">
               <Star className="w-4 h-4 text-yellow-400 fill-current" />
               <span className="text-sm text-gray-600">
-                {operatorDetail.rating}/5 ({operatorDetail.totalReviews} đánh
-                giá)
+                {operatorDetail.rating}/5 ({operatorDetail.totalReviews} {t("reviews")})
               </span>
             </div>
           </div>
@@ -54,7 +55,7 @@ export async function OperatorInfoCard({ id }: { id: number }) {
           <div className="flex items-center space-x-3">
             <MapPin className="w-5 h-5 text-gray-400" />
             <span className="text-gray-600">
-              Trụ sở: {operatorDetail.address}
+              {t("headquarters")} {operatorDetail.address}
             </span>
           </div>
         </div>
