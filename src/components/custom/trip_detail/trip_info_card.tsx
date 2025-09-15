@@ -290,96 +290,9 @@ const TripInfoCard = ({ tripDetail }: { tripDetail: TripDetail }) => {
           </div>
         </div>
 
-        {/* Route Timeline */}
-        <div>
-          <h3 className="font-semibold mb-4 flex items-center gap-2">
-            <MapPin className="w-4 h-4" />
-            {t("TripDetail.pickAndDrop")}
-          </h3>
-
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
-            {/* Pickup Points */}
-            <div className="border border-green-200 rounded-lg p-4 bg-green-50">
-              <h4 className="font-medium text-green-800 mb-2 flex items-center gap-1">
-                <div className="w-2 h-2 bg-green-500 rounded-full"></div>
-                {t("TripDetail.pickUp")}
-              </h4>
-              <div className="space-y-2">
-                {/* Start location */}
-                <div className="text-sm">
-                  <p className="font-medium">
-                    {tripDetail.route.start_location.address}
-                  </p>
-                  <p className="text-gray-600">
-                    {tripDetail.route.start_location.city}
-                  </p>
-                </div>
-
-                {/* Route stops */}
-                {tripDetail.route_stops?.map((stop, index) => (
-                  <div key={`pickup-${index}`} className="text-sm">
-                    <p className="font-medium">{stop.address}</p>
-                    <p className="text-gray-600">{stop.city}</p>
-                  </div>
-                ))}
-              </div>
-            </div>
-
-            {/* Drop-off Points */}
-            <div className="border border-red-200 rounded-lg p-4 bg-red-50">
-              <h4 className="font-medium text-red-800 mb-2 flex items-center gap-1">
-                <div className="w-2 h-2 bg-red-500 rounded-full"></div>
-                {t("TripDetail.dropPoint")}
-              </h4>
-              <div className="space-y-2">
-                {/* Route stops */}
-                {tripDetail.route_stops?.map((stop, index) => (
-                  <div key={`dropoff-${index}`} className="text-sm">
-                    <p className="font-medium">{stop.address}</p>
-                    <p className="text-gray-600">{stop.city}</p>
-                  </div>
-                ))}
-
-                {/* End location */}
-                <div className="text-sm">
-                  <p className="font-medium">
-                    {tripDetail.route.end_location.address}
-                  </p>
-                  <p className="text-gray-600">
-                    {tripDetail.route.end_location.city}
-                  </p>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-        <div>
-          <h3 className="font-semibold mb-4 flex items-center gap-2">
-            <MapPin className="w-4 h-4" />
-            {t("TripDetail.tripTimeline")}
-          </h3>
-
-          <div className="bg-gray-50 rounded-lg p-4 overflow-x-auto">
-            {renderRouteTimeline()}
-          </div>
-        </div>
         {/* Bus Images and Amenities */}
         <div className="space-y-4">
           <Separator />
-
-          {/* Route Map */}
-          <div>
-            <h4 className="font-semibold text-gray-900 mb-3">
-              {t("TripDetail.journeyMap")}
-            </h4>
-            <RouteMap
-              startLocation={tripDetail.route.start_location}
-              endLocation={tripDetail.route.end_location}
-              routeStops={tripDetail.route_stops || []}
-              className="h-80 w-full rounded-lg"
-            />
-          </div>
-
           {/* Bus Images */}
           <div>
             <h4 className="font-semibold text-gray-900 mb-3">
@@ -416,12 +329,42 @@ const TripInfoCard = ({ tripDetail }: { tripDetail: TripDetail }) => {
             )}
           </div>
 
+          <Separator />
+
+          {/* Route Map */}
+          <div>
+            <h4 className="font-semibold text-gray-900 mb-3">
+              {t("TripDetail.journeyMap")}
+            </h4>
+            <RouteMap
+              startLocation={tripDetail.route.start_location}
+              endLocation={tripDetail.route.end_location}
+              routeStops={tripDetail.route_stops || []}
+              className="h-80 w-full rounded-lg"
+            />
+          </div>
+
+          <Separator />
+
           {/* Amenities */}
           <div>
             <h4 className="font-semibold text-gray-900 mb-3">
               {t("TripDetail.amenities")}
             </h4>
             {renderAmenities()}
+          </div>
+
+          <Separator />
+        </div>
+
+        <div>
+          <h3 className="font-semibold mb-4 flex items-center gap-2">
+            <MapPin className="w-4 h-4" />
+            {t("TripDetail.tripTimeline")}
+          </h3>
+
+          <div className="bg-gray-50 rounded-lg p-4 overflow-x-auto">
+            {renderRouteTimeline()}
           </div>
         </div>
       </CardContent>
