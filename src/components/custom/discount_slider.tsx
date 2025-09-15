@@ -126,8 +126,8 @@ export default function DiscountSlider() {
   if (error && campaigns.length === 0) {
     return (
       <div className="text-center py-16">
-  <p className="text-red-600 mb-4">{t("Promotion.loadErrorShort")}</p>
-  <p className="text-gray-600">{t("Promotion.loadErrorLong")}</p>
+        <p className="text-red-600 mb-4">{t("Promotion.loadErrorShort")}</p>
+        <p className="text-gray-600">{t("Promotion.loadErrorLong")}</p>
       </div>
     );
   }
@@ -144,9 +144,9 @@ export default function DiscountSlider() {
           {campaigns.map((campaign, index) => (
             <div key={campaign.id} className="flex-[0_0_100%] min-w-0">
               <div className="relative overflow-hidden h-64 md:h-72 lg:h-80">
-                <Image
+                <Image aria-label="Image41"
                   src={campaign.banner}
-                  alt={campaign.title}
+                  alt={campaign.title ?? "Promotion Banner"}
                   fill
                   className="object-cover transition-transform duration-700 group-hover:scale-105"
                   priority={index === 0}
@@ -170,6 +170,7 @@ export default function DiscountSlider() {
                     </p>
                     <div className="flex flex-col sm:flex-row gap-3 justify-center items-center">
                       <Button
+                        aria-label="Book Discounted Ticket"
                         size="default"
                         className="bg-gradient-to-r from-orange-500 to-red-500 hover:from-orange-600 hover:to-red-600 text-white font-bold px-6 py-2.5 rounded-full shadow-xl transform hover:scale-105 transition-all duration-300 border-0 text-sm"
                         asChild
@@ -179,6 +180,7 @@ export default function DiscountSlider() {
                         </Link>
                       </Button>
                       <Button
+                        aria-label="Learn More About Promotion"
                         variant="outline"
                         size="default"
                         className="border-2 border-white/50 text-white hover:bg-white/10 backdrop-blur-sm font-semibold px-5 py-2.5 rounded-full shadow-lg transition-all duration-300 text-sm"

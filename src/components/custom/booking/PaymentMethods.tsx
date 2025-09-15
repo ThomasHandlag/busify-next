@@ -30,7 +30,7 @@ export default function PaymentMethods({
               className="flex items-center gap-2 cursor-pointer"
             >
               <div className="w-6 h-6 rounded flex items-center justify-center relative">
-                <Image
+                <Image aria-label="Image1"
                   src="https://cdn.haitrieu.com/wp-content/uploads/2022/10/Logo-MoMo-Circle.png"
                   alt="MoMo Logo"
                   fill
@@ -48,7 +48,7 @@ export default function PaymentMethods({
               className="flex items-center gap-2 cursor-pointer"
             >
               <div className="w-6 h-6 rounded flex items-center justify-center relative">
-                <Image
+                <Image aria-label="Image2"
                   src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRwPynD27LbXlPsbofv1AX-5ZXDn_XMGo-1TA&s"
                   fill
                   alt="ZaloPay"
@@ -66,7 +66,7 @@ export default function PaymentMethods({
               className="flex items-center gap-2 cursor-pointer"
             >
               <div className="w-6 h-6 rounded flex items-center justify-center relative">
-                <Image
+                <Image aria-label="Image3"
                   src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSg4HNMFnJLLavO19NsgZZucD9GEVqPG-uG4Q&s"
                   alt="ViettelMoney"
                   fill
@@ -84,7 +84,7 @@ export default function PaymentMethods({
               className="flex items-center gap-2 cursor-pointer"
             >
               <div className="w-6 h-6 rounded flex items-center justify-center relative">
-                <Image
+                <Image aria-label="Image4"
                   src="https://cdn-new.topcv.vn/unsafe/150x/https://static.topcv.vn/company_logos/cong-ty-cp-giai-phap-thanh-toan-viet-nam-vnpay-6194ba1fa3d66.jpg"
                   alt="VNPAY"
                   className="w-4 h-4"
@@ -102,7 +102,7 @@ export default function PaymentMethods({
               className="flex items-center gap-2 cursor-pointer"
             >
               <div className="w-6 h-6 rounded flex items-center justify-center relative">
-                <Image
+                <Image aria-label="Image5"
                   src="https://cdn.haitrieu.com/wp-content/uploads/2022/10/Logo-ShopeePay-V.png"
                   alt="SPAY"
                   fill
@@ -120,7 +120,7 @@ export default function PaymentMethods({
               className="flex items-center gap-2 cursor-pointer"
             >
               <div className="w-6 h-6 rounded flex items-center justify-center relative">
-                <Image
+                <Image aria-label="Image6"
                   fill
                   src="https://hienlaptop.com/wp-content/uploads/2024/12/logo-vietcombank-vector-13.png"
                   alt="VCB"

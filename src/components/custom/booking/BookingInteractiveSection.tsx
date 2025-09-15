@@ -329,12 +329,12 @@ export default function BookingInteractiveSection({
                 {discount > 0 || autoPromotionDiscount > 0 ? (
                   <>
                     <span className="text-gray-400 line-through text-sm">
-                      {mockData.pricing.totalPrice.toLocaleString("vi-VN")}đ
+                      {mockData.pricing.totalPrice?.toLocaleString("vi-VN")}đ
                     </span>
                   </>
                 ) : (
                   <span>
-                    {mockData.pricing.totalPrice.toLocaleString("vi-VN")}đ
+                    {mockData.pricing.totalPrice?.toLocaleString("vi-VN")}đ
                   </span>
                 )}
               </div>
@@ -346,10 +346,10 @@ export default function BookingInteractiveSection({
                   {discountInfo.code} (
                   {discountInfo.discountType === "PERCENTAGE"
                     ? `${discountInfo.discountValue}%`
-                    : `${discountInfo.discountValue.toLocaleString("vi-VN")}đ`}
+                    : `${discountInfo.discountValue?.toLocaleString("vi-VN")}đ`}
                   )
                 </span>
-                <span>-{discount.toLocaleString("vi-VN")}đ</span>
+                <span>-{discount?.toLocaleString("vi-VN")}đ</span>
               </div>
             )}
     {autoPromotionDiscount > 0 && selectedAutoPromotion && (
@@ -358,25 +358,25 @@ export default function BookingInteractiveSection({
       {t("Booking.autoPromotion")} (
                   {selectedAutoPromotion.discountType === "PERCENTAGE"
                     ? `${selectedAutoPromotion.discountValue}%`
-                    : `${selectedAutoPromotion.discountValue.toLocaleString(
+                    : `${selectedAutoPromotion.discountValue?.toLocaleString(
                         "vi-VN"
                       )}đ`}
                   )
                 </span>
-                <span>-{autoPromotionDiscount.toLocaleString("vi-VN")}đ</span>
+                <span>-{autoPromotionDiscount?.toLocaleString("vi-VN")}đ</span>
               </div>
             )}
     {pointsDiscount > 0 && (
               <div className="flex justify-between text-blue-600">
         <span>{t("Points.usedPointsLabel", { count: usedPoints })}</span>
-                <span>-{pointsDiscount.toLocaleString("vi-VN")}đ</span>
+                <span>-{pointsDiscount?.toLocaleString("vi-VN")}đ</span>
               </div>
             )}
             <Separator />
             <div className="flex justify-between font-semibold text-lg">
               <span>{t("Booking.totalAmount")}</span>
               <span className="text-green-600">
-                {finalAmount.toLocaleString("vi-VN")}đ
+                {finalAmount?.toLocaleString("vi-VN")}đ
               </span>
             </div>
           </div>
@@ -392,13 +392,14 @@ export default function BookingInteractiveSection({
           )}
 
           <Button
+            aria-label="Confirm Payment"
             className="w-full bg-green-600 hover:bg-green-700 text-white py-3"
             onClick={handleConfirmPayment}
             disabled={paymentLoading || !!paymentLink}
           >
             {paymentLoading ? t("Booking.processing") : t("Booking.confirmPay")}{" "}
             •
-            <span className="ml-2">{finalAmount.toLocaleString("vi-VN")}đ</span>
+            <span className="ml-2">{finalAmount?.toLocaleString("vi-VN")}đ</span>
           </Button>
 
           {paymentLink && (

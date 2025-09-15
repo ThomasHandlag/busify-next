@@ -188,6 +188,7 @@ export default function ResetPasswordPage() {
               type="submit"
               disabled={isSubmitting || newPassword !== confirmPassword}
               className="w-full h-12"
+              aria-label="Reset Password"
             >
               {isSubmitting ? "Đang xử lý..." : "Đặt Lại Mật Khẩu"}
             </Button>
@@ -211,7 +212,11 @@ export default function ResetPasswordPage() {
           <div className="text-center space-y-4">
             <h2 className="text-xl font-bold text-red-600">Thất bại</h2>
             <p>{message}</p>
-            <Button onClick={() => router.push("/login")} className="mt-4">
+            <Button
+              aria-label="Back to Login"
+              onClick={() => router.push("/login")}
+              className="mt-4"
+            >
               Quay lại đăng nhập
             </Button>
           </div>

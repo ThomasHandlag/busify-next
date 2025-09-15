@@ -44,7 +44,7 @@ const AppPage = () => {
       <div className="lg:hidden mb-4">
         <Sheet open={filterOpen} onOpenChange={setFilterOpen}>
           <SheetTrigger asChild>
-            <Button variant="ghost">
+            <Button aria-label="Open Filter" variant="ghost">
               <Filter className="w-5 h-5 mr-2" />
               <LocaleText string="filter" name="Trips" />
             </Button>

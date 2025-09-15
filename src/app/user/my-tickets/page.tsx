@@ -212,15 +212,12 @@ export default function MyTicketsPage() {
 
   const PaginationControls = () => {
     const {
-      currentPage,
-      totalPages,
       totalItems,
-      pageSize,
       hasNext,
       hasPrevious,
     } = paginatedBookings;
-    const startItem = (currentPage - 1) * pageSize + 1;
-    const endItem = Math.min(currentPage * pageSize, totalItems);
+    // const startItem = (currentPage - 1) * pageSize + 1;
+    // const endItem = Math.min(currentPage * pageSize, totalItems);
 
     if (totalItems === 0) return null;
     return (
@@ -238,6 +235,7 @@ export default function MyTicketsPage() {
         </div>
         <div className="flex items-center justify-center gap-2">
           <Button
+            aria-label="Previous Page"
             variant="outline"
             size="sm"
             onClick={() => handlePageChange("prev")}
@@ -254,6 +252,7 @@ export default function MyTicketsPage() {
             {bookingResponse.pageNumber} / {bookingResponse.totalPages}
           </span>
           <Button
+            aria-label="Next Page"
             variant="outline"
             size="sm"
             onClick={() => handlePageChange("next")}
@@ -315,7 +314,10 @@ export default function MyTicketsPage() {
             "Bạn chưa có chuyến đi nào được lên lịch. Hãy đặt vé ngay để khám phá những điểm đến mới!",
           actionButton: (
             <Link aria-label="Book a Ticket" href="/trips">
-              <Button className="bg-green-600 hover:bg-green-700 text-sm sm:text-base">
+              <Button
+                aria-label="Book a Ticket"
+                className="bg-green-600 hover:bg-green-700 text-sm sm:text-base"
+              >
                 Đặt vé ngay
               </Button>
             </Link>
@@ -460,7 +462,10 @@ export default function MyTicketsPage() {
                     khám phá những điểm đến mới!
                   </p>
                   <Link aria-label="Book a Ticket" href="/trips">
-                    <Button className="bg-green-600 hover:bg-green-700 text-sm sm:text-base">
+                    <Button
+                      aria-label="Book a Ticket"
+                      className="bg-green-600 hover:bg-green-700 text-sm sm:text-base"
+                    >
                       Đặt vé ngay
                     </Button>
                   </Link>

@@ -38,7 +38,7 @@ function Calendar({
       formatters={{
         // Use a fixed locale so server and client render the same month label
         formatMonthDropdown: (date) =>
-          date.toLocaleString("vi-VN", { month: "short" }),
+          date?.toLocaleString("vi-VN", { month: "short" }),
         ...formatters,
       }}
       classNames={{
@@ -188,6 +188,7 @@ function CalendarDayButton({
 
   return (
     <Button
+      aria-label={`Select ${day.date.toDateString()}`}
       ref={ref}
       variant="ghost"
       size="icon"
