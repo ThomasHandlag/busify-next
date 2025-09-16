@@ -127,18 +127,8 @@ export default function BookingConfirmation({ params }: PageProps) {
 
         console.log("Trip data from API:", data);
         // Chuyển đổi estimatedDuration từ chuỗi sang số phút
-        const durationMatch = data.result.route.estimated_duration.match(
-          /(\d+)\s*${t("Common.hours")}\s*(\d+)\s*${t("Common.minutes")}|(\d+)\s*${t("Common.hours")}|(\d+)\s*${t("Common.minutes")}/
-        );
-
-        let totalMinutes = 0;
-        if (durationMatch) {
-          const hours =
-            Number(durationMatch[1]) || Number(durationMatch[3]) || 0;
-          const minutes =
-            Number(durationMatch[2]) || Number(durationMatch[4]) || 0;
-          totalMinutes = hours * 60 + minutes;
-        } else {
+        let totalMinutes = Number(data.result.route.estimated_duration);
+        if (isNaN(totalMinutes)) {
           console.warn(
             "Định dạng estimatedDuration không hợp lệ:",
             data.result.route.estimated_duration
@@ -203,8 +193,6 @@ export default function BookingConfirmation({ params }: PageProps) {
 
     fetchTripData();
   }, [tripId, searchParams]);
-
-  console.log("bookingData", bookingData);
 
   if (loading)
     return <div className="text-center py-8">{t("Common.loading")}</div>;
