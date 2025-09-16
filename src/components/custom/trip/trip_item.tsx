@@ -17,14 +17,20 @@ const TripItem = ({ trip }: { trip: TripItemProps }) => {
   };
 
   const getAvailabilityText = (seats: number) => {
-    if (seats <= 5) return (<LocaleText string="fewSeats" name="Trips.tripItem" />);
-    if (seats <= 10) return (<LocaleText string="limitedSeats" name="Trips.tripItem" />);
-    return (<LocaleText string="availableSeats" name="Trips.tripItem" />);
+    if (seats <= 5)
+      return <LocaleText string="fewSeats" name="Trips.tripItem" />;
+    if (seats <= 10)
+      return <LocaleText string="limitedSeats" name="Trips.tripItem" />;
+    return <LocaleText string="availableSeats" name="Trips.tripItem" />;
   };
 
-  // Parse ISO 8601 format dates properly
-  const departureDateObj = new Date(trip.departure_time);
-  const arrivalDateObj = new Date(trip.arrival_time);
+  // Parse ISO 8601 format dates properly and convert to VN time (UTC+7)
+  const departureDateObj = new Date(
+    new Date(trip.departure_time).getTime() + 7 * 60 * 60 * 1000
+  );
+  const arrivalDateObj = new Date(
+    new Date(trip.arrival_time).getTime() + 7 * 60 * 60 * 1000
+  );
 
   // Format the times
   const departure_time = format(departureDateObj, "HH:mm");
@@ -115,11 +121,17 @@ const TripItem = ({ trip }: { trip: TripItemProps }) => {
           <div className="flex items-center gap-3 text-xs text-gray-500">
             <span className="flex items-center gap-1">
               <Clock className="w-3 h-3" />
-              <span><LocaleText string="duration" name="Trips.tripItem" /></span>: {duration}
+              <span>
+                <LocaleText string="duration" name="Trips.tripItem" />
+              </span>
+              : {duration}
             </span>
             <span className="flex items-center gap-1">
               <Users className="w-3 h-3" />
-              <span><LocaleText string="seats" name="Trips.tripItem" /></span>: {trip.available_seats}
+              <span>
+                <LocaleText string="seats" name="Trips.tripItem" />
+              </span>
+              : {trip.available_seats}
             </span>
           </div>
 

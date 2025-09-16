@@ -124,17 +124,8 @@ export default function BookingConfirmation({ params }: PageProps) {
         const data: TripApiResponse = await response.json();
 
         // Chuyển đổi estimatedDuration từ chuỗi sang số phút
-        const durationMatch = data.result.route.estimated_duration.match(
-          /(\d+)\s*${t("Common.hours")}\s*(\d+)\s*${t("Common.minutes")}|(\d+)\s*${t("Common.hours")}|(\d+)\s*${t("Common.minutes")}/
-        );
-        let totalMinutes = 0;
-        if (durationMatch) {
-          const hours =
-            Number(durationMatch[1]) || Number(durationMatch[3]) || 0;
-          const minutes =
-            Number(durationMatch[2]) || Number(durationMatch[4]) || 0;
-          totalMinutes = hours * 60 + minutes;
-        } else {
+        let totalMinutes = Number(data.result.route.estimated_duration);
+        if (isNaN(totalMinutes)) {
           console.warn(
             "Định dạng estimatedDuration không hợp lệ:",
             data.result.route.estimated_duration
@@ -161,7 +152,9 @@ export default function BookingConfirmation({ params }: PageProps) {
         const durationHours = Math.floor(totalMinutes / 60);
         const durationMinutes = totalMinutes % 60;
         const durationString = `${durationHours} ${t("Common.hours")}${
-          durationMinutes > 0 ? ` ${durationMinutes} ${t("Common.minutes")}` : ""
+          durationMinutes > 0
+            ? ` ${durationMinutes} ${t("Common.minutes")}`
+            : ""
         }`;
 
         setBookingData({
@@ -197,7 +190,8 @@ export default function BookingConfirmation({ params }: PageProps) {
     fetchTripData();
   }, [tripId, searchParams]);
 
-  if (loading) return <div className="text-center py-8">{t("Common.loading")}</div>;
+  if (loading)
+    return <div className="text-center py-8">{t("Common.loading")}</div>;
   if (!bookingData)
     return (
       <div className="flex justify-center text-center py-8">
@@ -210,7 +204,9 @@ export default function BookingConfirmation({ params }: PageProps) {
       <div className="bg-white shadow-sm border-b w-full">
         <div className="px-4 py-4">
           <div className="flex items-center gap-4">
-            <span className="text-gray-600">{t("Booking.confirmation.title")}</span>
+            <span className="text-gray-600">
+              {t("Booking.confirmation.title")}
+            </span>
           </div>
         </div>
       </div>
@@ -244,7 +240,9 @@ export default function BookingConfirmation({ params }: PageProps) {
                   <div className="flex items-center gap-3">
                     <Clock className="w-4 h-4 text-gray-500" />
                     <div>
-                      <p className="text-sm text-gray-500">{t("Booking.departure")}</p>
+                      <p className="text-sm text-gray-500">
+                        {t("Booking.departure")}
+                      </p>
                       <p className="font-medium">
                         {bookingData.trip.departureTime} -
                         {bookingData.trip.date}
@@ -254,7 +252,9 @@ export default function BookingConfirmation({ params }: PageProps) {
                   <div className="flex items-center gap-3">
                     <Clock className="w-4 h-4 text-gray-500" />
                     <div>
-                      <p className="text-sm text-gray-500">{t("Booking.arrival")}</p>
+                      <p className="text-sm text-gray-500">
+                        {t("Booking.arrival")}
+                      </p>
                       <p className="font-medium">
                         {bookingData.trip.arrivalTime} - {bookingData.trip.date}
                       </p>
@@ -292,17 +292,23 @@ export default function BookingConfirmation({ params }: PageProps) {
               </CardHeader>
               <CardContent className="space-y-3">
                 <div>
-                  <Label className="text-sm text-gray-500">{t("Form.fullName")}</Label>
+                  <Label className="text-sm text-gray-500">
+                    {t("Form.fullName")}
+                  </Label>
                   <p className="font-medium">
                     {bookingData.passenger.fullName}
                   </p>
                 </div>
                 <div>
-                  <Label className="text-sm text-gray-500">{t("Form.phone")}</Label>
+                  <Label className="text-sm text-gray-500">
+                    {t("Form.phone")}
+                  </Label>
                   <p className="font-medium">{bookingData.passenger.phone}</p>
                 </div>
                 <div>
-                  <Label className="text-sm text-gray-500">{t("Form.email")}</Label>
+                  <Label className="text-sm text-gray-500">
+                    {t("Form.email")}
+                  </Label>
                   <p className="font-medium">{bookingData.passenger.email}</p>
                 </div>
               </CardContent>
