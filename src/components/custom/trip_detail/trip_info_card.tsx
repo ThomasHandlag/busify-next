@@ -45,6 +45,22 @@ const TripInfoCard = ({ tripDetail }: { tripDetail: TripDetail }) => {
   const busImages = tripDetail.bus.images?.map((img) => img.url) || [];
   const [thumbsSwiper, setThumbsSwiper] = useState<any>(null);
 
+  const formatDuration = (minutes: number) => {
+    if (isNaN(minutes) || minutes < 0) {
+      return "N/A";
+    }
+    const hours = Math.floor(minutes / 60);
+    const mins = minutes % 60;
+    let result = "";
+    if (hours > 0) {
+      result += `${hours} ${t("Common.hours")} `;
+    }
+    if (mins > 0) {
+      result += `${mins} ${t("Common.minutes")}`;
+    }
+    return result.trim() || `0 ${t("Common.minutes")}`;
+  };
+
   const formatTime = (dateString: string) => {
     const date = new Date(dateString);
     return date.toLocaleTimeString("vi-VN", {
@@ -216,7 +232,7 @@ const TripInfoCard = ({ tripDetail }: { tripDetail: TripDetail }) => {
               </div>
               <div className="flex items-center justify-center text-sm text-gray-600">
                 <Clock className="w-4 h-4 mr-1" />
-                {tripDetail.route.estimated_duration}
+                {formatDuration(Number(tripDetail.route.estimated_duration))}
               </div>
             </div>
 
@@ -286,7 +302,7 @@ const TripInfoCard = ({ tripDetail }: { tripDetail: TripDetail }) => {
               <Clock className="w-5 h-5 text-orange-600" />
               <div>
                 <p className="font-medium">
-                  {tripDetail.route.estimated_duration}
+                  {formatDuration(Number(tripDetail.route.estimated_duration))}
                 </p>
                 <p className="text-sm text-gray-500">
                   {t("TripDetail.duration")}

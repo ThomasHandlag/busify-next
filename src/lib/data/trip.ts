@@ -179,10 +179,10 @@ export async function getTripDetail(tripId: number): Promise<TripDetail> {
 }
 
 export async function getSimilarTrips(
-  routeId: number
+  tripId: number
 ): Promise<TripItemProps[]> {
   try {
-    const res = await api.get(`api/trips/similar?routeId=${routeId}`);
+    const res = await api.get(`api/trips/similar/${tripId}`);
     return res.data.result as TripItemProps[];
   } catch (error) {
     console.error("Error fetching similar trips:", error);

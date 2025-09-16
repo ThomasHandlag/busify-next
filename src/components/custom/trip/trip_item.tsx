@@ -24,9 +24,13 @@ const TripItem = ({ trip }: { trip: TripItemProps }) => {
     return <LocaleText string="availableSeats" name="Trips.tripItem" />;
   };
 
-  // Parse ISO 8601 format dates properly
-  const departureDateObj = new Date(trip.departure_time);
-  const arrivalDateObj = new Date(trip.arrival_time);
+  // Parse ISO 8601 format dates properly and convert to VN time (UTC+7)
+  const departureDateObj = new Date(
+    new Date(trip.departure_time).getTime() + 7 * 60 * 60 * 1000
+  );
+  const arrivalDateObj = new Date(
+    new Date(trip.arrival_time).getTime() + 7 * 60 * 60 * 1000
+  );
 
   // Format the times
   const departure_time = format(departureDateObj, "HH:mm");
