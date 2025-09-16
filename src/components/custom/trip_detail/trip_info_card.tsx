@@ -1,6 +1,6 @@
 "use client";
 
-import React from "react";
+import React, { useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "../../ui/card";
 import {
   Bus,
@@ -22,10 +22,15 @@ import dynamic from "next/dynamic";
 import { useTranslations } from "next-intl";
 
 import { Swiper, SwiperSlide } from "swiper/react";
-import { Navigation as SwiperNavigation, Pagination } from "swiper/modules";
+import {
+  Navigation as SwiperNavigation,
+  Pagination,
+  Thumbs,
+} from "swiper/modules";
 import "swiper/css";
 import "swiper/css/navigation";
 import "swiper/css/pagination";
+import "swiper/css/thumbs";
 
 const RouteMap = dynamic(() => import("../google_map"), {
   ssr: false,
@@ -38,6 +43,7 @@ const TripInfoCard = ({ tripDetail }: { tripDetail: TripDetail }) => {
   const t = useTranslations();
 
   const busImages = tripDetail.bus.images?.map((img) => img.url) || [];
+  const [thumbsSwiper, setThumbsSwiper] = useState<any>(null);
 
   const formatTime = (dateString: string) => {
     const date = new Date(dateString);
@@ -299,29 +305,58 @@ const TripInfoCard = ({ tripDetail }: { tripDetail: TripDetail }) => {
               {t("TripDetail.busImages")}
             </h4>
             {busImages.length > 0 ? (
-              <Swiper
-                modules={[SwiperNavigation, Pagination]}
-                spaceBetween={16}
-                slidesPerView={1}
-                navigation
-                pagination={{ clickable: true }}
-                className="rounded-lg overflow-hidden"
-              >
-                {busImages.map((url, index) => (
-                  <SwiperSlide key={index}>
-                    <Image aria-label="Image31"
-                      src={url}
-                      alt={tripDetail.bus.name ?? "Bus Image"}
-                      width={800}
-                      height={450}
-                      className="w-full h-64 md:h-100 object-cover rounded-lg"
-                      loading={index === 0 ? "eager" : "lazy"}
-                      placeholder="blur"
-                      blurDataURL="data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD..."
-                    />
-                  </SwiperSlide>
-                ))}
-              </Swiper>
+              <>
+                {/* Main gallery */}
+                <Swiper
+                  modules={[Thumbs]}
+                  spaceBetween={16}
+                  loop
+                  thumbs={{ swiper: thumbsSwiper }}
+                  className="rounded-lg overflow-hidden mb-4"
+                >
+                  {busImages.map((url, index) => (
+                    <SwiperSlide key={index}>
+                      <Image
+                        src={url}
+                        alt={tripDetail.bus.name ?? "Bus Image"}
+                        width={800}
+                        height={450}
+                        className="w-full h-50 md:h-100 object-cover rounded-lg"
+                        loading={index === 0 ? "eager" : "lazy"}
+                        placeholder="blur"
+                        blurDataURL="data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD..."
+                      />
+                    </SwiperSlide>
+                  ))}
+                </Swiper>
+
+                {/* Thumbnails */}
+                <Swiper
+                  modules={[Thumbs]}
+                  onSwiper={setThumbsSwiper}
+                  spaceBetween={10}
+                  freeMode
+                  watchSlidesProgress
+                  breakpoints={{
+                    320: { slidesPerView: 2 }, // mobile
+                    640: { slidesPerView: 3 }, // tablet
+                    1024: { slidesPerView: 4 }, // desktop
+                  }}
+                  className="cursor-pointer"
+                >
+                  {busImages.map((url, index) => (
+                    <SwiperSlide key={index} className="!w-24">
+                      <Image
+                        src={url}
+                        alt={`Thumbnail ${index + 1}`}
+                        width={100}
+                        height={60}
+                        className="w-full h-16 object-cover rounded-md border border-gray-200"
+                      />
+                    </SwiperSlide>
+                  ))}
+                </Swiper>
+              </>
             ) : (
               <p className="text-sm text-gray-500">
                 {t("TripDetail.noBusImages")}
