@@ -395,6 +395,38 @@
     "policyDesc3": "Guaranteed reserved seats",
     "policyDesc4": "Secure payment"
   },
+  "PolicyDialog": {
+    "trigger": "terms and policy",
+    "title": "Terms and Policy",
+    "general": {
+      "title": "General Terms",
+      "text": "By registering a contract with Busify, you agree to comply with all terms and conditions outlined in this document."
+    },
+    "operator": {
+      "title": "Operator Rights and Obligations",
+      "point1": "Provide safe and quality transportation services",
+      "point2": "Follow the committed schedule",
+      "point3": "Maintain vehicle standards and driver team",
+      "point4": "Report business activities periodically"
+    },
+    "commission": {
+      "title": "Commission Policy",
+      "text": "Busify collects a 5-10% commission on each ticket sold through the platform. Settlements are made monthly."
+    },
+    "termination": {
+      "title": "Contract Termination",
+      "text": "Either party may terminate the contract with 30 days' notice. In the event of a serious breach, the contract may be terminated immediately."
+    },
+    "privacy": {
+      "title": "Data Privacy",
+      "text": "Busify is committed to protecting customer information and will not share it with third parties without consent."
+    },
+    "dispute": {
+      "title": "Dispute Resolution",
+      "text": "Any disputes will be resolved through negotiation. If no agreement is reached, the matter will be brought before a competent court."
+    },
+    "understood": "Understood"
+  },
   "TripDetail": {
     "busLayout": "Bus Layout",
     "selectSeat": "Select Your Seat",
@@ -516,7 +548,8 @@
       "vatCodeNote": "VAT code must be 10-15 digits",
       "attachmentLabel": "Attachment",
       "attachmentNote": "Accepts PDF, DOC, DOCX, JPG, PNG (max 10MB)",
-      "policyAgreement": "I agree to the {policy} of Busify",
+      "policyAgreement1": "I agree to the ",
+      "policyAgreement2": " of Busify",
       "termsAgreement": "I agree to the Terms of Service and Privacy Policy",
       "newsletterText": "I want to receive updates and marketing communications",
       "creatingContract": "Creating contract...",

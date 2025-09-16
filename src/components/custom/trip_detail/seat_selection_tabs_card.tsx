@@ -107,7 +107,7 @@ export function SeatSelectionTabsCard({
       .min(1, "Vui lòng nhập số điện thoại")
       .regex(/^\d{10}$/, "Số điện thoại phải gồm 10 số"),
     fullName: z.string().min(1, "Vui lòng nhập họ tên"),
-    email: z.string().email("Email không hợp lệ"),
+    email: z.email("Email không hợp lệ"),
   });
 
   const form = useForm<PassengerInfo>({
@@ -463,16 +463,17 @@ export function SeatSelectionTabsCard({
             </div>
             <div className="text-right">
               <p className="text-lg font-bold text-green-600">
-                {totalPrice.toLocaleString("vi-VN")}đ
+                {totalPrice?.toLocaleString("vi-VN")}đ
               </p>
               <p className="text-xs text-gray-500">
                 {selectedSeats.length} ${t("Booking.seats")} ×{" "}
-                {pricePerSeat.toLocaleString("vi-VN")}đ
+                {pricePerSeat?.toLocaleString("vi-VN")}đ
               </p>
             </div>
           </div>
 
           <Button
+            aria-label="Continue to booking"
             className="w-full bg-green-600 hover:bg-green-700"
             onClick={form.handleSubmit(onSubmit)}
             disabled={selectedSeats.length === 0}

@@ -396,6 +396,38 @@
     "policyDesc3": "Đảm bảo chỗ ngồi đã đặt",
     "policyDesc4": "Thanh toán an toàn"
   },
+  "PolicyDialog": {
+    "trigger": "chính sách và điều khoản",
+    "title": "Chính sách và Điều khoản sử dụng",
+    "general": {
+      "title": "Điều khoản chung",
+      "text": "Bằng việc đăng ký hợp đồng với Busify, bạn đồng ý tuân thủ tất cả các điều khoản và điều kiện trong tài liệu này."
+    },
+    "operator": {
+      "title": "Quyền và nghĩa vụ của nhà xe",
+      "point1": "Cung cấp dịch vụ vận chuyển chất lượng và an toàn",
+      "point2": "Tuân thủ lịch trình đã cam kết",
+      "point3": "Duy trì tiêu chuẩn xe và đội ngũ lái xe",
+      "point4": "Báo cáo định kỳ về hoạt động kinh doanh"
+    },
+    "commission": {
+      "title": "Chính sách hoa hồng",
+      "text": "Busify thu phí hoa hồng 5-10% trên mỗi vé bán qua nền tảng. Thanh toán thực hiện hàng tháng."
+    },
+    "termination": {
+      "title": "Chính sách hủy hợp đồng",
+      "text": "Hai bên có quyền chấm dứt hợp đồng với thông báo trước 30 ngày. Vi phạm nghiêm trọng có thể chấm dứt ngay."
+    },
+    "privacy": {
+      "title": "Bảo mật thông tin",
+      "text": "Busify cam kết bảo mật thông tin khách hàng và không chia sẻ với bên thứ ba khi không có sự đồng ý."
+    },
+    "dispute": {
+      "title": "Giải quyết tranh chấp",
+      "text": "Mọi tranh chấp sẽ được thương lượng. Nếu không đạt được thỏa thuận, sẽ đưa ra tòa án có thẩm quyền."
+    },
+    "understood": "Đã hiểu"
+  },
   "TripDetail": {
     "busLayout": "Sơ Đồ Xe",
     "selectSeat": "Chọn Ghế Của Bạn",
@@ -520,7 +552,8 @@
       "vatCodeNote": "Mã VAT phải từ 10-15 chữ số",
       "attachmentLabel": "Tệp Đính Kèm",
       "attachmentNote": "Chấp nhận PDF, DOC, DOCX, JPG, PNG (tối đa 10MB)",
-      "policyAgreement": "Tôi đồng ý với {policy} của Busify",
+      "policyAgreement1": "Tôi đã đọc và đồng ý với các ",
+      "policyAgreement2": " của Busify",
       "termsAgreement": "Tôi đồng ý với Điều Khoản Dịch Vụ và Chính Sách Bảo Mật",
       "newsletterText": "Tôi muốn nhận cập nhật và thông tin tiếp thị",
       "creatingContract": "Đang Tạo Hợp Đồng...",

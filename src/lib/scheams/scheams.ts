@@ -2,7 +2,7 @@ import { z } from "zod";
 
 // Schema base (chung cho cả user thường và bus operator)
 const baseSchema = z.object({
-  email: z.string().email("Địa chỉ email không hợp lệ").min(2).max(50),
+  email: z.email("Địa chỉ email không hợp lệ").min(2).max(50),
   phone: z.string().optional(),
   address: z.string().optional(),
   startDate: z.string().optional(),

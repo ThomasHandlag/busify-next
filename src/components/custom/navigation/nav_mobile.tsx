@@ -45,7 +45,7 @@ const NavMobile = ({
     <div className="lg:hidden flex justify-between items-center w-full">
       <Sheet open={isOpen} onOpenChange={setIsOpen}>
         <SheetTrigger asChild>
-          <Button variant="ghost" size="icon">
+          <Button aria-label="Open navigation menu" variant="ghost" size="icon">
             <MenuIcon className="h-6 w-6" />
             <span className="sr-only">Toggle navigation menu</span>
           </Button>
@@ -146,6 +146,7 @@ const NavMobile = ({
               {session.status !== "authenticated" ? (
                 <>
                   <Button
+                    aria-label="Sign In"
                     variant="outline"
                     className="w-full justify-start"
                     asChild
@@ -160,6 +161,7 @@ const NavMobile = ({
                     </Link>
                   </Button>
                   <Button
+                    aria-label="Sign Up"
                     className="w-full bg-green-600 hover:bg-green-700"
                     asChild
                   >
@@ -170,6 +172,7 @@ const NavMobile = ({
                 </>
               ) : (
                 <Button
+                  aria-label="Sign Out"
                   variant="outline"
                   onClick={() => signOut()}
                   className="flex items-center space-x-2"
@@ -189,13 +192,18 @@ const NavMobile = ({
       </div>
 
       {session.status === "authenticated" ? (
-        <Button variant="ghost" size="sm" asChild>
+        <Button
+          aria-label="Open user dashboard"
+          variant="ghost"
+          size="sm"
+          asChild
+        >
           <Link aria-label={t("Header.dashboard")} href={`/user`}>
             <User className="w-5 h-5" />
           </Link>
         </Button>
       ) : (
-        <Button variant="ghost" size="sm" asChild>
+        <Button aria-label="Open login page" variant="ghost" size="sm" asChild>
           <Link aria-label={t("Auth.login.title")} href="/login">
             {t("Auth.login.title")}
           </Link>

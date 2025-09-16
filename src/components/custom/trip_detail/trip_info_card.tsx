@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect, useMemo, useState } from "react";
+import React from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "../../ui/card";
 import {
   Bus,
@@ -396,9 +396,9 @@ const TripInfoCard = ({ tripDetail }: { tripDetail: TripDetail }) => {
               >
                 {busImages.map((url, index) => (
                   <SwiperSlide key={index}>
-                    <Image
+                    <Image aria-label="Image31"
                       src={url}
-                      alt={tripDetail.bus.name}
+                      alt={tripDetail.bus.name ?? "Bus Image"}
                       width={800}
                       height={450}
                       className="w-full h-64 md:h-100 object-cover rounded-lg"

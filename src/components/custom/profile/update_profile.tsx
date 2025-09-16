@@ -72,7 +72,10 @@ const UpdateProfileDialog = ({ userProfile }: UpdateProfileDialogProps) => {
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
-        <Button className="bg-green-600 hover:bg-green-700">
+        <Button
+          aria-label="Edit Profile"
+          className="bg-green-600 hover:bg-green-700"
+        >
           <Edit className="w-4 h-4 mr-2" />
           {t("editProfile")}
         </Button>
@@ -119,6 +122,7 @@ const UpdateProfileDialog = ({ userProfile }: UpdateProfileDialogProps) => {
           </div>
           <DialogFooter>
             <Button
+              aria-label="Cancel"
               type="button"
               variant="outline"
               onClick={() => setOpen(false)}
@@ -126,6 +130,7 @@ const UpdateProfileDialog = ({ userProfile }: UpdateProfileDialogProps) => {
               Cancel
             </Button>
             <Button
+              aria-label="Update Profile"
               type="submit"
               className="bg-green-600 hover:bg-green-700"
               disabled={isLoading}

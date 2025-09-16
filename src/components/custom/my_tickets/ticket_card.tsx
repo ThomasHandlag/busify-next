@@ -303,17 +303,19 @@ export const TicketCard = ({
         {/* Actions Row - Compact */}
         <div className="flex gap-2">
           <Button
+            aria-label="View Ticket Details"
             variant="outline"
             size="sm"
             onClick={onViewDetails}
             className="flex-1 h-8 text-xs"
           >
             {t("MyTickets.details")}
-          </Button>{" "}
+          </Button>
           {(booking.status === "confirmed" || booking.status === "pending") &&
             !isPast && (
               <Button
                 variant="destructive"
+                aria-label="Cancel Booking"
                 size="sm"
                 onClick={() => setIsCancelConfirmOpen(true)} // Mở dialog xác nhận thay vì hủy ngay
                 disabled={isCancelling} // Vô hiệu hóa khi đang hủy
@@ -321,23 +323,15 @@ export const TicketCard = ({
               >
                 {isCancelling
                   ? t("MyTickets.cancelling")
-                  : t("MyTickets.cancel")}{" "}
+                  : t("MyTickets.cancel")}
                 {/* Text động */}
               </Button>
             )}
-          {booking.status === "confirmed" && !isPast && (
-            <Button
-              variant="destructive"
-              size="sm"
-              className="h-8 px-3 text-xs"
-            >
-              Hủy
-            </Button>
-          )}
           {booking.status === "completed" && (
             <>
               <Button
                 variant="default"
+                aria-label="Rate Trip"
                 size="sm"
                 onClick={() => router.push(`/trips/${booking.trip_id}`)} // Thêm onClick để redirect đến /trips/{id}
                 className="bg-green-600 hover:bg-green-700 h-8 px-3 text-xs"
@@ -351,6 +345,7 @@ export const TicketCard = ({
                 <DialogTrigger asChild>
                   <Button
                     variant="outline"
+                    aria-label="Submit a Complaint"
                     size="sm"
                     className="h-8 px-3 text-xs"
                   >
@@ -387,6 +382,7 @@ export const TicketCard = ({
                       />
                     </div>
                     <Button
+                      aria-label="Submit Complaint"
                       onClick={handleSubmitComplaint}
                       disabled={
                         isSubmittingComplaint ||
@@ -421,6 +417,7 @@ export const TicketCard = ({
             </DialogHeader>
             <DialogFooter>
               <Button
+                aria-label="Cancel"
                 variant="outline"
                 onClick={() => setIsCancelConfirmOpen(false)}
                 disabled={isCancelling}
@@ -428,6 +425,7 @@ export const TicketCard = ({
                 {t("Common.cancel")}
               </Button>
               <Button
+                aria-label="Confirm Cancel Booking"
                 variant="destructive"
                 onClick={handleCancelBooking}
                 disabled={isCancelling}

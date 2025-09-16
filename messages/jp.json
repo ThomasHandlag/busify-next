@@ -395,6 +395,38 @@
     "policyDesc3": "座席予約保証",
     "policyDesc4": "安全な支払い"
   },
+  "PolicyDialog": {
+    "trigger": "利用規約とポリシー",
+    "title": "利用規約とポリシー",
+    "general": {
+      "title": "一般条項",
+      "text": "Busifyとの契約登録により、本書に記載されたすべての条項に同意したものとみなされます。"
+    },
+    "operator": {
+      "title": "事業者の権利と義務",
+      "point1": "安全で高品質な輸送サービスの提供",
+      "point2": "合意したスケジュールの遵守",
+      "point3": "車両基準と運転者の維持",
+      "point4": "事業活動の定期報告"
+    },
+    "commission": {
+      "title": "手数料ポリシー",
+      "text": "Busifyはプラットフォームで販売された各チケットに対して5～10％の手数料を徴収します。精算は毎月行われます。"
+    },
+    "termination": {
+      "title": "契約解除ポリシー",
+      "text": "いずれの当事者も30日前の通知で契約を解除できます。重大な違反がある場合は即時解除される場合があります。"
+    },
+    "privacy": {
+      "title": "情報の機密保持",
+      "text": "Busifyはお客様の情報を保護し、同意なく第三者と共有しません。"
+    },
+    "dispute": {
+      "title": "紛争解決",
+      "text": "発生した紛争は協議により解決します。合意に至らない場合は、管轄裁判所に付託します。"
+    },
+    "understood": "理解しました"
+  },
   "TripDetail": {
     "busLayout": "バス座席表",
     "selectSeat": "座席を選択",
@@ -515,7 +547,8 @@
       "vatCodeNote": "VATコードは10-15桁である必要があります",
       "attachmentLabel": "添付ファイル",
       "attachmentNote": "PDF、DOC、DOCX、JPG、PNGに対応（最大10MB）",
-      "policyAgreement": "Busifyの{policy}に同意します",
+      "policyAgreement1": "Busifyの利用規約とプライバシーポリシーに同意します ",
+      "policyAgreement2": " Busifyの運営者契約条件に同意します",
       "termsAgreement": "利用規約とプライバシーポリシーに同意します",
       "newsletterText": "更新情報とマーケティング通信を受け取りたい",
       "creatingContract": "契約を作成中...",

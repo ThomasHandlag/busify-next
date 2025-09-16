@@ -525,6 +525,7 @@ export function BookingDetailSheet({
               <div className="flex flex-col gap-3">
                 {canDownload && (
                   <Button
+                    aria-label="Download Ticket PDF"
                     onClick={handleDownloadTicket}
                     variant="outline"
                     className="w-full"
@@ -537,6 +538,7 @@ export function BookingDetailSheet({
 
                 {canReview && (
                   <Button
+                    aria-label="Write a Review"
                     onClick={handleWriteReview}
                     variant="outline"
                     className="w-full"
@@ -552,7 +554,11 @@ export function BookingDetailSheet({
                     onOpenChange={setIsComplaintModalOpen}
                   >
                     <DialogTrigger asChild>
-                      <Button variant="outline" className="w-full">
+                      <Button
+                        aria-label="Submit a Complaint"
+                        variant="outline"
+                        className="w-full"
+                      >
                         <AlertTriangle className="w-4 h-4 mr-2" />
                         {t("MyTickets.submitComplaint")}
                       </Button>
@@ -593,6 +599,7 @@ export function BookingDetailSheet({
                           />
                         </div>
                         <Button
+                          aria-label="Submit Complaint"
                           onClick={handleSubmitComplaint}
                           disabled={
                             isSubmittingComplaint ||
@@ -611,6 +618,7 @@ export function BookingDetailSheet({
 
                 {canCancel && (
                   <Button
+                    aria-label="Cancel Booking"
                     onClick={() => setIsCancelConfirmOpen(true)}
                     disabled={isLoading}
                     variant="destructive"
@@ -642,6 +650,7 @@ export function BookingDetailSheet({
           </DialogHeader>
           <DialogFooter>
             <Button
+              aria-label="Cancel"
               variant="outline"
               onClick={() => setIsCancelConfirmOpen(false)}
               disabled={isLoading}
@@ -649,6 +658,7 @@ export function BookingDetailSheet({
               {t("MyTickets.cancel")}
             </Button>
             <Button
+              aria-label="Confirm Cancel Booking"
               variant="destructive"
               onClick={handleCancelBooking}
               disabled={isLoading}
