@@ -51,8 +51,18 @@ const TripItem = ({ trip }: { trip: TripItemProps }) => {
     <Card className="hover:shadow-md transition-all duration-200 border-l-4 border-l-green-500 cursor-pointer">
       <CardContent className="p-4">
         {/* Header Row - Compact */}
-        <div className="flex justify-between items-start mb-3">
-          <div className="flex-1 min-w-0 pr-3">
+        <div className="flex items-start mb-3 gap-3">
+          {/* Avatar */}
+          {trip.operator_avatar && (
+            <img
+              src={trip.operator_avatar}
+              alt={trip.operator_name}
+              className="w-10 h-10 rounded-full object-cover flex-shrink-0 border border-gray-200"
+            />
+          )}
+
+          {/* Info */}
+          <div className="flex-1 min-w-0">
             <h3 className="text-sm font-bold text-gray-900 mb-1 truncate">
               {trip.operator_name}
             </h3>
@@ -67,6 +77,8 @@ const TripItem = ({ trip }: { trip: TripItemProps }) => {
               </span>
             </div>
           </div>
+
+          {/* Price + Seats */}
           <div className="flex flex-col items-end gap-1">
             <Badge
               className={`${getAvailabilityColor(

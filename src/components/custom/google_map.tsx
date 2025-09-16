@@ -38,7 +38,6 @@ const Popup = dynamic(() => import("react-leaflet").then((mod) => mod.Popup), {
 
 // Định nghĩa interface rõ ràng
 
-
 interface RouteMapProps {
   startLocation: Location;
   endLocation: Location;
