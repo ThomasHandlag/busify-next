@@ -124,12 +124,13 @@ export default function BookingConfirmation({ params }: PageProps) {
         const data: TripApiResponse = await response.json();
 
         // Chuyển đổi estimatedDuration từ chuỗi sang số phút
-        const totalMinutes = Number(data.result.route.estimated_duration);
+        let totalMinutes = Number(data.result.route.estimated_duration);
         if (isNaN(totalMinutes)) {
           console.warn(
             "Định dạng estimatedDuration không hợp lệ:",
             data.result.route.estimated_duration
           );
+          totalMinutes = 0;
         }
 
         // Chuyển đổi dữ liệu
