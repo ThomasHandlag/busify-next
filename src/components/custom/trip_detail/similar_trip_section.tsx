@@ -6,8 +6,8 @@ import { getSimilarTrips } from "@/lib/data/trip";
 import Link from "next/link";
 import LocaleText from "../locale_text";
 
-export async function SimilarTripsSection({ routeId }: { routeId: number }) {
-  const trips: TripItemProps[] = await getSimilarTrips(routeId);
+export async function SimilarTripsSection({ tripId }: { tripId: number }) {
+  const trips: TripItemProps[] = await getSimilarTrips(tripId);
 
   if (!trips || trips.length === 0) {
     return (
