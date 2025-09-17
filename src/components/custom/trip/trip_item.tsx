@@ -8,6 +8,7 @@ import { format } from "date-fns";
 import { TripItemProps } from "@/lib/data/trip";
 import Link from "next/link";
 import LocaleText from "../locale_text";
+import Image from "next/image";
 
 const TripItem = ({ trip }: { trip: TripItemProps }) => {
   const getAvailabilityColor = (seats: number) => {
@@ -15,6 +16,8 @@ const TripItem = ({ trip }: { trip: TripItemProps }) => {
     if (seats <= 10) return "bg-yellow-100 text-yellow-700";
     return "bg-green-100 text-green-700";
   };
+
+  console.log("Trip Data:", trip);
 
   const getAvailabilityText = (seats: number) => {
     if (seats <= 5)
@@ -25,16 +28,20 @@ const TripItem = ({ trip }: { trip: TripItemProps }) => {
   };
 
   // Parse ISO 8601 format dates properly and convert to VN time (UTC+7)
-  const departureDateObj = new Date(
-    new Date(trip.departure_time).getTime() + 7 * 60 * 60 * 1000
-  );
-  const arrivalDateObj = new Date(
-    new Date(trip.arrival_time).getTime() + 7 * 60 * 60 * 1000
-  );
+  const departureDateObj = new Date(trip.departure_time);
+  const arrivalDateObj = new Date(trip.arrival_time);
 
   // Format the times
-  const departure_time = format(departureDateObj, "HH:mm");
-  const arrival_time = format(arrivalDateObj, "HH:mm");
+  const departure_time = departureDateObj.toLocaleString("vi-VN", {
+    hour: "2-digit",
+    minute: "2-digit",
+    hour12: false,
+  });
+  const arrival_time = arrivalDateObj.toLocaleString("vi-VN", {
+    hour: "2-digit",
+    minute: "2-digit",
+    hour12: false,
+  });
 
   // Calculate duration correctly
   const trip_duration_minutes = Math.abs(
@@ -54,7 +61,9 @@ const TripItem = ({ trip }: { trip: TripItemProps }) => {
         <div className="flex items-start mb-3 gap-3">
           {/* Avatar */}
           {trip.operator_avatar && (
-            <img
+            <Image
+              width={10}
+              height={10}
               src={trip.operator_avatar}
               alt={trip.operator_name}
               className="w-10 h-10 rounded-full object-cover flex-shrink-0 border border-gray-200"

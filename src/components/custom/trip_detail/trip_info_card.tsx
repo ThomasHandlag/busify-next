@@ -22,15 +22,12 @@ import dynamic from "next/dynamic";
 import { useTranslations } from "next-intl";
 
 import { Swiper, SwiperSlide } from "swiper/react";
-import {
-  Navigation as SwiperNavigation,
-  Pagination,
-  Thumbs,
-} from "swiper/modules";
+import { Thumbs } from "swiper/modules";
 import "swiper/css";
 import "swiper/css/navigation";
 import "swiper/css/pagination";
 import "swiper/css/thumbs";
+import { type Swiper as SwiperT } from "swiper/types";
 
 const RouteMap = dynamic(() => import("../google_map"), {
   ssr: false,
@@ -43,7 +40,9 @@ const TripInfoCard = ({ tripDetail }: { tripDetail: TripDetail }) => {
   const t = useTranslations();
 
   const busImages = tripDetail.bus.images?.map((img) => img.url) || [];
-  const [thumbsSwiper, setThumbsSwiper] = useState<any>(null);
+  const [thumbsSwiper, setThumbsSwiper] = useState<
+    string | SwiperT | null | undefined
+  >(null);
 
   const formatDuration = (minutes: number) => {
     if (isNaN(minutes) || minutes < 0) {
