@@ -8,6 +8,7 @@ import { format } from "date-fns";
 import { TripItemProps } from "@/lib/data/trip";
 import Link from "next/link";
 import LocaleText from "../locale_text";
+import Image from "next/image";
 
 const TripItem = ({ trip }: { trip: TripItemProps }) => {
   const getAvailabilityColor = (seats: number) => {
@@ -16,19 +17,31 @@ const TripItem = ({ trip }: { trip: TripItemProps }) => {
     return "bg-green-100 text-green-700";
   };
 
+  console.log("Trip Data:", trip);
+
   const getAvailabilityText = (seats: number) => {
-    if (seats <= 5) return (<LocaleText string="fewSeats" name="Trips.tripItem" />);
-    if (seats <= 10) return (<LocaleText string="limitedSeats" name="Trips.tripItem" />);
-    return (<LocaleText string="availableSeats" name="Trips.tripItem" />);
+    if (seats <= 5)
+      return <LocaleText string="fewSeats" name="Trips.tripItem" />;
+    if (seats <= 10)
+      return <LocaleText string="limitedSeats" name="Trips.tripItem" />;
+    return <LocaleText string="availableSeats" name="Trips.tripItem" />;
   };
 
-  // Parse ISO 8601 format dates properly
+  // Parse ISO 8601 format dates properly and convert to VN time (UTC+7)
   const departureDateObj = new Date(trip.departure_time);
   const arrivalDateObj = new Date(trip.arrival_time);
 
   // Format the times
-  const departure_time = format(departureDateObj, "HH:mm");
-  const arrival_time = format(arrivalDateObj, "HH:mm");
+  const departure_time = departureDateObj.toLocaleString("vi-VN", {
+    hour: "2-digit",
+    minute: "2-digit",
+    hour12: false,
+  });
+  const arrival_time = arrivalDateObj.toLocaleString("vi-VN", {
+    hour: "2-digit",
+    minute: "2-digit",
+    hour12: false,
+  });
 
   // Calculate duration correctly
   const trip_duration_minutes = Math.abs(
@@ -42,11 +55,23 @@ const TripItem = ({ trip }: { trip: TripItemProps }) => {
   const departureDate = format(departureDateObj, "dd/MM");
 
   return (
-    <Card className="hover:shadow-md transition-all duration-200 border-l-4 border-l-green-500 cursor-pointer">
+    <Card className="hover:shadow-md transition-all duration-200 border-l-4 border-l-green-500 ">
       <CardContent className="p-4">
         {/* Header Row - Compact */}
-        <div className="flex justify-between items-start mb-3">
-          <div className="flex-1 min-w-0 pr-3">
+        <div className="flex items-start mb-3 gap-3">
+          {/* Avatar */}
+          {trip.operator_avatar && (
+            <Image
+              width={10}
+              height={10}
+              src={trip.operator_avatar}
+              alt={trip.operator_name}
+              className="w-10 h-10 rounded-full object-cover flex-shrink-0 border border-gray-200"
+            />
+          )}
+
+          {/* Info */}
+          <div className="flex-1 min-w-0">
             <h3 className="text-sm font-bold text-gray-900 mb-1 truncate">
               {trip.operator_name}
             </h3>
@@ -61,6 +86,8 @@ const TripItem = ({ trip }: { trip: TripItemProps }) => {
               </span>
             </div>
           </div>
+
+          {/* Price + Seats */}
           <div className="flex flex-col items-end gap-1">
             <Badge
               className={`${getAvailabilityColor(
@@ -115,11 +142,17 @@ const TripItem = ({ trip }: { trip: TripItemProps }) => {
           <div className="flex items-center gap-3 text-xs text-gray-500">
             <span className="flex items-center gap-1">
               <Clock className="w-3 h-3" />
-              <span><LocaleText string="duration" name="Trips.tripItem" /></span>: {duration}
+              <span>
+                <LocaleText string="duration" name="Trips.tripItem" />
+              </span>
+              : {duration}
             </span>
             <span className="flex items-center gap-1">
               <Users className="w-3 h-3" />
-              <span><LocaleText string="seats" name="Trips.tripItem" /></span>: {trip.available_seats}
+              <span>
+                <LocaleText string="seats" name="Trips.tripItem" />
+              </span>
+              : {trip.available_seats}
             </span>
           </div>
 
@@ -134,7 +167,7 @@ const TripItem = ({ trip }: { trip: TripItemProps }) => {
               <Button
                 aria-label="Book Trip"
                 size="sm"
-                className="bg-green-600 hover:bg-green-700 text-white text-xs h-7 px-3"
+                className="bg-green-600 hover:bg-green-700 text-white text-xs h-7 px-3 cursor-pointer"
               >
                 <LocaleText string="bookTrip" name="Trips.tripItem" />
               </Button>

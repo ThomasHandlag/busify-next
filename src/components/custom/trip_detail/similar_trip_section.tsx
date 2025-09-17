@@ -6,8 +6,8 @@ import { getSimilarTrips } from "@/lib/data/trip";
 import Link from "next/link";
 import LocaleText from "../locale_text";
 
-export async function SimilarTripsSection({ routeId }: { routeId: number }) {
-  const trips: TripItemProps[] = await getSimilarTrips(routeId);
+export async function SimilarTripsSection({ tripId }: { tripId: number }) {
+  const trips: TripItemProps[] = await getSimilarTrips(tripId);
 
   if (!trips || trips.length === 0) {
     return (
@@ -33,9 +33,7 @@ export async function SimilarTripsSection({ routeId }: { routeId: number }) {
       </div>
       <div className="grid lg:grid-cols-3 md:grid-cols-2 sm:grid-cols-1 gap-4 overflow-x-auto pb-4">
         {trips.map((trip) => (
-          <div key={trip.trip_id} className="min-w-[280px]">
-            <TripItem trip={trip} />
-          </div>
+          <TripItem key={trip.trip_id} trip={trip} />
         ))}
       </div>
     </div>

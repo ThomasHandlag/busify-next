@@ -1,6 +1,6 @@
 "use client";
 
-import React from "react";
+import React, { useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "../../ui/card";
 import {
   Bus,
@@ -22,10 +22,12 @@ import dynamic from "next/dynamic";
 import { useTranslations } from "next-intl";
 
 import { Swiper, SwiperSlide } from "swiper/react";
-import { Navigation as SwiperNavigation, Pagination } from "swiper/modules";
+import { Thumbs } from "swiper/modules";
 import "swiper/css";
 import "swiper/css/navigation";
 import "swiper/css/pagination";
+import "swiper/css/thumbs";
+import { type Swiper as SwiperT } from "swiper/types";
 
 const RouteMap = dynamic(() => import("../google_map"), {
   ssr: false,
@@ -38,6 +40,25 @@ const TripInfoCard = ({ tripDetail }: { tripDetail: TripDetail }) => {
   const t = useTranslations();
 
   const busImages = tripDetail.bus.images?.map((img) => img.url) || [];
+  const [thumbsSwiper, setThumbsSwiper] = useState<
+    string | SwiperT | null | undefined
+  >(null);
+
+  const formatDuration = (minutes: number) => {
+    if (isNaN(minutes) || minutes < 0) {
+      return "N/A";
+    }
+    const hours = Math.floor(minutes / 60);
+    const mins = minutes % 60;
+    let result = "";
+    if (hours > 0) {
+      result += `${hours} ${t("Common.hours")} `;
+    }
+    if (mins > 0) {
+      result += `${mins} ${t("Common.minutes")}`;
+    }
+    return result.trim() || `0 ${t("Common.minutes")}`;
+  };
 
   const formatTime = (dateString: string) => {
     const date = new Date(dateString);
@@ -210,7 +231,7 @@ const TripInfoCard = ({ tripDetail }: { tripDetail: TripDetail }) => {
               </div>
               <div className="flex items-center justify-center text-sm text-gray-600">
                 <Clock className="w-4 h-4 mr-1" />
-                {tripDetail.route.estimated_duration}
+                {formatDuration(Number(tripDetail.route.estimated_duration))}
               </div>
             </div>
 
@@ -280,7 +301,7 @@ const TripInfoCard = ({ tripDetail }: { tripDetail: TripDetail }) => {
               <Clock className="w-5 h-5 text-orange-600" />
               <div>
                 <p className="font-medium">
-                  {tripDetail.route.estimated_duration}
+                  {formatDuration(Number(tripDetail.route.estimated_duration))}
                 </p>
                 <p className="text-sm text-gray-500">
                   {t("TripDetail.duration")}
@@ -290,81 +311,74 @@ const TripInfoCard = ({ tripDetail }: { tripDetail: TripDetail }) => {
           </div>
         </div>
 
-        {/* Route Timeline */}
-        <div>
-          <h3 className="font-semibold mb-4 flex items-center gap-2">
-            <MapPin className="w-4 h-4" />
-            {t("TripDetail.pickAndDrop")}
-          </h3>
-
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
-            {/* Pickup Points */}
-            <div className="border border-green-200 rounded-lg p-4 bg-green-50">
-              <h4 className="font-medium text-green-800 mb-2 flex items-center gap-1">
-                <div className="w-2 h-2 bg-green-500 rounded-full"></div>
-                {t("TripDetail.pickUp")}
-              </h4>
-              <div className="space-y-2">
-                {/* Start location */}
-                <div className="text-sm">
-                  <p className="font-medium">
-                    {tripDetail.route.start_location.address}
-                  </p>
-                  <p className="text-gray-600">
-                    {tripDetail.route.start_location.city}
-                  </p>
-                </div>
-
-                {/* Route stops */}
-                {tripDetail.route_stops?.map((stop, index) => (
-                  <div key={`pickup-${index}`} className="text-sm">
-                    <p className="font-medium">{stop.address}</p>
-                    <p className="text-gray-600">{stop.city}</p>
-                  </div>
-                ))}
-              </div>
-            </div>
-
-            {/* Drop-off Points */}
-            <div className="border border-red-200 rounded-lg p-4 bg-red-50">
-              <h4 className="font-medium text-red-800 mb-2 flex items-center gap-1">
-                <div className="w-2 h-2 bg-red-500 rounded-full"></div>
-                {t("TripDetail.dropPoint")}
-              </h4>
-              <div className="space-y-2">
-                {/* Route stops */}
-                {tripDetail.route_stops?.map((stop, index) => (
-                  <div key={`dropoff-${index}`} className="text-sm">
-                    <p className="font-medium">{stop.address}</p>
-                    <p className="text-gray-600">{stop.city}</p>
-                  </div>
-                ))}
-
-                {/* End location */}
-                <div className="text-sm">
-                  <p className="font-medium">
-                    {tripDetail.route.end_location.address}
-                  </p>
-                  <p className="text-gray-600">
-                    {tripDetail.route.end_location.city}
-                  </p>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-        <div>
-          <h3 className="font-semibold mb-4 flex items-center gap-2">
-            <MapPin className="w-4 h-4" />
-            {t("TripDetail.tripTimeline")}
-          </h3>
-
-          <div className="bg-gray-50 rounded-lg p-4 overflow-x-auto">
-            {renderRouteTimeline()}
-          </div>
-        </div>
         {/* Bus Images and Amenities */}
         <div className="space-y-4">
+          <Separator />
+          {/* Bus Images */}
+          <div>
+            <h4 className="font-semibold text-gray-900 mb-3">
+              {t("TripDetail.busImages")}
+            </h4>
+            {busImages.length > 0 ? (
+              <>
+                {/* Main gallery */}
+                <Swiper
+                  modules={[Thumbs]}
+                  spaceBetween={16}
+                  loop
+                  thumbs={{ swiper: thumbsSwiper }}
+                  className="rounded-lg overflow-hidden mb-4"
+                >
+                  {busImages.map((url, index) => (
+                    <SwiperSlide key={index}>
+                      <Image
+                        src={url}
+                        alt={tripDetail.bus.name ?? "Bus Image"}
+                        width={800}
+                        height={450}
+                        className="w-full h-50 md:h-100 object-cover rounded-lg"
+                        loading={index === 0 ? "eager" : "lazy"}
+                        placeholder="blur"
+                        blurDataURL="data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD..."
+                      />
+                    </SwiperSlide>
+                  ))}
+                </Swiper>
+
+                {/* Thumbnails */}
+                <Swiper
+                  modules={[Thumbs]}
+                  onSwiper={setThumbsSwiper}
+                  spaceBetween={10}
+                  freeMode
+                  watchSlidesProgress
+                  breakpoints={{
+                    320: { slidesPerView: 2 }, // mobile
+                    640: { slidesPerView: 3 }, // tablet
+                    1024: { slidesPerView: 4 }, // desktop
+                  }}
+                  className="cursor-pointer"
+                >
+                  {busImages.map((url, index) => (
+                    <SwiperSlide key={index} className="!w-24">
+                      <Image
+                        src={url}
+                        alt={`Thumbnail ${index + 1}`}
+                        width={100}
+                        height={60}
+                        className="w-full h-16 object-cover rounded-md border border-gray-200"
+                      />
+                    </SwiperSlide>
+                  ))}
+                </Swiper>
+              </>
+            ) : (
+              <p className="text-sm text-gray-500">
+                {t("TripDetail.noBusImages")}
+              </p>
+            )}
+          </div>
+
           <Separator />
 
           {/* Route Map */}
@@ -380,41 +394,7 @@ const TripInfoCard = ({ tripDetail }: { tripDetail: TripDetail }) => {
             />
           </div>
 
-          {/* Bus Images */}
-          <div>
-            <h4 className="font-semibold text-gray-900 mb-3">
-              {t("TripDetail.busImages")}
-            </h4>
-            {busImages.length > 0 ? (
-              <Swiper
-                modules={[SwiperNavigation, Pagination]}
-                spaceBetween={16}
-                slidesPerView={1}
-                navigation
-                pagination={{ clickable: true }}
-                className="rounded-lg overflow-hidden"
-              >
-                {busImages.map((url, index) => (
-                  <SwiperSlide key={index}>
-                    <Image aria-label="Image31"
-                      src={url}
-                      alt={tripDetail.bus.name ?? "Bus Image"}
-                      width={800}
-                      height={450}
-                      className="w-full h-64 md:h-100 object-cover rounded-lg"
-                      loading={index === 0 ? "eager" : "lazy"}
-                      placeholder="blur"
-                      blurDataURL="data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD..."
-                    />
-                  </SwiperSlide>
-                ))}
-              </Swiper>
-            ) : (
-              <p className="text-sm text-gray-500">
-                {t("TripDetail.noBusImages")}
-              </p>
-            )}
-          </div>
+          <Separator />
 
           {/* Amenities */}
           <div>
@@ -422,6 +402,19 @@ const TripInfoCard = ({ tripDetail }: { tripDetail: TripDetail }) => {
               {t("TripDetail.amenities")}
             </h4>
             {renderAmenities()}
+          </div>
+
+          <Separator />
+        </div>
+
+        <div>
+          <h3 className="font-semibold mb-4 flex items-center gap-2">
+            <MapPin className="w-4 h-4" />
+            {t("TripDetail.tripTimeline")}
+          </h3>
+
+          <div className="bg-gray-50 rounded-lg p-4 overflow-x-auto">
+            {renderRouteTimeline()}
           </div>
         </div>
       </CardContent>

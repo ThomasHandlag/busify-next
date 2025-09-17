@@ -13,6 +13,7 @@ import { getTripSeatById, Seat, TripSeatsStatus } from "@/lib/data/trip_seats";
 import { BusLayout, getBusSeatsLayout } from "@/lib/data/bus";
 import LocaleText from "@/components/custom/locale_text";
 import SeatSelectionTabsCard from "@/components/custom/trip_detail/seat_selection_tabs_card";
+import { Separator } from "@/components/ui/separator";
 
 const generateSeats = ({
   busLayout,
@@ -142,7 +143,12 @@ export default async function TripDetailPage({
           </div>
         </div>
       </div>
-      <SimilarTripsSection routeId={tripDetail.route.route_id} />
+
+      {/* Keep separator and similar trips inside a container so their horizontal padding matches the page */}
+      <div className="container mx-auto lg:px-4 md:px-4 px-4">
+        <Separator className="mt-8" />
+        <SimilarTripsSection tripId={tripDetail.trip_id} />
+      </div>
     </div>
   );
 }
