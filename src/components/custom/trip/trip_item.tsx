@@ -55,7 +55,7 @@ const TripItem = ({ trip }: { trip: TripItemProps }) => {
   const departureDate = format(departureDateObj, "dd/MM");
 
   return (
-    <Card className="hover:shadow-md transition-all duration-200 border-l-4 border-l-green-500 cursor-pointer">
+    <Card className="hover:shadow-md transition-all duration-200 border-l-4 border-l-green-500 ">
       <CardContent className="p-4">
         {/* Header Row - Compact */}
         <div className="flex items-start mb-3 gap-3">
@@ -167,7 +167,7 @@ const TripItem = ({ trip }: { trip: TripItemProps }) => {
               <Button
                 aria-label="Book Trip"
                 size="sm"
-                className="bg-green-600 hover:bg-green-700 text-white text-xs h-7 px-3"
+                className="bg-green-600 hover:bg-green-700 text-white text-xs h-7 px-3 cursor-pointer"
               >
                 <LocaleText string="bookTrip" name="Trips.tripItem" />
               </Button>

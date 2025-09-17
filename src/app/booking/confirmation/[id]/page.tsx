@@ -16,6 +16,7 @@ interface TripApiResponse {
   message: string;
   result: {
     departure_time: string;
+    arrival_time: string;
     bus: {
       license_plate: string;
       name: string;
@@ -115,6 +116,7 @@ export default function BookingConfirmation({ params }: PageProps) {
             cache: "no-store",
           }
         );
+
         if (!response.ok) {
           if (response.status === 404) {
             throw new Error("Chuyến đi không tồn tại.");
@@ -123,6 +125,7 @@ export default function BookingConfirmation({ params }: PageProps) {
         }
         const data: TripApiResponse = await response.json();
 
+        console.log("Trip data from API:", data);
         // Chuyển đổi estimatedDuration từ chuỗi sang số phút
         let totalMinutes = Number(data.result.route.estimated_duration);
         if (isNaN(totalMinutes)) {
@@ -142,9 +145,10 @@ export default function BookingConfirmation({ params }: PageProps) {
           hour: "2-digit",
           minute: "2-digit",
         });
-        const arrivalDateTime = new Date(
-          departureDateTime.getTime() + totalMinutes * 60000
-        );
+        const arrivalDateTime = new Date(data.result.arrival_time);
+        if (isNaN(arrivalDateTime.getTime())) {
+          throw new Error("Thời gian đến không hợp lệ từ API.");
+        }
         const arrivalTime = arrivalDateTime.toLocaleTimeString("vi-VN", {
           hour: "2-digit",
           minute: "2-digit",

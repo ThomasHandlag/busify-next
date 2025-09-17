@@ -199,7 +199,11 @@
     "busOperator": "Nhà Xe",
     "seatNumber": "Số Ghế",
     "totalAmount": "Tổng Số Tiền",
-    "promoCode": "Mã Giảm Giá",
+    "offers": "Ưu Đãi Đặc Biệt",
+    "promoCode": "Mã Khuyến Mãi",
+    "promoCodeDesc": "💰 Nhập mã giảm giá để tiết kiệm thêm",
+    "pointsDesc": "🎯 Sử dụng điểm tích lũy để giảm giá",
+    "paymentConfirmDesc": "💳 Xác nhận và thanh toán",
     "applyCode": "Áp Dụng Mã",
     "paymentMethod": "Phương Thức Thanh Toán",
     "confirmBooking": "Xác Nhận Đặt Vé",
@@ -247,7 +251,14 @@
     "confirmPay": "Xác Nhận và Thanh Toán",
     "payWithVNPay": "Thanh Toán Bằng VNPAY",
     "paymentLinkText": "Thanh Toán",
-    "autoPromotion": "Khuyến mãi tự động"
+    "autoPromotion": "Khuyến mãi tự động",
+    "specialOffersLoading": "🔥 Ưu đãi đặc biệt",
+    "hot": "HOT",
+    "discountLabel": "GIẢM",
+    "saveAmount": "Tiết kiệm",
+    "notEligible": "Không đủ điều kiện",
+    "orderFrom": "Đơn từ",
+    "appliedSave": "✅ Đã áp dụng - Tiết kiệm"
   },
   "Trips": {
     "available": "Các Chuyến Đi Có Sẵn",
@@ -635,9 +646,12 @@
     "checking": "Đang kiểm tra...",
     "apply": "Áp dụng",
     "applied": "✓ Đã áp dụng mã \"{code}\"",
+    "appliedWithAutoDiscount": "✅ Đã áp dụng - Tiết kiệm \"{amount}\"",
     "cannotApplyMin": "Mã giảm giá này không thể áp dụng vì giá trị giảm quá lớn. Số tiền sau giảm phải tối thiểu {min}.",
     "invalidCode": "Mã giảm giá không hợp lệ",
-    "notFoundOrExpired": "Mã giảm giá không tồn tại hoặc đã hết hạn"
+    "notFoundOrExpired": "Mã giảm giá không tồn tại hoặc đã hết hạn",
+    "appliedButton": "Đã áp dụng",
+    "saveForOrder": "Tiết kiệm {amount} cho đơn hàng này"
   },
   "MyTickets": {
     "breadcrumb": "Vé của tôi",
@@ -729,7 +743,9 @@
     "applying": "Đang Áp Dụng",
     "usePoints": "Sử dụng điểm",
     "youve": "Bạn có",
-    "usedPointsLabel": "Sử dụng điểm ({count})"
+    "usedPointsLabel": "Sử dụng điểm ({count})",
+    "pointValue": "(1 điểm = 1,000đ)",
+    "usedPoints": "✓ Đã dùng {points} điểm (-{amount})"
   },
   "BookingResult": {
     "title": "Kết quả đặt vé",
@@ -794,5 +810,6 @@
     "completedTrips": "Chuyến Đi Đã Hoàn Thành",
     "member": "Thành viên",
     "accountStatus": "Trạng Thái Tài Khoản"
-  }
+  },
+  "specialOffers": "specialOffers"
 }
