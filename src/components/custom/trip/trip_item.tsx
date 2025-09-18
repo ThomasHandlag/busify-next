@@ -8,6 +8,7 @@ import { format } from "date-fns";
 import { TripItemProps } from "@/lib/data/trip";
 import Link from "next/link";
 import LocaleText from "../locale_text";
+import Image from "next/image";
 
 const TripItem = ({ trip }: { trip: TripItemProps }) => {
   const getAvailabilityColor = (seats: number) => {
@@ -54,9 +55,11 @@ const TripItem = ({ trip }: { trip: TripItemProps }) => {
         <div className="flex items-start mb-3 gap-3">
           {/* Avatar */}
           {trip.operator_avatar && (
-            <img
+            <Image
               src={trip.operator_avatar}
               alt={trip.operator_name}
+              width={40}
+              height={40}
               className="w-10 h-10 rounded-full object-cover flex-shrink-0 border border-gray-200"
             />
           )}

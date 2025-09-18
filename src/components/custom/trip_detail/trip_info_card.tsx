@@ -22,11 +22,8 @@ import dynamic from "next/dynamic";
 import { useTranslations } from "next-intl";
 
 import { Swiper, SwiperSlide } from "swiper/react";
-import {
-  Navigation as SwiperNavigation,
-  Pagination,
-  Thumbs,
-} from "swiper/modules";
+import { Thumbs } from "swiper/modules";
+import type { Swiper as SwiperType } from "swiper";
 import "swiper/css";
 import "swiper/css/navigation";
 import "swiper/css/pagination";
@@ -43,7 +40,7 @@ const TripInfoCard = ({ tripDetail }: { tripDetail: TripDetail }) => {
   const t = useTranslations();
 
   const busImages = tripDetail.bus.images?.map((img) => img.url) || [];
-  const [thumbsSwiper, setThumbsSwiper] = useState<any>(null);
+  const [thumbsSwiper, setThumbsSwiper] = useState<SwiperType | null>(null);
 
   const formatDuration = (minutes: number) => {
     if (isNaN(minutes) || minutes < 0) {
