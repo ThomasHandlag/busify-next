@@ -157,7 +157,7 @@ export const config: NextAuthOptions = {
   pages: {
     signIn: "/login", //Dẫn đến trang login custom
     // error: "/auth/error", // Custom error page
-    signOut: "/login"
+    signOut: "/login",
   },
   session: {
     strategy: "jwt",
