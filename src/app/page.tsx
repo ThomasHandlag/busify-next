@@ -56,8 +56,10 @@ const Home = async () => {
           {/* Background Image with Enhanced Effects */}
           <div className="absolute inset-0 overflow-hidden">
             <Image
+              aria-label="background image2"
               src="/bus-photo.jpg"
               fill
+              // fetchPriority="high"
               loading="eager"
               placeholder="blur"
               blurDataURL="..."
@@ -188,6 +190,7 @@ const Home = async () => {
         </div>
         <div className="text-center mt-12">
           <Button
+            aria-label="See More Trips"
             size="lg"
             variant="outline"
             className="border-green-600 text-green-600 hover:bg-green-600 hover:text-white bg-transparent"
@@ -240,13 +243,19 @@ const Home = async () => {
               </div>
 
               <div className="flex flex-col sm:flex-row gap-4">
-                <Button className="bg-gray-900 text-white hover:bg-gray-800 flex items-center justify-center space-x-2 px-6 py-3 rounded-lg transition-colors">
+                <Button
+                  aria-label="Download on App Store"
+                  className="bg-gray-900 text-white hover:bg-gray-800 flex items-center justify-center space-x-2 px-6 py-3 rounded-lg transition-colors"
+                >
                   <Download className="w-5 h-5" />
                   <span>
                     <LocaleText string="downloadAppStore" name="Home" />
                   </span>
                 </Button>
-                <Button className="bg-green-600 text-white hover:bg-green-700 flex items-center justify-center space-x-2 px-6 py-3 rounded-lg transition-colors">
+                <Button
+                  aria-label="Get it on Google Play"
+                  className="bg-green-600 text-white hover:bg-green-700 flex items-center justify-center space-x-2 px-6 py-3 rounded-lg transition-colors"
+                >
                   <Download className="w-5 h-5" />
                   <span>
                     <LocaleText string="downloadGooglePlay" name="Home" />
@@ -304,7 +313,7 @@ const Home = async () => {
               <CardHeader>
                 <div className="flex items-center space-x-4">
                   <Avatar className="ring-2 ring-green-200">
-                    <AvatarImage src="/place-holder.png" />
+                    <AvatarImage alt="User Avatar" src="/avatar-holder.png" />
                     <AvatarFallback className="bg-green-100 text-green-800 font-semibold">
                       JD
                     </AvatarFallback>
@@ -340,7 +349,7 @@ const Home = async () => {
               <CardHeader>
                 <div className="flex items-center space-x-4">
                   <Avatar className="ring-2 ring-green-200">
-                    <AvatarImage src="/place-holder.png" />
+                    <AvatarImage alt="User Avatar" src="/avatar-holder.png" />
                     <AvatarFallback className="bg-green-100 text-green-800 font-semibold">
                       SM
                     </AvatarFallback>
@@ -376,7 +385,7 @@ const Home = async () => {
               <CardHeader>
                 <div className="flex items-center space-x-4">
                   <Avatar className="ring-2 ring-green-200">
-                    <AvatarImage src="/place-holder.png" />
+                    <AvatarImage alt="User Avatar" src="/avatar-holder.png" />
                     <AvatarFallback className="bg-green-100 text-green-800 font-semibold">
                       MJ
                     </AvatarFallback>
@@ -495,7 +504,10 @@ const Home = async () => {
               placeholder="Enter your email address"
               className="bg-white/95 text-gray-900 border-0 flex-1 placeholder:text-gray-500 focus:bg-white transition-colors"
             />
-            <Button className="bg-white text-green-700 hover:bg-green-50 font-semibold px-6 transition-colors">
+            <Button
+              aria-label="Subscribe to Newsletter"
+              className="bg-white text-green-700 hover:bg-green-50 font-semibold px-6 transition-colors"
+            >
               <LocaleText string="subscribe" name="Home" />
             </Button>
           </div>

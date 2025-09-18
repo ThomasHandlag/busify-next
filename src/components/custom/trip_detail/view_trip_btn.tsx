@@ -11,6 +11,7 @@ export const ViewTripBtn = ({ name }: { name: string }) => {
   const t = useTranslations("TripDetail");
   return (
     <Button
+      aria-label="View all trips"
       variant="outline"
       className="w-full mt-4"
       onClick={() => {

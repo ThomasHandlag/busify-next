@@ -30,7 +30,7 @@ export async function OperatorInfoCard({ id }: { id: number }) {
       </CardHeader>
       <CardContent>
         <div className="flex items-center space-x-4 mb-4">
-          <Image
+          <Image aria-label="Image21"
             src={operatorDetail.logoUrl}
             alt={operatorDetail.name ?? "Logo"}
             width={48}

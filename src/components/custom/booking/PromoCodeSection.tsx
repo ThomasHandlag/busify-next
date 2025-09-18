@@ -9,7 +9,7 @@ import {
   calculateDiscountAmount,
   MIN_BOOKING_AMOUNT,
 } from "@/lib/data/discount";
-import { Loader2, X } from "lucide-react";
+import { Loader2, X, Tag, CheckCircle2, AlertCircle } from "lucide-react";
 import { useTranslations } from "next-intl";
 
 interface PromoCodeSectionProps {
@@ -57,7 +57,9 @@ export default function PromoCodeSection({
 
         if (finalPrice < MIN_BOOKING_AMOUNT) {
           throw new Error(
-            t("Discount.cannotApplyMin", { min: MIN_BOOKING_AMOUNT.toLocaleString() })
+            t("Discount.cannotApplyMin", {
+              min: MIN_BOOKING_AMOUNT?.toLocaleString(),
+            })
           );
         }
 
@@ -101,48 +103,94 @@ export default function PromoCodeSection({
   );
 
   return (
-    <div className="space-y-3">
-      <div className="flex gap-2">
-        <Input
-          placeholder={t("Discount.enterCode")}
-          value={promoCode}
-          onChange={(e) => setPromoCode(e.target.value.toUpperCase())}
-          onKeyPress={handleKeyPress}
-          className="w-full"
-          disabled={isLoading}
-        />
-        <Button
-          variant="outline"
-          onClick={handleApplyPromoCode}
-          className="w-auto"
-          disabled={isLoading || !promoCode.trim()}
-        >
-          {isLoading ? (
-            <>
-              <Loader2 className="w-4 h-4 mr-2 animate-spin" />
-              {t("Discount.checking")}
-            </>
-          ) : (
-            t("Discount.apply")
-          )}
-        </Button>
+    <div className="space-y-4">
+      {/* Promo Code Input */}
+      <div className="relative">
+        <div className="relative flex gap-3">
+          <div className="relative flex-1">
+            <Tag className="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400" />
+            <Input
+              placeholder={t("Discount.enterCode")}
+              value={promoCode}
+              onChange={(e) => setPromoCode(e.target.value.toUpperCase())}
+              onKeyPress={handleKeyPress}
+              className={`pl-11 pr-4 py-3 text-sm font-mono tracking-wider bg-gradient-to-r from-gray-50 to-gray-100 border-2 transition-all duration-300 ${
+                error
+                  ? "border-red-300 focus:border-red-500 bg-red-50"
+                  : discountInfo
+                  ? "border-green-300 bg-green-50"
+                  : "border-gray-200 hover:border-orange-300 focus:border-orange-500"
+              }`}
+              disabled={isLoading}
+            />
+          </div>
+          <Button
+            aria-label="Apply Promo Code"
+            onClick={handleApplyPromoCode}
+            className={`px-6 py-3 font-semibold transition-all duration-300 ${
+              discountInfo
+                ? "bg-green-600 hover:bg-green-700 text-white"
+                : "bg-gradient-to-r from-orange-500 to-red-500 hover:from-orange-600 hover:to-red-600 text-white shadow-lg hover:shadow-xl"
+            }`}
+            disabled={isLoading || !promoCode.trim()}
+          >
+            {isLoading ? (
+              <div className="flex items-center gap-2">
+                <Loader2 className="w-4 h-4 animate-spin" />
+                <span>{t("Discount.checking")}</span>
+              </div>
+            ) : discountInfo ? (
+              <div className="flex items-center gap-2">
+                <CheckCircle2 className="w-4 h-4" />
+                <span>{t("Discount.appliedButton")}</span>
+              </div>
+            ) : (
+              t("Discount.apply")
+            )}
+          </Button>
+        </div>
       </div>
 
-      {error && <p className="text-red-500 text-sm">{error}</p>}
-
-      {discountInfo && discount > 0 && (
-        <div className="bg-green-50 border border-green-200 rounded-lg p-3">
-          <div className="flex items-center justify-between">
+      {/* Error Message */}
+      {error && (
+        <div className="bg-gradient-to-r from-red-50 to-pink-50 border-2 border-red-200 rounded-xl p-4 animate-fade-in">
+          <div className="flex items-center gap-3">
+            <div className="w-8 h-8 bg-red-100 rounded-full flex items-center justify-center">
+              <AlertCircle className="w-4 h-4 text-red-600" />
+            </div>
             <div className="flex-1">
-              <p className="text-green-700 font-medium text-sm">
-                {t("Discount.applied", { code: discountInfo.code })}
-              </p>
+              <p className="text-red-700 font-medium text-sm">{error}</p>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Success Message */}
+      {discountInfo && discount > 0 && (
+        <div className="bg-gradient-to-r from-green-50 to-emerald-50 border-2 border-green-200 rounded-xl p-4 animate-fade-in relative overflow-hidden">
+          <div className="absolute inset-0 bg-gradient-to-r from-green-500/5 to-emerald-500/5"></div>
+          <div className="relative z-10 flex items-center justify-between">
+            <div className="flex items-center gap-3 flex-1">
+              <div className="w-10 h-10 bg-gradient-to-r from-green-500 to-emerald-500 rounded-full flex items-center justify-center shadow-lg">
+                <CheckCircle2 className="w-5 h-5 text-white" />
+              </div>
+              <div className="flex-1">
+                <p className="text-green-700 font-bold text-sm">
+                  🎉 {t("Discount.applied", { code: discountInfo.code })}
+                </p>
+                <p className="text-green-600 text-xs mt-1">
+                  {t("Discount.saveForOrder", {
+                    amount: discount?.toLocaleString("vi-VN") + "đ",
+                  })}
+                </p>
+              </div>
             </div>
             <Button
+              aria-label="Remove Promo Code"
               variant="ghost"
               size="sm"
               onClick={handleRemovePromoCode}
-              className="text-green-700 hover:text-green-800 hover:bg-green-100"
+              className="text-green-700 hover:text-green-800 hover:bg-green-100 rounded-full w-8 h-8 p-0"
             >
               <X className="w-4 h-4" />
             </Button>

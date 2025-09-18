@@ -201,6 +201,7 @@ const ForgotPasswordForm = () => {
 
             {/* Submit Button */}
             <Button
+              aria-label="Submit"
               type="submit"
               disabled={isLoading || !canResend}
               className="w-full h-12 bg-gradient-to-r from-orange-600 to-red-600 hover:from-orange-700 hover:to-red-700 text-white font-semibold rounded-xl transition-all duration-200 transform hover:scale-[1.02] shadow-lg disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none"
@@ -223,6 +224,7 @@ const ForgotPasswordForm = () => {
             {/* Resend button (only show when countdown is finished and there was a successful send) */}
       {isMounted && isSuccess && canResend && countdown === 0 && (
               <Button
+                aria-label="Resend Email"
                 type="button"
                 onClick={handleResend}
                 variant="outline"

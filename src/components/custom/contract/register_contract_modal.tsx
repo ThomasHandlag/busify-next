@@ -87,25 +87,25 @@ const RegisterContractModal = () => {
     e.preventDefault();
 
     if (!acceptedPolicy) {
-  toast.error(t("Form.Register.errors.acceptPolicy"));
+      toast.error(t("Form.Register.errors.acceptPolicy"));
       return;
     }
 
     // Validate VATCode format
     if (!VALIDATION_PATTERNS.VAT_CODE.test(formData.VATCode)) {
-  toast.error(t("Form.Register.errors.invalidVat"));
+      toast.error(t("Form.Register.errors.invalidVat"));
       return;
     }
 
     // Validate phone format
     if (!VALIDATION_PATTERNS.PHONE.test(formData.phone)) {
-  toast.error(t("Form.Register.errors.invalidPhone"));
+      toast.error(t("Form.Register.errors.invalidPhone"));
       return;
     }
 
     // Validate email format
     if (!VALIDATION_PATTERNS.EMAIL.test(formData.email)) {
-  toast.error(t("Form.invalidEmail"));
+      toast.error(t("Form.invalidEmail"));
       return;
     }
 
@@ -115,12 +115,12 @@ const RegisterContractModal = () => {
     const now = new Date();
 
     if (startDate < now) {
-  toast.error(t("Form.Register.errors.startDateInvalid"));
+      toast.error(t("Form.Register.errors.startDateInvalid"));
       return;
     }
 
     if (endDate <= startDate) {
-  toast.error(t("Form.Register.errors.endDateInvalid"));
+      toast.error(t("Form.Register.errors.endDateInvalid"));
       return;
     }
 
@@ -145,7 +145,7 @@ const RegisterContractModal = () => {
       console.log("Contract created:", response);
 
       if (response.code === 201 || response.code === 200) {
-  toast.success(t("Form.Register.errors.contractSuccess"));
+        toast.success(t("Form.Register.errors.contractSuccess"));
         // Reset form
         setFormData({
           email: "",
@@ -159,11 +159,11 @@ const RegisterContractModal = () => {
         });
         setAcceptedPolicy(false);
       } else {
-  toast.error(t("Form.Register.errors.contractFailed"));
+        toast.error(t("Form.Register.errors.contractFailed"));
       }
     } catch (error) {
       console.error("Error submitting contract:", error);
-  toast.error(t("Form.Register.errors.contractFailed"));
+      toast.error(t("Form.Register.errors.contractFailed"));
     } finally {
       setIsLoading(false);
     }
@@ -174,6 +174,7 @@ const RegisterContractModal = () => {
       <Dialog>
         <DialogTrigger asChild>
           <Button
+            aria-label="Register Contract"
             size="sm"
             className="bg-purple-600 hover:bg-purple-700 text-white"
           >
@@ -243,12 +244,16 @@ const RegisterContractModal = () => {
                   title={t("Form.Register.phoneOperatorNote")}
                   required
                 />
-                <p className="text-xs text-gray-500">{t("Form.Register.phoneOperatorNote")}</p>
+                <p className="text-xs text-gray-500">
+                  {t("Form.Register.phoneOperatorNote")}
+                </p>
               </div>
             </div>
 
             <div className="space-y-2">
-              <Label htmlFor="address">{t("Form.Register.addressLabel")} *</Label>
+              <Label htmlFor="address">
+                {t("Form.Register.addressLabel")} *
+              </Label>
               <Textarea
                 id="address"
                 name="address"
@@ -262,7 +267,9 @@ const RegisterContractModal = () => {
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div className="space-y-2">
-                <Label htmlFor="startDate">{t("Form.Register.startDateLabel")} *</Label>
+                <Label htmlFor="startDate">
+                  {t("Form.Register.startDateLabel")} *
+                </Label>
                 <Input
                   id="startDate"
                   name="startDate"
@@ -274,7 +281,9 @@ const RegisterContractModal = () => {
               </div>
 
               <div className="space-y-2">
-                <Label htmlFor="endDate">{t("Form.Register.endDateLabel")} *</Label>
+                <Label htmlFor="endDate">
+                  {t("Form.Register.endDateLabel")} *
+                </Label>
                 <Input
                   id="endDate"
                   name="endDate"
@@ -287,7 +296,9 @@ const RegisterContractModal = () => {
             </div>
 
             <div className="space-y-2">
-              <Label htmlFor="operationArea">{t("Form.Register.operationAreaLabel")} *</Label>
+              <Label htmlFor="operationArea">
+                {t("Form.Register.operationAreaLabel")} *
+              </Label>
               <Input
                 id="operationArea"
                 name="operationArea"
@@ -299,7 +310,9 @@ const RegisterContractModal = () => {
             </div>
 
             <div className="space-y-2">
-              <Label htmlFor="VATCode">{t("Form.Register.vatCodeLabel")} *</Label>
+              <Label htmlFor="VATCode">
+                {t("Form.Register.vatCodeLabel")} *
+              </Label>
               <Input
                 id="VATCode"
                 name="VATCode"
@@ -310,11 +323,15 @@ const RegisterContractModal = () => {
                 title="Mã số thuế phải từ 10-15 chữ số"
                 required
               />
-              <p className="text-xs text-gray-500">{t("Form.Register.vatCodeNote")}</p>
+              <p className="text-xs text-gray-500">
+                {t("Form.Register.vatCodeNote")}
+              </p>
             </div>
 
             <div className="space-y-2">
-              <Label htmlFor="attachmentUrl">{t("Form.Register.attachmentLabel")}</Label>
+              <Label htmlFor="attachmentUrl">
+                {t("Form.Register.attachmentLabel")}
+              </Label>
               <div className="flex items-center gap-2">
                 <Input
                   id="attachmentUrl"
@@ -327,7 +344,9 @@ const RegisterContractModal = () => {
                 <Upload className="w-4 h-4 text-gray-400" />
               </div>
               {formData.attachmentUrl && (
-                <p className="text-sm text-green-600">{formData.attachmentUrl.name}</p>
+                <p className="text-sm text-green-600">
+                  {formData.attachmentUrl.name}
+                </p>
               )}
             </div>
 
@@ -349,14 +368,19 @@ const RegisterContractModal = () => {
 
             <DialogFooter>
               <DialogClose asChild>
-                <Button variant="outline">{t("Common.cancel")}</Button>
+                <Button aria-label="Cancel" variant="outline">
+                  {t("Common.cancel")}
+                </Button>
               </DialogClose>
               <Button
+                aria-label="Register Contract"
                 type="submit"
                 disabled={!acceptedPolicy || isLoading}
                 className="bg-green-600 hover:bg-green-700"
               >
-                {isLoading ? t("Common.processing") : t("Form.Register.createContractButton")}
+                {isLoading
+                  ? t("Common.processing")
+                  : t("Form.Register.createContractButton")}
               </Button>
             </DialogFooter>
           </form>

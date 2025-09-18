@@ -198,7 +198,11 @@
     "busOperator": "Bus Operator",
     "seatNumber": "Seat Number",
     "totalAmount": "Total Amount",
+    "offers": "Special Offers",
     "promoCode": "Promo Code",
+    "promoCodeDesc": "💰 Enter promo code to save more",
+    "pointsDesc": "🎯 Get discount with reward points",
+    "paymentConfirmDesc": "💳 Confirm and pay",
     "applyCode": "Apply Code",
     "paymentMethod": "Payment Method",
     "confirmBooking": "Confirm Booking",
@@ -246,7 +250,14 @@
     "confirmPay": "Confirm and pay",
     "payWithVNPay": "Pay with VNPAY",
     "paymentLinkText": "Payment",
-    "autoPromotion": "Auto promotion"
+    "autoPromotion": "Auto promotion",
+    "specialOffersLoading": "🔥 Special Offers",
+    "hot": "HOT",
+    "discountLabel": "DISCOUNT",
+    "saveAmount": "Save",
+    "notEligible": "Not eligible",
+    "orderFrom": "Order from",
+    "appliedSave": "✅ Applied - Save"
   },
   "Trips": {
     "available": "Available Trips",
@@ -395,6 +406,38 @@
     "policyDesc3": "Guaranteed reserved seats",
     "policyDesc4": "Secure payment"
   },
+  "PolicyDialog": {
+    "trigger": "terms and policy",
+    "title": "Terms and Policy",
+    "general": {
+      "title": "General Terms",
+      "text": "By registering a contract with Busify, you agree to comply with all terms and conditions outlined in this document."
+    },
+    "operator": {
+      "title": "Operator Rights and Obligations",
+      "point1": "Provide safe and quality transportation services",
+      "point2": "Follow the committed schedule",
+      "point3": "Maintain vehicle standards and driver team",
+      "point4": "Report business activities periodically"
+    },
+    "commission": {
+      "title": "Commission Policy",
+      "text": "Busify collects a 5-10% commission on each ticket sold through the platform. Settlements are made monthly."
+    },
+    "termination": {
+      "title": "Contract Termination",
+      "text": "Either party may terminate the contract with 30 days' notice. In the event of a serious breach, the contract may be terminated immediately."
+    },
+    "privacy": {
+      "title": "Data Privacy",
+      "text": "Busify is committed to protecting customer information and will not share it with third parties without consent."
+    },
+    "dispute": {
+      "title": "Dispute Resolution",
+      "text": "Any disputes will be resolved through negotiation. If no agreement is reached, the matter will be brought before a competent court."
+    },
+    "understood": "Understood"
+  },
   "TripDetail": {
     "busLayout": "Bus Layout",
     "selectSeat": "Select Your Seat",
@@ -516,7 +559,8 @@
       "vatCodeNote": "VAT code must be 10-15 digits",
       "attachmentLabel": "Attachment",
       "attachmentNote": "Accepts PDF, DOC, DOCX, JPG, PNG (max 10MB)",
-      "policyAgreement": "I agree to the {policy} of Busify",
+      "policyAgreement1": "I agree to the ",
+      "policyAgreement2": " of Busify",
       "termsAgreement": "I agree to the Terms of Service and Privacy Policy",
       "newsletterText": "I want to receive updates and marketing communications",
       "creatingContract": "Creating contract...",
@@ -598,9 +642,12 @@
     "checking": "Checking...",
     "apply": "Apply",
     "applied": "✓ Applied code \"{code}\"",
+    "appliedWithAutoDiscount": "✅ Applied - Saved \"{amount}\"",
     "cannotApplyMin": "This promo code cannot be applied because the discount is too large. The amount after discount must be at least {min}.",
     "invalidCode": "Invalid promo code",
-    "notFoundOrExpired": "Promo code does not exist or has expired"
+    "notFoundOrExpired": "Promo code does not exist or has expired",
+    "appliedButton": "Applied",
+    "saveForOrder": "Save {amount} for this order"
   },
   "MyTickets": {
     "breadcrumb": "My Tickets",
@@ -692,7 +739,9 @@
     "applying": "Applying",
     "usePoints": "Use points",
     "youve": "You have",
-    "usedPointsLabel": "Used points ({count})"
+    "usedPointsLabel": "Used points ({count})",
+    "pointValue": "(1 point = 1,000đ)",
+    "usedPoints": "✓ Used {points} points (-{amount})"
   },
   "BookingResult": {
     "title": "Booking Result",

@@ -109,7 +109,7 @@ export default function BookingResult() {
 
   // Format date time
   const formatDateTime = (dateString: string) => {
-    return new Date(dateString).toLocaleString("vi-VN", {
+    return new Date(dateString)?.toLocaleString("vi-VN", {
       day: "2-digit",
       month: "2-digit",
       year: "numeric",
@@ -189,6 +189,7 @@ export default function BookingResult() {
                 {error || t("Common.bookingNotFound")}
               </p>
               <Button
+                aria-label="Try Again"
                 onClick={() => window.location.reload()}
                 variant="outline"
                 className="border-red-300 text-red-700 hover:bg-red-100"
@@ -248,18 +249,23 @@ export default function BookingResult() {
                       isSuccess ? "text-green-800" : "text-yellow-800"
                     } mb-2`}
                   >
-                    {isSuccess ? t("BookingResult.successTitle") : t("BookingResult.processingTitle")}
+                    {isSuccess
+                      ? t("BookingResult.successTitle")
+                      : t("BookingResult.processingTitle")}
                   </h1>
                   <p
                     className={isSuccess ? "text-green-700" : "text-yellow-700"}
                   >
-                    {isSuccess
-                      ? (
-                          <>
-                            {t("BookingResult.successDesc", { email: paymentDetails.customerEmail, phone: paymentDetails.customerPhone })}
-                          </>
-                        )
-                      : t("BookingResult.processingDesc")}
+                    {isSuccess ? (
+                      <>
+                        {t("BookingResult.successDesc", {
+                          email: paymentDetails.customerEmail,
+                          phone: paymentDetails.customerPhone,
+                        })}
+                      </>
+                    ) : (
+                      t("BookingResult.processingDesc")
+                    )}
                   </p>
                 </div>
               </div>
@@ -273,7 +279,9 @@ export default function BookingResult() {
               {/* Booking Code */}
               <Card>
                 <CardHeader>
-                  <CardTitle className="text-lg">{t("BookingResult.bookingCodeTitle")}</CardTitle>
+                  <CardTitle className="text-lg">
+                    {t("BookingResult.bookingCodeTitle")}
+                  </CardTitle>
                 </CardHeader>
                 <CardContent>
                   <div className="flex items-center justify-between p-4 bg-gray-50 rounded-lg">
@@ -281,16 +289,21 @@ export default function BookingResult() {
                       <p className="text-2xl font-bold text-green-600">
                         {paymentDetails.bookingDetails.bookingCode}
                       </p>
-                      <p className="text-sm text-gray-500">{t("BookingResult.bookingCodeHint")}</p>
+                      <p className="text-sm text-gray-500">
+                        {t("BookingResult.bookingCodeHint")}
+                      </p>
                     </div>
                     <Button
+                      aria-label="Copy Booking Code"
                       variant="outline"
                       size="sm"
                       onClick={copyBookingCode}
                       className="flex items-center gap-2 bg-transparent"
                     >
                       <Copy className="w-4 h-4" />
-                      {copied ? t("BookingResult.copied") : t("BookingResult.copy")}
+                      {copied
+                        ? t("BookingResult.copied")
+                        : t("BookingResult.copy")}
                     </Button>
                   </div>
                 </CardContent>
@@ -307,7 +320,9 @@ export default function BookingResult() {
                 <CardContent className="space-y-4">
                   <div className="flex items-center justify-between p-3 bg-blue-50 rounded-lg">
                     <div className="text-center">
-                      <p className="text-sm text-gray-500">{t("Booking.confirmation.startPoint")}</p>
+                      <p className="text-sm text-gray-500">
+                        {t("Booking.confirmation.startPoint")}
+                      </p>
                       <p className="font-semibold text-blue-800">
                         {paymentDetails.bookingDetails.departureName}
                       </p>
@@ -321,7 +336,9 @@ export default function BookingResult() {
                       <ArrowRight className="w-6 h-6 text-blue-600" />
                     </div>
                     <div className="text-center">
-                      <p className="text-sm text-gray-500">{t("Booking.confirmation.endPoint")}</p>
+                      <p className="text-sm text-gray-500">
+                        {t("Booking.confirmation.endPoint")}
+                      </p>
                       <p className="font-semibold text-blue-800">
                         {paymentDetails.bookingDetails.arrivalName}
                       </p>
@@ -333,7 +350,9 @@ export default function BookingResult() {
 
                   <div className="grid grid-cols-2 gap-4">
                     <div>
-                      <p className="text-sm text-gray-500">{t("BookingResult.departureDate")}</p>
+                      <p className="text-sm text-gray-500">
+                        {t("BookingResult.departureDate")}
+                      </p>
                       <p className="font-semibold">
                         {formatDate(
                           paymentDetails.bookingDetails.departureTime
@@ -341,7 +360,9 @@ export default function BookingResult() {
                       </p>
                     </div>
                     <div>
-                      <p className="text-sm text-gray-500">{t("BookingResult.arrivalDate")}</p>
+                      <p className="text-sm text-gray-500">
+                        {t("BookingResult.arrivalDate")}
+                      </p>
                       <p className="font-semibold">
                         {formatDate(paymentDetails.bookingDetails.arrivalTime)}
                       </p>
@@ -382,7 +403,9 @@ export default function BookingResult() {
                 <CardContent className="space-y-4">
                   <div className="space-y-3">
                     <div>
-                      <p className="text-sm text-gray-500">{t("BookingResult.paymentMethod")}</p>
+                      <p className="text-sm text-gray-500">
+                        {t("BookingResult.paymentMethod")}
+                      </p>
                       <div className="flex items-center gap-2 mt-1">
                         <Banknote className="w-4 h-4 text-blue-600" />
                         <span className="font-semibold">
@@ -392,7 +415,9 @@ export default function BookingResult() {
                     </div>
 
                     <div>
-                      <p className="text-sm text-gray-500">{t("BookingResult.amountPaid")}</p>
+                      <p className="text-sm text-gray-500">
+                        {t("BookingResult.amountPaid")}
+                      </p>
                       <p className="font-semibold text-green-600 text-lg">
                         {formatCurrency(paymentDetails.amount)}
                       </p>
@@ -400,7 +425,9 @@ export default function BookingResult() {
 
                     {paymentDetails.paidAt && (
                       <div>
-                        <p className="text-sm text-gray-500">{t("BookingResult.paidAt")}</p>
+                        <p className="text-sm text-gray-500">
+                          {t("BookingResult.paidAt")}
+                        </p>
                         <p className="font-semibold">
                           {formatDateTime(paymentDetails.paidAt)}
                         </p>
@@ -408,7 +435,9 @@ export default function BookingResult() {
                     )}
 
                     <div>
-                      <p className="text-sm text-gray-500">{t("BookingResult.transactionCode")}</p>
+                      <p className="text-sm text-gray-500">
+                        {t("BookingResult.transactionCode")}
+                      </p>
                       <p className="font-semibold text-blue-600">
                         {paymentDetails.transactionCode}
                       </p>
@@ -438,13 +467,17 @@ export default function BookingResult() {
                 </CardHeader>
                 <CardContent className="space-y-3">
                   <div>
-                    <p className="text-sm text-gray-500">{t("Profile.fullName")}</p>
+                    <p className="text-sm text-gray-500">
+                      {t("Profile.fullName")}
+                    </p>
                     <p className="font-semibold">
                       {paymentDetails.customerName}
                     </p>
                   </div>
                   <div>
-                    <p className="text-sm text-gray-500">{t("Booking.phoneNumber")}</p>
+                    <p className="text-sm text-gray-500">
+                      {t("Booking.phoneNumber")}
+                    </p>
                     <div className="flex items-center gap-2">
                       <Phone className="w-4 h-4 text-gray-400" />
                       <p className="font-semibold">
@@ -453,7 +486,9 @@ export default function BookingResult() {
                     </div>
                   </div>
                   <div>
-                    <p className="text-sm text-gray-500">{t("Profile.email")}</p>
+                    <p className="text-sm text-gray-500">
+                      {t("Profile.email")}
+                    </p>
                     <div className="flex items-center gap-2">
                       <Mail className="w-4 h-4 text-gray-400" />
                       <p className="font-semibold">
@@ -466,12 +501,13 @@ export default function BookingResult() {
             </div>
           </div>
 
-         
-
           {/* Actions */}
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <Link aria-label="View Booking History" href="/user/my-tickets">
-              <Button className="bg-green-600 hover:bg-green-700 text-white flex items-center gap-2">
+              <Button
+                aria-label="View Booking History"
+                className="bg-green-600 hover:bg-green-700 text-white flex items-center gap-2"
+              >
                 <Calendar className="w-4 h-4" />
                 {t("BookingResult.viewHistory")}
                 <ArrowRight className="w-4 h-4" />
@@ -479,6 +515,7 @@ export default function BookingResult() {
             </Link>
             {!isSuccess && (
               <Button
+                aria-label="Try Again"
                 onClick={() => window.location.reload()}
                 variant="outline"
                 className="flex items-center gap-2"
@@ -493,7 +530,10 @@ export default function BookingResult() {
           <Card className="bg-gray-50">
             <CardContent className="p-4 text-center">
               <p className="text-sm text-gray-600">
-                {t("BookingResult.supportText", { phone: "1900 1234", email: "support@busify.vn" })}
+                {t("BookingResult.supportText", {
+                  phone: "1900 1234",
+                  email: "support@busify.vn",
+                })}
               </p>
             </CardContent>
           </Card>

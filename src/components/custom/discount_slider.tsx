@@ -126,8 +126,8 @@ export default function DiscountSlider() {
   if (error && campaigns.length === 0) {
     return (
       <div className="text-center py-16">
-  <p className="text-red-600 mb-4">{t("Promotion.loadErrorShort")}</p>
-  <p className="text-gray-600">{t("Promotion.loadErrorLong")}</p>
+        <p className="text-red-600 mb-4">{t("Promotion.loadErrorShort")}</p>
+        <p className="text-gray-600">{t("Promotion.loadErrorLong")}</p>
       </div>
     );
   }
@@ -145,11 +145,20 @@ export default function DiscountSlider() {
             <div key={campaign.id} className="flex-[0_0_100%] min-w-0">
               <div className="relative overflow-hidden h-64 md:h-72 lg:h-80">
                 <Image
+                  aria-label="Image41"
                   src={campaign.banner}
-                  alt={campaign.title}
+                  alt={campaign.title ?? "Promotion Banner"}
                   fill
-                  className="object-contain transition-transform duration-700"
+                  className="object-cover transition-transform duration-700 group-hover:scale-[1.02]"
                   priority={index === 0}
+                  quality={90}
+                  sizes="(max-width: 768px) 100vw, (max-width: 1200px) 100vw, 100vw"
+                  placeholder="blur"
+                  blurDataURL="data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAYEBQYFBAYGBQYHBwYIChAKCgkJChQODwwQFxQYGBcUFhYaHSUfGhsjHBYWICwgIyYnKSopGR8tMC0oMCUoKSj/2wBDAQcHBwoIChMKChMoGhYaKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCj/wAARCAABAAEDASIAAhEBAxEB/8QAFQABAQAAAAAAAAAAAAAAAAAAAAv/xAAUEAEAAAAAAAAAAAAAAAAAAAAA/8QAFQEBAQAAAAAAAAAAAAAAAAAAAAX/xAAUEQEAAAAAAAAAAAAAAAAAAAAA/9oADAMBAAIRAxEAPwCdABmX/9k="
+                  onError={(e) => {
+                    const target = e.target as HTMLImageElement;
+                    target.style.display = "none";
+                  }}
                 />
                 {/* Gradient overlay for better text readability */}
                 <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/20 to-transparent"></div>
@@ -170,6 +179,7 @@ export default function DiscountSlider() {
                     </p>
                     <div className="flex flex-col sm:flex-row gap-3 justify-center items-center">
                       <Button
+                        aria-label="Book Discounted Ticket"
                         size="default"
                         className="bg-gradient-to-r from-orange-500 to-red-500 hover:from-orange-600 hover:to-red-600 text-white font-bold px-6 py-2.5 rounded-full shadow-xl transform hover:scale-105 transition-all duration-300 border-0 text-sm"
                         asChild
@@ -179,6 +189,7 @@ export default function DiscountSlider() {
                         </Link>
                       </Button>
                       <Button
+                        aria-label="Learn More About Promotion"
                         variant="outline"
                         size="default"
                         className="border-2 border-white/50 text-white hover:bg-white/10 backdrop-blur-sm font-semibold px-5 py-2.5 rounded-full shadow-lg transition-all duration-300 text-sm"

@@ -162,6 +162,7 @@ function VerifyEmailContent() {
               Busify.
             </p>
             <Button
+              area-label="Continue to Sign In"
               onClick={handleContinue}
               className="bg-gradient-to-r from-green-500 to-green-600 hover:from-green-600 hover:to-green-700 text-white font-semibold py-3 px-8 rounded-xl transition-all duration-300 transform hover:scale-105 shadow-lg"
             >
@@ -194,6 +195,7 @@ function VerifyEmailContent() {
             <p className="text-gray-600 mb-8">{message}</p>
             <div className="space-y-4">
               <Button
+                aria-label="Try Again"
                 onClick={() => window.location.reload()}
                 className="w-full bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 text-white font-semibold py-3 rounded-xl transition-all duration-300"
               >
@@ -201,6 +203,7 @@ function VerifyEmailContent() {
               </Button>
               <Link aria-label="Login" href="/login">
                 <Button
+                  aria-label="Back to Sign In"
                   variant="outline"
                   className="w-full text-green-600 border-green-600 hover:bg-green-50 font-semibold py-3 rounded-xl"
                 >
@@ -235,6 +238,7 @@ function VerifyEmailContent() {
             <p className="text-gray-600 mb-8">{message}</p>
             <div className="space-y-4">
               <Button
+                aria-label="Resend Verification Email"
                 onClick={handleResendVerification}
                 disabled={isResending}
                 className="w-full bg-gradient-to-r from-green-500 to-green-600 hover:from-green-600 hover:to-green-700 text-white font-semibold py-3 rounded-xl transition-all duration-300"
@@ -261,6 +265,7 @@ function VerifyEmailContent() {
               )}
               <Link aria-label="Back to Sign In" href="/login">
                 <Button
+                  aria-label="Back to Sign In"
                   variant="outline"
                   className="w-full text-green-600 border-green-600 hover:bg-green-50 font-semibold py-3 rounded-xl"
                 >

@@ -184,6 +184,12 @@
   }
   20%, 40%, 60%, 80% {
     transform: translateX(2px);
+@keyframes shimmer {
+  0% {
+    transform: translateX(-100%);
+  }
+  100% {
+    transform: translateX(100%);
   }
 }
 
@@ -194,4 +200,6 @@
 .scrollBar {
   -ms-overflow-style: none; /* IE and Edge */
   scrollbar-width: none; /* Firefox */
+}
+  }
 }

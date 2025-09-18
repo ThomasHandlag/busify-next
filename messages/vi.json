@@ -199,7 +199,11 @@
     "busOperator": "Nhà Xe",
     "seatNumber": "Số Ghế",
     "totalAmount": "Tổng Số Tiền",
-    "promoCode": "Mã Giảm Giá",
+    "offers": "Ưu Đãi Đặc Biệt",
+    "promoCode": "Mã Khuyến Mãi",
+    "promoCodeDesc": "💰 Nhập mã giảm giá để tiết kiệm thêm",
+    "pointsDesc": "🎯 Sử dụng điểm tích lũy để giảm giá",
+    "paymentConfirmDesc": "💳 Xác nhận và thanh toán",
     "applyCode": "Áp Dụng Mã",
     "paymentMethod": "Phương Thức Thanh Toán",
     "confirmBooking": "Xác Nhận Đặt Vé",
@@ -247,7 +251,14 @@
     "confirmPay": "Xác Nhận và Thanh Toán",
     "payWithVNPay": "Thanh Toán Bằng VNPAY",
     "paymentLinkText": "Thanh Toán",
-    "autoPromotion": "Khuyến mãi tự động"
+    "autoPromotion": "Khuyến mãi tự động",
+    "specialOffersLoading": "🔥 Ưu đãi đặc biệt",
+    "hot": "HOT",
+    "discountLabel": "GIẢM",
+    "saveAmount": "Tiết kiệm",
+    "notEligible": "Không đủ điều kiện",
+    "orderFrom": "Đơn từ",
+    "appliedSave": "✅ Đã áp dụng - Tiết kiệm"
   },
   "Trips": {
     "available": "Các Chuyến Đi Có Sẵn",
@@ -396,6 +407,38 @@
     "policyDesc3": "Đảm bảo chỗ ngồi đã đặt",
     "policyDesc4": "Thanh toán an toàn"
   },
+  "PolicyDialog": {
+    "trigger": "chính sách và điều khoản",
+    "title": "Chính sách và Điều khoản sử dụng",
+    "general": {
+      "title": "Điều khoản chung",
+      "text": "Bằng việc đăng ký hợp đồng với Busify, bạn đồng ý tuân thủ tất cả các điều khoản và điều kiện trong tài liệu này."
+    },
+    "operator": {
+      "title": "Quyền và nghĩa vụ của nhà xe",
+      "point1": "Cung cấp dịch vụ vận chuyển chất lượng và an toàn",
+      "point2": "Tuân thủ lịch trình đã cam kết",
+      "point3": "Duy trì tiêu chuẩn xe và đội ngũ lái xe",
+      "point4": "Báo cáo định kỳ về hoạt động kinh doanh"
+    },
+    "commission": {
+      "title": "Chính sách hoa hồng",
+      "text": "Busify thu phí hoa hồng 5-10% trên mỗi vé bán qua nền tảng. Thanh toán thực hiện hàng tháng."
+    },
+    "termination": {
+      "title": "Chính sách hủy hợp đồng",
+      "text": "Hai bên có quyền chấm dứt hợp đồng với thông báo trước 30 ngày. Vi phạm nghiêm trọng có thể chấm dứt ngay."
+    },
+    "privacy": {
+      "title": "Bảo mật thông tin",
+      "text": "Busify cam kết bảo mật thông tin khách hàng và không chia sẻ với bên thứ ba khi không có sự đồng ý."
+    },
+    "dispute": {
+      "title": "Giải quyết tranh chấp",
+      "text": "Mọi tranh chấp sẽ được thương lượng. Nếu không đạt được thỏa thuận, sẽ đưa ra tòa án có thẩm quyền."
+    },
+    "understood": "Đã hiểu"
+  },
   "TripDetail": {
     "busLayout": "Sơ Đồ Xe",
     "selectSeat": "Chọn Ghế Của Bạn",
@@ -520,7 +563,8 @@
       "vatCodeNote": "Mã VAT phải từ 10-15 chữ số",
       "attachmentLabel": "Tệp Đính Kèm",
       "attachmentNote": "Chấp nhận PDF, DOC, DOCX, JPG, PNG (tối đa 10MB)",
-      "policyAgreement": "Tôi đồng ý với {policy} của Busify",
+      "policyAgreement1": "Tôi đã đọc và đồng ý với các ",
+      "policyAgreement2": " của Busify",
       "termsAgreement": "Tôi đồng ý với Điều Khoản Dịch Vụ và Chính Sách Bảo Mật",
       "newsletterText": "Tôi muốn nhận cập nhật và thông tin tiếp thị",
       "creatingContract": "Đang Tạo Hợp Đồng...",
@@ -602,9 +646,12 @@
     "checking": "Đang kiểm tra...",
     "apply": "Áp dụng",
     "applied": "✓ Đã áp dụng mã \"{code}\"",
+    "appliedWithAutoDiscount": "✅ Đã áp dụng - Tiết kiệm \"{amount}\"",
     "cannotApplyMin": "Mã giảm giá này không thể áp dụng vì giá trị giảm quá lớn. Số tiền sau giảm phải tối thiểu {min}.",
     "invalidCode": "Mã giảm giá không hợp lệ",
-    "notFoundOrExpired": "Mã giảm giá không tồn tại hoặc đã hết hạn"
+    "notFoundOrExpired": "Mã giảm giá không tồn tại hoặc đã hết hạn",
+    "appliedButton": "Đã áp dụng",
+    "saveForOrder": "Tiết kiệm {amount} cho đơn hàng này"
   },
   "MyTickets": {
     "breadcrumb": "Vé của tôi",
@@ -696,7 +743,9 @@
     "applying": "Đang Áp Dụng",
     "usePoints": "Sử dụng điểm",
     "youve": "Bạn có",
-    "usedPointsLabel": "Sử dụng điểm ({count})"
+    "usedPointsLabel": "Sử dụng điểm ({count})",
+    "pointValue": "(1 điểm = 1,000đ)",
+    "usedPoints": "✓ Đã dùng {points} điểm (-{amount})"
   },
   "BookingResult": {
     "title": "Kết quả đặt vé",
@@ -761,5 +810,6 @@
     "completedTrips": "Chuyến Đi Đã Hoàn Thành",
     "member": "Thành viên",
     "accountStatus": "Trạng Thái Tài Khoản"
-  }
+  },
+  "specialOffers": "specialOffers"
 }

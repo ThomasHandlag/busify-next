@@ -7,7 +7,7 @@ import PaymentMethods from "./PaymentMethods";
 import AutoPromotionSection from "../promotion/AutoPromotionSection";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
-import { CreditCard } from "lucide-react";
+import { CreditCard, Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { DiscountInfo } from "@/lib/data/discount";
 import { useTranslations } from "next-intl";
@@ -113,7 +113,7 @@ export default function BookingInteractiveSection({
         const score = await getScore();
         setAvailablePoints(score.points);
       } catch (error) {
-  console.error("Failed to load score:", error);
+        console.error("Failed to load score:", error);
       }
     }
     loadScore();
@@ -284,9 +284,20 @@ export default function BookingInteractiveSection({
         onPromotionSelect={handleAutoPromotionSelect}
       />
 
-      <Card>
-        <CardHeader>
-          <CardTitle>{t("Booking.promoCode")}</CardTitle>
+      <Card className="border-0 shadow-lg bg-gradient-to-br from-white to-blue-50 pt-0 overflow-hidden">
+        <CardHeader className="bg-gradient-to-r from-blue-300 to-indigo-300 text-white relative overflow-hidden px-1.5 py-2">
+          <div className="absolute inset-0 bg-black/10"></div>
+          <div className="absolute -top-4 -right-4 w-16 h-16 bg-white/10 rounded-full"></div>
+          <div className="absolute -bottom-4 -left-4 w-20 h-20 bg-white/5 rounded-full"></div>
+          <CardTitle className="flex items-center gap-3 relative z-10">
+            <div className="w-8 h-8 bg-white/20 backdrop-blur-sm rounded-full flex items-center justify-center">
+              🎫
+            </div>
+            <span className="text-lg font-bold">{t("Booking.promoCode")}</span>
+          </CardTitle>
+          <p className="text-blue-100 text-sm relative z-10 mt-1">
+            {t("Booking.promoCodeDesc")}
+          </p>
         </CardHeader>
         <CardContent>
           <PromoCodeSection
@@ -297,9 +308,20 @@ export default function BookingInteractiveSection({
         </CardContent>
       </Card>
 
-    <Card>
-        <CardHeader>
-      <CardTitle>{t("Points.title")}</CardTitle>
+      <Card className="border-0 shadow-lg bg-gradient-to-br from-white to-purple-50 pt-0 overflow-hidden">
+        <CardHeader className="bg-gradient-to-r from-purple-300 to-pink-300 text-white relative overflow-hidden px-1.5 py-2">
+          <div className="absolute inset-0 bg-black/10"></div>
+          <div className="absolute -top-4 -right-4 w-16 h-16 bg-white/10 rounded-full"></div>
+          <div className="absolute -bottom-4 -left-4 w-20 h-20 bg-white/5 rounded-full"></div>
+          <CardTitle className="flex items-center gap-3 relative z-10">
+            <div className="w-8 h-8 bg-white/20 backdrop-blur-sm rounded-full flex items-center justify-center">
+              ⭐
+            </div>
+            <span className="text-lg font-bold">{t("Points.title")}</span>
+          </CardTitle>
+          <p className="text-purple-100 text-sm relative z-10 mt-1">
+            {t("Booking.pointsDesc")}
+          </p>
         </CardHeader>
         <CardContent>
           <PointsSection
@@ -311,12 +333,22 @@ export default function BookingInteractiveSection({
         </CardContent>
       </Card>
 
-      <Card>
-        <CardHeader>
-          <CardTitle className="flex items-center gap-2">
-            <CreditCard className="w-5 h-5 text-green-600" />
-            {t("Booking.paymentSummary")}
+      <Card className="border-0 shadow-xl bg-gradient-to-br from-white to-green-50 pt-0 overflow-hidden">
+        <CardHeader className="bg-gradient-to-r from-green-300 to-emerald-300 text-white relative overflow-hidden px-1.5 py-2">
+          <div className="absolute inset-0 bg-black/10"></div>
+          <div className="absolute -top-4 -right-4 w-16 h-16 bg-white/10 rounded-full"></div>
+          <div className="absolute -bottom-4 -left-4 w-20 h-20 bg-white/5 rounded-full"></div>
+          <CardTitle className="flex items-center gap-3 relative z-10">
+            <div className="w-10 h-10 bg-white/20 backdrop-blur-sm rounded-full flex items-center justify-center">
+              <CreditCard className="w-6 h-6 text-white" />
+            </div>
+            <span className="text-xl font-bold">
+              {t("Booking.paymentSummary")}
+            </span>
           </CardTitle>
+          <p className="text-green-100 text-sm relative z-10 mt-2">
+            {t("Booking.paymentConfirmDesc")}
+          </p>
         </CardHeader>
         <CardContent className="space-y-4">
           <div className="space-y-2">
@@ -329,12 +361,12 @@ export default function BookingInteractiveSection({
                 {discount > 0 || autoPromotionDiscount > 0 ? (
                   <>
                     <span className="text-gray-400 line-through text-sm">
-                      {mockData.pricing.totalPrice.toLocaleString("vi-VN")}đ
+                      {mockData.pricing.totalPrice?.toLocaleString("vi-VN")}đ
                     </span>
                   </>
                 ) : (
                   <span>
-                    {mockData.pricing.totalPrice.toLocaleString("vi-VN")}đ
+                    {mockData.pricing.totalPrice?.toLocaleString("vi-VN")}đ
                   </span>
                 )}
               </div>
@@ -346,37 +378,39 @@ export default function BookingInteractiveSection({
                   {discountInfo.code} (
                   {discountInfo.discountType === "PERCENTAGE"
                     ? `${discountInfo.discountValue}%`
-                    : `${discountInfo.discountValue.toLocaleString("vi-VN")}đ`}
+                    : `${discountInfo.discountValue?.toLocaleString("vi-VN")}đ`}
                   )
                 </span>
-                <span>-{discount.toLocaleString("vi-VN")}đ</span>
+                <span>-{discount?.toLocaleString("vi-VN")}đ</span>
               </div>
             )}
-    {autoPromotionDiscount > 0 && selectedAutoPromotion && (
+            {autoPromotionDiscount > 0 && selectedAutoPromotion && (
               <div className="flex justify-between text-red-600">
                 <span>
-      {t("Booking.autoPromotion")} (
+                  {t("Booking.autoPromotion")} (
                   {selectedAutoPromotion.discountType === "PERCENTAGE"
                     ? `${selectedAutoPromotion.discountValue}%`
-                    : `${selectedAutoPromotion.discountValue.toLocaleString(
+                    : `${selectedAutoPromotion.discountValue?.toLocaleString(
                         "vi-VN"
                       )}đ`}
                   )
                 </span>
-                <span>-{autoPromotionDiscount.toLocaleString("vi-VN")}đ</span>
+                <span>-{autoPromotionDiscount?.toLocaleString("vi-VN")}đ</span>
               </div>
             )}
-    {pointsDiscount > 0 && (
+            {pointsDiscount > 0 && (
               <div className="flex justify-between text-blue-600">
-        <span>{t("Points.usedPointsLabel", { count: usedPoints })}</span>
-                <span>-{pointsDiscount.toLocaleString("vi-VN")}đ</span>
+                <span>
+                  {t("Points.usedPointsLabel", { count: usedPoints })}
+                </span>
+                <span>-{pointsDiscount?.toLocaleString("vi-VN")}đ</span>
               </div>
             )}
             <Separator />
             <div className="flex justify-between font-semibold text-lg">
               <span>{t("Booking.totalAmount")}</span>
-              <span className="text-green-600">
-                {finalAmount.toLocaleString("vi-VN")}đ
+              <span className="text-green-300">
+                {finalAmount?.toLocaleString("vi-VN")}đ
               </span>
             </div>
           </div>
@@ -392,13 +426,27 @@ export default function BookingInteractiveSection({
           )}
 
           <Button
-            className="w-full bg-green-600 hover:bg-green-700 text-white py-3"
+            aria-label="Confirm Payment"
+            className="w-full bg-gradient-to-r from-green-300 to-emerald-300 hover:from-green-400 hover:to-emerald-400 text-white py-4 text-lg font-bold shadow-xl hover:shadow-2xl transform hover:scale-[1.02] transition-all duration-300 border-0 relative overflow-hidden px-3"
             onClick={handleConfirmPayment}
             disabled={paymentLoading || !!paymentLink}
           >
-            {paymentLoading ? t("Booking.processing") : t("Booking.confirmPay")}{" "}
-            •
-            <span className="ml-2">{finalAmount.toLocaleString("vi-VN")}đ</span>
+            <div className="absolute inset-0 bg-gradient-to-r from-white/10 to-transparent opacity-0 hover:opacity-100 transition-opacity duration-300"></div>
+            <div className="relative z-10 flex items-center justify-center gap-3">
+              {paymentLoading ? (
+                <>
+                  <Loader2 className="w-5 h-5 animate-spin" />
+                  <span>{t("Booking.processing")}</span>
+                </>
+              ) : (
+                <>
+                  <span>🚀 {t("Booking.confirmPay")}</span>
+                  <span className="text-xl font-extrabold">
+                    {finalAmount?.toLocaleString("vi-VN")}đ
+                  </span>
+                </>
+              )}
+            </div>
           </Button>
 
           {paymentLink && (
