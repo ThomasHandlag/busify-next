@@ -55,7 +55,8 @@ const Home = async () => {
         <section className="relative overflow-hidden h-screen">
           {/* Background Image with Enhanced Effects */}
           <div className="absolute inset-0 overflow-hidden">
-            <Image aria-label="background image2"
+            <Image
+              aria-label="background image2"
               src="/bus-photo.jpg"
               fill
               // fetchPriority="high"

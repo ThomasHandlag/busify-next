@@ -198,7 +198,11 @@
     "busOperator": "버스 운영사",
     "seatNumber": "좌석 번호",
     "totalAmount": "총 금액",
+    "offers": "특별 할인",
     "promoCode": "프로모션 코드",
+    "promoCodeDesc": "💰 프로모션 코드를 입력하여 더 많이 절약하세요",
+    "pointsDesc": "🎯 리워드 포인트로 할인 받기",
+    "paymentConfirmDesc": "💳 확인하고 결제하기",
     "applyCode": "코드 적용",
     "paymentMethod": "결제 수단",
     "confirmBooking": "예약 확인",
@@ -246,7 +250,14 @@
     "confirmPay": "확인하고 결제",
     "payWithVNPay": "VNPAY로 결제",
     "paymentLinkText": "결제",
-    "autoPromotion": "자동 프로모션"
+    "autoPromotion": "자동 프로모션",
+    "specialOffersLoading": "🔥 특별 할인",
+    "hot": "HOT",
+    "discountLabel": "할인",
+    "saveAmount": "절약",
+    "notEligible": "자격 미달",
+    "orderFrom": "주문 최소",
+    "appliedSave": "✅ 적용됨 - 절약"
   },
   "Trips": {
     "available": "이용 가능한 여정",
@@ -630,9 +641,12 @@
     "checking": "확인 중...",
     "apply": "적용",
     "applied": "✓ 코드 \"{code}\" 적용됨",
+    "appliedWithAutoDiscount": "✅ 적용됨 - \"{amount}\" 절약됨",
     "cannotApplyMin": "할인 금액이 너무 커서 코드를 적용할 수 없습니다. 할인 후 금액은 최소 {min} 이어야 합니다.",
     "invalidCode": "유효하지 않은 코드",
-    "notFoundOrExpired": "코드가 없거나 만료되었습니다"
+    "notFoundOrExpired": "코드가 없거나 만료되었습니다",
+    "appliedButton": "적용됨",
+    "saveForOrder": "이 주문에서 {amount} 절약"
   },
   "MyTickets": {
     "breadcrumb": "내 티켓",
@@ -724,7 +738,9 @@
     "applying": "적용 중",
     "usePoints": "포인트 사용",
     "youve": "당신은 가지고 있습니다",
-    "usedPointsLabel": "사용 포인트 ({count})"
+    "usedPointsLabel": "사용 포인트 ({count})",
+    "pointValue": "(1 포인트 = 1,000원)",
+    "usedPoints": "✓ {points} 포인트 사용 (-{amount})"
   },
   "BookingResult": {
     "title": "예약 결과",

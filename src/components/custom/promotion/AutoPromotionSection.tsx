@@ -4,12 +4,13 @@ import { useState, useEffect, useCallback } from "react";
 import { useSession } from "next-auth/react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { CheckCircle, Circle, Percent, DollarSign } from "lucide-react";
+import { CheckCircle, Circle, Gift, Star } from "lucide-react";
 import {
   getCurrentPromotionCampaigns,
   type PromotionCampaign,
   type Promotion as APIPromotion,
 } from "@/lib/data/promotion";
+import { useTranslations } from "next-intl";
 
 interface Promotion {
   id: number;
@@ -60,6 +61,7 @@ export default function AutoPromotionSection({
   );
   const [hasAutoSelected, setHasAutoSelected] = useState(false);
 
+  const t = useTranslations();
   // Function to fetch used promotions for the current user
   const fetchUsedPromotions = useCallback(async (): Promise<number[]> => {
     try {
@@ -212,24 +214,26 @@ export default function AutoPromotionSection({
   const getDiscountDisplay = (promotion: Promotion): string => {
     const discount = calculateDiscount(promotion, originalPrice);
     return discount > 0
-      ? `Giảm ${discount?.toLocaleString("vi-VN")}đ`
-      : "Không đủ điều kiện";
+      ? `${t("Booking.saveAmount")} ${discount?.toLocaleString("vi-VN")}đ`
+      : t("Booking.notEligible");
   };
 
   if (loading) {
     return (
-      <Card>
-        <CardHeader>
-          <CardTitle className="flex items-center gap-2">
-            <Percent className="w-5 h-5 text-green-600" />
-            Khuyến mãi
+      <Card className="overflow-hidden">
+        <CardHeader className="bg-gradient-to-r from-orange-50 to-red-50 py-3">
+          <CardTitle className="flex items-center gap-2 text-base">
+            <Gift className="w-5 h-5 text-orange-600" />
+            <span className="text-orange-600 font-semibold">
+              {t("Booking.specialOffersLoading")}
+            </span>
           </CardTitle>
         </CardHeader>
-        <CardContent>
-          <div className="space-y-3">
-            {[...Array(2)].map((_, i) => (
+        <CardContent className="p-3">
+          <div className="space-y-2">
+            {[...Array(1)].map((_, i) => (
               <div key={i} className="animate-pulse">
-                <div className="h-16 bg-gray-200 rounded-lg"></div>
+                <div className="h-16 bg-gradient-to-r from-gray-200 via-gray-100 to-gray-200 rounded-lg"></div>
               </div>
             ))}
           </div>
@@ -243,71 +247,92 @@ export default function AutoPromotionSection({
   }
 
   return (
-    <Card>
-      <CardHeader>
-        <CardTitle className="flex items-center gap-2">
-          <Percent className="w-5 h-5 text-green-600" />
-          Khuyến mãi
+    <Card className="overflow-hidden shadow-md border-0 pt-0">
+      <CardHeader className="bg-gradient-to-r from-orange-300 to-red-300 text-red-400 py-3 px-4">
+        <CardTitle className="flex items-center gap-2 text-base">
+          <Gift className="w-5 h-5" />
+          <span className="font-semibold">🎉 {t("Booking.offers")}</span>
         </CardTitle>
-        <p className="text-sm text-gray-600">
-          Chọn một trong các khuyến mãi dưới đây để được giảm giá
-        </p>
       </CardHeader>
-      <CardContent>
-        <div className="space-y-3">
-          {autoPromotions.map((promotion) => {
+      <CardContent className="p-3">
+        <div className="space-y-2">
+          {autoPromotions.slice(0, 2).map((promotion, index) => {
             const isSelected = selectedPromotion?.id === promotion.id;
             const discount = calculateDiscount(promotion, originalPrice);
             const isEligible = discount > 0;
+            const isBestDeal = index === 0;
 
             return (
               <div
                 key={promotion.id}
-                className={`border rounded-lg p-4 cursor-pointer transition-all duration-200 ${
+                className={`relative border rounded-lg p-3 cursor-pointer transition-all duration-200 ${
                   isSelected
-                    ? "border-green-500 bg-green-50 shadow-md"
+                    ? "border-orange-200 bg-orange-50 shadow-md"
                     : isEligible
-                    ? "border-gray-200 hover:border-green-300 hover:shadow-sm"
+                    ? "border-gray-200 hover:border-orange-300 bg-white hover:shadow-sm"
                     : "border-gray-200 bg-gray-50 cursor-not-allowed opacity-60"
-                }`}
+                } ${isBestDeal && isEligible ? "ring-1 ring-orange-300" : ""}`}
                 onClick={() => isEligible && handlePromotionSelect(promotion)}
               >
-                <div className="flex items-start justify-between">
-                  <div className="flex items-start gap-3 flex-1">
-                    <div className="mt-1">
-                      {isSelected ? (
-                        <CheckCircle className="w-5 h-5 text-green-600" />
-                      ) : (
-                        <Circle className="w-5 h-5 text-gray-400" />
-                      )}
+                {/* Best Deal Badge */}
+                {isBestDeal && isEligible && (
+                  <div className="absolute -top-2 left-3">
+                    <div className="bg-red-500 text-white px-2 py-1 rounded text-xs font-bold flex items-center gap-1">
+                      <Star className="w-3 h-3" />
+                      {t("Booking.hot")}
                     </div>
-                    <div className="flex-1">
-                      <div className="flex items-center gap-2 mb-2">
-                        <Badge
-                          variant={isEligible ? "default" : "secondary"}
-                          className="text-xs"
-                        >
-                          {promotion.discountType === "PERCENTAGE" ? (
-                            <Percent className="w-3 h-3 mr-1" />
-                          ) : (
-                            <DollarSign className="w-3 h-3 mr-1" />
-                          )}
-                          {formatDiscountValue(promotion)}
-                        </Badge>
-                        {promotion.campaignTitle && (
-                          <span className="text-xs text-gray-500">
-                            {promotion.campaignTitle}
+                  </div>
+                )}
+
+                <div className="flex items-center gap-3">
+                  {/* Selection indicator */}
+                  <div>
+                    {isSelected ? (
+                      <CheckCircle className="w-5 h-5 text-orange-600" />
+                    ) : (
+                      <Circle className="w-5 h-5 text-gray-300" />
+                    )}
+                  </div>
+
+                  <div className="flex-1">
+                    <div className="flex items-center gap-2 mb-1">
+                      <Badge
+                        variant={isEligible ? "default" : "secondary"}
+                        className={`text-xs px-2 py-1 ${
+                          isEligible
+                            ? "bg-orange-300 text-white"
+                            : "bg-gray-300 text-gray-600"
+                        }`}
+                      >
+                        {promotion.discountType === "PERCENTAGE" ? (
+                          <span>
+                            {t("Booking.discountLabel")}{" "}
+                            {formatDiscountValue(promotion)}
+                          </span>
+                        ) : (
+                          <span>
+                            {t("Booking.discountLabel")}{" "}
+                            {formatDiscountValue(promotion)}
                           </span>
                         )}
-                      </div>
-                      <p className="text-sm font-medium text-gray-900">
-                        {getDiscountDisplay(promotion)}
-                      </p>
-                      <p className="text-xs text-gray-500 mt-1">
-                        Đơn hàng từ{" "}
-                        {promotion.minOrderValue?.toLocaleString("vi-VN")}đ
-                      </p>
+                      </Badge>
                     </div>
+
+                    <p
+                      className={`text-sm font-medium ${
+                        isEligible ? "text-gray-900" : "text-gray-500"
+                      }`}
+                    >
+                      {getDiscountDisplay(promotion)}
+                    </p>
+                    <p
+                      className={`text-xs ${
+                        isEligible ? "text-gray-600" : "text-gray-400"
+                      }`}
+                    >
+                      {t("Booking.orderFrom")}{" "}
+                      {promotion.minOrderValue?.toLocaleString("vi-VN")}đ
+                    </p>
                   </div>
                 </div>
               </div>
@@ -316,17 +341,21 @@ export default function AutoPromotionSection({
         </div>
 
         {selectedPromotion && (
-          <div className="mt-4 p-3 bg-green-50 border border-green-200 rounded-lg">
-            <div className="flex items-center gap-2 text-green-700 text-sm">
-              <CheckCircle className="w-4 h-4" />
-              <span className="font-medium">
-                Đã áp dụng: Giảm{" "}
-                {calculateDiscount(
-                  selectedPromotion,
-                  originalPrice
-                )?.toLocaleString("vi-VN")}
-                đ
-              </span>
+          <div className="mt-3 p-3 bg-green-50 border border-green-200 rounded-lg">
+            <div className="flex items-center gap-2">
+              <CheckCircle className="w-4 h-4 text-green-600" />
+              <div className="flex-1">
+                <p className="text-green-700 font-medium text-sm">
+                  {t("Booking.appliedSave")}{" "}
+                  <span className="font-bold">
+                    {calculateDiscount(
+                      selectedPromotion,
+                      originalPrice
+                    )?.toLocaleString("vi-VN")}
+                    đ
+                  </span>
+                </p>
+              </div>
             </div>
           </div>
         )}

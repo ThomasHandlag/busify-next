@@ -211,11 +211,7 @@ export default function MyTicketsPage() {
   );
 
   const PaginationControls = () => {
-    const {
-      totalItems,
-      hasNext,
-      hasPrevious,
-    } = paginatedBookings;
+    const { totalItems, hasNext, hasPrevious } = paginatedBookings;
     // const startItem = (currentPage - 1) * pageSize + 1;
     // const endItem = Math.min(currentPage * pageSize, totalItems);
 
@@ -436,102 +432,14 @@ export default function MyTicketsPage() {
             className="space-y-3 sm:space-y-4"
           >
             <TabContent tabType="upcoming" />
-            {isLoading ? (
-              <div className="text-center py-8 sm:py-12">
-                <div className="animate-spin rounded-full h-6 w-6 sm:h-8 sm:w-8 border-b-2 border-green-600 mx-auto"></div>
-                <p className="mt-2 text-sm sm:text-base text-gray-600">
-                  Đang tải...
-                </p>
-              </div>
-            ) : filteredBookings.upcoming.length > 0 ? (
-              <>
-                <div className="grid grid-cols-1 lg:grid-cols-2 gap-3 sm:gap-4">
-                  {filteredBookings.upcoming.map(renderTicketCard)}
-                </div>
-                <PaginationControls />
-              </>
-            ) : (
-              <Card className="text-center py-8 sm:py-12">
-                <CardContent className="px-4 sm:px-6">
-                  <Clock className="w-12 h-12 sm:w-16 sm:h-16 text-gray-300 mx-auto mb-3 sm:mb-4" />
-                  <h3 className="text-base sm:text-lg font-semibold text-gray-900 mb-2">
-                    Không có vé sắp tới
-                  </h3>
-                  <p className="text-sm sm:text-base text-gray-600 mb-4 max-w-md mx-auto">
-                    Bạn chưa có chuyến đi nào được lên lịch. Hãy đặt vé ngay để
-                    khám phá những điểm đến mới!
-                  </p>
-                  <Link aria-label="Book a Ticket" href="/trips">
-                    <Button
-                      aria-label="Book a Ticket"
-                      className="bg-green-600 hover:bg-green-700 text-sm sm:text-base"
-                    >
-                      Đặt vé ngay
-                    </Button>
-                  </Link>
-                </CardContent>
-              </Card>
-            )}
           </TabsContent>
 
           <TabsContent value="completed" className="space-y-3 sm:space-y-4">
-            {isLoading ? (
-              <div className="text-center py-8 sm:py-12">
-                <div className="animate-spin rounded-full h-6 w-6 sm:h-8 sm:w-8 border-b-2 border-green-600 mx-auto"></div>
-                <p className="mt-2 text-sm sm:text-base text-gray-600">
-                  Đang tải...
-                </p>
-              </div>
-            ) : filteredBookings.completed.length > 0 ? (
-              <>
-                <div className="grid grid-cols-1 lg:grid-cols-2 gap-3 sm:gap-4">
-                  {filteredBookings.completed.map(renderTicketCard)}
-                </div>
-                <PaginationControls />
-              </>
-            ) : (
-              <Card className="text-center py-8 sm:py-12">
-                <CardContent className="px-4 sm:px-6">
-                  <CheckCircle className="w-12 h-12 sm:w-16 sm:h-16 text-gray-300 mx-auto mb-3 sm:mb-4" />
-                  <h3 className="text-base sm:text-lg font-semibold text-gray-900 mb-2">
-                    Chưa có chuyến đi nào hoàn thành
-                  </h3>
-                  <p className="text-sm sm:text-base text-gray-600 max-w-md mx-auto">
-                    Các chuyến đi đã hoàn thành sẽ được hiển thị tại đây.
-                  </p>
-                </CardContent>
-              </Card>
-            )}
+            <TabContent tabType="completed" />
           </TabsContent>
 
           <TabsContent value="canceled" className="space-y-3 sm:space-y-4">
-            {isLoading ? (
-              <div className="text-center py-8 sm:py-12">
-                <div className="animate-spin rounded-full h-6 w-6 sm:h-8 sm:w-8 border-b-2 border-green-600 mx-auto"></div>
-                <p className="mt-2 text-sm sm:text-base text-gray-600">
-                  Đang tải...
-                </p>
-              </div>
-            ) : filteredBookings.canceled.length > 0 ? (
-              <>
-                <div className="grid grid-cols-1 lg:grid-cols-2 gap-3 sm:gap-4">
-                  {filteredBookings.canceled.map(renderTicketCard)}
-                </div>
-                <PaginationControls />
-              </>
-            ) : (
-              <Card className="text-center py-8 sm:py-12">
-                <CardContent className="px-4 sm:px-6">
-                  <XCircle className="w-12 h-12 sm:w-16 sm:h-16 text-gray-300 mx-auto mb-3 sm:mb-4" />
-                  <h3 className="text-base sm:text-lg font-semibold text-gray-900 mb-2">
-                    Không có vé đã hủy
-                  </h3>
-                  <p className="text-sm sm:text-base text-gray-600 max-w-md mx-auto">
-                    Các vé đã hủy sẽ được hiển thị tại đây.
-                  </p>
-                </CardContent>
-              </Card>
-            )}
+            <TabContent tabType="canceled" />
           </TabsContent>
         </Tabs>
       </div>

@@ -198,7 +198,11 @@
     "busOperator": "バス会社",
     "seatNumber": "座席番号",
     "totalAmount": "合計金額",
+    "offers": "特別オファー",
     "promoCode": "プロモーションコード",
+    "promoCodeDesc": "💰 プロモーションコードを入力してさらに節約",
+    "pointsDesc": "🎯 リワードポイントで割引を受ける",
+    "paymentConfirmDesc": "💳 確認して支払い",
     "applyCode": "コードを適用",
     "paymentMethod": "支払い方法",
     "confirmBooking": "予約を確定",
@@ -246,7 +250,14 @@
     "confirmPay": "確認して支払う",
     "payWithVNPay": "VNPAYで支払う",
     "paymentLinkText": "支払い",
-    "autoPromotion": "自動プロモーション"
+    "autoPromotion": "自動プロモーション",
+    "specialOffersLoading": "🔥 特別オファー",
+    "hot": "HOT",
+    "discountLabel": "割引",
+    "saveAmount": "節約",
+    "notEligible": "対象外",
+    "orderFrom": "最低注文額",
+    "appliedSave": "✅ 適用済み - 節約"
   },
   "Trips": {
     "available": "利用可能な旅程",
@@ -630,9 +641,12 @@
     "checking": "確認中...",
     "apply": "適用",
     "applied": "✓ コード \"{code}\" を適用しました",
+    "appliedWithAutoDiscount": "✅ 適用済み - \"{amount}\" を節約しました",
     "cannotApplyMin": "割引が大きすぎるため、このコードは適用できません。割引後の金額は最低 {min} である必要があります。",
     "invalidCode": "無効なコード",
-    "notFoundOrExpired": "コードが存在しないか、有効期限切れです"
+    "notFoundOrExpired": "コードが存在しないか、有効期限切れです",
+    "appliedButton": "適用済み",
+    "saveForOrder": "このご注文で {amount} 節約"
   },
   "MyTickets": {
     "breadcrumb": "マイチケット",
@@ -724,7 +738,9 @@
     "applying": "適用中",
     "usePoints": "ポイントを使用",
     "youve": "あなたは持っています",
-    "usedPointsLabel": "使用ポイント ({count})"
+    "usedPointsLabel": "使用ポイント ({count})",
+    "pointValue": "(1ポイント = 1,000円)",
+    "usedPoints": "✓ {points}ポイントを使用 (-{amount})"
   },
   "BookingResult": {
     "title": "予約結果",

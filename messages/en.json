@@ -198,7 +198,11 @@
     "busOperator": "Bus Operator",
     "seatNumber": "Seat Number",
     "totalAmount": "Total Amount",
+    "offers": "Special Offers",
     "promoCode": "Promo Code",
+    "promoCodeDesc": "💰 Enter promo code to save more",
+    "pointsDesc": "🎯 Get discount with reward points",
+    "paymentConfirmDesc": "💳 Confirm and pay",
     "applyCode": "Apply Code",
     "paymentMethod": "Payment Method",
     "confirmBooking": "Confirm Booking",
@@ -246,7 +250,14 @@
     "confirmPay": "Confirm and pay",
     "payWithVNPay": "Pay with VNPAY",
     "paymentLinkText": "Payment",
-    "autoPromotion": "Auto promotion"
+    "autoPromotion": "Auto promotion",
+    "specialOffersLoading": "🔥 Special Offers",
+    "hot": "HOT",
+    "discountLabel": "DISCOUNT",
+    "saveAmount": "Save",
+    "notEligible": "Not eligible",
+    "orderFrom": "Order from",
+    "appliedSave": "✅ Applied - Save"
   },
   "Trips": {
     "available": "Available Trips",
@@ -631,9 +642,12 @@
     "checking": "Checking...",
     "apply": "Apply",
     "applied": "✓ Applied code \"{code}\"",
+    "appliedWithAutoDiscount": "✅ Applied - Saved \"{amount}\"",
     "cannotApplyMin": "This promo code cannot be applied because the discount is too large. The amount after discount must be at least {min}.",
     "invalidCode": "Invalid promo code",
-    "notFoundOrExpired": "Promo code does not exist or has expired"
+    "notFoundOrExpired": "Promo code does not exist or has expired",
+    "appliedButton": "Applied",
+    "saveForOrder": "Save {amount} for this order"
   },
   "MyTickets": {
     "breadcrumb": "My Tickets",
@@ -725,7 +739,9 @@
     "applying": "Applying",
     "usePoints": "Use points",
     "youve": "You have",
-    "usedPointsLabel": "Used points ({count})"
+    "usedPointsLabel": "Used points ({count})",
+    "pointValue": "(1 point = 1,000đ)",
+    "usedPoints": "✓ Used {points} points (-{amount})"
   },
   "BookingResult": {
     "title": "Booking Result",

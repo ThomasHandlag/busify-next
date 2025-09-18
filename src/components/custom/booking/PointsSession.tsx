@@ -105,8 +105,8 @@ export default function PointsSection({
 
       <p className="text-sm text-gray-500">
         {t("Points.youve")}{" "}
-        <span className="font-semibold">{availablePoints}</span>
-        {t("Points.points")} (1 điểm = 1,000đ)
+        <span className="font-semibold">{availablePoints}</span>{" "}
+        {t("Points.points")} {t("Points.pointValue")}
       </p>
 
       {error && <p className="text-red-500 text-sm">{error}</p>}
@@ -114,8 +114,10 @@ export default function PointsSection({
       {usedPoints > 0 && (
         <div className="bg-blue-50 border border-blue-200 rounded-lg p-3 flex items-center justify-between">
           <p className="text-blue-700 text-sm">
-            ✓ Đã dùng {usedPoints} điểm (-
-            {(usedPoints * 1000)?.toLocaleString("vi-VN")}đ)
+            {t("Points.usedPoints", {
+              points: usedPoints,
+              amount: (usedPoints * 1000)?.toLocaleString("vi-VN") + "đ",
+            })}
           </p>
           <Button
             aria-label="Remove Points"
