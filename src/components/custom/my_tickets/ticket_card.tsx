@@ -97,7 +97,7 @@ export const TicketCard = ({
           label: t("Booking.confirmed"),
           variant: "default" as const,
           icon: CheckCircle,
-          color: "text-green-600",
+          color: "text-green-500",
         };
       case "pending":
         return {
@@ -119,14 +119,14 @@ export const TicketCard = ({
           label: t("Booking.canceled"),
           variant: "destructive" as const,
           icon: XCircle,
-          color: "text-red-600",
+          color: "text-destructive",
         };
       default:
         return {
           label: t("Booking.unknown"),
           variant: "outline" as const,
           icon: AlertCircle,
-          color: "text-gray-600",
+          color: "text-muted-foreground",
         };
     }
   };
@@ -227,10 +227,10 @@ export const TicketCard = ({
         {/* Header Row */}
         <div className="flex justify-between items-start mb-3">
           <div className="flex-1 min-w-0 pr-3">
-            <h3 className="text-sm font-bold text-gray-900 mb-1 truncate">
+            <h3 className="text-sm font-bold text-foreground mb-1 truncate">
               {booking.route_name}
             </h3>
-            <p className="text-xs text-gray-500">{booking.booking_code}</p>
+            <p className="text-xs text-muted-foreground">{booking.booking_code}</p>
           </div>
           <div className="flex flex-col items-end gap-1">
             <Badge
@@ -249,10 +249,10 @@ export const TicketCard = ({
         {/* Route Row - Compact */}
         <div className="grid grid-cols-5 items-center gap-2 mb-3">
           <div className="col-span-2 text-left">
-            <p className="text-sm font-semibold text-gray-900">
+            <p className="text-sm font-semibold text-foreground">
               {formatTime(booking.departure_time)}
             </p>
-            <p className="text-xs text-gray-500 truncate">
+            <p className="text-xs text-muted-foreground truncate">
               {booking.departure_address}
             </p>
           </div>

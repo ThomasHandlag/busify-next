@@ -30,15 +30,15 @@ export function UserSidebar() {
     },
   ];
   return (
-    <div className="lg:flex lg:flex-col flex-row sticky gap-2 hidden w-64 p-4 bg-white ">
+    <div className="lg:flex lg:flex-col flex-row sticky gap-2 hidden w-64 p-4">
       {userMenuItems.map((item) => (
         <Link
           key={item.title}
           href={item.url}
-          className={`flex items-center p-3 text-sm font-medium rounded-md transition-colors ${
+          className={`flex items-center p-3 text-sm font-medium rounded-md transition-colors hover:bg-gray-100 hover:text-green-700 ${
             isActive(item.url)
               ? "bg-green-100 text-green-900 border border-green-200"
-              : "text-gray-600 hover:bg-gray-50 hover:text-gray-900"
+              : ""
           }`}
         >
           <item.icon className="w-5 h-5 mr-3" />

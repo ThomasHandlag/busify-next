@@ -29,7 +29,7 @@ const NavDesktop = ({
       <div className="flex items-center space-x-3">
         <div className="flex items-center space-x-2">
           <Logo width={32} height={32} />
-          <span className="text-2xl font-bold text-gray-900">Busify</span>
+          <span className="text-2xl font-bold text-foreground">Busify</span>
         </div>
       </div>
 
@@ -131,7 +131,7 @@ const NavDesktop = ({
         <NavigationMenu>
           <NavigationMenuList>
             <NavigationMenuItem>
-              <NavigationMenuTrigger className="flex items-center space-x-2 hover:bg-gray-50">
+              <NavigationMenuTrigger className="flex items-center space-x-2">
                 <User className="w-4 h-4" />
                 {session.data.user?.email}
               </NavigationMenuTrigger>
@@ -141,14 +141,14 @@ const NavDesktop = ({
                     <Link
                       aria-label={t("Header.dashboard")}
                       href={`/user`}
-                      className="block px-3 py-2 text-sm rounded-lg hover:bg-gray-100 transition-colors"
+                      className="block px-3 py-2 text-sm rounded-lg hover:bg-accent transition-colors"
                     >
                       {t("Header.dashboard")}
                     </Link>
                     <hr className="my-1" />
                     <button
                       onClick={() => signOut()}
-                      className="w-full text-left px-3 py-2 text-sm rounded-lg hover:bg-gray-100 transition-colors text-red-600"
+                      className="w-full text-left px-3 py-2 text-sm rounded-lg hover:bg-accent transition-colors text-red-600"
                     >
                       {t("Profile.logout")}
                     </button>

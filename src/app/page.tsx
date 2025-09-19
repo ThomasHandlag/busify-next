@@ -35,6 +35,9 @@ import DiscountSlider from "@/components/custom/discount_slider";
 import { getTripsByRegions, TripItemProps } from "@/lib/data/trip";
 import TripItem from "@/components/custom/trip/trip_item";
 
+export const dynamic = 'force-static';
+export const revalidate = 3600; // Revalidate every hour
+
 const Home = async () => {
   const trips = await getTripsByRegions({
     callback: (msg: string) => toast.error(msg),
@@ -66,7 +69,7 @@ const Home = async () => {
               alt="Bus platform background"
               className="object-cover scale-105 transition-transform duration-700 hover:scale-110"
               style={{
-                filter: "brightness(0.4) contrast(1.1) saturate(1.2)",
+                filter: "brightness(0.8) contrast(1.1) saturate(1.2)",
               }}
             />
           </div>
@@ -74,7 +77,7 @@ const Home = async () => {
             <div className="max-w-6xl mx-auto px-4">
               <div className="flex flex-col md:flex-row items-center justify-center gap-6 md:gap-8 mb-12">
                 <div className="relative">
-                  <span className="text-4xl md:text-8xl font-black bg-primary bg-clip-text text-transparent drop-shadow-2xl tracking-tight">
+                  <span className="text-4xl md:text-8xl font-black bg-green-500 bg-clip-text text-transparent drop-shadow-2xl tracking-tight">
                     Busify
                   </span>
                   {/* Logo glow effect */}
@@ -84,31 +87,19 @@ const Home = async () => {
                 <div className="hidden md:block w-px h-16 bg-gradient-to-b from-white/60 to-transparent"></div>
 
                 <div className="text-center md:text-left space-y-1">
-                  <div className="text-2xl md:text-3xl font-bold text-white drop-shadow-lg leading-tight">
+                  <div className="text-2xl md:text-3xl font-bold text-foreground drop-shadow-lg leading-tight">
                     <LocaleText string="slogan" name="Home" />
                   </div>
-                  <div className="text-lg md:text-xl font-semibold text-green-100 drop-shadow-md leading-tight">
+                  <div className="text-lg md:text-xl font-semibold text-accent-foreground drop-shadow-md leading-tight">
                     <LocaleText string="slogan2" name="Home" />
                   </div>
                 </div>
               </div>
               <div className="relative">
-                <div className="absolute -inset-1 bg-gradient-to-r from-green-400 via-blue-500 to-green-400 rounded-3xl blur opacity-20 animate-pulse"></div>
-                <Card className="relative bg-green-100/65 backdrop-blur-xl shadow-2xl shadow-green-500/20 border-2 border-white/30 rounded-3xl overflow-hidden">
-                  <div className="absolute inset-0 bg-gradient-to-br from-white/50 via-transparent to-green-50/30"></div>
+                <div className="absolute -inset-1 bg-gradient-to-r from-green-400 via-blue-500 to-green-400 rounded-xl blur opacity-20 animate-pulse"></div>
+                <Card className="p-0 relative bg-accent/70 backdrop-blur-xl shadow-2xl shadow-green-500/20 border-2 border-white/30 rounded-xl overflow-hidden">
                   <CardContent className="relative p-4 md:p-8">
-                    <div className="text-center mb-6">
-                      <h2 className="text-2xl md:text-3xl font-bold text-gray-800 mb-2">
-                        <LocaleText string="findBusTicket" name="Home" />
-                      </h2>
-                      <p className="text-gray-600 text-sm md:text-base">
-                        <LocaleText string="subtitle" name="Home" />
-                      </p>
-                    </div>
                     <HomeSearchForm locations={locations} />
-                    <div className="mt-6 flex justify-center">
-                      <div className="w-54 h-1 bg-gradient-to-r from-green-100 to-green-500 rounded-full"></div>
-                    </div>
                   </CardContent>
                 </Card>
               </div>
@@ -118,13 +109,13 @@ const Home = async () => {
       </section>
 
       {/* Discount Campaigns Slider Section */}
-      <section className="py-16 bg-gradient-to-b from-gray-50 to-white">
+      <section className="py-16 bg-gradient-to-b from-background to-secondary">
         <div className="max-w-7xl mx-auto px-4">
           <div className="text-center mb-12">
-            <h2 className="text-4xl font-bold text-gray-800 mb-4">
+            <h2 className="text-4xl font-bold text-foreground mb-4">
               🎉 <LocaleText string="discountCampaigns" name="Home" />
             </h2>
-            <p className="text-xl text-gray-600">
+            <p className="text-xl text-foreground/70">
               <LocaleText string="specialOffers" name="Home" />
             </p>
           </div>
@@ -133,7 +124,7 @@ const Home = async () => {
       </section>
 
       {/* Trips By Regions */}
-      <section className="py-16 bg-gray-50">
+      <section className="py-16">
         <div className="max-w-6xl mx-auto p-4">
           <h2 className="text-3xl font-bold text-center text-green-700 mb-2">
             <LocaleText string="north" name="Home" />
@@ -193,7 +184,7 @@ const Home = async () => {
             aria-label="See More Trips"
             size="lg"
             variant="outline"
-            className="border-green-600 text-green-600 hover:bg-green-600 hover:text-white bg-transparent"
+            className="border-primary text-primary hover:bg-primary hover:text-white bg-transparent"
             asChild
           >
             <Link href="/trips">
@@ -204,39 +195,39 @@ const Home = async () => {
       </section>
 
       {/* Mobile App Section */}
-      <section className="py-16 bg-white">
+      <section className="py-16 bg-primary/10">
         <div className="max-w-6xl mx-auto px-4">
           <div className="grid lg:grid-cols-2 gap-12 items-center">
             <div>
               <h2 className="text-3xl font-bold text-green-700 mb-6">
                 <LocaleText string="recommendText1" name="Home" />
               </h2>
-              <p className="text-lg text-gray-600 mb-8">
+              <p className="text-lg text-foreground mb-8">
                 <LocaleText string="recommendText2" name="Home" />
               </p>
 
               <div className="space-y-4 mb-8">
                 <div className="flex items-center space-x-3">
-                  <Smartphone className="w-6 h-6 text-green-600" />
-                  <span className="text-gray-700">
+                  <Smartphone className="w-6 h-6 text-primary" />
+                  <span className="text-foreground">
                     <LocaleText string="platformDesc1" name="Home" />
                   </span>
                 </div>
                 <div className="flex items-center space-x-3">
-                  <Navigation className="w-6 h-6 text-green-600" />
-                  <span className="text-gray-700">
+                  <Navigation className="w-6 h-6 text-primary" />
+                  <span className="text-foreground">
                     <LocaleText string="platformDesc2" name="Home" />
                   </span>
                 </div>
                 <div className="flex items-center space-x-3">
-                  <CreditCard className="w-6 h-6 text-green-600" />
-                  <span className="text-gray-700">
+                  <CreditCard className="w-6 h-6 text-primary" />
+                  <span className="text-foreground">
                     <LocaleText string="platformDesc3" name="Home" />
                   </span>
                 </div>
                 <div className="flex items-center space-x-3">
-                  <Globe className="w-6 h-6 text-green-600" />
-                  <span className="text-gray-700">
+                  <Globe className="w-6 h-6 text-primary" />
+                  <span className="text-foreground">
                     <LocaleText string="platformDesc4" name="Home" />
                   </span>
                 </div>
@@ -245,7 +236,7 @@ const Home = async () => {
               <div className="flex flex-col sm:flex-row gap-4">
                 <Button
                   aria-label="Download on App Store"
-                  className="bg-gray-900 text-white hover:bg-gray-800 flex items-center justify-center space-x-2 px-6 py-3 rounded-lg transition-colors"
+                  className="bg-secondary text-foreground hover:bg-accent/70 flex items-center justify-center space-x-2 px-6 py-3 rounded-lg transition-colors"
                 >
                   <Download className="w-5 h-5" />
                   <span>
@@ -254,7 +245,7 @@ const Home = async () => {
                 </Button>
                 <Button
                   aria-label="Get it on Google Play"
-                  className="bg-green-600 text-white hover:bg-green-700 flex items-center justify-center space-x-2 px-6 py-3 rounded-lg transition-colors"
+                  className="bg-primary text-foreground hover:bg-green-700 flex items-center justify-center space-x-2 px-6 py-3 rounded-lg transition-colors"
                 >
                   <Download className="w-5 h-5" />
                   <span>
@@ -266,16 +257,16 @@ const Home = async () => {
 
             <div className="relative lg:pl-8">
               <div className="bg-gradient-to-br from-green-500 to-green-700 rounded-2xl p-8 shadow-2xl">
-                <div className="bg-white rounded-xl p-6 shadow-lg">
+                <div className="bg-background rounded-xl p-6 shadow-lg">
                   <div className="flex items-center space-x-3 mb-4">
-                    <div className="w-12 h-12 bg-gradient-to-br from-green-500 to-green-600 rounded-lg flex items-center justify-center shadow-md">
-                      <Smartphone className="w-6 h-6 text-white" />
+                    <div className="w-12 h-12 bg-gradient-to-br from-green-500 to-primary rounded-lg flex items-center justify-center shadow-md">
+                      <Smartphone className="w-6 h-6 text-foreground" />
                     </div>
                     <div>
                       <h3 className="font-bold text-green-800 text-lg">
                         Busify Mobile
                       </h3>
-                      <p className="text-sm text-gray-600">
+                      <p className="text-sm text-foreground">
                         Travel made simple
                       </p>
                     </div>
@@ -283,16 +274,16 @@ const Home = async () => {
                   <Separator className="my-4" />
                   <div className="space-y-3">
                     <div className="flex justify-between">
-                      <span className="text-gray-600">
+                      <span className="text-foreground">
                         Ho Chi Minh → Da Lat
                       </span>
-                      <Badge className="bg-green-100 text-green-700">
+                      <Badge className="bg-primary text-foreground">
                         Booked
                       </Badge>
                     </div>
                     <div className="flex justify-between">
-                      <span className="text-gray-600">Today, 8:30 AM</span>
-                      <span className="font-semibold text-green-600">$15</span>
+                      <span className="text-foreground">Today, 8:30 AM</span>
+                      <span className="font-semibold text-primary">$15</span>
                     </div>
                   </div>
                 </div>
@@ -303,13 +294,13 @@ const Home = async () => {
       </section>
 
       {/* Testimonials Section */}
-      <section className="bg-gradient-to-b from-green-50 to-white py-16">
+      <section className="bg-gradient-to-b from-background to-accent py-16">
         <div className="max-w-6xl mx-auto px-4">
-          <h2 className="text-3xl font-bold text-center text-green-800 mb-12">
+          <h2 className="text-3xl font-bold text-center text-primary mb-12">
             <LocaleText string="customerReviews" name="Home" />
           </h2>
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
-            <Card className="border-green-200 bg-white shadow-lg hover:shadow-xl transition-shadow duration-300">
+            <Card className="border-green-200 bg-background shadow-lg hover:shadow-xl transition-shadow duration-300">
               <CardHeader>
                 <div className="flex items-center space-x-4">
                   <Avatar className="ring-2 ring-green-200">
@@ -337,7 +328,7 @@ const Home = async () => {
                     />
                   ))}
                 </div>
-                <p className="text-gray-700 italic">
+                <p className="text-foreground italic">
                   &quot;
                   <LocaleText string="review1" name="Home" />
                   !&quot;
@@ -345,7 +336,7 @@ const Home = async () => {
               </CardContent>
             </Card>
 
-            <Card className="border-green-200 bg-white shadow-lg hover:shadow-xl transition-shadow duration-300">
+            <Card className="border-green-200 bg-background shadow-lg hover:shadow-xl transition-shadow duration-300">
               <CardHeader>
                 <div className="flex items-center space-x-4">
                   <Avatar className="ring-2 ring-green-200">
@@ -373,7 +364,7 @@ const Home = async () => {
                     />
                   ))}
                 </div>
-                <p className="text-gray-700 italic">
+                <p className="text-foreground italic">
                   &quot;
                   <LocaleText string="review2" name="Home" />
                   .&quot;
@@ -381,7 +372,7 @@ const Home = async () => {
               </CardContent>
             </Card>
 
-            <Card className="border-green-200 bg-white shadow-lg hover:shadow-xl transition-shadow duration-300">
+            <Card className="border-green-200 bg-background shadow-lg hover:shadow-xl transition-shadow duration-300">
               <CardHeader>
                 <div className="flex items-center space-x-4">
                   <Avatar className="ring-2 ring-green-200">
@@ -409,7 +400,7 @@ const Home = async () => {
                     />
                   ))}
                 </div>
-                <p className="text-gray-700 italic">
+                <p className="text-foreground italic">
                   &quot;
                   <LocaleText string="review3" name="Home" />
                   &quot;
@@ -421,9 +412,9 @@ const Home = async () => {
       </section>
 
       {/* FAQ Section */}
-      <section className="py-16 bg-gray-50">
+      <section className="py-16 bg-background">
         <div className="max-w-4xl mx-auto px-4">
-          <h2 className="text-3xl font-bold text-center text-green-800 mb-12">
+          <h2 className="text-3xl font-bold text-center text-primary mb-12">
             <LocaleText string="frequentlyAskedQuestions" name="Home" />
           </h2>
 
@@ -485,7 +476,7 @@ const Home = async () => {
       </section>
 
       {/* Newsletter Signup Section */}
-      <section className="py-16 bg-gradient-to-r from-green-700 via-green-600 to-green-700 text-white relative overflow-hidden">
+      <section className="py-16 bg-gradient-to-r from-green-700 via-primary to-green-700 text-foreground relative overflow-hidden">
         {/* Background pattern */}
         <div className="absolute inset-0 opacity-10">
           <div className="absolute top-0 left-0 w-full h-full bg-gradient-to-br from-transparent via-white/10 to-transparent"></div>
@@ -502,11 +493,11 @@ const Home = async () => {
           <div className="flex flex-col sm:flex-row gap-4 max-w-md mx-auto">
             <Input
               placeholder="Enter your email address"
-              className="bg-white/95 text-gray-900 border-0 flex-1 placeholder:text-gray-500 focus:bg-white transition-colors"
+              className="text-foreground bg-background border-0 flex-1 placeholder:text-secondary-foreground focus:bg-background transition-colors"
             />
             <Button
               aria-label="Subscribe to Newsletter"
-              className="bg-white text-green-700 hover:bg-green-50 font-semibold px-6 transition-colors"
+              className="bg-background text-foreground font-semibold px-6 transition-colors"
             >
               <LocaleText string="subscribe" name="Home" />
             </Button>

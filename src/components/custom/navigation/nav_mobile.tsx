@@ -132,7 +132,7 @@ const NavMobile = ({
                       href={item.url}
                       className={`flex items-center p-2 text-sm font-medium rounded-md ${
                         isActive(item.url)
-                          ? "bg-gray-100 text-gray-900"
+                          ? "bg-background text-primary"
                           : "text-gray-600"
                       }`}
                     >
@@ -188,7 +188,7 @@ const NavMobile = ({
 
       <div className="flex items-center space-x-2">
         <Bus className="w-6 h-6 text-green-600" />
-        <span className="text-xl font-bold text-gray-900">Busify</span>
+        <span className="text-xl font-bold text-foreground">Busify</span>
       </div>
 
       {session.status === "authenticated" ? (

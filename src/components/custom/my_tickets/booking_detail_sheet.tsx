@@ -371,7 +371,7 @@ export function BookingDetailSheet({
                   </div>
                 </div>
 
-                <div className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
+                <div className="flex items-center justify-between p-3 bg-accent rounded-lg">
                   <div className="flex items-center gap-2">
                     <Bus className="w-4 h-4 text-gray-400" />
                     <span className="text-sm font-medium">

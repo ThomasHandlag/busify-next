@@ -218,7 +218,7 @@ export default function MyTicketsPage() {
     if (totalItems === 0) return null;
     return (
       <div className="flex flex-col space-y-3 sm:flex-row sm:items-center sm:justify-between sm:space-y-0 mt-4 sm:mt-6">
-        <div className="text-xs sm:text-sm text-gray-600 text-center sm:text-left">
+        <div className="text-xs sm:text-sm text-muted-foreground text-center sm:text-left">
           {t("pagination.showing", {
             from:
               (bookingResponse.pageNumber - 1) * bookingResponse.pageSize + 1,
@@ -244,7 +244,7 @@ export default function MyTicketsPage() {
             <ChevronLeft className="w-3 h-3 sm:w-4 sm:h-4" />
           </Button>
           <span className="text-xs sm:text-sm font-medium px-2">
-            <span className="hidden sm:inline">Trang </span>
+            <span className="hidden sm:inline">{t("pagination.pageLabel")} </span>
             {bookingResponse.pageNumber} / {bookingResponse.totalPages}
           </span>
           <Button
@@ -347,26 +347,26 @@ export default function MyTicketsPage() {
   return (
     <div className="w-full">
       {/* Breadcrumb */}
-      <div className="bg-white border-b px-4 py-3">
-        <nav className="flex items-center space-x-2 text-sm text-gray-600">
-          <Link href="/user" className="hover:text-gray-900">
+      <div className="bg-background border-b px-4 py-3">
+        <nav className="flex items-center space-x-2 text-sm text-muted-foreground">
+          <Link href="/user" className="hover:text-foreground">
             <Home className="w-4 h-4" />
           </Link>
           <ChevronRightIcon className="w-4 h-4" />
-          <span className="font-medium text-gray-900">
+          <span className="font-medium text-foreground">
             <LocaleText string="breadcrumb" name="MyTickets" />
           </span>
         </nav>
       </div>
 
       {/* Header */}
-      <div className="bg-white shadow-sm border-b px-4 py-6">
+      <div className="bg-background shadow-sm border-b px-4 py-6">
         <div className="flex flex-col space-y-4 lg:flex-row lg:items-center lg:justify-between lg:space-y-0 gap-4">
           <div className="min-w-0 flex-1">
-            <h1 className="text-xl sm:text-2xl font-bold text-gray-900 truncate">
+            <h1 className="text-xl sm:text-2xl font-bold text-foreground truncate">
               <LocaleText string="pageTitle" name="MyTickets" />
             </h1>
-            <p className="text-sm sm:text-base text-gray-600 mt-1 hidden sm:block">
+            <p className="text-sm sm:text-base text-muted-foreground mt-1 hidden sm:block">
               <LocaleText string="pageSubtitle" name="MyTickets" />
             </p>
           </div>

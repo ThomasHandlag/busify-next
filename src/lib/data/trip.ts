@@ -73,6 +73,7 @@ export interface TripFilterQuery {
   operatorName?: string | undefined;
   timeZone: string;
   availableSeats: number;
+  priceRange?: number[] | undefined;
 }
 
 export async function getUpcomingTrips(): Promise<TripItemProps[]> {

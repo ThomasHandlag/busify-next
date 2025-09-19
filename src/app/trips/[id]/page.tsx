@@ -99,7 +99,7 @@ export default async function TripDetailPage({
   const tripStarted = departureDate.getTime() < Date.now();
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-accent">
       <TripHeroSection isFavorite={false} tripDetail={tripDetail} />
 
       <div className="container mx-auto lg:px-4 lg:py-4 md:px-4 md:py-4">

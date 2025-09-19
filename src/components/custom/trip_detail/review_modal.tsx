@@ -90,12 +90,12 @@ export function ReviewModal({ tripId }: { tripId: number }) {
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger
         type="button"
-        className="bg-primary text-white px-4 py-2 rounded-md ml-2 lg:inset-0"
+        className="bg-primary text-foreground px-4 py-2 rounded-md ml-2 lg:inset-0"
       >
         {t("TripDetail.writeReview")}
       </DialogTrigger>
-      <DialogOverlay className="fixed h-screen inset-0 bg-black/50 z-40" />
-      <DialogContent className="fixed top-1/2 left-1/2 z-50 w-full max-w-md p-6 bg-white rounded-md shadow-lg transform -translate-x-1/2 -translate-y-1/2">
+      <DialogOverlay className="fixed h-screen inset-0 bg-background/50 z-40" />
+      <DialogContent className="fixed top-1/2 left-1/2 z-50 w-full max-w-md p-6 bg-background rounded-md shadow-lg transform -translate-x-1/2 -translate-y-1/2">
         <DialogHeader>
           <DialogTitle className="text-lg font-bold mb-4">
             {t("TripDetail.writeReview")}

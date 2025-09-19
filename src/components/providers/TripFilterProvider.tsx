@@ -37,7 +37,17 @@ export const TripFilterProvider = ({ children }: TripFilterProviderProps) => {
             { ...query, timeZone },
             page
           );
-          setTrips(filteredTrips.data);
+          const filteredPriceTrips = filteredTrips.data.filter((trip) => {
+            if (query.priceRange) {
+              return (
+                trip.price_per_seat &&
+                trip.price_per_seat >= query.priceRange[0] &&
+                trip.price_per_seat <= query.priceRange[1]
+              );
+            }
+            return true;
+          });
+          setTrips(filteredPriceTrips);
         } else {
           const filteredTrips = await filterTripsClient(
             {

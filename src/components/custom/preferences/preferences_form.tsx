@@ -31,7 +31,7 @@ const PreferencesForm = () => {
   const form = useForm<PreferencesFormValues>({
     defaultValues: {
       language: pref.language || "en",
-      theme: pref.theme || "light",
+      theme: themes.theme as Theme || "system",
     },
   });
 
