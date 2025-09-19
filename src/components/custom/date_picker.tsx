@@ -89,7 +89,6 @@ const Calendar28 = ({
           placeholder={picker?.placeholder}
           className="bg-background"
           onChange={handleInputChange}
-          disabled
           onKeyDown={(e) => {
             if (e.key === "ArrowDown") {
               e.preventDefault();
