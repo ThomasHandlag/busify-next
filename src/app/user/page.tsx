@@ -90,10 +90,10 @@ const ProfilePage = async () => {
   return (
     <div className="container mx-auto p-6 max-w-4xl mb-10">
       <div className="mb-8">
-        <h1 className="text-3xl font-bold text-gray-900">
+        <h1 className="text-3xl font-bold">
           <LocaleText name="UserDashboard" string="profile" />
         </h1>
-        <p className="text-gray-600 mt-2">
+        <p className="mt-2">
           <LocaleText name="UserPage" string="manageAccountInfo" />
         </p>
       </div>
@@ -102,7 +102,7 @@ const ProfilePage = async () => {
         <CardHeader className="flex flex-col lg:flex-row items-center justify-between space-y-0 pb-6">
           <div className="flex items-center space-x-4">
             <Avatar className="h-20 w-20">
-              <AvatarFallback className="bg-green-100 text-green-700 text-xl">
+              <AvatarFallback className="bg-primary/50 text-primary text-xl">
                 {userProfile?.fullName
                   ?.split(" ")
                   .map((n) => n[0])

@@ -25,7 +25,7 @@ export default function PaymentMethods({
       </Label>
       <RadioGroup value={paymentMethod} onValueChange={onPaymentMethodChange}>
         <div className="grid grid-cols-1 gap-3">
-          <div className="flex items-center space-x-2 p-3 border rounded-lg hover:bg-gray-50">
+          <div className="flex items-center space-x-2 p-3 border rounded-lg hover:bg-accent">
             <RadioGroupItem value="momo" id="momo" />
             <Label
               htmlFor="momo"
@@ -44,7 +44,7 @@ export default function PaymentMethods({
             </Label>
           </div>
 
-          <div className="flex items-center space-x-2 p-3 border rounded-lg hover:bg-gray-50">
+          <div className="flex items-center space-x-2 p-3 border rounded-lg hover:bg-accent">
             <RadioGroupItem value="zalopay" id="zalopay" />
             <Label
               htmlFor="zalopay"
@@ -63,7 +63,7 @@ export default function PaymentMethods({
             </Label>
           </div>
 
-          <div className="flex items-center space-x-2 p-3 border rounded-lg hover:bg-gray-50">
+          <div className="flex items-center space-x-2 p-3 border rounded-lg hover:bg-accent">
             <RadioGroupItem value="viettelmoney" id="viettelmoney" />
             <Label
               htmlFor="viettelmoney"
@@ -82,7 +82,7 @@ export default function PaymentMethods({
             </Label>
           </div>
 
-          <div className="flex items-center space-x-2 p-3 border rounded-lg hover:bg-gray-50">
+          <div className="flex items-center space-x-2 p-3 border rounded-lg hover:bg-accent">
             <RadioGroupItem value="vnpay" id="vnpay" />
             <Label
               htmlFor="vnpay"
@@ -101,7 +101,7 @@ export default function PaymentMethods({
             </Label>
           </div>
 
-          <div className="flex items-center space-x-2 p-3 border rounded-lg hover:bg-gray-50">
+          <div className="flex items-center space-x-2 p-3 border rounded-lg hover:bg-accent">
             <RadioGroupItem value="shopeepay" id="shopeepay" />
             <Label
               htmlFor="shopeepay"
@@ -120,7 +120,7 @@ export default function PaymentMethods({
             </Label>
           </div>
 
-          <div className="flex items-center space-x-2 p-3 border rounded-lg hover:bg-gray-50">
+          <div className="flex items-center space-x-2 p-3 border rounded-lg hover:bg-accent">
             <RadioGroupItem value="vietcombank" id="vietcombank" />
             <Label
               htmlFor="vietcombank"

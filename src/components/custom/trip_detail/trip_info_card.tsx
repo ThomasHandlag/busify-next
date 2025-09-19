@@ -162,10 +162,10 @@ const TripInfoCard = ({ tripDetail }: { tripDetail: TripDetail }) => {
                     }`}
                   />
                   <div className="inline-block whitespace-nowrap">
-                    <p className="text-xs sm:text-sm font-medium text-gray-800">
+                    <p className="text-xs sm:text-sm font-medium text-foreground">
                       {stop.address || stop.name}
                     </p>
-                    <p className="text-xs text-gray-500 mt-0.5">{stop.city}</p>
+                    <p className="text-xs text-muted-foreground mt-0.5">{stop.city}</p>
                   </div>
                 </div>
 
@@ -195,7 +195,7 @@ const TripInfoCard = ({ tripDetail }: { tripDetail: TripDetail }) => {
       </CardHeader>
       <CardContent className="lg:px-6 md:px-6 px-0 sm:px-4 space-y-6">
         {/* Route & Schedule */}
-        <div className="bg-blue-50 rounded-lg p-4">
+        <div className="bg-secondary rounded-lg p-4">
           <h3 className="font-semibold mb-4 flex items-center gap-2">
             <MapPin className="w-4 h-4" />
             {t("TripDetail.routeAndTime")}
@@ -203,7 +203,7 @@ const TripInfoCard = ({ tripDetail }: { tripDetail: TripDetail }) => {
 
           <div className="grid grid-cols-3 gap-4 items-center mb-4">
             <div className="text-center">
-              <div className="bg-green-500 text-white p-3 rounded-lg mb-2">
+              <div className="bg-green-500 text-foreground p-3 rounded-lg mb-2">
                 <p className="text-lg font-bold">
                   {formatTime(tripDetail.departure_time)}
                 </p>
@@ -234,7 +234,7 @@ const TripInfoCard = ({ tripDetail }: { tripDetail: TripDetail }) => {
             </div>
 
             <div className="text-center">
-              <div className="bg-red-500 text-white p-3 rounded-lg mb-2">
+              <div className="bg-red-500 text-foreground p-3 rounded-lg mb-2">
                 <p className="text-lg font-bold">
                   {formatTime(tripDetail.arrival_time)}
                 </p>
@@ -262,7 +262,7 @@ const TripInfoCard = ({ tripDetail }: { tripDetail: TripDetail }) => {
           </h3>
 
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
-            <div className="flex items-center space-x-3 p-3 bg-gray-50 rounded-lg">
+            <div className="flex items-center space-x-3 p-3 bg-accent rounded-lg">
               <Bus className="w-5 h-5 text-blue-600" />
               <div>
                 <p className="font-medium">{tripDetail.bus.name}</p>
@@ -272,7 +272,7 @@ const TripInfoCard = ({ tripDetail }: { tripDetail: TripDetail }) => {
               </div>
             </div>
 
-            <div className="flex items-center space-x-3 p-3 bg-gray-50 rounded-lg">
+            <div className="flex items-center space-x-3 p-3 bg-accent rounded-lg">
               <Users className="w-5 h-5 text-green-600" />
               <div>
                 <p className="font-medium">
@@ -285,7 +285,7 @@ const TripInfoCard = ({ tripDetail }: { tripDetail: TripDetail }) => {
               </div>
             </div>
 
-            <div className="flex items-center space-x-3 p-3 bg-gray-50 rounded-lg">
+            <div className="flex items-center space-x-3 p-3 bg-accent rounded-lg">
               <NavigationIcon className="w-5 h-5 text-purple-600" />
               <div>
                 <p className="font-medium">{t("Booking.confirmation.route")}</p>
@@ -295,7 +295,7 @@ const TripInfoCard = ({ tripDetail }: { tripDetail: TripDetail }) => {
               </div>
             </div>
 
-            <div className="flex items-center space-x-3 p-3 bg-gray-50 rounded-lg">
+            <div className="flex items-center space-x-3 p-3 bg-accent rounded-lg">
               <Clock className="w-5 h-5 text-orange-600" />
               <div>
                 <p className="font-medium">
@@ -314,7 +314,7 @@ const TripInfoCard = ({ tripDetail }: { tripDetail: TripDetail }) => {
           <Separator />
           {/* Bus Images */}
           <div>
-            <h4 className="font-semibold text-gray-900 mb-3">
+            <h4 className="font-semibold text-foreground mb-3">
               {t("TripDetail.busImages")}
             </h4>
             {busImages.length > 0 ? (
@@ -371,7 +371,7 @@ const TripInfoCard = ({ tripDetail }: { tripDetail: TripDetail }) => {
                 </Swiper>
               </>
             ) : (
-              <p className="text-sm text-gray-500">
+              <p className="text-sm text-muted-foreground">
                 {t("TripDetail.noBusImages")}
               </p>
             )}
@@ -381,7 +381,7 @@ const TripInfoCard = ({ tripDetail }: { tripDetail: TripDetail }) => {
 
           {/* Route Map */}
           <div>
-            <h4 className="font-semibold text-gray-900 mb-3">
+            <h4 className="font-semibold text-foreground mb-3">
               {t("TripDetail.journeyMap")}
             </h4>
             <RouteMap
@@ -396,7 +396,7 @@ const TripInfoCard = ({ tripDetail }: { tripDetail: TripDetail }) => {
 
           {/* Amenities */}
           <div>
-            <h4 className="font-semibold text-gray-900 mb-3">
+            <h4 className="font-semibold text-foreground mb-3">
               {t("TripDetail.amenities")}
             </h4>
             {renderAmenities()}
@@ -411,7 +411,7 @@ const TripInfoCard = ({ tripDetail }: { tripDetail: TripDetail }) => {
             {t("TripDetail.tripTimeline")}
           </h3>
 
-          <div className="bg-gray-50 rounded-lg p-4 overflow-x-auto">
+          <div className="bg-accent rounded-lg p-4 overflow-x-auto">
             {renderRouteTimeline()}
           </div>
         </div>

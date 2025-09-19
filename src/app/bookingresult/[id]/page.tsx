@@ -165,7 +165,7 @@ export default function BookingResult() {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-gray-50 flex items-center justify-center w-full">
+      <div className="min-h-screen bg-accent flex items-center justify-center w-full">
         <Card>
           <CardContent className="p-6 text-center">
             <div className="flex flex-col items-center space-y-4">
@@ -180,7 +180,7 @@ export default function BookingResult() {
 
   if (error || !paymentDetails) {
     return (
-      <div className="min-h-screen bg-gray-50 flex items-center justify-center w-full">
+      <div className="min-h-screen bg-accent flex items-center justify-center w-full">
         <Card className="border-red-200 bg-red-50">
           <CardContent className="p-6 text-center">
             <div className="flex flex-col items-center space-y-4">
@@ -210,9 +210,9 @@ export default function BookingResult() {
     paymentDetails.status.toLowerCase() === "confirmed";
 
   return (
-    <div className="min-h-screen bg-gray-50 w-full">
+    <div className="min-h-screen bg-accent w-full">
       {/* Header */}
-      <div className="bg-white shadow-sm border-b">
+      <div className="bg-background shadow-sm border-b">
         <div className="px-4 py-4 w-full">
           <div className="flex items-center gap-4">
             <span className="text-gray-600">{t("BookingResult.title")}</span>

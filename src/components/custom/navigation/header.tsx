@@ -103,7 +103,7 @@ const Header = () => {
 
   return (
     <header
-      className={`px-4 py-3 bg-white border-b border-gray-200 justify-between text-gray-900 shadow-sm top-0 inset-0 sticky z-50 w-full ${
+      className={`px-4 py-3 bg-background border-b border-border justify-between text-navtext shadow-sm top-0 inset-0 sticky z-50 w-full ${
         isTop ? "flex" : "fixed"
       } ${
         isScrollUp ? "translate-y-0" : "-translate-y-full"

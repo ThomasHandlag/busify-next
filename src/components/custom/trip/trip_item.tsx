@@ -53,7 +53,15 @@ const TripItem = ({ trip }: { trip: TripItemProps }) => {
   const departureDate = format(departureDateObj, "dd/MM");
 
   return (
-    <Card className="hover:shadow-md transition-all duration-200 border-l-4 border-l-green-500 ">
+    <Card
+      className={`hover:shadow-md transition-all duration-200 border-l-4 ${
+        trip.available_seats < 1
+          ? "border-gray-500"
+          : trip.available_seats <= 10
+          ? "border-yellow-500"
+          : "border-green-500"
+      }`}
+    >
       <CardContent className="p-4">
         {/* Header Row - Compact */}
         <div className="flex items-start mb-3 gap-3">
@@ -70,10 +78,10 @@ const TripItem = ({ trip }: { trip: TripItemProps }) => {
 
           {/* Info */}
           <div className="flex-1 min-w-0">
-            <h3 className="text-sm font-bold text-gray-900 mb-1 truncate">
+            <h3 className="text-sm font-bold text-foreground mb-1 truncate">
               {trip.operator_name}
             </h3>
-            <div className="flex items-center gap-2 text-xs text-gray-500">
+            <div className="flex items-center gap-2 text-xs text-muted-foreground">
               <span className="flex items-center gap-1">
                 <MapPin className="w-3 h-3" />
                 {departureDate}
@@ -97,7 +105,7 @@ const TripItem = ({ trip }: { trip: TripItemProps }) => {
 
             {/* Price Display Logic */}
             <div className="text-right">
-              <p className="text-lg font-bold text-green-600">
+              <p className="text-lg font-bold text-primary">
                 {new Intl.NumberFormat("vi-VN").format(trip.price_per_seat)}đ
               </p>
             </div>
@@ -107,10 +115,10 @@ const TripItem = ({ trip }: { trip: TripItemProps }) => {
         {/* Route Row - Ultra Compact */}
         <div className="grid grid-cols-5 items-center gap-2 mb-3">
           <div className="col-span-2 text-left">
-            <p className="text-sm font-semibold text-gray-900">
+            <p className="text-sm font-semibold text-secondary-foreground">
               {departure_time}
             </p>
-            <p className="text-xs text-gray-500 truncate">
+            <p className="text-xs text-muted-foreground truncate">
               {trip.route.start_location}
             </p>
           </div>
@@ -126,7 +134,7 @@ const TripItem = ({ trip }: { trip: TripItemProps }) => {
           </div>
 
           <div className="col-span-2 text-right">
-            <p className="text-sm font-semibold text-gray-900">
+            <p className="text-sm font-semibold text-secondary-foreground">
               {arrival_time}
             </p>
             <p className="text-xs text-gray-500 truncate">
@@ -137,7 +145,7 @@ const TripItem = ({ trip }: { trip: TripItemProps }) => {
 
         {/* Bottom Row - Info & Actions */}
         <div className="flex justify-between items-center">
-          <div className="flex items-center gap-3 text-xs text-gray-500">
+          <div className="flex items-center gap-3 text-xs text-muted-foreground">
             <span className="flex items-center gap-1">
               <Clock className="w-3 h-3" />
               <span>
@@ -160,16 +168,20 @@ const TripItem = ({ trip }: { trip: TripItemProps }) => {
               href={`/trips/${trip.trip_id}`}
               className="hidden sm:block"
             ></Link>
-
-            <Link aria-label="Book trip" href={`/trips/${trip.trip_id}`}>
-              <Button
-                aria-label="Book Trip"
-                size="sm"
-                className="bg-green-600 hover:bg-green-700 text-white text-xs h-7 px-3 cursor-pointer"
-              >
+            <Button
+              disabled={trip.available_seats < 1}
+              aria-label="Book Trip"
+              size="sm"
+              className={`text-white text-xs h-7 px-3 cursor-pointer ${
+                trip.available_seats < 1
+                  ? "bg-gray-400 cursor-not-allowed"
+                  : "bg-green-600 hover:bg-green-700"
+              }`}
+            >
+              <Link aria-label="Book trip" href={`/trips/${trip.trip_id}`}>
                 <LocaleText string="bookTrip" name="Trips.tripItem" />
-              </Button>
-            </Link>
+              </Link>
+            </Button>
           </div>
         </div>
       </CardContent>
