@@ -26,16 +26,20 @@ const TripItem = ({ trip }: { trip: TripItemProps }) => {
   };
 
   // Parse ISO 8601 format dates properly and convert to VN time (UTC+7)
-  const departureDateObj = new Date(
-    new Date(trip.departure_time).getTime() + 7 * 60 * 60 * 1000
-  );
-  const arrivalDateObj = new Date(
-    new Date(trip.arrival_time).getTime() + 7 * 60 * 60 * 1000
-  );
+  const departureDateObj = new Date(trip.departure_time);
+  const arrivalDateObj = new Date(trip.arrival_time);
 
   // Format the times
-  const departure_time = format(departureDateObj, "HH:mm");
-  const arrival_time = format(arrivalDateObj, "HH:mm");
+  const departure_time = departureDateObj.toLocaleString("vi-VN", {
+    hour: "2-digit",
+    minute: "2-digit",
+    hour12: false,
+  });
+  const arrival_time = arrivalDateObj.toLocaleString("vi-VN", {
+    hour: "2-digit",
+    minute: "2-digit",
+    hour12: false,
+  });
 
   // Calculate duration correctly
   const trip_duration_minutes = Math.abs(

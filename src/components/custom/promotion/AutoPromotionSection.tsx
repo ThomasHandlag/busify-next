@@ -88,9 +88,6 @@ export default function AutoPromotionSection({
         }
       );
 
-      console.log("Used promotions response status:", response.status);
-      console.log("Used promotions response:", response);
-
       if (!response.ok) {
         const errorText = await response.text();
         console.error("API Error Response:", errorText);
