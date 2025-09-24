@@ -1,3 +1,5 @@
+// "use server";
+
 import Footer from "@/components/custom/footer";
 import { Button } from "@/components/ui/button";
 import {
@@ -86,11 +88,11 @@ const Home = async () => {
 
                 <div className="hidden md:block w-px h-16 bg-gradient-to-b from-white/60 to-transparent"></div>
 
-                <div className="text-center md:text-left space-y-1">
-                  <div className="text-2xl md:text-3xl font-bold text-foreground drop-shadow-lg leading-tight">
+                <div className="text-center md:text-left space-y-1 text-green-200">
+                  <div className="text-2xl md:text-3xl font-bold drop-shadow-lg leading-tight">
                     <LocaleText string="slogan" name="Home" />
                   </div>
-                  <div className="text-lg md:text-xl font-semibold text-accent-foreground drop-shadow-md leading-tight">
+                  <div className="text-lg md:text-xl font-semibold drop-shadow-md leading-tight">
                     <LocaleText string="slogan2" name="Home" />
                   </div>
                 </div>

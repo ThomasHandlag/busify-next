@@ -301,7 +301,7 @@ export function BookingDetailSheet({
               className="flex items-center gap-1 mt-2"
             >
               <StatusIcon className="w-3 h-3" />
-              {t(statusInfo.labelKey as string)}
+              {t(`MyTickets.${statusInfo.labelKey}`)}
             </Badge>
           </div>
         </SheetHeader>
