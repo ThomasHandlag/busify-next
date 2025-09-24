@@ -61,7 +61,7 @@ const ReviewSection = async ({
             <p className="font-medium">
               <LocaleText string="avgRate" name="Review" />
             </p>
-            <p className="text-sm text-gray-500">
+            <p className="text-sm text-foreground">
               <LocaleText string="basedOn" name="Review" /> {reviews.length}{" "}
               <LocaleText string="reviews" name="TripDetail" />
             </p>
@@ -71,7 +71,7 @@ const ReviewSection = async ({
         <Separator className="my-4" />
         <div className="space-y-4">
           {reviews.length === 0 ? (
-            <p className="text-sm text-gray-500">
+            <p className="text-sm text-foreground">
               <LocaleText string="noReviews" name="Review" />.
             </p>
           ) : (

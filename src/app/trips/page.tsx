@@ -68,7 +68,7 @@ const AppPage = () => {
           </SheetContent>
         </Sheet>
       </div>
-      <div className="h-[90vh] w-full bg-gray-50 overflow-auto">
+      <div className="h-[90vh] w-full bg-background overflow-auto">
         <div className="container mx-auto px-4 py-6">
           <div className="flex flex-col lg:flex-row gap-6">
             {/* Desktop Sidebar */}
@@ -76,10 +76,10 @@ const AppPage = () => {
             <div className="flex-1">
               {/* Results Summary */}
               <div className="mb-6">
-                <h1 className="text-2xl font-bold text-gray-900">
+                <h1 className="text-2xl font-bold text-foreground">
                   <LocaleText string="available" name="Trips" />
                 </h1>
-                <p className="text-gray-600 mt-2">
+                <p className="text-muted-foreground mt-2">
                   <LocaleText string="found" name="Trips" /> {trips.length}{" "}
                   <LocaleText string="foundRex" name="Trips" />
                 </p>
@@ -125,7 +125,7 @@ const AppPage = () => {
             </div>
           </div>
         </div>
-        <Pager />
+        {trips.length > 0 && <Pager />}
       </div>
     </div>
   );

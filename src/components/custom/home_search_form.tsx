@@ -134,6 +134,9 @@ const HomeSearchForm = ({ locations }: { locations: FilterLocationType[] }) => {
             className="col-span-1 bg-green-600 hover:bg-green-700 text-white px-6 rounded-md font-medium text-sm"
             disabled={filter.isLoading}
           >
+            <span className="inline-block">
+              {t("Common.search")}
+            </span>
             <Search className="w-4 h-4 mr-2" />
           </Button>
         </FormItem>

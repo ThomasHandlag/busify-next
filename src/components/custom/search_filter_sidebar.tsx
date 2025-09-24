@@ -24,6 +24,7 @@ import { getAllLocationsClient } from "@/lib/data/location";
 import { toast } from "sonner";
 import { useTripFilter } from "@/lib/contexts/TripFilterContext";
 import { useTranslations } from "next-intl";
+import { Slider } from "../ui/slider";
 
 export type SearchFilterSidebarProps = {
   onApplyFilters: (filters: TripFilterQuery | undefined) => void;
@@ -39,6 +40,7 @@ type FormValues = {
   amenities: undefined | string[];
   operatorName: undefined | string;
   availableSeats: number;
+  priceRange: number[] | undefined;
 };
 
 export type FilterLocationType = {
@@ -264,6 +266,31 @@ const SearchFilterSidebar = ({ callback }: { callback?: () => void }) => {
                       </Label>
                     </div>
                   ))}
+                </div>
+              </FormItem>
+            )}
+          />
+
+          <Separator />
+
+          <FormField
+            control={form.control}
+            name="priceRange"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>{t("Filter.priceRange")}</FormLabel>
+                <div className="space-y-3">
+                  <div className="flex justify-between text-sm text-gray-600">
+                    <span>{(field.value?.[0] || 0).toLocaleString()} VND</span>
+                    <span>{(field.value?.[1] || 5000000).toLocaleString()} VND</span>
+                  </div>
+                  <Slider
+                    value={field.value || [0, 5000000]}
+                    onValueChange={field.onChange}
+                    min={0}
+                    max={5000000}
+                    step={1000}
+                  />
                 </div>
               </FormItem>
             )}

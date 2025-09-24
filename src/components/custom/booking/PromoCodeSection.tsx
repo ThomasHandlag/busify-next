@@ -114,7 +114,7 @@ export default function PromoCodeSection({
               value={promoCode}
               onChange={(e) => setPromoCode(e.target.value.toUpperCase())}
               onKeyPress={handleKeyPress}
-              className={`pl-11 pr-4 py-3 text-sm font-mono tracking-wider bg-gradient-to-r from-gray-50 to-gray-100 border-2 transition-all duration-300 ${
+              className={`pl-11 pr-4 py-3 text-sm font-mono tracking-wider bg-gradient-to-r from-accent to-secondary border-2 transition-all duration-300 ${
                 error
                   ? "border-red-300 focus:border-red-500 bg-red-50"
                   : discountInfo
