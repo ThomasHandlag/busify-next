@@ -33,6 +33,7 @@ import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 import LocaleText from "../locale_text";
 import { useTranslations } from "next-intl";
+import { BASE_URL } from "@/lib/constants/constants";
 
 interface PassengerInfo {
   phone: string;
@@ -126,7 +127,7 @@ export function SeatSelectionTabsCard({
         setIsLoadingProfile(true);
         try {
           const response = await fetch(
-            "http://localhost:8080/api/users/profile",
+            `${BASE_URL}api/users/profile`,
             {
               method: "GET",
               headers: {

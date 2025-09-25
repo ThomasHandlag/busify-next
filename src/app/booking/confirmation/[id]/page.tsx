@@ -10,6 +10,7 @@ import { Label } from "@radix-ui/react-label";
 import React from "react";
 import { toast } from "sonner";
 import { useTranslations } from "next-intl";
+import { BASE_URL } from "@/lib/constants/constants";
 
 interface TripApiResponse {
   code: number;
@@ -111,7 +112,7 @@ export default function BookingConfirmation({ params }: PageProps) {
       setLoading(true);
       try {
         const response = await fetch(
-          `http://localhost:8080/api/trips/${tripId}`,
+          `${BASE_URL}api/trips/${tripId}`,
           {
             cache: "no-store",
           }

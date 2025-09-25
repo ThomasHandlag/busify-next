@@ -13,6 +13,7 @@ import { DiscountInfo } from "@/lib/data/discount";
 import { useTranslations } from "next-intl";
 import PointsSection from "./PointsSession";
 import { getScore, makeUsePoints } from "@/lib/data/score";
+import { BASE_URL } from "@/lib/constants/constants";
 
 interface BookingData {
   trip: { route: string };
@@ -179,7 +180,7 @@ export default function BookingInteractiveSection({
       console.log("Sending booking request:", bookingRequest);
 
       const bookingResponse = await fetch(
-        "http://localhost:8080/api/bookings",
+        `${BASE_URL}api/bookings`,
         {
           method: "POST",
           headers: {
@@ -212,7 +213,7 @@ export default function BookingInteractiveSection({
       console.log("Sending payment request:", paymentRequest);
 
       const paymentResponse = await fetch(
-        "http://localhost:8080/api/payments/create",
+        `${BASE_URL}api/payments/create`,
         {
           method: "POST",
           headers: {

@@ -3,6 +3,7 @@
 import { useEffect } from "react";
 import { useTranslations } from "next-intl";
 import { useRouter, useSearchParams } from "next/navigation";
+import { BASE_URL } from "@/lib/constants/constants";
 
 export default function PaymentCallback() {
   const router = useRouter();
@@ -27,7 +28,7 @@ export default function PaymentCallback() {
         }
 
         const response = await fetch(
-          `http://localhost:8080/api/payments/vnpay/callback?${new URLSearchParams(
+          `${BASE_URL}api/payments/vnpay/callback?${new URLSearchParams(
             queryParams
           )}`,
           {
