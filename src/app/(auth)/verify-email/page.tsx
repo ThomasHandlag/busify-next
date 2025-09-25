@@ -4,6 +4,7 @@ import { useSearchParams, useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import { verification } from "@/lib/data/auth";
+import { BASE_URL } from "@/lib/constants/constants";
 
 function LoadingFallback() {
   return (
@@ -93,7 +94,7 @@ function VerifyEmailContent() {
       }
 
       const response = await fetch(
-        "http://localhost:8080/api/auth/resend-verification",
+        `${BASE_URL}api/auth/resend-verification`,
         {
           method: "POST",
           headers: {
