@@ -24,7 +24,6 @@ import { getAllLocationsClient } from "@/lib/data/location";
 import { toast } from "sonner";
 import { useTripFilter } from "@/lib/contexts/TripFilterContext";
 import { useTranslations } from "next-intl";
-import { Slider } from "../ui/slider";
 
 export type SearchFilterSidebarProps = {
   onApplyFilters: (filters: TripFilterQuery | undefined) => void;
@@ -39,8 +38,7 @@ type FormValues = {
   busModels: undefined | string[];
   amenities: undefined | string[];
   operatorName: undefined | string;
-  availableSeats: number;
-  priceRange: number[] | undefined;
+  availableSeats?: number;
 };
 
 export type FilterLocationType = {
@@ -126,6 +124,63 @@ const SearchFilterSidebar = ({ callback }: { callback?: () => void }) => {
     <div className="space-y-6">
       <Form {...form}>
         <form onSubmit={handleApplyFilters} className="space-y-6">
+          {/* Action Buttons - Moved to top for better UX */}
+          <div className="pt-2 pb-4 space-y-3 border-b border-gray-200">
+            <FormItem>
+              <Button
+                aria-label={t("Filter.applyFilters")}
+                className="w-full bg-green-600 hover:bg-green-700"
+                type="button"
+                disabled={isLoading}
+                onClick={() => {
+                  const formData = form.getValues();
+                  callback?.();
+                  onApplyFilters({
+                    ...formData,
+                    timeZone: Intl.DateTimeFormat().resolvedOptions().timeZone,
+                  });
+                }}
+              >
+                {isLoading ? (
+                  <>
+                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                    {t("Filter.applying")}
+                  </>
+                ) : (
+                  t("Filter.applyFilters")
+                )}
+              </Button>
+            </FormItem>
+            <FormItem>
+              <Button
+                aria-label={t("Filter.reset")}
+                variant="outline"
+                className="w-full"
+                type="button"
+                disabled={isLoading}
+                onClick={() => {
+                  form.reset({
+                    startLocation: undefined,
+                    endLocation: undefined,
+                    departureDate: undefined,
+                    untilTime: undefined,
+                    operatorName: undefined,
+                    busModels: [],
+                    amenities: [],
+                    availableSeats: 1,
+                  });
+                  callback?.();
+                  onApplyFilters({
+                    ...form.getValues(),
+                    timeZone: Intl.DateTimeFormat().resolvedOptions().timeZone,
+                  });
+                }}
+              >
+                {t("Filter.reset")}
+              </Button>
+            </FormItem>
+          </div>
+
           <FormField
             control={form.control}
             name="startLocation"
@@ -275,31 +330,6 @@ const SearchFilterSidebar = ({ callback }: { callback?: () => void }) => {
 
           <FormField
             control={form.control}
-            name="priceRange"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>{t("Filter.priceRange")}</FormLabel>
-                <div className="space-y-3">
-                  <div className="flex justify-between text-sm text-gray-600">
-                    <span>{(field.value?.[0] || 0).toLocaleString()} VND</span>
-                    <span>{(field.value?.[1] || 5000000).toLocaleString()} VND</span>
-                  </div>
-                  <Slider
-                    value={field.value || [0, 5000000]}
-                    onValueChange={field.onChange}
-                    min={0}
-                    max={5000000}
-                    step={1000}
-                  />
-                </div>
-              </FormItem>
-            )}
-          />
-
-          <Separator />
-
-          <FormField
-            control={form.control}
             name="amenities"
             render={({ field }) => (
               <FormItem>
@@ -351,63 +381,6 @@ const SearchFilterSidebar = ({ callback }: { callback?: () => void }) => {
           />
 
           <Separator />
-
-          {/* Action Buttons */}
-          <div className="pt-4 space-y-3">
-            <FormItem>
-              <Button
-                aria-label={t("Filter.applyFilters")}
-                className="w-full bg-green-600 hover:bg-green-700"
-                type="button"
-                disabled={isLoading}
-                onClick={() => {
-                  const formData = form.getValues();
-                  callback?.();
-                  onApplyFilters({
-                    ...formData,
-                    timeZone: Intl.DateTimeFormat().resolvedOptions().timeZone,
-                  });
-                }}
-              >
-                {isLoading ? (
-                  <>
-                    <Loader2 className="w-4 h-4 mr-2 animate-spin" />
-                    {t("Filter.searching")}...
-                  </>
-                ) : (
-                  t("Filter.applyFilters")
-                )}
-              </Button>
-            </FormItem>
-            <FormItem>
-              <Button
-                aria-label={t("Filter.reset")}
-                variant="outline"
-                className="w-full"
-                type="button"
-                disabled={isLoading}
-                onClick={() => {
-                  form.reset({
-                    startLocation: undefined,
-                    endLocation: undefined,
-                    departureDate: undefined,
-                    untilTime: undefined,
-                    operatorName: undefined,
-                    busModels: [],
-                    amenities: [],
-                    availableSeats: 0,
-                  });
-                  callback?.();
-                  onApplyFilters({
-                    ...form.getValues(),
-                    timeZone: Intl.DateTimeFormat().resolvedOptions().timeZone,
-                  });
-                }}
-              >
-                {t("Filter.reset")}
-              </Button>
-            </FormItem>
-          </div>
         </form>
       </Form>
     </div>

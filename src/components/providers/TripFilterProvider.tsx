@@ -32,46 +32,25 @@ export const TripFilterProvider = ({ children }: TripFilterProviderProps) => {
     const fetchTrips = async () => {
       setIsLoading(true);
       try {
-        if (query) {
-          const filteredTrips = await filterTripsClient(
-            { ...query, timeZone },
-            page
-          );
-          const filteredPriceTrips = filteredTrips.data.filter((trip) => {
-            if (query.priceRange) {
-              return (
-                trip.price_per_seat &&
-                trip.price_per_seat >= query.priceRange[0] &&
-                trip.price_per_seat <= query.priceRange[1]
-              );
-            }
-            return true;
-          });
-          setTrips(filteredPriceTrips);
-        } else {
-          const filteredTrips = await filterTripsClient(
-            {
-              startLocation: undefined,
-              endLocation: undefined,
-              departureDate: undefined,
-              busModels: undefined,
-              untilTime: undefined,
-              amenities: undefined,
-              operatorName: undefined,
+        const queryWithDefaults = query
+          ? { ...query, timeZone }
+          : {
               timeZone,
               availableSeats: 1,
-            },
-            page
-          );
-          setTrips(filteredTrips.data);
-          setPager({
-            page: filteredTrips.page,
-            size: filteredTrips.size,
-            totalPages: filteredTrips.totalPages,
-            isFirst: filteredTrips.isFirst,
-            isLast: filteredTrips.isLast,
-          });
-        }
+              sortBy: "departureTime" as const,
+              sortDirection: "ASC" as const,
+            };
+
+        const filteredTrips = await filterTripsClient(queryWithDefaults, page);
+
+        setTrips(filteredTrips.data);
+        setPager({
+          page: filteredTrips.page,
+          size: filteredTrips.size,
+          totalPages: filteredTrips.totalPages,
+          isFirst: filteredTrips.isFirst,
+          isLast: filteredTrips.isLast,
+        });
       } catch (error) {
         console.error("Error fetching trips:", error);
         setTrips([]);
