@@ -1,3 +1,5 @@
+import { BASE_URL } from "@/lib/constants/constants";
+
 export async function POST(request: Request) {
   try {
     const body = await request.json();
@@ -15,7 +17,7 @@ export async function POST(request: Request) {
     }
 
     // Call backend API to send reset password email
-    const backendUrl = process.env.BACKEND_URL || "http://localhost:8080";
+    const backendUrl = BASE_URL || "http://localhost:8080";
     const response = await fetch(`${backendUrl}/api/auth/forgot-password`, {
       method: "POST",
       headers: {
