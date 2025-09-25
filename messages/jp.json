@@ -747,7 +747,6 @@
     "points": "ポイント",
     "exceedLimit": "ポイントがチャージ制限を超えています。最大で使用できます",
     "enterPoint": "ポイント数を入力してください",
-    "applying": "適用中",
     "usePoints": "ポイントを使用",
     "youve": "あなたは持っています",
     "usedPointsLabel": "使用ポイント ({count})",
@@ -794,6 +793,7 @@
     "busType": "バスタイプ",
     "amenities": "アメニティ",
     "reset": "フィルターをリセット",
+    "applying": "適用中",
     "startLocation": "出発地",
     "endLocation": "到着地",
     "availableSeats": "空席数",
@@ -803,7 +803,10 @@
     "enterOperator": "運営者名を入力",
     "searching": "検索中",
     "operatorName": "運営者名",
-    "busModels": "バスモデル"
+    "busModels": "バスモデル",
+    "price": "価格",
+    "ascending": "昇順",
+    "descending": "降順"
   },
   "UserPage": {
     "notAuthenticated": "未認証",

@@ -747,7 +747,6 @@
     "points": "포인트",
     "exceedLimit": "포인트가 충전 제한을 초과했습니다. 최대 {limit}까지 사용할 수 있습니다.",
     "enterPoint": "포인트 수를 입력하세요",
-    "applying": "적용 중",
     "usePoints": "포인트 사용",
     "youve": "당신은 가지고 있습니다",
     "usedPointsLabel": "사용 포인트 ({count})",
@@ -794,6 +793,7 @@
     "busType": "버스 종류",
     "amenities": "편의 시설",
     "reset": "필터 초기화",
+    "applying": "적용 중",
     "startLocation": "출발지",
     "endLocation": "도착지",
     "availableSeats": "사용 가능한 좌석",
@@ -803,7 +803,10 @@
     "enterOperator": "운영사 입력",
     "searching": "검색 중",
     "operatorName": "운영사 이름",
-    "busModels": "버스 모델"
+    "busModels": "버스 모델",
+    "price": "가격",
+    "ascending": "오름차순",
+    "descending": "내림차순"
   },
   "UserPage": {
     "notAuthenticated": "인증되지 않음",

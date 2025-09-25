@@ -748,7 +748,6 @@
     "points": "Points",
     "exceedLimit": "Your point exceed charge limit. You can use maximum",
     "enterPoint": "Enter number of points",
-    "applying": "Applying",
     "usePoints": "Use points",
     "youve": "You have",
     "usedPointsLabel": "Used points ({count})",
@@ -795,6 +794,7 @@
     "busType": "Bus Type",
     "amenities": "Amenities",
     "reset": "Reset filters",
+    "applying": "Applying",
     "startLocation": "Start Location",
     "endLocation": "End Location",
     "availableSeats": "Available Seats",
@@ -804,7 +804,12 @@
     "enterOperator": "Enter operator name",
     "searching": "Searching",
     "operatorName": "Operator Name",
-    "busModels": "Bus Models"
+    "busModels": "Bus Models",
+    "sortBy": "Sort By",
+    "sortDirection": "Sort Direction",
+    "price": "Price",
+    "ascending": "Ascending",
+    "descending": "Descending"
   },
   "UserPage": {
     "notAuthenticated": "Not Authenticated",
