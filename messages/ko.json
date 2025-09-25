@@ -5,6 +5,7 @@
     "signUp": "회원가입",
     "about": "회사 소개",
     "contact": "문의하기",
+    "blog": "블로그",
     "privacyPolicy": "개인정보 처리방침",
     "termsOfService": "이용약관",
     "language": "언어",
@@ -38,7 +39,8 @@
     "infoNotFound": "정보를찾을수없습니다.",
     "hours": "시간",
     "minutes": "분",
-    "processing": "처리 중..."
+    "processing": "처리 중...",
+    "tripTimeline": "트립 시간 라인"
   },
   "Home": {
     "title": "버스 티켓 검색 및 예약",
@@ -342,6 +344,7 @@
     "profile": "프로필",
     "tickets": "티켓",
     "redeem": "쿠폰사용",
+    "promotions": "프로모션",
     "upcomingTrips": "예정된여정",
     "pastTrips": "지난여정",
     "canceledTrips": "취소된여정",
@@ -502,7 +505,12 @@
     "distance": "거리",
     "busImages": "버스 이미지",
     "noBusImages": "버스 이미지가 없습니다",
-    "tripTimeline": "여정 타임라인"
+    "tripTimeline": "여정 타임라인",
+    "durationText": "지속",
+    "pickAndDropText": "집어 들고 떨어 뜨립니다",
+    "pickUpText": "찾다",
+    "busType": "버스 유형",
+    "dropPointText": "드롭 포인트"
   },
   "Amenities": {
     "wifi": "Wi‑Fi",
@@ -634,7 +642,88 @@
     "loadErrorLong": "현재 프로모션을 가져올 수 없습니다. 잠시 후 다시 시도해 주세요.",
     "prevCampaign": "이전 캠페인",
     "nextCampaign": "다음 캠페인",
+    "pageTitle": "사용 가능한 프로모션",
+    "pageSubtitle": "현재 적용 중인 프로모션입니다. 조건은 노선, 운영사 및 시간에 따라 다를 수 있습니다.",
+    "hideUsedLabel": "사용된 프로모션 숨기기",
+    "sortLabel": "정렬",
+    "sortStart": "최신",
+    "sortDiscount": "가장 높은 할인",
+    "sortMinOrder": "최저 최소 주문",
+    "conditionsButton": "조건",
+    "noConditions": "특정 조건이 없습니다.",
+    "conditionsTitle": "조건",
+    "validity": "유효 기간:",
+    "claimedToast": "축하합니다! 프로모션 코드를 받았습니다.",
+    "minOrderPrefix": "최소",
+    "noRequirementBadge": "조건 없음",
+    "requiredBadge": "필수",
+    "completedBadge": "완료됨",
+    "usedBadge": "사용됨",
+    "claimedBadge": "수령됨",
+    "viewVideoLabel": "영상 보기",
+    "watchAdLabel": "광고 보기",
+    "surveyLabel": "설문 완료",
+    "viewAtLeast": "영상의 80% 이상 시청",
+    "watchAdDesc": "광고를 열고 최소 15초 동안 시청하세요",
+    "surveyDesc": "설문을 완료하면 카운트됩니다",
+    "viewProgress": "약 {percent}% 시청함",
+    "referralLabel": "추천 {count}",
+    "referralDesc": "{count}회의 성공적인 추천이 필요합니다",
+    "firstPurchaseLabel": "첫 구매",
+    "firstPurchaseDesc": "첫 주문을 완료하세요",
+    "activityLabel": "활동",
+    "doneLabel": "완료",
+    "codeLabel": "코드",
+    "noActivePromotions": "활성 프로모션이 없습니다.",
+    "noLimit": "제한 없음",
     "gotoCampaign": "캠페인 {number}로 이동"
+  },
+  "Blog": {
+    "search": {
+      "placeholder": "블로그 게시물 검색...",
+      "button": "검색"
+    },
+    "featured": {
+      "title": "추천 게시물"
+    },
+    "tags": {
+      "title": "인기 주제",
+      "all": "전체"
+    },
+    "latest": {
+      "title": "최신 게시물"
+    },
+    "empty": {
+      "noResults": "게시물을 찾을 수 없습니다. 다른 검색어를 시도해 주세요."
+    },
+    "pagination": {
+      "prev": "이전",
+      "info": "페이지 {page} / {total}",
+      "next": "다음"
+    },
+    "newsletter": {
+      "title": "업데이트 구독",
+      "desc": "최신 노선, 프로모션 및 게시물을 이메일로 받아보세요.",
+      "emailPlaceholder": "이메일",
+      "subscribeButton": "구독"
+    },
+    "meta": {
+      "readingTime": "{minutes} 분 읽기",
+      "views": "{count}회 조회",
+      "author": "작성자: {name}"
+    },
+    "author": {
+      "aboutTitle": "작성자 정보: {name}"
+    },
+    "post": {
+      "contentUpdating": "게시물 내용이 업데이트 중입니다...",
+      "relatedTitle": "관련 게시물",
+      "cta": {
+        "title": "다음 여행을 준비하시겠어요?",
+        "desc": "지금 버스 티켓을 예약하고 여행을 계획하세요!",
+        "button": "여행 찾기"
+      }
+    }
   },
   "Discount": {
     "enterCode": "프로모션 코드를 입력",
@@ -711,6 +800,18 @@
     "complaintSend": "전송",
     "confirmCancelDescriptionPercent": "이 티켓을 취소하시겠습니까? 이 작업은 되돌릴 수 없으며 티켓 가격의 {percent}%가 환불됩니다.",
     "noRefundNote": "주의: 출발 임박 취소로 인해 환불되지 않습니다.",
+    "refundInfo": "환불 정보",
+    "refund": "환불",
+    "refundAmount": "환불 금액",
+    "cancellationFee": "취소 수수료",
+    "netRefundAmount": "순 환불 금액",
+    "refundTransactionCode": "거래 코드",
+    "refundReason": "사유",
+    "requestedAt": "요청 시간",
+    "processedAt": "처리 시간",
+    "completedAt": "완료 시간",
+    "notes": "메모",
+    "guestInfo": "게스트",
     "empty": {
       "upcomingTitle": "예정된 티켓이 없습니다",
       "upcomingDesc": "아직 예정된 여정이 없습니다. 지금 예약하고 새로운 목적지를 탐험해 보세요!",
@@ -735,7 +836,6 @@
     "points": "포인트",
     "exceedLimit": "포인트가 충전 제한을 초과했습니다. 최대 {limit}까지 사용할 수 있습니다.",
     "enterPoint": "포인트 수를 입력하세요",
-    "applying": "적용 중",
     "usePoints": "포인트 사용",
     "youve": "당신은 가지고 있습니다",
     "usedPointsLabel": "사용 포인트 ({count})",
@@ -782,6 +882,7 @@
     "busType": "버스 종류",
     "amenities": "편의 시설",
     "reset": "필터 초기화",
+    "applying": "적용 중",
     "startLocation": "출발지",
     "endLocation": "도착지",
     "availableSeats": "사용 가능한 좌석",
@@ -791,7 +892,12 @@
     "enterOperator": "운영사 입력",
     "searching": "검색 중",
     "operatorName": "운영사 이름",
-    "busModels": "버스 모델"
+    "busModels": "버스 모델",
+    "price": "가격",
+    "ascending": "오름차순",
+    "descending": "내림차순",
+    "sortBy": "정렬",
+    "sortDirection": "정렬 방향"
   },
   "UserPage": {
     "notAuthenticated": "인증되지 않음",
@@ -805,5 +911,6 @@
     "completedTrips": "완료된 여정",
     "member": "회원",
     "accountStatus": "계정 상태"
-  }
+  },
+  "specialOffers": "특별 할인"
 }

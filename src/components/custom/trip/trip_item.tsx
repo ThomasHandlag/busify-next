@@ -17,8 +17,6 @@ const TripItem = ({ trip }: { trip: TripItemProps }) => {
     return "bg-green-100 text-green-700";
   };
 
-  console.log("Trip Data:", trip);
-
   const getAvailabilityText = (seats: number) => {
     if (seats <= 5)
       return <LocaleText string="fewSeats" name="Trips.tripItem" />;
@@ -70,10 +68,10 @@ const TripItem = ({ trip }: { trip: TripItemProps }) => {
           {/* Avatar */}
           {trip.operator_avatar && (
             <Image
-              width={10}
-              height={10}
               src={trip.operator_avatar}
               alt={trip.operator_name}
+              width={40}
+              height={40}
               className="w-10 h-10 rounded-full object-cover flex-shrink-0 border border-gray-200"
             />
           )}

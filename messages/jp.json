@@ -5,6 +5,7 @@
     "signUp": "新規登録",
     "about": "会社概要",
     "contact": "お問い合わせ",
+    "blog": "ブログ",
     "privacyPolicy": "プライバシーポリシー",
     "termsOfService": "利用規約",
     "language": "言語",
@@ -38,7 +39,8 @@
     "infoNotFound": "情報が見つかりません。",
     "hours": "時間",
     "minutes": "分",
-    "processing": "処理中..."
+    "processing": "処理中...",
+    "tripTimeline": "Trip Time Line"
   },
   "Home": {
     "title": "バスチケットの検索と予約",
@@ -342,6 +344,7 @@
     "profile": "プロフィール",
     "tickets": "チケット",
     "redeem": "クーポン利用",
+    "promotions": "プロモーション",
     "upcomingTrips": "今後の旅程",
     "pastTrips": "過去の旅程",
     "canceledTrips": "キャンセルされた旅程",
@@ -502,7 +505,12 @@
     "distance": "距離",
     "busImages": "バスの画像",
     "noBusImages": "バスの画像はありません",
-    "tripTimeline": "旅程タイムライン"
+    "tripTimeline": "旅程タイムライン",
+    "busType": "Bus Type",
+    "dropPointText": "Drop point",
+    "durationText": "Duration",
+    "pickAndDropText": "Pick up and drop",
+    "pickUpText": "Pick up"
   },
   "Amenities": {
     "wifi": "Wi‑Fi",
@@ -634,7 +642,88 @@
     "loadErrorLong": "現在プロモーションを取得できません。しばらくしてからもう一度お試しください。",
     "prevCampaign": "前のキャンペーン",
     "nextCampaign": "次のキャンペーン",
+    "pageTitle": "利用可能なプロモーション",
+    "pageSubtitle": "現在適用されているプロモーション。条件はルート、オペレーター、時間によって異なる場合があります。",
+    "hideUsedLabel": "使用済みプロモーションを非表示",
+    "sortLabel": "並び替え",
+    "sortStart": "最新",
+    "sortDiscount": "最高の割引",
+    "sortMinOrder": "最低注文額が低い",
+    "conditionsButton": "条件",
+    "noConditions": "特定の条件はありません。",
+    "conditionsTitle": "条件",
+    "validity": "有効期間:",
+    "claimedToast": "おめでとうございます！プロモーションコードを受け取りました。",
+    "minOrderPrefix": "最低",
+    "noRequirementBadge": "条件なし",
+    "requiredBadge": "必須",
+    "completedBadge": "完了",
+    "usedBadge": "使用済み",
+    "claimedBadge": "受け取り済み",
+    "viewVideoLabel": "ビデオを見る",
+    "watchAdLabel": "広告を見る",
+    "surveyLabel": "アンケートを完了",
+    "viewAtLeast": "ビデオの少なくとも80％を視聴",
+    "watchAdDesc": "広告を開き、少なくとも15秒間視聴してください",
+    "surveyDesc": "アンケートを完了するとカウントされます",
+    "viewProgress": "約 {percent}% 視聴済み",
+    "referralLabel": "紹介 {count}",
+    "referralDesc": "{count} 件の紹介が必要です",
+    "firstPurchaseLabel": "初回購入",
+    "firstPurchaseDesc": "最初の注文を完了してください",
+    "activityLabel": "アクティビティ",
+    "doneLabel": "完了",
+    "codeLabel": "コード",
+    "noActivePromotions": "アクティブなプロモーションはありません。",
+    "noLimit": "制限なし",
     "gotoCampaign": "キャンペーン {number} へ移動"
+  },
+  "Blog": {
+    "search": {
+      "placeholder": "ブログ記事を検索...",
+      "button": "検索"
+    },
+    "featured": {
+      "title": "注目の投稿"
+    },
+    "tags": {
+      "title": "人気のテーマ",
+      "all": "すべて"
+    },
+    "latest": {
+      "title": "最新の投稿"
+    },
+    "empty": {
+      "noResults": "投稿が見つかりません。別の検索をお試しください。"
+    },
+    "pagination": {
+      "prev": "前へ",
+      "info": "ページ {page} / {total}",
+      "next": "次へ"
+    },
+    "newsletter": {
+      "title": "更新を購読",
+      "desc": "最新の路線、プロモーション、投稿をメールで受け取りましょう。",
+      "emailPlaceholder": "メールアドレス",
+      "subscribeButton": "購読"
+    },
+    "meta": {
+      "readingTime": "{minutes} 分で読めます",
+      "views": "{count} 回閲覧",
+      "author": "著者: {name}"
+    },
+    "author": {
+      "aboutTitle": "{name} について"
+    },
+    "post": {
+      "contentUpdating": "投稿の内容は現在更新中です...",
+      "relatedTitle": "関連記事",
+      "cta": {
+        "title": "次の旅の準備はできましたか？",
+        "desc": "今すぐバスチケットを予約して旅の計画を始めましょう！",
+        "button": "旅行を探す"
+      }
+    }
   },
   "Discount": {
     "enterCode": "プロモーションコードを入力",
@@ -711,6 +800,18 @@
     "complaintSend": "送信",
     "confirmCancelDescriptionPercent": "このチケットをキャンセルしてもよろしいですか？この操作は元に戻せず、チケット代の {percent}% が返金されます。",
     "noRefundNote": "注意: 出発直前のキャンセルのため返金はありません。",
+    "refundInfo": "返金情報",
+    "refund": "返金",
+    "refundAmount": "返金額",
+    "cancellationFee": "キャンセル手数料",
+    "netRefundAmount": "純返金額",
+    "refundTransactionCode": "取引コード",
+    "refundReason": "理由",
+    "requestedAt": "リクエスト時間",
+    "processedAt": "処理時間",
+    "completedAt": "完了時間",
+    "notes": "メモ",
+    "guestInfo": "ゲスト",
     "empty": {
       "upcomingTitle": "今後のチケットはありません",
       "upcomingDesc": "まだ予定された旅程はありません。今すぐ予約して新しい目的地を探索しましょう！",
@@ -735,7 +836,6 @@
     "points": "ポイント",
     "exceedLimit": "ポイントがチャージ制限を超えています。最大で使用できます",
     "enterPoint": "ポイント数を入力してください",
-    "applying": "適用中",
     "usePoints": "ポイントを使用",
     "youve": "あなたは持っています",
     "usedPointsLabel": "使用ポイント ({count})",
@@ -782,6 +882,7 @@
     "busType": "バスタイプ",
     "amenities": "アメニティ",
     "reset": "フィルターをリセット",
+    "applying": "適用中",
     "startLocation": "出発地",
     "endLocation": "到着地",
     "availableSeats": "空席数",
@@ -791,7 +892,12 @@
     "enterOperator": "運営者名を入力",
     "searching": "検索中",
     "operatorName": "運営者名",
-    "busModels": "バスモデル"
+    "busModels": "バスモデル",
+    "price": "価格",
+    "ascending": "昇順",
+    "descending": "降順",
+    "sortDirection": "Sort Direction",
+    "sortBy": "Sort By"
   },
   "UserPage": {
     "notAuthenticated": "未認証",
@@ -805,5 +911,6 @@
     "completedTrips": "完了した旅程",
     "member": "メンバー",
     "accountStatus": "アカウントの状態"
-  }
+  },
+  "specialOffers": "Special Offers"
 }

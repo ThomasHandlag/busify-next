@@ -5,6 +5,7 @@
     "signUp": "Đăng ký",
     "about": "Về chúng tôi",
     "contact": "Liên hệ",
+    "blog": "Blog",
     "privacyPolicy": "Chính sách bảo mật",
     "termsOfService": "Điều khoản dịch vụ",
     "language": "Ngôn ngữ",
@@ -343,6 +344,7 @@
     "profile": "Hồ Sơ",
     "tickets": "Vé",
     "redeem": "Đổi",
+    "promotions": "Khuyến mãi",
     "upcomingTrips": "Chuyến Đi Sắp Tới",
     "pastTrips": "Chuyến Đi Trước",
     "canceledTrips": "Chuyến Đi Đã Hủy",
@@ -507,7 +509,8 @@
     "pickUpText": "Điểm Đón",
     "dropPointText": "Điểm Trả Khách",
     "busImages": "Hình ảnh xe",
-    "noBusImages": "Chưa có hình ảnh xe"
+    "noBusImages": "Chưa có hình ảnh xe",
+    "tripTimeline": "Thời gian chuyến đi"
   },
   "Amenities": {
     "wifi": "Wi-Fi",
@@ -639,7 +642,88 @@
     "loadErrorLong": "Hiện không thể lấy dữ liệu khuyến mãi. Vui lòng thử lại sau.",
     "prevCampaign": "Chiến dịch trước",
     "nextCampaign": "Chiến dịch tiếp theo",
+    "pageTitle": "Ưu đãi hiện có",
+    "pageSubtitle": "Các khuyến mãi đang áp dụng. Điều kiện có thể khác nhau theo tuyến, nhà xe, thời gian.",
+    "hideUsedLabel": "Ẩn ưu đãi đã dùng",
+    "sortLabel": "Sắp xếp",
+    "sortStart": "Mới nhất",
+    "sortDiscount": "Giảm giá cao nhất",
+    "sortMinOrder": "Đơn tối thiểu thấp",
+    "conditionsButton": "Điều kiện",
+    "noConditions": "Không có điều kiện cụ thể.",
+    "conditionsTitle": "Điều kiện áp dụng",
+    "validity": "Hiệu lực:",
+    "claimedToast": "Chúc mừng! Bạn đã nhận được mã giảm giá.",
+    "minOrderPrefix": "Tối thiểu",
+    "noRequirementBadge": "Không yêu cầu điều kiện",
+    "requiredBadge": "Bắt buộc",
+    "completedBadge": "Đã hoàn thành",
+    "usedBadge": "Đã sử dụng",
+    "claimedBadge": "Đã nhận",
+    "viewVideoLabel": "Xem video",
+    "watchAdLabel": "Xem quảng cáo",
+    "surveyLabel": "Hoàn thành khảo sát",
+    "viewAtLeast": "Xem ít nhất 80% video",
+    "watchAdDesc": "Mở quảng cáo và xem trong ít nhất 15 giây",
+    "surveyDesc": "Hoàn thành khảo sát để được tính",
+    "viewProgress": "Đã xem khoảng {percent}%",
+    "referralLabel": "Giới thiệu {count}",
+    "referralDesc": "Cần {count} lượt giới thiệu thành công",
+    "firstPurchaseLabel": "Mua hàng lần đầu",
+    "firstPurchaseDesc": "Hoàn thành đơn hàng đầu tiên",
+    "activityLabel": "Hoạt động",
+    "doneLabel": "Xong",
+    "codeLabel": "Mã",
+    "noActivePromotions": "Bạn không có khuyến mãi đang hoạt động.",
+    "noLimit": "Không giới hạn",
     "gotoCampaign": "Tới chiến dịch {number}"
+  },
+  "Blog": {
+    "search": {
+      "placeholder": "Tìm kiếm bài viết...",
+      "button": "Tìm kiếm"
+    },
+    "featured": {
+      "title": "Bài viết nổi bật"
+    },
+    "tags": {
+      "title": "Chủ đề phổ biến",
+      "all": "Tất cả"
+    },
+    "latest": {
+      "title": "Bài viết mới nhất"
+    },
+    "empty": {
+      "noResults": "Không tìm thấy bài viết nào. Vui lòng thử lại với tìm kiếm khác."
+    },
+    "pagination": {
+      "prev": "Trang trước",
+      "info": "Trang {page} / {total}",
+      "next": "Trang tiếp"
+    },
+    "newsletter": {
+      "title": "Đăng ký nhận tin mới",
+      "desc": "Nhận thông tin mới nhất về các tuyến xe, khuyến mãi và bài viết trực tiếp vào hộp thư của bạn.",
+      "emailPlaceholder": "Email của bạn",
+      "subscribeButton": "Đăng ký"
+    },
+    "meta": {
+      "readingTime": "{minutes} phút đọc",
+      "views": "{count} lượt xem",
+      "author": "Tác giả: {name}"
+    },
+    "author": {
+      "aboutTitle": "Về tác giả {name}"
+    },
+    "post": {
+      "contentUpdating": "Nội dung bài viết đang được cập nhật...",
+      "relatedTitle": "Bài viết liên quan",
+      "cta": {
+        "title": "Sẵn sàng cho chuyến đi tiếp theo?",
+        "desc": "Đặt vé xe khách ngay bây giờ và bắt đầu lên kế hoạch cho chuyến đi của bạn!",
+        "button": "Tìm chuyến xe"
+      }
+    }
   },
   "Discount": {
     "enterCode": "Nhập mã giảm giá",
@@ -716,6 +800,18 @@
     "complaintSend": "Gửi",
     "confirmCancelDescriptionPercent": "Bạn có chắc chắn muốn hủy vé này không? Hành động này không thể hoàn tác và bạn sẽ được hoàn {percent}% tiền vé.",
     "noRefundNote": "Lưu ý: Không được hoàn tiền do hủy sát giờ khởi hành.",
+    "refundInfo": "Thông Tin Hoàn Tiền",
+    "refund": "Hoàn Tiền",
+    "refundAmount": "Số Tiền Hoàn",
+    "cancellationFee": "Phí Hủy",
+    "netRefundAmount": "Số Tiền Thực Nhận",
+    "refundTransactionCode": "Mã Giao Dịch",
+    "refundReason": "Lý Do",
+    "requestedAt": "Thời Gian Yêu Cầu",
+    "processedAt": "Thời Gian Xử Lý",
+    "completedAt": "Thời Gian Hoàn Thành",
+    "notes": "Ghi Chú",
+    "guestInfo": "Khách",
     "empty": {
       "upcomingTitle": "Không có vé sắp tới",
       "upcomingDesc": "Bạn chưa có chuyến đi nào được lên lịch. Hãy đặt vé ngay để khám phá những điểm đến mới!",
@@ -740,7 +836,6 @@
     "points": "Điểm",
     "exceedLimit": "Điểm của bạn vượt quá giới hạn tính phí. Bạn có thể sử dụng tối đa",
     "enterPoint": "Nhập số điểm",
-    "applying": "Đang Áp Dụng",
     "usePoints": "Sử dụng điểm",
     "youve": "Bạn có",
     "usedPointsLabel": "Sử dụng điểm ({count})",
@@ -786,6 +881,7 @@
     "busType": "Loại Xe",
     "amenities": "Tiện Nghi",
     "reset": "Đặt Lại Bộ Lọc",
+    "applying": "Đang Áp Dụng",
     "startLocation": "Vị Trí Bắt Đầu",
     "endLocation": "Vị Trí Kết Thúc",
     "availableSeats": "Số Ghế Có Sẵn",
@@ -796,7 +892,12 @@
     "searching": "Đang Tìm Kiếm",
     "operatorName": "Tên Nhà Điều Hành",
     "busModels": "Mô Hình Xe Buýt",
-    "clearAll": "Rõ ràng tất cả"
+    "clearAll": "Rõ ràng tất cả",
+    "sortBy": "Sắp Xếp Theo",
+    "sortDirection": "Hướng Sắp Xếp",
+    "price": "Giá",
+    "ascending": "Tăng Dần",
+    "descending": "Giảm Dần"
   },
   "UserPage": {
     "notAuthenticated": "Chưa đăng nhập",

@@ -1,6 +1,6 @@
 "use client";
 
-import { Calendar, Ticket, User } from "lucide-react";
+import { Calendar, Gift, Ticket, User } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useTranslations } from "next-intl";
@@ -27,6 +27,11 @@ export function UserSidebar() {
       title: t("redeem"),
       url: "/user/redeem",
       icon: Calendar,
+    },
+    {
+      title: t("promotions"),
+      url: "/user/my-promotions",
+      icon: Gift,
     },
   ];
   return (

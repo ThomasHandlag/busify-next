@@ -6,16 +6,22 @@ export interface TripItemProps {
   operator_name: string;
   operator_avatar: string;
   route: {
+    route_id: number;
     start_location: string;
     end_location: string;
+    distance: number;
+  };
+  amenities: {
+    [key: string]: boolean;
   };
   departure_time: string;
   arrival_time: string;
   available_seats: number;
+  total_seats: number;
   average_rating: number;
   price_per_seat: number;
   status: string;
-  duration: string;
+  duration?: string;
 }
 export interface TripDetail {
   trip_id: number;
@@ -67,13 +73,16 @@ export interface TripFilterQuery {
   startLocation?: number | undefined;
   endLocation?: number | undefined;
   departureDate?: Date | undefined;
-  busModels?: string[];
   untilTime?: Date | undefined;
-  amenities?: string[];
-  operatorName?: string | undefined;
   timeZone: string;
-  availableSeats: number;
-  priceRange?: number[] | undefined;
+  operatorName?: string | undefined;
+  amenities?: string[];
+  availableSeats?: number;
+  busModels?: string[];
+  sortBy?: "departureTime" | "price";
+  sortDirection?: "ASC" | "DESC";
+  sortBySecondary?: "departureTime" | "price";
+  sortDirectionSecondary?: "ASC" | "DESC";
 }
 
 export async function getUpcomingTrips(): Promise<TripItemProps[]> {
@@ -141,7 +150,7 @@ export async function filterTripsClient(
   size = 20
 ): Promise<TripFilterResponse> {
   try {
-    const res = await fetch(`/api/filter?page=${page}&size=${size}`, {
+    const res = await fetch(`/api/trips/filter?page=${page}&size=${size}`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",

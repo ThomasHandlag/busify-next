@@ -56,7 +56,7 @@ export default function DiscountSlider() {
         setLoading(true);
         const apiCampaigns = await getCurrentPromotionCampaigns();
 
-        // console.log("API campaigns fetched:", apiCampaigns); 
+        // console.log("API campaigns fetched:", apiCampaigns);
 
         if (apiCampaigns.length > 0) {
           const mappedCampaigns: DiscountCampaign[] = apiCampaigns.map(
@@ -67,7 +67,7 @@ export default function DiscountSlider() {
               banner: campaign.bannerUrl,
             })
           );
-          // console.log("Mapped campaigns:", mappedCampaigns); 
+          // console.log("Mapped campaigns:", mappedCampaigns);
           setCampaigns(mappedCampaigns);
         } else {
           // No active campaigns found
@@ -184,9 +184,7 @@ export default function DiscountSlider() {
                         className="bg-gradient-to-r from-orange-500 to-red-500 hover:from-orange-600 hover:to-red-600 text-white font-bold px-6 py-2.5 rounded-full shadow-xl transform hover:scale-105 transition-all duration-300 border-0 text-sm"
                         asChild
                       >
-                        <Link href="/trips?promotion=active">
-                          🎫 Đặt vé ngay
-                        </Link>
+                        <Link href="/trips">🎫 Đặt vé ngay</Link>
                       </Button>
                       <Button
                         aria-label="Learn More About Promotion"
@@ -195,7 +193,7 @@ export default function DiscountSlider() {
                         className="border-2 border-white/50 text-black hover:bg-white/10 backdrop-blur-sm font-semibold px-5 py-2.5 rounded-full shadow-lg transition-all duration-300 text-sm"
                         asChild
                       >
-                        <Link href="/about">Tìm hiểu thêm</Link>
+                        <Link href="/about" className="bg-gradient-to-r from-green-500 to-green-600 hover:from-green-600 hover:to-green-700 text-white font-bold px-5 py-2.5 rounded-full shadow-lg transition-all duration-300 text-sm">Tìm hiểu thêm</Link>
                       </Button>
                     </div>
                   </div>

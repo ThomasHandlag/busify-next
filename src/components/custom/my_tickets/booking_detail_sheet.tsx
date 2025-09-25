@@ -411,6 +411,38 @@ export function BookingDetailSheet({
                 <Mail className="w-4 h-4 text-gray-400" />
                 <span>{booking.email}</span>
               </div>
+              {booking.address && (
+                <div className="flex items-center gap-2">
+                  <MapPin className="w-4 h-4 text-gray-400" />
+                  <span>{booking.address}</span>
+                </div>
+              )}
+              {booking.guestFullName && (
+                <div className="flex items-center gap-2">
+                  <User className="w-4 h-4 text-gray-400" />
+                  <span className="font-medium">
+                    {t("MyTickets.guestInfo")}: {booking.guestFullName}
+                  </span>
+                </div>
+              )}
+              {booking.guestPhone && (
+                <div className="flex items-center gap-2">
+                  <Phone className="w-4 h-4 text-gray-400" />
+                  <span>{booking.guestPhone}</span>
+                </div>
+              )}
+              {booking.guestEmail && (
+                <div className="flex items-center gap-2">
+                  <Mail className="w-4 h-4 text-gray-400" />
+                  <span>{booking.guestEmail}</span>
+                </div>
+              )}
+              {booking.guestAddress && (
+                <div className="flex items-center gap-2">
+                  <MapPin className="w-4 h-4 text-gray-400" />
+                  <span>{booking.guestAddress}</span>
+                </div>
+              )}
               <div className="flex items-center gap-2">
                 <Users className="w-4 h-4 text-gray-400" />
                 <span>
@@ -518,6 +550,116 @@ export function BookingDetailSheet({
               </div>
             </CardContent>
           </Card>
+
+          {/* Refund Information - Only show if refunds exist */}
+          {booking.refunds && booking.refunds.length > 0 && (
+            <Card>
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2 text-lg">
+                  <CreditCard className="w-5 h-5" />
+                  {t("MyTickets.refundInfo")}
+                </CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                {booking.refunds.map((refund) => (
+                  <div key={refund.refundId} className="p-4 border rounded-lg">
+                    <div className="flex items-center justify-between mb-3">
+                      <h5 className="font-medium">
+                        {t("MyTickets.refund")} #{refund.refundId}
+                      </h5>
+                      <Badge
+                        variant={
+                          refund.status === "COMPLETED"
+                            ? "default"
+                            : refund.status === "PENDING"
+                            ? "secondary"
+                            : "destructive"
+                        }
+                      >
+                        {refund.status}
+                      </Badge>
+                    </div>
+
+                    <div className="grid grid-cols-2 gap-4 text-sm">
+                      <div>
+                        <p className="text-gray-600">
+                          {t("MyTickets.refundAmount")}:
+                        </p>
+                        <p className="font-medium text-green-600">
+                          {formatCurrency(refund.refundAmount)}
+                        </p>
+                      </div>
+                      <div>
+                        <p className="text-gray-600">
+                          {t("MyTickets.cancellationFee")}:
+                        </p>
+                        <p className="font-medium text-red-600">
+                          {formatCurrency(refund.cancellationFee)}
+                        </p>
+                      </div>
+                      <div>
+                        <p className="text-gray-600">
+                          {t("MyTickets.netRefundAmount")}:
+                        </p>
+                        <p className="font-medium text-blue-600">
+                          {formatCurrency(refund.netRefundAmount)}
+                        </p>
+                      </div>
+                      <div>
+                        <p className="text-gray-600">
+                          {t("MyTickets.refundTransactionCode")}:
+                        </p>
+                        <p className="font-medium">
+                          {refund.refundTransactionCode}
+                        </p>
+                      </div>
+                    </div>
+
+                    <div className="mt-3 pt-3 border-t">
+                      <p className="text-sm text-gray-600 mb-2">
+                        <span className="font-medium">
+                          {t("MyTickets.refundReason")}:
+                        </span>{" "}
+                        {refund.refundReason}
+                      </p>
+                      <div className="grid grid-cols-3 gap-4 text-xs text-gray-500">
+                        <div>
+                          <p>
+                            {t("MyTickets.requestedAt")}:{" "}
+                            {formatDate(refund.requestedAt)}
+                          </p>
+                        </div>
+                        {refund.processedAt && (
+                          <div>
+                            <p>
+                              {t("MyTickets.processedAt")}:{" "}
+                              {formatDate(refund.processedAt)}
+                            </p>
+                          </div>
+                        )}
+                        {refund.completedAt && (
+                          <div>
+                            <p>
+                              {t("MyTickets.completedAt")}:{" "}
+                              {formatDate(refund.completedAt)}
+                            </p>
+                          </div>
+                        )}
+                      </div>
+                      {refund.notes && (
+                        <p className="text-xs text-gray-500 mt-2">
+                          <span className="font-medium">
+                            {t("MyTickets.notes")}:
+                          </span>{" "}
+                          {refund.notes}
+                        </p>
+                      )}
+                    </div>
+                  </div>
+                ))}
+              </CardContent>
+            </Card>
+          )}
 
           {/* Action Buttons */}
           <Card>
