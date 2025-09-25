@@ -5,6 +5,7 @@
     "signUp": "Sign Up",
     "about": "About Us",
     "contact": "Contact Us",
+    "blog": "Blog",
     "privacyPolicy": "Privacy Policy",
     "termsOfService": "Terms of Service",
     "language": "Language",
@@ -342,6 +343,7 @@
     "profile": "Profile",
     "tickets": "Tickets",
     "redeem": "Redeem",
+    "promotions": "Promotions",
     "upcomingTrips": "Upcoming Trips",
     "pastTrips": "Past Trips",
     "canceledTrips": "Canceled Trips",
@@ -635,7 +637,88 @@
     "loadErrorLong": "We couldn't fetch promotions at the moment. Please try again later.",
     "prevCampaign": "Previous campaign",
     "nextCampaign": "Next campaign",
+    "pageTitle": "Available promotions",
+    "pageSubtitle": "Active promotions and their conditions. Conditions may vary by route, operator and time.",
+    "hideUsedLabel": "Hide used promotions",
+    "sortLabel": "Sort",
+    "sortStart": "Newest",
+    "sortDiscount": "Highest discount",
+    "sortMinOrder": "Lowest min order",
+    "conditionsButton": "Conditions",
+    "noConditions": "No specific conditions.",
+    "conditionsTitle": "Conditions",
+    "validity": "Validity:",
+    "claimedToast": "Congratulations! You've received the promotion code.",
+    "minOrderPrefix": "Minimum",
+    "noLimit": "No limit",
+    "noRequirementBadge": "No conditions required",
+    "requiredBadge": "Required",
+    "completedBadge": "Completed",
+    "usedBadge": "Used",
+    "claimedBadge": "Claimed",
+    "viewVideoLabel": "View video",
+    "watchAdLabel": "Watch ad",
+    "surveyLabel": "Complete survey",
+    "viewAtLeast": "View at least 80% of the video",
+    "watchAdDesc": "Open the ad and watch for at least 15 seconds",
+    "surveyDesc": "Complete the survey to be counted",
+    "viewProgress": "Viewed about {percent}%",
+    "referralLabel": "Refer {count}",
+    "referralDesc": "Need {count} successful referrals",
+    "firstPurchaseLabel": "First purchase",
+    "firstPurchaseDesc": "Complete your first order",
+    "activityLabel": "Activity",
+    "doneLabel": "Done",
+    "codeLabel": "Code",
+    "noActivePromotions": "You don't have any active promotions.",
     "gotoCampaign": "Go to campaign {number}"
+  },
+  "Blog": {
+    "search": {
+      "placeholder": "Search blog posts...",
+      "button": "Search"
+    },
+    "featured": {
+      "title": "Featured posts"
+    },
+    "tags": {
+      "title": "Popular topics",
+      "all": "All"
+    },
+    "latest": {
+      "title": "Latest posts"
+    },
+    "empty": {
+      "noResults": "No posts found. Please try a different search."
+    },
+    "pagination": {
+      "prev": "Previous",
+      "info": "Page {page} / {total}",
+      "next": "Next"
+    },
+    "newsletter": {
+      "title": "Subscribe for updates",
+      "desc": "Get the latest bus routes, promotions and posts delivered to your inbox.",
+      "emailPlaceholder": "Your email",
+      "subscribeButton": "Subscribe"
+    },
+    "meta": {
+      "readingTime": "{minutes} min read",
+      "views": "{count} views",
+      "author": "Author: {name}"
+    },
+    "author": {
+      "aboutTitle": "About {name}"
+    },
+    "post": {
+      "contentUpdating": "Post content is being updated...",
+      "relatedTitle": "Related posts",
+      "cta": {
+        "title": "Ready for your next trip?",
+        "desc": "Book your bus tickets now and start planning your journey!",
+        "button": "Find trips"
+      }
+    }
   },
   "Discount": {
     "enterCode": "Enter promo code",
@@ -712,6 +795,18 @@
     "complaintSend": "Send",
     "confirmCancelDescriptionPercent": "Are you sure you want to cancel this ticket? This action cannot be undone and you will be refunded {percent}% of the ticket price.",
     "noRefundNote": "Note: No refund due to cancellation close to departure time.",
+    "refundInfo": "Refund Information",
+    "refund": "Refund",
+    "refundAmount": "Refund Amount",
+    "cancellationFee": "Cancellation Fee",
+    "netRefundAmount": "Net Refund Amount",
+    "refundTransactionCode": "Transaction Code",
+    "refundReason": "Reason",
+    "requestedAt": "Requested At",
+    "processedAt": "Processed At",
+    "completedAt": "Completed At",
+    "notes": "Notes",
+    "guestInfo": "Guest",
     "empty": {
       "upcomingTitle": "No upcoming tickets",
       "upcomingDesc": "You don’t have any scheduled trips yet. Book now to explore new destinations!",
@@ -736,7 +831,6 @@
     "points": "Points",
     "exceedLimit": "Your point exceed charge limit. You can use maximum",
     "enterPoint": "Enter number of points",
-    "applying": "Applying",
     "usePoints": "Use points",
     "youve": "You have",
     "usedPointsLabel": "Used points ({count})",
@@ -783,6 +877,7 @@
     "busType": "Bus Type",
     "amenities": "Amenities",
     "reset": "Reset filters",
+    "applying": "Applying",
     "startLocation": "Start Location",
     "endLocation": "End Location",
     "availableSeats": "Available Seats",
@@ -792,7 +887,12 @@
     "enterOperator": "Enter operator name",
     "searching": "Searching",
     "operatorName": "Operator Name",
-    "busModels": "Bus Models"
+    "busModels": "Bus Models",
+    "sortBy": "Sort By",
+    "sortDirection": "Sort Direction",
+    "price": "Price",
+    "ascending": "Ascending",
+    "descending": "Descending"
   },
   "UserPage": {
     "notAuthenticated": "Not Authenticated",
