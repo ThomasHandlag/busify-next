@@ -39,7 +39,8 @@
     "infoNotFound": "정보를찾을수없습니다.",
     "hours": "시간",
     "minutes": "분",
-    "processing": "처리 중..."
+    "processing": "처리 중...",
+    "tripTimeline": "트립 시간 라인"
   },
   "Home": {
     "title": "버스 티켓 검색 및 예약",
@@ -504,7 +505,12 @@
     "distance": "거리",
     "busImages": "버스 이미지",
     "noBusImages": "버스 이미지가 없습니다",
-    "tripTimeline": "여정 타임라인"
+    "tripTimeline": "여정 타임라인",
+    "durationText": "지속",
+    "pickAndDropText": "집어 들고 떨어 뜨립니다",
+    "pickUpText": "찾다",
+    "busType": "버스 유형",
+    "dropPointText": "드롭 포인트"
   },
   "Amenities": {
     "wifi": "Wi‑Fi",
@@ -677,9 +683,16 @@
       "placeholder": "블로그 게시물 검색...",
       "button": "검색"
     },
-    "featured": { "title": "추천 게시물" },
-    "tags": { "title": "인기 주제", "all": "전체" },
-    "latest": { "title": "최신 게시물" },
+    "featured": {
+      "title": "추천 게시물"
+    },
+    "tags": {
+      "title": "인기 주제",
+      "all": "전체"
+    },
+    "latest": {
+      "title": "최신 게시물"
+    },
     "empty": {
       "noResults": "게시물을 찾을 수 없습니다. 다른 검색어를 시도해 주세요."
     },
@@ -882,7 +895,9 @@
     "busModels": "버스 모델",
     "price": "가격",
     "ascending": "오름차순",
-    "descending": "내림차순"
+    "descending": "내림차순",
+    "sortBy": "정렬",
+    "sortDirection": "정렬 방향"
   },
   "UserPage": {
     "notAuthenticated": "인증되지 않음",
@@ -896,5 +911,6 @@
     "completedTrips": "완료된 여정",
     "member": "회원",
     "accountStatus": "계정 상태"
-  }
+  },
+  "specialOffers": "특별 할인"
 }

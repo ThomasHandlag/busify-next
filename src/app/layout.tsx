@@ -43,15 +43,15 @@ export default function RootLayout({
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
-        <PreferencesProvider>
-          <ThemeProvider
-            attribute="class"
-            defaultTheme="system"
-            enableSystem
-            storageKey="theme"
-            disableTransitionOnChange
-          >
-            <NextIntlClientProvider>
+        <NextIntlClientProvider>
+          <PreferencesProvider>
+            <ThemeProvider
+              attribute="class"
+              defaultTheme="system"
+              enableSystem
+              storageKey="theme"
+              disableTransitionOnChange
+            >
               <TripFilterProvider>
                 <SessionProviderWrapper>
                   <WebSocketProvider>
@@ -65,9 +65,9 @@ export default function RootLayout({
                   </WebSocketProvider>
                 </SessionProviderWrapper>
               </TripFilterProvider>
-            </NextIntlClientProvider>
-          </ThemeProvider>
-        </PreferencesProvider>
+            </ThemeProvider>
+          </PreferencesProvider>
+        </NextIntlClientProvider>
       </body>
     </html>
   );

@@ -39,7 +39,8 @@
     "infoNotFound": "情報が見つかりません。",
     "hours": "時間",
     "minutes": "分",
-    "processing": "処理中..."
+    "processing": "処理中...",
+    "tripTimeline": "Trip Time Line"
   },
   "Home": {
     "title": "バスチケットの検索と予約",
@@ -504,7 +505,12 @@
     "distance": "距離",
     "busImages": "バスの画像",
     "noBusImages": "バスの画像はありません",
-    "tripTimeline": "旅程タイムライン"
+    "tripTimeline": "旅程タイムライン",
+    "busType": "Bus Type",
+    "dropPointText": "Drop point",
+    "durationText": "Duration",
+    "pickAndDropText": "Pick up and drop",
+    "pickUpText": "Pick up"
   },
   "Amenities": {
     "wifi": "Wi‑Fi",
@@ -677,9 +683,16 @@
       "placeholder": "ブログ記事を検索...",
       "button": "検索"
     },
-    "featured": { "title": "注目の投稿" },
-    "tags": { "title": "人気のテーマ", "all": "すべて" },
-    "latest": { "title": "最新の投稿" },
+    "featured": {
+      "title": "注目の投稿"
+    },
+    "tags": {
+      "title": "人気のテーマ",
+      "all": "すべて"
+    },
+    "latest": {
+      "title": "最新の投稿"
+    },
     "empty": {
       "noResults": "投稿が見つかりません。別の検索をお試しください。"
     },
@@ -882,7 +895,9 @@
     "busModels": "バスモデル",
     "price": "価格",
     "ascending": "昇順",
-    "descending": "降順"
+    "descending": "降順",
+    "sortDirection": "Sort Direction",
+    "sortBy": "Sort By"
   },
   "UserPage": {
     "notAuthenticated": "未認証",
@@ -896,5 +911,6 @@
     "completedTrips": "完了した旅程",
     "member": "メンバー",
     "accountStatus": "アカウントの状態"
-  }
+  },
+  "specialOffers": "Special Offers"
 }

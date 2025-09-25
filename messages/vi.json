@@ -509,7 +509,8 @@
     "pickUpText": "Điểm Đón",
     "dropPointText": "Điểm Trả Khách",
     "busImages": "Hình ảnh xe",
-    "noBusImages": "Chưa có hình ảnh xe"
+    "noBusImages": "Chưa có hình ảnh xe",
+    "tripTimeline": "Thời gian chuyến đi"
   },
   "Amenities": {
     "wifi": "Wi-Fi",

@@ -39,7 +39,8 @@
     "infoNotFound": "Information not found.",
     "hours": "hours",
     "minutes": "minutes",
-    "processing": "Processing..."
+    "processing": "Processing...",
+    "tripTimeline": "Trip Time Line"
   },
   "Home": {
     "title": "Find and Book Bus Tickets",
@@ -505,7 +506,11 @@
     "distance": "Distance",
     "busImages": "Bus Images",
     "noBusImages": "No bus images available",
-    "tripTimeline": "Trip Timeline"
+    "tripTimeline": "Trip Timeline",
+    "dropPointText": "Drop point",
+    "durationText": "Duration",
+    "pickAndDropText": "Pick up and drop",
+    "pickUpText": "Pick up"
   },
   "Amenities": {
     "wifi": "Wi-Fi",
@@ -906,5 +911,6 @@
     "completedTrips": "Completed Trips",
     "member": "Member",
     "accountStatus": "Account Status"
-  }
+  },
+  "specialOffers": "Special Offers"
 }

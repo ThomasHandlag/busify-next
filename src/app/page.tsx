@@ -1,4 +1,4 @@
-// "use server";
+"use server";
 
 import Footer from "@/components/custom/footer";
 import { Button } from "@/components/ui/button";
@@ -37,8 +37,8 @@ import DiscountSlider from "@/components/custom/discount_slider";
 import { getTripsByRegions, TripItemProps } from "@/lib/data/trip";
 import TripItem from "@/components/custom/trip/trip_item";
 
-export const dynamic = 'force-static';
-export const revalidate = 3600; // Revalidate every hour
+// export const dynamic = 'force-static';
+// export const revalidate = 3600; // Revalidate every hour
 
 const Home = async () => {
   const trips = await getTripsByRegions({
