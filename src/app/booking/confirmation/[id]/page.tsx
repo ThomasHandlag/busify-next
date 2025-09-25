@@ -10,6 +10,7 @@ import { Label } from "@radix-ui/react-label";
 import React from "react";
 import { toast } from "sonner";
 import { useTranslations } from "next-intl";
+import { BASE_URL } from "@/lib/constants/constants";
 
 interface TripApiResponse {
   code: number;
@@ -111,7 +112,7 @@ export default function BookingConfirmation({ params }: PageProps) {
       setLoading(true);
       try {
         const response = await fetch(
-          `http://localhost:8080/api/trips/${tripId}`,
+          `${BASE_URL}api/trips/${tripId}`,
           {
             cache: "no-store",
           }
@@ -204,11 +205,11 @@ export default function BookingConfirmation({ params }: PageProps) {
     );
 
   return (
-    <div className="min-h-screen bg-gray-50 w-full">
-      <div className="bg-white shadow-sm border-b w-full">
+    <div className="min-h-screen bg-accent w-full">
+      <div className="bg-background shadow-sm border-b w-full">
         <div className="px-4 py-4">
           <div className="flex items-center gap-4">
-            <span className="text-gray-600">
+            <span className="text-foreground">
               {t("Booking.confirmation.title")}
             </span>
           </div>

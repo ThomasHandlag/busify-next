@@ -13,6 +13,7 @@ import { DiscountInfo } from "@/lib/data/discount";
 import { useTranslations } from "next-intl";
 import PointsSection from "./PointsSession";
 import { getScore, makeUsePoints } from "@/lib/data/score";
+import { BASE_URL } from "@/lib/constants/constants";
 
 interface BookingData {
   trip: { route: string };
@@ -179,7 +180,7 @@ export default function BookingInteractiveSection({
       console.log("Sending booking request:", bookingRequest);
 
       const bookingResponse = await fetch(
-        "http://localhost:8080/api/bookings",
+        `${BASE_URL}api/bookings`,
         {
           method: "POST",
           headers: {
@@ -212,7 +213,7 @@ export default function BookingInteractiveSection({
       console.log("Sending payment request:", paymentRequest);
 
       const paymentResponse = await fetch(
-        "http://localhost:8080/api/payments/create",
+        `${BASE_URL}api/payments/create`,
         {
           method: "POST",
           headers: {
@@ -284,7 +285,7 @@ export default function BookingInteractiveSection({
         onPromotionSelect={handleAutoPromotionSelect}
       />
 
-      <Card className="border-0 shadow-lg bg-gradient-to-br from-white to-blue-50 pt-0 overflow-hidden">
+      <Card className="border-0 shadow-lg bg-gradient-to-br from-background to-accent pt-0 overflow-hidden">
         <CardHeader className="bg-gradient-to-r from-blue-300 to-indigo-300 text-white relative overflow-hidden px-1.5 py-2">
           <div className="absolute inset-0 bg-black/10"></div>
           <div className="absolute -top-4 -right-4 w-16 h-16 bg-white/10 rounded-full"></div>
@@ -308,7 +309,7 @@ export default function BookingInteractiveSection({
         </CardContent>
       </Card>
 
-      <Card className="border-0 shadow-lg bg-gradient-to-br from-white to-purple-50 pt-0 overflow-hidden">
+      <Card className="border-0 shadow-lg bg-gradient-to-br from-background to-accent pt-0 overflow-hidden">
         <CardHeader className="bg-gradient-to-r from-purple-300 to-pink-300 text-white relative overflow-hidden px-1.5 py-2">
           <div className="absolute inset-0 bg-black/10"></div>
           <div className="absolute -top-4 -right-4 w-16 h-16 bg-white/10 rounded-full"></div>
@@ -333,7 +334,7 @@ export default function BookingInteractiveSection({
         </CardContent>
       </Card>
 
-      <Card className="border-0 shadow-xl bg-gradient-to-br from-white to-green-50 pt-0 overflow-hidden">
+      <Card className="border-0 shadow-xl bg-gradient-to-br from-background to-accent pt-0 overflow-hidden">
         <CardHeader className="bg-gradient-to-r from-green-300 to-emerald-300 text-white relative overflow-hidden px-1.5 py-2">
           <div className="absolute inset-0 bg-black/10"></div>
           <div className="absolute -top-4 -right-4 w-16 h-16 bg-white/10 rounded-full"></div>

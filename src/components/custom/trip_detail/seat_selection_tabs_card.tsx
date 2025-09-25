@@ -33,6 +33,7 @@ import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 import LocaleText from "../locale_text";
 import { useTranslations } from "next-intl";
+import { BASE_URL } from "@/lib/constants/constants";
 
 interface PassengerInfo {
   phone: string;
@@ -126,7 +127,7 @@ export function SeatSelectionTabsCard({
         setIsLoadingProfile(true);
         try {
           const response = await fetch(
-            "http://localhost:8080/api/users/profile",
+            `${BASE_URL}api/users/profile`,
             {
               method: "GET",
               headers: {
@@ -253,12 +254,12 @@ export function SeatSelectionTabsCard({
                       <Armchair className="w-5 h-5 text-gray-600" />
 
                       {/* Số ghế đặt ở phía dưới icon trong cùng ô */}
-                      <span className="absolute bottom-0 text-[10px] font-semibold text-gray-700">
+                      <span className="absolute bottom-0 text-[10px] font-semibold text-muted-foreground">
                         {seat.seat_number}
                       </span>
 
                       {isSelected && (
-                        <CheckCircle className="w-3 h-3 absolute -top-1 -right-1 text-white" />
+                        <CheckCircle className="w-3 h-3 absolute -top-1 -right-1 text-foreground" />
                       )}
                     </button>
                   );
@@ -355,7 +356,7 @@ export function SeatSelectionTabsCard({
                   value={floor.toString()}
                   className="space-y-4"
                 >
-                  <div className="border rounded-lg p-4 bg-gray-50">
+                  <div className="border rounded-lg p-4 bg-accent">
                     {renderSeatGrid(getSeatsByFloor(floor))}
                   </div>
                 </TabsContent>
@@ -363,7 +364,7 @@ export function SeatSelectionTabsCard({
             )}
           </Tabs>
         ) : (
-          <div className="border rounded-lg p-4 bg-gray-50">
+          <div className="border rounded-lg p-4 bg-accent">
             {renderSeatGrid(allSeats)}
           </div>
         )}
@@ -445,11 +446,11 @@ export function SeatSelectionTabsCard({
         </div>
       </CardContent>
 
-      <CardFooter className="bg-gray-50 border-t">
+      <CardFooter className="bg-accent border-t">
         <div className="w-full space-y-4">
           {/* Selection Summary */}
           <div className="flex justify-between items-center">
-            <div className="text-sm text-gray-600">
+            <div className="text-sm text-foreground">
               {selectedSeats.length > 0 ? (
                 <span>
                   <LocaleText string="selected" name="TripDetail" />:{" "}

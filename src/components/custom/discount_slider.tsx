@@ -56,7 +56,7 @@ export default function DiscountSlider() {
         setLoading(true);
         const apiCampaigns = await getCurrentPromotionCampaigns();
 
-        console.log("API campaigns fetched:", apiCampaigns); // Debug log
+        // console.log("API campaigns fetched:", apiCampaigns); 
 
         if (apiCampaigns.length > 0) {
           const mappedCampaigns: DiscountCampaign[] = apiCampaigns.map(
@@ -67,7 +67,7 @@ export default function DiscountSlider() {
               banner: campaign.bannerUrl,
             })
           );
-          console.log("Mapped campaigns:", mappedCampaigns); // Debug log
+          // console.log("Mapped campaigns:", mappedCampaigns); 
           setCampaigns(mappedCampaigns);
         } else {
           // No active campaigns found
@@ -192,7 +192,7 @@ export default function DiscountSlider() {
                         aria-label="Learn More About Promotion"
                         variant="outline"
                         size="default"
-                        className="border-2 border-white/50 text-white hover:bg-white/10 backdrop-blur-sm font-semibold px-5 py-2.5 rounded-full shadow-lg transition-all duration-300 text-sm"
+                        className="border-2 border-white/50 text-black hover:bg-white/10 backdrop-blur-sm font-semibold px-5 py-2.5 rounded-full shadow-lg transition-all duration-300 text-sm"
                         asChild
                       >
                         <Link href="/about" className="bg-gradient-to-r from-green-500 to-green-600 hover:from-green-600 hover:to-green-700 text-white font-bold px-5 py-2.5 rounded-full shadow-lg transition-all duration-300 text-sm">Tìm hiểu thêm</Link>
