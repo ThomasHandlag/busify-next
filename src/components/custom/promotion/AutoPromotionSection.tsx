@@ -7,6 +7,7 @@ import { Badge } from "@/components/ui/badge";
 import { CheckCircle, Circle, Gift, Star } from "lucide-react";
 import { type Promotion as APIPromotion } from "@/lib/data/promotion";
 import { useTranslations } from "next-intl";
+import { BASE_URL } from "@/lib/constants/constants";
 
 interface Promotion {
   id: number;
@@ -61,7 +62,7 @@ export default function AutoPromotionSection({
       );
 
       const response = await fetch(
-        `http://localhost:8080/api/promotions/user/auto-eligible`,
+        `${BASE_URL}api/promotions/user/auto-eligible`,
         {
           method: "GET",
           headers: {

@@ -184,9 +184,7 @@ export default function DiscountSlider() {
                         className="bg-gradient-to-r from-orange-500 to-red-500 hover:from-orange-600 hover:to-red-600 text-white font-bold px-6 py-2.5 rounded-full shadow-xl transform hover:scale-105 transition-all duration-300 border-0 text-sm"
                         asChild
                       >
-                        <Link href="/trips?promotion=active">
-                          🎫 Đặt vé ngay
-                        </Link>
+                        <Link href="/trips">🎫 Đặt vé ngay</Link>
                       </Button>
                       <Button
                         aria-label="Learn More About Promotion"
