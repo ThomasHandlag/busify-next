@@ -9,6 +9,7 @@ import { NextIntlClientProvider } from "next-intl";
 import TripFilterProvider from "@/components/providers/TripFilterProvider";
 import { ThemeProvider } from "next-themes";
 import FloatingChatButton from "@/components/custom/floating-chat-button";
+import FloatingAIChatButton from "@/components/custom/floating-ai-chat-button";
 import { WebSocketProvider } from "@/lib/contexts/WebSocketContext";
 
 const geistSans = Geist({
@@ -62,6 +63,7 @@ export default function RootLayout({
                     <footer className="row-start-3 flex gap-[24px] flex-wrap items-center justify-center"></footer>
                     <Toaster />
                     <FloatingChatButton />
+                    <FloatingAIChatButton />
                   </WebSocketProvider>
                 </SessionProviderWrapper>
               </TripFilterProvider>
