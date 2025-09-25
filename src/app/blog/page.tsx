@@ -17,6 +17,7 @@ import {
 import { Clock, Calendar, ChevronRight, Search, Eye } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
+import { getTranslations } from "next-intl/server";
 
 export const metadata: Metadata = {
   title: "Busify Blog - Travel Guides, Bus Tips & Vietnam Tourism",
@@ -53,6 +54,8 @@ export default async function BlogPage({
 }: {
   searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
 }) {
+  const t = await getTranslations("Blog");
+  // Note: this page is a server component; translations are applied via next-intl on the rendering layer.
   const params = await searchParams;
   const search = typeof params.search === "string" ? params.search : "";
   const tag = typeof params.tag === "string" ? params.tag : "";
@@ -146,7 +149,7 @@ export default async function BlogPage({
                 name="search"
                 defaultValue={search}
                 className="pl-10 pr-4 py-2 rounded-l-md border-r-0 focus-visible:ring-green-500"
-                placeholder="Tìm kiếm bài viết..."
+                placeholder={t("search.placeholder")}
                 type="search"
               />
             </div>
@@ -154,7 +157,7 @@ export default async function BlogPage({
               type="submit"
               className="rounded-l-none bg-green-600 hover:bg-green-700"
             >
-              Tìm kiếm
+              {t("search.button")}
             </Button>
           </form>
         </div>
@@ -164,7 +167,7 @@ export default async function BlogPage({
           <section className="mb-16">
             <h2 className="text-2xl font-bold mb-6 flex items-center">
               <span className="h-5 w-1 bg-green-600 rounded mr-2"></span>
-              Bài viết nổi bật
+              {t("featured.title")}
             </h2>
             <Link href={`/blog/${featuredPosts[0].slug}`}>
               <div className="group relative overflow-hidden rounded-2xl hover:shadow-xl transition-shadow duration-300">
@@ -209,7 +212,7 @@ export default async function BlogPage({
                       <Eye className="w-4 h-4 mr-1" />
                       <span>{featuredPosts[0].viewCount} lượt xem</span>
                     </div>
-                    <div>Tác giả: {featuredPosts[0].author.name}</div>
+                    <div> Tác giả: {featuredPosts[0].author.name}</div>
                   </div>
                 </div>
               </div>
@@ -221,7 +224,7 @@ export default async function BlogPage({
         <section className="mb-12">
           <h2 className="text-2xl font-bold mb-4 flex items-center">
             <span className="h-5 w-1 bg-green-600 rounded mr-2"></span>
-            Chủ đề phổ biến
+            {t("tags.title")}
           </h2>
           <div className="flex flex-wrap gap-2">
             <Link href="/blog">
@@ -233,7 +236,7 @@ export default async function BlogPage({
                     : "bg-transparent border"
                 } hover:bg-green-50 dark:hover:bg-gray-800`}
               >
-                Tất cả
+                {t("tags.all")}
               </Button>
             </Link>
             {allTags.slice(0, 10).map((tagName) => (
@@ -260,7 +263,7 @@ export default async function BlogPage({
         <section>
           <h2 className="text-2xl font-bold mb-6 flex items-center">
             <span className="h-5 w-1 bg-green-600 rounded mr-2"></span>
-            Bài viết mới nhất
+            {t("latest.title")}
           </h2>
           {regularPosts.length > 0 ? (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -318,7 +321,7 @@ export default async function BlogPage({
           ) : (
             <div className="text-center py-12">
               <p className="text-gray-500 dark:text-gray-400 text-lg">
-                Không tìm thấy bài viết nào. Vui lòng thử lại với tìm kiếm khác.
+                {t("empty.noResults")}
               </p>
             </div>
           )}
@@ -333,13 +336,16 @@ export default async function BlogPage({
                       search ? `&search=${search}` : ""
                     }${tag ? `&tag=${tag}` : ""}`}
                   >
-                    <Button variant="outline">Trang trước</Button>
+                    <Button variant="outline">{t("pagination.prev")}</Button>
                   </Link>
                 )}
 
                 <div className="flex items-center px-4 py-2 bg-gray-100 dark:bg-gray-800 rounded-md">
                   <span>
-                    Trang {page + 1} / {blogData.posts.totalPages}
+                    {t("pagination.info", {
+                      page: page + 1,
+                      total: blogData.posts.totalPages,
+                    })}
                   </span>
                 </div>
 
@@ -349,7 +355,7 @@ export default async function BlogPage({
                       search ? `&search=${search}` : ""
                     }${tag ? `&tag=${tag}` : ""}`}
                   >
-                    <Button variant="outline">Trang tiếp</Button>
+                    <Button variant="outline">{t("pagination.next")}</Button>
                   </Link>
                 )}
               </div>
@@ -361,20 +367,17 @@ export default async function BlogPage({
         <section className="mt-16 bg-gradient-to-r from-green-600 to-blue-600 rounded-xl p-8 text-white text-center">
           <div className="max-w-2xl mx-auto">
             <h2 className="text-2xl md:text-3xl font-bold mb-4">
-              Đăng ký nhận tin mới
+              {t("newsletter.title")}
             </h2>
-            <p className="mb-6">
-              Nhận thông tin mới nhất về các tuyến xe, khuyến mãi và bài viết
-              trực tiếp vào hộp thư của bạn.
-            </p>
+            <p className="mb-6">{t("newsletter.desc")}</p>
             <div className="flex flex-col sm:flex-row gap-2 max-w-md mx-auto">
               <Input
                 className="bg-white text-gray-900 placeholder:text-gray-500 border-0"
-                placeholder="Email của bạn"
+                placeholder={t("newsletter.emailPlaceholder")}
                 type="email"
               />
               <Button className="bg-white text-green-600 hover:bg-gray-100">
-                Đăng ký
+                {t("newsletter.subscribeButton")}
               </Button>
             </div>
           </div>

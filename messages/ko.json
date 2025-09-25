@@ -343,6 +343,7 @@
     "profile": "프로필",
     "tickets": "티켓",
     "redeem": "쿠폰사용",
+    "promotions": "프로모션",
     "upcomingTrips": "예정된여정",
     "pastTrips": "지난여정",
     "canceledTrips": "취소된여정",
@@ -635,7 +636,81 @@
     "loadErrorLong": "현재 프로모션을 가져올 수 없습니다. 잠시 후 다시 시도해 주세요.",
     "prevCampaign": "이전 캠페인",
     "nextCampaign": "다음 캠페인",
+    "pageTitle": "사용 가능한 프로모션",
+    "pageSubtitle": "현재 적용 중인 프로모션입니다. 조건은 노선, 운영사 및 시간에 따라 다를 수 있습니다.",
+    "hideUsedLabel": "사용된 프로모션 숨기기",
+    "sortLabel": "정렬",
+    "sortStart": "최신",
+    "sortDiscount": "가장 높은 할인",
+    "sortMinOrder": "최저 최소 주문",
+    "conditionsButton": "조건",
+    "noConditions": "특정 조건이 없습니다.",
+    "conditionsTitle": "조건",
+    "validity": "유효 기간:",
+    "claimedToast": "축하합니다! 프로모션 코드를 받았습니다.",
+    "minOrderPrefix": "최소",
+    "noRequirementBadge": "조건 없음",
+    "requiredBadge": "필수",
+    "completedBadge": "완료됨",
+    "usedBadge": "사용됨",
+    "claimedBadge": "수령됨",
+    "viewVideoLabel": "영상 보기",
+    "watchAdLabel": "광고 보기",
+    "surveyLabel": "설문 완료",
+    "viewAtLeast": "영상의 80% 이상 시청",
+    "watchAdDesc": "광고를 열고 최소 15초 동안 시청하세요",
+    "surveyDesc": "설문을 완료하면 카운트됩니다",
+    "viewProgress": "약 {percent}% 시청함",
+    "referralLabel": "추천 {count}",
+    "referralDesc": "{count}회의 성공적인 추천이 필요합니다",
+    "firstPurchaseLabel": "첫 구매",
+    "firstPurchaseDesc": "첫 주문을 완료하세요",
+    "activityLabel": "활동",
+    "doneLabel": "완료",
+    "codeLabel": "코드",
+    "noActivePromotions": "활성 프로모션이 없습니다.",
+    "noLimit": "제한 없음",
     "gotoCampaign": "캠페인 {number}로 이동"
+  },
+  "Blog": {
+    "search": {
+      "placeholder": "블로그 게시물 검색...",
+      "button": "검색"
+    },
+    "featured": { "title": "추천 게시물" },
+    "tags": { "title": "인기 주제", "all": "전체" },
+    "latest": { "title": "최신 게시물" },
+    "empty": {
+      "noResults": "게시물을 찾을 수 없습니다. 다른 검색어를 시도해 주세요."
+    },
+    "pagination": {
+      "prev": "이전",
+      "info": "페이지 {page} / {total}",
+      "next": "다음"
+    },
+    "newsletter": {
+      "title": "업데이트 구독",
+      "desc": "최신 노선, 프로모션 및 게시물을 이메일로 받아보세요.",
+      "emailPlaceholder": "이메일",
+      "subscribeButton": "구독"
+    },
+    "meta": {
+      "readingTime": "{minutes} 분 읽기",
+      "views": "{count}회 조회",
+      "author": "작성자: {name}"
+    },
+    "author": {
+      "aboutTitle": "작성자 정보: {name}"
+    },
+    "post": {
+      "contentUpdating": "게시물 내용이 업데이트 중입니다...",
+      "relatedTitle": "관련 게시물",
+      "cta": {
+        "title": "다음 여행을 준비하시겠어요?",
+        "desc": "지금 버스 티켓을 예약하고 여행을 계획하세요!",
+        "button": "여행 찾기"
+      }
+    }
   },
   "Discount": {
     "enterCode": "프로모션 코드를 입력",

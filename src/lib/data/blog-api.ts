@@ -143,15 +143,3 @@ export const fetchBlogTags = async (): Promise<string[]> => {
     throw error;
   }
 };
-
-/**
- * Increment view count for a blog post
- */
-export const incrementBlogViewCount = async (postId: number): Promise<void> => {
-  try {
-    await api.post<ApiResponse<void>>(`api/blogs/posts/${postId}/view`);
-  } catch (error) {
-    console.error(`Error incrementing view count for post ${postId}:`, error);
-    // Don't throw error to avoid breaking page rendering if this fails
-  }
-};

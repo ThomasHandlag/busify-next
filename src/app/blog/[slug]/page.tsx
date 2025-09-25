@@ -12,6 +12,7 @@ import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Clock, User, Calendar, Eye, Share2, Bookmark } from "lucide-react";
 import Link from "next/link";
+import { getTranslations } from "next-intl/server";
 
 interface BlogPostPageProps {
   params: Promise<{
@@ -64,6 +65,7 @@ export async function generateMetadata({
 }
 
 export default async function BlogPostPage({ params }: BlogPostPageProps) {
+  const t = await getTranslations("Blog");
   const { slug } = await params;
   let post: BlogPostContent;
 
@@ -137,11 +139,11 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
         {/* Breadcrumbs */}
         <nav className="mb-8 text-sm text-gray-600 dark:text-gray-400">
           <Link href="/" className="hover:text-blue-600">
-            Trang chủ
+            {t("breadcrumb.home")}
           </Link>
           <span className="mx-2">/</span>
           <Link href="/blog" className="hover:text-blue-600">
-            Blog
+            {t("breadcrumb.blog")}
           </Link>
           <span className="mx-2">/</span>
           <span className="text-gray-900 dark:text-white">{post.title}</span>
@@ -184,11 +186,13 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
               </div>
               <div className="flex items-center">
                 <Clock className="w-4 h-4 mr-1" />
-                <span>{post.readingTime} phút đọc</span>
+                <span>
+                  {t("meta.readingTime", { minutes: post.readingTime })}
+                </span>
               </div>
               <div className="flex items-center">
                 <Eye className="w-4 h-4 mr-1" />
-                <span>{post.viewCount} lượt xem</span>
+                <span>{t("meta.views", { count: post.viewCount })}</span>
               </div>
             </div>
 
@@ -196,11 +200,11 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
             <div className="flex flex-wrap items-center gap-2 mb-6">
               <Button variant="outline" size="sm" className="gap-1">
                 <Share2 className="w-4 h-4" />
-                <span className="hidden sm:inline">Chia sẻ</span>
+                <span className="hidden sm:inline">{t("actions.share")}</span>
               </Button>
               <Button variant="outline" size="sm" className="gap-1">
                 <Bookmark className="w-4 h-4" />
-                <span className="hidden sm:inline">Lưu bài viết</span>
+                <span className="hidden sm:inline">{t("actions.save")}</span>
               </Button>
             </div>
           </header>
@@ -211,7 +215,7 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
               dangerouslySetInnerHTML={{
                 __html:
                   post.content ||
-                  `<p>${post.excerpt}</p><p>Nội dung bài viết đang được cập nhật...</p>`,
+                  `<p>${post.excerpt}</p><p>${t("post.contentUpdating")}</p>`,
               }}
             />
           </Card>
@@ -229,7 +233,7 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
                 />
                 <div>
                   <h3 className="text-xl font-semibold mb-2">
-                    Về tác giả {post.author.name}
+                    {t("author.aboutTitle", { name: post.author.name })}
                   </h3>
                   <p className="text-gray-600 dark:text-gray-400">
                     {post.author.bio ||
@@ -243,7 +247,9 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
           {/* Related Posts */}
           {relatedPosts.length > 0 && (
             <aside className="mt-12">
-              <h2 className="text-2xl font-bold mb-6">Bài viết liên quan</h2>
+              <h2 className="text-2xl font-bold mb-6">
+                {t("post.relatedTitle")}
+              </h2>
               <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                 {relatedPosts.map((relatedPost: BlogPost) => (
                   <Link key={relatedPost.id} href={`/blog/${relatedPost.slug}`}>
@@ -267,7 +273,9 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
                         </p>
                         <div className="flex items-center gap-2 mt-2 text-xs text-gray-500">
                           <Eye className="w-3 h-3" />
-                          <span>{relatedPost.viewCount} lượt xem</span>
+                          <span>
+                            {t("meta.views", { count: relatedPost.viewCount })}
+                          </span>
                         </div>
                       </CardContent>
                     </Card>
@@ -279,18 +287,13 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
 
           {/* Call to Action */}
           <div className="mt-12 bg-gradient-to-r from-green-500 to-blue-600 rounded-lg p-8 text-center text-white">
-            <h2 className="text-2xl font-bold mb-4">
-              Sẵn sàng cho chuyến đi tiếp theo?
-            </h2>
-            <p className="text-lg mb-6 opacity-90">
-              Đặt vé xe khách ngay bây giờ và bắt đầu lên kế hoạch cho chuyến đi
-              của bạn!
-            </p>
+            <h2 className="text-2xl font-bold mb-4">{t("post.cta.title")}</h2>
+            <p className="text-lg mb-6 opacity-90">{t("post.cta.desc")}</p>
             <Button
               asChild
               className="bg-white text-blue-600 hover:bg-gray-100"
             >
-              <Link href="/trips">Tìm chuyến xe</Link>
+              <Link href="/trips">{t("post.cta.button")}</Link>
             </Button>
           </div>
         </article>

@@ -56,7 +56,7 @@ export default function DiscountSlider() {
         setLoading(true);
         const apiCampaigns = await getCurrentPromotionCampaigns();
 
-        // console.log("API campaigns fetched:", apiCampaigns); 
+        // console.log("API campaigns fetched:", apiCampaigns);
 
         if (apiCampaigns.length > 0) {
           const mappedCampaigns: DiscountCampaign[] = apiCampaigns.map(
@@ -67,7 +67,7 @@ export default function DiscountSlider() {
               banner: campaign.bannerUrl,
             })
           );
-          // console.log("Mapped campaigns:", mappedCampaigns); 
+          // console.log("Mapped campaigns:", mappedCampaigns);
           setCampaigns(mappedCampaigns);
         } else {
           // No active campaigns found
