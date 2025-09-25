@@ -13,6 +13,7 @@ import { signIn } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 import { useTranslations } from "next-intl";
+import { BASE_URL } from "@/lib/constants/constants";
 
 const LoginForm = () => {
   const t = useTranslations();
@@ -80,7 +81,7 @@ const LoginForm = () => {
       setResendStatus("loading");
 
       const response = await fetch(
-        "http://localhost:8080/api/auth/resend-verification",
+        `${BASE_URL}api/auth/resend-verification`,
         {
           method: "POST",
           headers: {

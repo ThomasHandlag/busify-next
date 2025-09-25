@@ -21,6 +21,7 @@ import {
 } from "lucide-react";
 import Link from "next/link";
 import { useTranslations } from "next-intl";
+import { BASE_URL } from "@/lib/constants/constants";
 
 interface PaymentDetails {
   paymentId: number;
@@ -58,7 +59,7 @@ export default function BookingResult() {
       try {
         setLoading(true);
         const response = await fetch(
-          `http://localhost:8080/api/payments/${id}`,
+          `${BASE_URL}api/payments/${id}`,
           {
             method: "GET",
             headers: { "Content-Type": "application/json" },
