@@ -193,7 +193,7 @@ export default function DiscountSlider() {
                         className="border-2 border-white/50 text-black hover:bg-white/10 backdrop-blur-sm font-semibold px-5 py-2.5 rounded-full shadow-lg transition-all duration-300 text-sm"
                         asChild
                       >
-                        <Link href="/about">Tìm hiểu thêm</Link>
+                        <Link href="/about" className="bg-gradient-to-r from-green-500 to-green-600 hover:from-green-600 hover:to-green-700 text-white font-bold px-5 py-2.5 rounded-full shadow-lg transition-all duration-300 text-sm">Tìm hiểu thêm</Link>
                       </Button>
                     </div>
                   </div>
