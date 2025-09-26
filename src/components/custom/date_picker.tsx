@@ -78,7 +78,7 @@ const Calendar28 = ({
   };
 
   return (
-    <div className="flex flex-col gap-3 w-full">
+    <div className="flex flex-col gap-3 w-full min-w-[150px]">
       <Label htmlFor="date" className="px-1">
         {picker?.label}
       </Label>

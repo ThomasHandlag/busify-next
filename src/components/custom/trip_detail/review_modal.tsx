@@ -121,8 +121,8 @@ export function ReviewModal({ tripId }: { tripId: number }) {
                           key={star}
                           className={`w-6 h-6 cursor-pointer ${
                             star <= field.value
-                              ? "text-yellow-400 fill-current"
-                              : "text-gray-300"
+                              ? "text-accent fill-current"
+                              : "text-muted"
                           }`}
                           onClick={() => field.onChange(star)}
                         />

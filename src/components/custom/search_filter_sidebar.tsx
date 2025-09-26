@@ -125,11 +125,11 @@ const SearchFilterSidebar = ({ callback }: { callback?: () => void }) => {
       <Form {...form}>
         <form onSubmit={handleApplyFilters} className="space-y-6">
           {/* Action Buttons - Moved to top for better UX */}
-          <div className="pt-2 pb-4 space-y-3 border-b border-gray-200">
+          <div className="pt-2 pb-4 space-y-3 border-b border-border">
             <FormItem>
               <Button
                 aria-label={t("Filter.applyFilters")}
-                className="w-full bg-green-600 hover:bg-green-700"
+                className="w-full bg-accent hover:bg-accent/90"
                 type="button"
                 disabled={isLoading}
                 onClick={() => {
@@ -191,7 +191,7 @@ const SearchFilterSidebar = ({ callback }: { callback?: () => void }) => {
                   value={field.value?.toString() || ""}
                   onValueChange={field.onChange}
                 >
-                  <SelectTrigger className="bg-gray-50 w-full">
+                  <SelectTrigger className="bg-muted w-full">
                     <SelectValue placeholder="Select Location" />
                   </SelectTrigger>
                   <SelectContent>
@@ -218,7 +218,7 @@ const SearchFilterSidebar = ({ callback }: { callback?: () => void }) => {
                   value={field.value?.toString() || ""}
                   onValueChange={field.onChange}
                 >
-                  <SelectTrigger className="bg-gray-50 w-full">
+                  <SelectTrigger className="bg-muted w-full">
                     <SelectValue placeholder={`${t("Filter.startLocation")}`} />
                   </SelectTrigger>
                   <SelectContent>

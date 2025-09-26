@@ -210,7 +210,7 @@ export function SeatSelectionTabsCard({
           <div className="absolute inset-x-0 -top-6 flex justify-center z-20">
             <Badge
               variant="outline"
-              className="bg-green-50 text-green-700 z-20"
+              className="bg-accent text-accent-foreground z-20"
             >
               <Users className="w-4 h-4 mr-1" />
               {floorSeats.filter((s) => s.status === "available").length}{" "}
@@ -239,19 +239,19 @@ export function SeatSelectionTabsCard({
                         relative z-0 w-10 h-10 rounded-lg border-2 flex items-center justify-center text-xs font-medium transition-all
                         ${
                           isBooked
-                            ? "bg-gray-200 border-gray-300 text-gray-500 cursor-not-allowed"
+                            ? "bg-muted border-muted text-muted-foreground cursor-not-allowed"
                             : isLocked
-                            ? "bg-yellow-100 border-yellow-200 text-yellow-700 cursor-not-allowed"
+                            ? "bg-secondary border-secondary text-secondary-foreground cursor-not-allowed"
                             : isSelected
-                            ? "bg-green-500 border-green-600 text-white shadow-lg scale-105"
+                            ? "bg-primary border-primary text-primary-foreground shadow-lg scale-105"
                             : isAvailable
-                            ? "bg-white border-green-300 text-green-700 hover:border-green-500 hover:bg-green-50"
-                            : "bg-gray-100 border-gray-200 text-gray-400"
+                            ? "bg-background border-accent text-accent-foreground hover:border-accent hover:bg-accent"
+                            : "bg-muted border-muted text-muted-foreground"
                         }
                       `}
                     >
                       {/* Icon ghế giữ nguyên */}
-                      <Armchair className="w-5 h-5 text-gray-600" />
+                      <Armchair className="w-5 h-5 text-muted-foreground" />
 
                       {/* Số ghế đặt ở phía dưới icon trong cùng ô */}
                       <span className="absolute bottom-0 text-[10px] font-semibold text-muted-foreground">
@@ -317,19 +317,19 @@ export function SeatSelectionTabsCard({
             </span>
           </div>
           <div className="flex items-center gap-2">
-            <div className="w-4 h-4 bg-green-500 border-2 border-green-600 rounded"></div>
+            <div className="w-4 h-4 bg-primary border-2 border-primary rounded"></div>
             <span>
               <LocaleText string="selected" name="TripDetail" />
             </span>
           </div>
           <div className="flex items-center gap-2">
-            <div className="w-4 h-4 bg-yellow-500 border-2 border-yellow-200 rounded"></div>
+            <div className="w-4 h-4 bg-secondary border-2 border-secondary rounded"></div>
             <span>
               <LocaleText string="selecting" name="TripDetail" />
             </span>
           </div>
           <div className="flex items-center gap-2">
-            <div className="w-4 h-4 bg-gray-200 border-2 border-gray-300 rounded"></div>
+            <div className="w-4 h-4 bg-muted border-2 border-muted rounded"></div>
             <span>
               <LocaleText string="booked" name="TripDetail" />
             </span>
@@ -374,7 +374,7 @@ export function SeatSelectionTabsCard({
           <div className="flex items-center justify-between mb-4">
             <h3 className="font-semibold">{t("MyTickets.passengerInfo")}</h3>
             {session?.user && isLoadingProfile && (
-              <span className="text-sm text-gray-500">
+              <span className="text-sm text-muted-foreground">
                 {t("Common.loading")}
               </span>
             )}
@@ -463,10 +463,10 @@ export function SeatSelectionTabsCard({
               )}
             </div>
             <div className="text-right">
-              <p className="text-lg font-bold text-green-600">
+              <p className="text-lg font-bold text-primary">
                 {totalPrice?.toLocaleString("vi-VN")}đ
               </p>
-              <p className="text-xs text-gray-500">
+              <p className="text-xs text-muted-foreground">
                 {selectedSeats.length} ${t("Booking.seats")} ×{" "}
                 {pricePerSeat?.toLocaleString("vi-VN")}đ
               </p>
@@ -475,7 +475,7 @@ export function SeatSelectionTabsCard({
 
           <Button
             aria-label="Continue to booking"
-            className="w-full bg-green-600 hover:bg-green-700"
+            className="w-full bg-primary hover:bg-primary/90"
             onClick={form.handleSubmit(onSubmit)}
             disabled={selectedSeats.length === 0}
           >

@@ -33,12 +33,12 @@ export function FloatingChatButton() {
     <>
       <Button
         onClick={handleChatClick}
-        className="fixed bottom-6 right-6 w-14 h-14 rounded-full shadow-lg bg-green-600 hover:bg-green-700 transition-all hover:scale-110 z-50 flex items-center justify-center"
+        className="fixed bottom-6 right-6 w-14 h-14 rounded-full shadow-lg bg-primary hover:bg-primary/90 transition-all hover:scale-110 z-50 flex items-center justify-center"
         aria-label="Trợ giúp trực tuyến"
       >
-        <MessageCircle className="size-6 text-white" />
+        <MessageCircle className="size-6 text-primary-foreground" />
         {unreadCount > 0 && (
-          <span className="absolute -top-1 -right-1 bg-red-500 text-white text-xs rounded-full min-w-[20px] h-5 flex items-center justify-center px-1">
+          <span className="absolute -top-1 -right-1 bg-destructive text-destructive-foreground text-xs rounded-full min-w-[20px] h-5 flex items-center justify-center px-1">
             {unreadCount > 99 ? "99+" : unreadCount}
           </span>
         )}

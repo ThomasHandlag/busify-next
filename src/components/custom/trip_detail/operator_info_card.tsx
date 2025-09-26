@@ -40,7 +40,7 @@ export async function OperatorInfoCard({ id }: { id: number }) {
           <div>
             <h3 className="text-lg font-semibold">{operatorDetail.name}</h3>
             <div className="flex items-center space-x-2">
-              <Star className="w-4 h-4 text-yellow-400 fill-current" />
+              <Star className="w-4 h-4 text-accent fill-current" />
               <span className="text-sm text-muted-foreground">
                 {operatorDetail.rating}/5 ({operatorDetail.totalReviews} {t("reviews")})
               </span>
@@ -49,11 +49,11 @@ export async function OperatorInfoCard({ id }: { id: number }) {
         </div>
         <div className="space-y-2">
           <div className="flex items-center space-x-3">
-            <Phone className="w-5 h-5 text-gray-400" />
+            <Phone className="w-5 h-5 text-muted-foreground" />
             <span className="text-muted-foreground">{operatorDetail.hotline}</span>
           </div>
           <div className="flex items-center space-x-3">
-            <MapPin className="w-5 h-5 text-gray-400" />
+            <MapPin className="w-5 h-5 text-muted-foreground" />
             <span className="text-muted-foreground">
               {t("headquarters")} {operatorDetail.address}
             </span>

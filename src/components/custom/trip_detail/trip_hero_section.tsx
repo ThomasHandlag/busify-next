@@ -33,7 +33,7 @@ export function TripHeroSection({
               {tripDetail.route.start_location.address}
             </p>
           </div>
-          <ArrowRight className="w-6 h-6 text-green-600" />
+          <ArrowRight className="w-6 h-6 text-primary" />
           <div className="text-center">
             <h2 className="text-lg font-semibold text-foreground">
               {tripDetail.route.end_location.city}
@@ -49,7 +49,7 @@ export function TripHeroSection({
             variant="ghost"
             size="sm"
             onClick={onToggleFavorite}
-            className={is_favorite ? "text-red-500" : "text-gray-400"}
+            className={is_favorite ? "text-destructive" : "text-muted-foreground"}
           >
             <Heart className={`w-5 h-5 ${is_favorite ? "fill-current" : ""}`} />
           </Button>

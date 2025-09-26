@@ -49,7 +49,7 @@ const AboutPage = async () => {
   return (
     <div className="h-full w-full">
       {/* Hero Section */}
-      <section className="bg-gradient-to-br w-full relative from-green-600 to-green-700 h-screen flex flex-col justify-center items-center text-white">
+      <section className="bg-gradient-to-br w-full relative from-primary to-primary h-screen flex flex-col justify-center items-center text-primary-foreground">
         <Image
           aria-label="background image"
           src="/bus-photo.jpg"
@@ -77,7 +77,7 @@ const AboutPage = async () => {
               <Button
                 aria-label="Book Your Journey"
                 size="lg"
-                className="bg-white text-green-600 hover:bg-green-50 flex items-center space-x-2"
+                className="bg-background text-primary hover:bg-accent flex items-center space-x-2"
                 asChild
               >
                 <Link href="/trips">
@@ -89,7 +89,7 @@ const AboutPage = async () => {
                 aria-label="Grow Your Business"
                 size="lg"
                 variant="outline"
-                className="border-white bg-transparent text-white hover:bg-white hover:text-green-600 flex items-center space-x-2"
+                className="border-background bg-transparent text-background hover:bg-background hover:text-primary flex items-center space-x-2"
                 asChild
               >
                 <a href="/operator">
@@ -107,10 +107,10 @@ const AboutPage = async () => {
         <div className="max-w-7xl mx-auto px-4">
           <FadeinWrapper effect="animate-fade-in-left">
             <div className="text-center mb-16">
-              <h2 className="text-4xl font-bold text-green-700 mb-6">
+              <h2 className="text-4xl font-bold text-primary mb-6">
                 One Platform, Two Complete Solutions
               </h2>
-              <p className="text-xl text-gray-600 max-w-3xl mx-auto">
+              <p className="text-xl text-muted-foreground max-w-3xl mx-auto">
                 Whether you&apos;re a traveler looking for your next journey or
                 a bus operator wanting to expand your business, Busify provides
                 everything you need.
@@ -121,71 +121,71 @@ const AboutPage = async () => {
           <div className="grid lg:grid-cols-2 gap-12 items-start">
             {/* Passenger Platform */}
             <FadeinWrapper effect="animate-fade-in-left">
-              <Card className="border-green-200 bg-green-50 h-full">
+              <Card className="border-accent bg-accent h-full">
                 <CardHeader className="text-center pb-8">
-                  <div className="w-20 h-20 bg-green-600 rounded-full flex items-center justify-center mx-auto mb-4">
-                    <Users className="w-10 h-10 text-white" />
+                  <div className="w-20 h-20 bg-primary rounded-full flex items-center justify-center mx-auto mb-4">
+                    <Users className="w-10 h-10 text-primary-foreground" />
                   </div>
-                  <CardTitle className="text-2xl text-green-700 mb-2">
+                  <CardTitle className="text-2xl text-primary mb-2">
                     For Passengers
                   </CardTitle>
-                  <CardDescription className="text-lg text-green-600">
+                  <CardDescription className="text-lg text-primary">
                     Your gateway to comfortable and affordable bus travel
                   </CardDescription>
                 </CardHeader>
                 <CardContent>
                   <div className="space-y-4 mb-8">
                     <div className="flex items-start space-x-3">
-                      <div className="w-8 h-8 bg-green-100 rounded-full flex items-center justify-center flex-shrink-0 mt-1">
-                        <MapPin className="w-4 h-4 text-green-600" />
+                      <div className="w-8 h-8 bg-accent rounded-full flex items-center justify-center flex-shrink-0 mt-1">
+                        <MapPin className="w-4 h-4 text-primary" />
                       </div>
                       <div>
-                        <h4 className="font-semibold text-green-800">
+                        <h4 className="font-semibold text-primary">
                           Smart Route Search
                         </h4>
-                        <p className="text-green-700 text-sm">
+                        <p className="text-primary text-sm">
                           Find the best routes, compare prices, and choose from
                           multiple operators
                         </p>
                       </div>
                     </div>
                     <div className="flex items-start space-x-3">
-                      <div className="w-8 h-8 bg-green-100 rounded-full flex items-center justify-center flex-shrink-0 mt-1">
-                        <Ticket className="w-4 h-4 text-green-600" />
+                      <div className="w-8 h-8 bg-accent rounded-full flex items-center justify-center flex-shrink-0 mt-1">
+                        <Ticket className="w-4 h-4 text-primary" />
                       </div>
                       <div>
-                        <h4 className="font-semibold text-green-800">
+                        <h4 className="font-semibold text-primary">
                           Instant Booking
                         </h4>
-                        <p className="text-green-700 text-sm">
+                        <p className="text-primary text-sm">
                           Book tickets in seconds with secure payment and
                           instant confirmation
                         </p>
                       </div>
                     </div>
                     <div className="flex items-start space-x-3">
-                      <div className="w-8 h-8 bg-green-100 rounded-full flex items-center justify-center flex-shrink-0 mt-1">
-                        <Navigation className="w-4 h-4 text-green-600" />
+                      <div className="w-8 h-8 bg-accent rounded-full flex items-center justify-center flex-shrink-0 mt-1">
+                        <Navigation className="w-4 h-4 text-primary" />
                       </div>
                       <div>
-                        <h4 className="font-semibold text-green-800">
+                        <h4 className="font-semibold text-primary">
                           Live Tracking
                         </h4>
-                        <p className="text-green-700 text-sm">
+                        <p className="text-primary text-sm">
                           Track your bus in real-time and get updates throughout
                           your journey
                         </p>
                       </div>
                     </div>
                     <div className="flex items-start space-x-3">
-                      <div className="w-8 h-8 bg-green-100 rounded-full flex items-center justify-center flex-shrink-0 mt-1">
-                        <Calendar className="w-4 h-4 text-green-600" />
+                      <div className="w-8 h-8 bg-accent rounded-full flex items-center justify-center flex-shrink-0 mt-1">
+                        <Calendar className="w-4 h-4 text-primary" />
                       </div>
                       <div>
-                        <h4 className="font-semibold text-green-800">
+                        <h4 className="font-semibold text-primary">
                           Trip Management
                         </h4>
-                        <p className="text-green-700 text-sm">
+                        <p className="text-primary text-sm">
                           Manage all your bookings, view history, and plan
                           future trips
                         </p>
@@ -194,7 +194,7 @@ const AboutPage = async () => {
                   </div>
                   <Button
                     aria-label="Explore Passenger Portal"
-                    className="w-full bg-green-600 hover:bg-green-700"
+                    className="w-full bg-primary hover:bg-primary/90"
                     asChild
                   >
                     <Link href="/trips">Explore Passenger Portal</Link>
@@ -205,71 +205,71 @@ const AboutPage = async () => {
 
             {/* Operator Platform */}
             <FadeinWrapper effect="animate-fade-in-l300">
-              <Card className="border-green-300 bg-green-100 h-full">
+              <Card className="border-accent bg-accent h-full">
                 <CardHeader className="text-center pb-8">
-                  <div className="w-20 h-20 bg-green-700 rounded-full flex items-center justify-center mx-auto mb-4">
-                    <Building2 className="w-10 h-10 text-white" />
+                  <div className="w-20 h-20 bg-primary rounded-full flex items-center justify-center mx-auto mb-4">
+                    <Building2 className="w-10 h-10 text-primary-foreground" />
                   </div>
-                  <CardTitle className="text-2xl text-green-800 mb-2">
+                  <CardTitle className="text-2xl text-primary mb-2">
                     For Bus Operators
                   </CardTitle>
-                  <CardDescription className="text-lg text-green-700">
+                  <CardDescription className="text-lg text-primary">
                     Complete business management platform for bus operators
                   </CardDescription>
                 </CardHeader>
                 <CardContent>
                   <div className="space-y-4 mb-8">
                     <div className="flex items-start space-x-3">
-                      <div className="w-8 h-8 bg-green-200 rounded-full flex items-center justify-center flex-shrink-0 mt-1">
-                        <BarChart3 className="w-4 h-4 text-green-700" />
+                      <div className="w-8 h-8 bg-accent rounded-full flex items-center justify-center flex-shrink-0 mt-1">
+                        <BarChart3 className="w-4 h-4 text-primary" />
                       </div>
                       <div>
-                        <h4 className="font-semibold text-green-900">
+                        <h4 className="font-semibold text-primary">
                           Business Dashboard
                         </h4>
-                        <p className="text-green-800 text-sm">
+                        <p className="text-primary text-sm">
                           Comprehensive analytics, revenue tracking, and
                           performance insights
                         </p>
                       </div>
                     </div>
                     <div className="flex items-start space-x-3">
-                      <div className="w-8 h-8 bg-green-200 rounded-full flex items-center justify-center flex-shrink-0 mt-1">
-                        <Bus className="w-4 h-4 text-green-700" />
+                      <div className="w-8 h-8 bg-accent rounded-full flex items-center justify-center flex-shrink-0 mt-1">
+                        <Bus className="w-4 h-4 text-primary" />
                       </div>
                       <div>
-                        <h4 className="font-semibold text-green-900">
+                        <h4 className="font-semibold text-primary">
                           Fleet Management
                         </h4>
-                        <p className="text-green-800 text-sm">
+                        <p className="text-primary text-sm">
                           Manage your buses, routes, schedules, and driver
                           assignments
                         </p>
                       </div>
                     </div>
                     <div className="flex items-start space-x-3">
-                      <div className="w-8 h-8 bg-green-200 rounded-full flex items-center justify-center flex-shrink-0 mt-1">
-                        <Users className="w-4 h-4 text-green-700" />
+                      <div className="w-8 h-8 bg-accent rounded-full flex items-center justify-center flex-shrink-0 mt-1">
+                        <Users className="w-4 h-4 text-primary" />
                       </div>
                       <div>
-                        <h4 className="font-semibold text-green-900">
+                        <h4 className="font-semibold text-primary">
                           Passenger Management
                         </h4>
-                        <p className="text-green-800 text-sm">
+                        <p className="text-primary text-sm">
                           View bookings, manage passenger communications, and
                           handle requests
                         </p>
                       </div>
                     </div>
                     <div className="flex items-start space-x-3">
-                      <div className="w-8 h-8 bg-green-200 rounded-full flex items-center justify-center flex-shrink-0 mt-1">
-                        <TrendingUp className="w-4 h-4 text-green-700" />
+                      <div className="w-8 h-8 bg-accent rounded-full flex items-center justify-center flex-shrink-0 mt-1">
+                        <TrendingUp className="w-4 h-4 text-primary" />
                       </div>
                       <div>
-                        <h4 className="font-semibold text-green-900">
+                        <h4 className="font-semibold text-primary">
                           Revenue Growth
                         </h4>
-                        <p className="text-green-800 text-sm">
+                        <p className="text-primary text-sm">
                           Access our passenger network and grow your business
                           with marketing tools
                         </p>
@@ -278,7 +278,7 @@ const AboutPage = async () => {
                   </div>
                   <Button
                     aria-label="Explore Operator Portal"
-                    className="w-full bg-green-700 hover:bg-green-800"
+                    className="w-full bg-primary hover:bg-primary/90"
                     asChild
                   >
                     <a href="/operator">Explore Operator Portal</a>
@@ -291,22 +291,22 @@ const AboutPage = async () => {
       </section>
 
       {/* Platform Benefits */}
-      <section className="py-16 bg-green-50">
+      <section className="py-16 bg-accent">
         <div className="max-w-6xl mx-auto px-4">
           <FadeinWrapper effect="animate-fade-in-up">
-            <h2 className="text-3xl font-bold text-center text-green-700 mb-12">
+            <h2 className="text-3xl font-bold text-center text-primary mb-12">
               Why Choose Busify Platform?
             </h2>
           </FadeinWrapper>
 
           <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
             <FadeinWrapper effect="animate-fade-in-left">
-              <Card className="text-center border-green-200 bg-white">
+              <Card className="text-center border-accent bg-background">
                 <CardHeader>
-                  <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                    <Shield className="w-8 h-8 text-green-600" />
+                  <div className="w-16 h-16 bg-accent rounded-full flex items-center justify-center mx-auto mb-4">
+                    <Shield className="w-8 h-8 text-primary" />
                   </div>
-                  <CardTitle className="text-green-700">
+                  <CardTitle className="text-primary">
                     Secure & Reliable
                   </CardTitle>
                 </CardHeader>
@@ -320,12 +320,12 @@ const AboutPage = async () => {
             </FadeinWrapper>
 
             <FadeinWrapper effect="animate-fade-in-l300">
-              <Card className="text-center border-green-200 bg-white">
+              <Card className="text-center border-accent bg-background">
                 <CardHeader>
-                  <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                    <Zap className="w-8 h-8 text-green-600" />
+                  <div className="w-16 h-16 bg-accent rounded-full flex items-center justify-center mx-auto mb-4">
+                    <Zap className="w-8 h-8 text-primary" />
                   </div>
-                  <CardTitle className="text-green-700">
+                  <CardTitle className="text-primary">
                     Real-time Everything
                   </CardTitle>
                 </CardHeader>
@@ -339,12 +339,12 @@ const AboutPage = async () => {
             </FadeinWrapper>
 
             <FadeinWrapper effect="animate-fade-in-l400">
-              <Card className="text-center border-green-200 bg-white">
+              <Card className="text-center border-accent bg-background">
                 <CardHeader>
-                  <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                    <Award className="w-8 h-8 text-green-600" />
+                  <div className="w-16 h-16 bg-accent rounded-full flex items-center justify-center mx-auto mb-4">
+                    <Award className="w-8 h-8 text-primary" />
                   </div>
-                  <CardTitle className="text-green-700">Best Value</CardTitle>
+                  <CardTitle className="text-primary">Best Value</CardTitle>
                 </CardHeader>
                 <CardContent>
                   <CardDescription>
@@ -356,12 +356,12 @@ const AboutPage = async () => {
             </FadeinWrapper>
 
             <FadeinWrapper effect="animate-fade-in-l500">
-              <Card className="text-center border-green-200 bg-white">
+              <Card className="text-center border-accent bg-background">
                 <CardHeader>
-                  <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                    <Headphones className="w-8 h-8 text-green-600" />
+                  <div className="w-16 h-16 bg-accent rounded-full flex items-center justify-center mx-auto mb-4">
+                    <Headphones className="w-8 h-8 text-primary" />
                   </div>
-                  <CardTitle className="text-green-700">24/7 Support</CardTitle>
+                  <CardTitle className="text-primary">24/7 Support</CardTitle>
                 </CardHeader>
                 <CardContent>
                   <CardDescription>
@@ -379,15 +379,15 @@ const AboutPage = async () => {
       <FadeinWrapper effect="animate-fade-in-up">
         <section className="bg-white py-16">
           <div className="max-w-6xl mx-auto px-4">
-            <h2 className="text-3xl font-bold text-center text-green-700 mb-12">
+            <h2 className="text-3xl font-bold text-center text-primary mb-12">
               How Busify Works
             </h2>
 
             <Tabs defaultValue="passengers" className="w-full">
-              <TabsList className="grid w-full grid-cols-2 max-w-md mx-auto mb-12 bg-green-100">
+              <TabsList className="grid w-full grid-cols-2 max-w-md mx-auto mb-12 bg-accent">
                 <TabsTrigger
                   value="passengers"
-                  className="flex items-center space-x-2 data-[state=active]:bg-green-600 data-[state=active]:text-white"
+                  className="flex items-center space-x-2 data-[state=active]:bg-primary data-[state=active]:text-primary-foreground"
                 >
                   <Users className="w-4 h-4" />
                   <span>
@@ -396,7 +396,7 @@ const AboutPage = async () => {
                 </TabsTrigger>
                 <TabsTrigger
                   value="operators"
-                  className="flex items-center space-x-2 data-[state=active]:bg-green-600 data-[state=active]:text-white"
+                  className="flex items-center space-x-2 data-[state=active]:bg-primary data-[state=active]:text-primary-foreground"
                 >
                   <Building2 className="w-4 h-4" />
                   <span>
@@ -468,57 +468,57 @@ const AboutPage = async () => {
 
               <TabsContent value="operators" className="space-y-8">
                 <div className="grid md:grid-cols-3 gap-8">
-                  <Card className="text-center border-green-300 bg-green-100">
+                  <Card className="text-center border-accent bg-accent">
                     <CardHeader>
-                      <div className="w-16 h-16 bg-green-200 rounded-full flex items-center justify-center mx-auto mb-4">
-                        <span className="text-2xl font-bold text-green-700">
+                      <div className="w-16 h-16 bg-accent rounded-full flex items-center justify-center mx-auto mb-4">
+                        <span className="text-2xl font-bold text-primary">
                           1
                         </span>
                       </div>
-                      <CardTitle className="text-green-800">
+                      <CardTitle className="text-primary">
                         Register & Verify
                       </CardTitle>
                     </CardHeader>
                     <CardContent>
-                      <CardDescription className="text-green-700">
+                      <CardDescription className="text-primary">
                         Complete registration, verify your business credentials,
                         and get approved by our team
                       </CardDescription>
                     </CardContent>
                   </Card>
 
-                  <Card className="text-center border-green-300 bg-green-100">
+                  <Card className="text-center border-accent bg-accent">
                     <CardHeader>
-                      <div className="w-16 h-16 bg-green-200 rounded-full flex items-center justify-center mx-auto mb-4">
-                        <span className="text-2xl font-bold text-green-700">
+                      <div className="w-16 h-16 bg-accent rounded-full flex items-center justify-center mx-auto mb-4">
+                        <span className="text-2xl font-bold text-primary">
                           2
                         </span>
                       </div>
-                      <CardTitle className="text-green-800">
+                      <CardTitle className="text-primary">
                         Setup & Launch
                       </CardTitle>
                     </CardHeader>
                     <CardContent>
-                      <CardDescription className="text-green-700">
+                      <CardDescription className="text-primary">
                         Add your routes, set schedules and pricing, configure
                         your fleet, and go live
                       </CardDescription>
                     </CardContent>
                   </Card>
 
-                  <Card className="text-center border-green-300 bg-green-100">
+                  <Card className="text-center border-accent bg-accent">
                     <CardHeader>
-                      <div className="w-16 h-16 bg-green-200 rounded-full flex items-center justify-center mx-auto mb-4">
-                        <span className="text-2xl font-bold text-green-700">
+                      <div className="w-16 h-16 bg-accent rounded-full flex items-center justify-center mx-auto mb-4">
+                        <span className="text-2xl font-bold text-primary">
                           3
                         </span>
                       </div>
-                      <CardTitle className="text-green-800">
+                      <CardTitle className="text-primary">
                         Manage & Grow
                       </CardTitle>
                     </CardHeader>
                     <CardContent>
-                      <CardDescription className="text-green-700">
+                      <CardDescription className="text-primary">
                         Receive bookings, manage passengers, track performance,
                         and grow your business
                       </CardDescription>
@@ -532,14 +532,14 @@ const AboutPage = async () => {
       </FadeinWrapper>
 
       {/* Business Solutions Section */}
-      <section className="py-16 bg-green-50">
+      <section className="py-16 bg-accent">
         <section className="max-w-6xl mx-auto px-4">
           <FadeinWrapper effect="animate-fade-in-up">
             <div className="text-center mb-12">
-              <h2 className="text-3xl font-bold text-green-700 mb-4">
+              <h2 className="text-3xl font-bold text-primary mb-4">
                 Business Solutions
               </h2>
-              <p className="text-lg text-green-600 max-w-2xl mx-auto">
+              <p className="text-lg text-primary max-w-2xl mx-auto">
                 Special services for companies, travel agencies, and
                 organizations looking for group bookings and corporate travel
                 solutions.
@@ -549,19 +549,19 @@ const AboutPage = async () => {
 
           <div className="grid md:grid-cols-3 gap-8">
             <FadeinWrapper effect="animate-fade-in-left">
-              <Card className="border-green-200 bg-white">
+              <Card className="border-accent bg-background">
                 <CardHeader>
-                  <TrendingUp className="w-12 h-12 text-green-600 mb-4" />
-                  <CardTitle className="text-green-700">
+                  <TrendingUp className="w-12 h-12 text-primary mb-4" />
+                  <CardTitle className="text-primary">
                     Corporate Travel
                   </CardTitle>
                 </CardHeader>
                 <CardContent>
-                  <CardDescription className="mb-4 text-green-600">
+                  <CardDescription className="mb-4 text-primary">
                     Streamlined booking for employee business trips with expense
                     tracking and reporting.
                   </CardDescription>
-                  <ul className="space-y-2 text-sm text-green-600">
+                  <ul className="space-y-2 text-sm text-primary">
                     <li>• Centralized billing and invoicing</li>
                     <li>• Travel policy compliance</li>
                     <li>• Detailed trip reports</li>
@@ -572,19 +572,19 @@ const AboutPage = async () => {
             </FadeinWrapper>
 
             <FadeinWrapper effect="animate-fade-in-l300">
-              <Card className="border-green-200 bg-white">
+              <Card className="border-accent bg-background">
                 <CardHeader>
-                  <Users className="w-12 h-12 text-green-600 mb-4" />
-                  <CardTitle className="text-green-700">
+                  <Users className="w-12 h-12 text-primary mb-4" />
+                  <CardTitle className="text-primary">
                     Group Bookings
                   </CardTitle>
                 </CardHeader>
                 <CardContent>
-                  <CardDescription className="mb-4 text-green-600">
+                  <CardDescription className="mb-4 text-primary">
                     Special rates and coordinated travel for groups, events, and
                     tour operators.
                   </CardDescription>
-                  <ul className="space-y-2 text-sm text-green-600">
+                  <ul className="space-y-2 text-sm text-primary">
                     <li>• Bulk booking discounts</li>
                     <li>• Seat allocation management</li>
                     <li>• Flexible payment terms</li>
@@ -595,19 +595,19 @@ const AboutPage = async () => {
             </FadeinWrapper>
 
             <FadeinWrapper effect="animate-fade-in-l400">
-              <Card className="border-green-200 bg-white">
+              <Card className="border-accent bg-background">
                 <CardHeader>
-                  <Headphones className="w-12 h-12 text-green-600 mb-4" />
-                  <CardTitle className="text-green-700">
+                  <Headphones className="w-12 h-12 text-primary mb-4" />
+                  <CardTitle className="text-primary">
                     Management Tools
                   </CardTitle>
                 </CardHeader>
                 <CardContent>
-                  <CardDescription className="mb-4 text-green-600">
+                  <CardDescription className="mb-4 text-primary">
                     Various tools for management systems, travel agencies, and
                     corporate platforms.
                   </CardDescription>
-                  <ul className="space-y-2 text-sm text-green-600">
+                  <ul className="space-y-2 text-sm text-primary">
                     <li>• Comprehensive dashboard for management</li>
                     <li>• Monitoring tools for real-time analytics</li>
                     <li>• Seamless integration with existing systems</li>
@@ -621,7 +621,7 @@ const AboutPage = async () => {
             <Button
               aria-label="Contact Business Team"
               size="lg"
-              className="bg-green-600 hover:bg-green-700"
+              className="bg-primary hover:bg-primary/90"
             >
               Contact Business Team
             </Button>
@@ -632,10 +632,10 @@ const AboutPage = async () => {
           <div className="max-w-6xl mx-auto px-4">
             <div className="grid lg:grid-cols-2 gap-12 items-center">
               <div>
-                <h2 className="text-3xl font-bold text-green-700 mb-6">
+                <h2 className="text-3xl font-bold text-primary mb-6">
                   Book on the go with our Mobile App
                 </h2>
-                <p className="text-lg text-gray-600 mb-8">
+                <p className="text-lg text-muted-foreground mb-8">
                   Download the Busify mobile app for seamless ticket booking,
                   real-time tracking, and exclusive mobile-only deals. Available
                   on both iOS and Android.
@@ -643,26 +643,26 @@ const AboutPage = async () => {
 
                 <div className="space-y-4 mb-8">
                   <div className="flex items-center space-x-3">
-                    <Smartphone className="w-6 h-6 text-green-600" />
-                    <span className="text-gray-700">
+                    <Smartphone className="w-6 h-6 text-primary" />
+                    <span className="text-foreground">
                       Easy booking in just a few taps
                     </span>
                   </div>
                   <div className="flex items-center space-x-3">
-                    <Navigation className="w-6 h-6 text-green-600" />
-                    <span className="text-gray-700">
+                    <Navigation className="w-6 h-6 text-primary" />
+                    <span className="text-foreground">
                       Real-time bus tracking and notifications
                     </span>
                   </div>
                   <div className="flex items-center space-x-3">
-                    <CreditCard className="w-6 h-6 text-green-600" />
-                    <span className="text-gray-700">
+                    <CreditCard className="w-6 h-6 text-primary" />
+                    <span className="text-foreground">
                       Secure mobile payments
                     </span>
                   </div>
                   <div className="flex items-center space-x-3">
-                    <Globe className="w-6 h-6 text-green-600" />
-                    <span className="text-gray-700">Offline ticket access</span>
+                    <Globe className="w-6 h-6 text-primary" />
+                    <span className="text-foreground">Offline ticket access</span>
                   </div>
                 </div>
                 <div className="flex flex-col sm:flex-row gap-4">
@@ -684,17 +684,17 @@ const AboutPage = async () => {
               </div>
 
               <div className="relative">
-                <div className="bg-gradient-to-br from-green-400 to-green-600 rounded-2xl p-8 shadow-2xl">
-                  <div className="bg-white rounded-xl p-6 shadow-lg">
+                <div className="bg-gradient-to-br from-primary to-primary rounded-2xl p-8 shadow-2xl">
+                  <div className="bg-background rounded-xl p-6 shadow-lg">
                     <div className="flex items-center space-x-3 mb-4">
-                      <div className="w-12 h-12 bg-green-600 rounded-lg flex items-center justify-center">
-                        <Smartphone className="w-6 h-6 text-white" />
+                      <div className="w-12 h-12 bg-primary rounded-lg flex items-center justify-center">
+                        <Smartphone className="w-6 h-6 text-primary-foreground" />
                       </div>
                       <div>
-                        <h3 className="font-bold text-green-700">
+                        <h3 className="font-bold text-primary">
                           Busify Mobile
                         </h3>
-                        <p className="text-sm text-gray-600">
+                        <p className="text-sm text-muted-foreground">
                           Travel made simple
                         </p>
                       </div>
@@ -725,26 +725,26 @@ const AboutPage = async () => {
         </section>
       </section>
       {/* Testimonials Section */}
-      <section className="bg-green-50 py-16">
+      <section className="bg-accent py-16">
         <div className="max-w-6xl mx-auto px-4">
-          <h2 className="text-3xl font-bold text-center text-green-700 mb-12">
+          <h2 className="text-3xl font-bold text-center text-primary mb-12">
             What Our Customers Say
           </h2>
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
-            <Card className="border-green-200 bg-white">
+            <Card className="border-accent bg-background">
               <CardHeader>
                 <div className="flex items-center space-x-4">
                   <Avatar>
                     <AvatarImage alt="User Avatar" src="/placeholder-user.jpg" />
-                    <AvatarFallback className="bg-green-100 text-green-700">
+                    <AvatarFallback className="bg-accent text-primary">
                       JD
                     </AvatarFallback>
                   </Avatar>
                   <div>
-                    <CardTitle className="text-lg text-green-800">
+                    <CardTitle className="text-lg text-primary">
                       John Doe
                     </CardTitle>
-                    <CardDescription className="text-green-600">
+                    <CardDescription className="text-primary">
                       Frequent Traveler
                     </CardDescription>
                   </div>
@@ -755,31 +755,31 @@ const AboutPage = async () => {
                   {[...Array(5)].map((_, i) => (
                     <Star
                       key={i}
-                      className="w-4 h-4 fill-green-400 text-green-400"
+                      className="w-4 h-4 fill-primary text-primary"
                     />
                   ))}
                 </div>
-                <p className="text-green-700">
+                <p className="text-primary">
                   &quot;Busify has made my business trips so much easier. I can
                   compare prices and book tickets in minutes!&quot;
                 </p>
               </CardContent>
             </Card>
 
-            <Card className="border-green-200 bg-white">
+            <Card className="border-accent bg-background">
               <CardHeader>
                 <div className="flex items-center space-x-4">
                   <Avatar>
                     <AvatarImage alt="User Avatar" src="/placeholder-user.jpg" />
-                    <AvatarFallback className="bg-green-100 text-green-700">
+                    <AvatarFallback className="bg-accent text-primary">
                       SM
                     </AvatarFallback>
                   </Avatar>
                   <div>
-                    <CardTitle className="text-lg text-green-800">
+                    <CardTitle className="text-lg text-primary">
                       Sarah Miller
                     </CardTitle>
-                    <CardDescription className="text-green-600">
+                    <CardDescription className="text-primary">
                       Bus Provider Owner
                     </CardDescription>
                   </div>
@@ -790,31 +790,31 @@ const AboutPage = async () => {
                   {[...Array(5)].map((_, i) => (
                     <Star
                       key={i}
-                      className="w-4 h-4 fill-green-400 text-green-400"
+                      className="w-4 h-4 fill-primary text-primary"
                     />
                   ))}
                 </div>
-                <p className="text-green-700">
+                <p className="text-primary">
                   &quot;Since joining Busify, our bookings increased by 40%. The
                   platform is easy to use and the support is excellent.&quot;
                 </p>
               </CardContent>
             </Card>
 
-            <Card className="border-green-200 bg-white">
+            <Card className="border-accent bg-background">
               <CardHeader>
                 <div className="flex items-center space-x-4">
                   <Avatar>
                     <AvatarImage alt="User Avatar" src="/placeholder-user.jpg" />
-                    <AvatarFallback className="bg-green-100 text-green-700">
+                    <AvatarFallback className="bg-accent text-primary">
                       MJ
                     </AvatarFallback>
                   </Avatar>
                   <div>
-                    <CardTitle className="text-lg text-green-800">
+                    <CardTitle className="text-lg text-primary">
                       Mike Johnson
                     </CardTitle>
-                    <CardDescription className="text-green-600">
+                    <CardDescription className="text-primary">
                       Regular Commuter
                     </CardDescription>
                   </div>
@@ -825,11 +825,11 @@ const AboutPage = async () => {
                   {[...Array(5)].map((_, i) => (
                     <Star
                       key={i}
-                      className="w-4 h-4 fill-green-400 text-green-400"
+                      className="w-4 h-4 fill-primary text-primary"
                     />
                   ))}
                 </div>
-                <p className="text-green-700">
+                <p className="text-primary">
                   &quot;Real-time tracking and reliable service. I always know
                   when my bus will arrive. Highly recommended!&quot;
                 </p>
@@ -842,7 +842,7 @@ const AboutPage = async () => {
       {/* FAQ Section */}
       <section className="py-16 bg-white">
         <div className="max-w-4xl mx-auto px-4">
-          <h2 className="text-3xl font-bold text-center text-green-700 mb-12">
+          <h2 className="text-3xl font-bold text-center text-primary mb-12">
             Frequently Asked Questions
           </h2>
 
@@ -904,10 +904,10 @@ const AboutPage = async () => {
       </section>
 
       {/* Newsletter Signup Section */}
-      <section className="py-16 bg-green-700 text-white">
+      <section className="py-16 bg-primary text-primary-foreground">
         <div className="max-w-4xl mx-auto px-4 text-center">
           <h2 className="text-3xl font-bold mb-4">Stay Updated with Busify</h2>
-          <p className="text-lg text-green-100 mb-8">
+          <p className="text-lg text-primary-foreground/80 mb-8">
             Get the latest deals, new routes, and travel tips delivered to your
             inbox.
           </p>
@@ -915,17 +915,17 @@ const AboutPage = async () => {
           <div className="flex flex-col sm:flex-row gap-4 max-w-md mx-auto">
             <Input
               placeholder="Enter your email address"
-              className="bg-white text-gray-900 border-0 flex-1"
+              className="bg-background text-foreground border-0 flex-1"
             />
             <Button
               aria-label="Subscribe to Newsletter"
-              className="bg-green-500 hover:bg-green-400 text-white"
+              className="bg-primary hover:bg-primary/90 text-primary-foreground"
             >
               Subscribe
             </Button>
           </div>
 
-          <p className="text-sm text-green-200 mt-4 p-3">
+          <p className="text-sm text-primary-foreground/70 mt-4 p-3">
             By subscribing, you agree to receive marketing emails. Unsubscribe
             at any time.
           </p>

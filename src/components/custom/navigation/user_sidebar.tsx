@@ -40,9 +40,9 @@ export function UserSidebar() {
         <Link
           key={item.title}
           href={item.url}
-          className={`flex items-center p-3 text-sm font-medium rounded-md transition-colors hover:bg-gray-100 hover:text-green-700 ${
+          className={`flex items-center p-3 text-sm font-medium rounded-md transition-colors hover:bg-muted hover:text-primary ${
             isActive(item.url)
-              ? "bg-green-100 text-green-900 border border-green-200"
+              ? "bg-primary/10 text-primary border border-primary/20"
               : ""
           }`}
         >

@@ -12,7 +12,7 @@ export async function SimilarTripsSection({ tripId }: { tripId: number }) {
   if (!trips || trips.length === 0) {
     return (
       <div className="container mx-auto px-4 py-6">
-        <p className="text-center text-gray-500">
+        <p className="text-center text-muted-foreground">
           <LocaleText string="noSimilarTrips" name="Trips" />
         </p>
       </div>

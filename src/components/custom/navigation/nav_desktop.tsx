@@ -17,11 +17,7 @@ import { User } from "lucide-react";
 import { signOut, useSession } from "next-auth/react";
 import { useTranslations } from "next-intl";
 
-const NavDesktop = ({
-  contactMenuItems,
-  publicMenuItems,
-  isActive,
-}: NavDataProps) => {
+const NavDesktop = ({ publicMenuItems, isActive }: NavDataProps) => {
   const session = useSession();
   const t = useTranslations();
   return (
@@ -29,7 +25,7 @@ const NavDesktop = ({
       <div className="flex items-center space-x-3">
         <div className="flex items-center space-x-2">
           <Logo width={32} height={32} />
-          <span className="text-2xl font-bold text-foreground">Busify</span>
+          <span className="text-2xl font-bold text-white">Busify</span>
         </div>
       </div>
 
@@ -37,14 +33,14 @@ const NavDesktop = ({
         <NavigationMenuList className="space-x-1">
           {publicMenuItems.map((item) => {
             return (
-              <NavigationMenuItem key={item.href}>
+              <NavigationMenuItem key={item.href} className="bg-transparent">
                 <NavigationMenuLink
                   href={item.href}
-                  className={`${navigationMenuTriggerStyle()} ${
+                  className={`${navigationMenuTriggerStyle()} bg-transparent hover:after:w-full text-white ${
                     isActive(item.href)
-                      ? "bg-green-100 text-green-700"
-                      : "hover:bg-green-50 hover:text-green-700"
-                  } flex items-center space-x-2`}
+                      ? "bg-transparent  after:w-full"
+                      : "after:w-0"
+                  } relative after:absolute after:bottom-0 after:left-1/2 after:h-0.5 after:bg-background after:transition-all after:duration-300 after:-translate-x-1/2 flex items-center space-x-2`}
                 >
                   {item.icon()}
                   <span>{item.label}</span>
@@ -52,55 +48,6 @@ const NavDesktop = ({
               </NavigationMenuItem>
             );
           })}
-          <NavigationMenuItem>
-            <NavigationMenuTrigger className="hover:bg-green-50 hover:text-green-700 data-[state=open]:bg-green-100 data-[state=open]:text-green-700">
-              {t("Header.contact")}
-            </NavigationMenuTrigger>
-            <NavigationMenuContent>
-              <div className="w-[500px] p-4">
-                <div className="grid gap-4">
-                  <div className="text-center p-4 bg-green-50 rounded-lg">
-                    <h4 className="text-lg font-semibold text-green-900">
-                      {t("Header.contact")}
-                    </h4>
-                    <p className="text-sm text-green-700 mt-1">
-                      {t("Home.passengers")}
-                    </p>
-                  </div>
-                  <div className="grid grid-cols-2 gap-4">
-                    {contactMenuItems.map((item) => {
-                      const isExternal = item.href.startsWith("http");
-                      return (
-                        <Link
-                          aria-label={item.label}
-                          key={item.href}
-                          href={item.href}
-                          {...(isExternal && {
-                            target: "_blank",
-                            rel: "noopener noreferrer",
-                          })}
-                          className="flex items-start space-x-3 p-2 rounded-lg hover:bg-gray-50 transition-colors"
-                        >
-                          {item.icon()}
-                          <div>
-                            <p className="font-medium text-sm flex items-center">
-                              {item.label}
-                              {isExternal && (
-                                <span className="ml-1 text-xs">↗</span>
-                              )}
-                            </p>
-                            <p className="text-xs text-gray-600">
-                              {item.description}
-                            </p>
-                          </div>
-                        </Link>
-                      );
-                    })}
-                  </div>
-                </div>
-              </div>
-            </NavigationMenuContent>
-          </NavigationMenuItem>
         </NavigationMenuList>
       </NavigationMenu>
       {/* If authenticated hide this part */}
@@ -119,7 +66,7 @@ const NavDesktop = ({
           <Button
             aria-label="Sign Up"
             size="sm"
-            className="bg-green-600 hover:bg-green-700"
+            className="bg-primary hover:bg-primary/90"
             asChild
           >
             <Link aria-label={t("Header.signUp")} href="/signup">
@@ -148,7 +95,7 @@ const NavDesktop = ({
                     <hr className="my-1" />
                     <button
                       onClick={() => signOut()}
-                      className="w-full text-left px-3 py-2 text-sm rounded-lg hover:bg-accent transition-colors text-red-600"
+                      className="w-full text-left px-3 py-2 text-sm rounded-lg hover:bg-accent transition-colors text-destructive"
                     >
                       {t("Profile.logout")}
                     </button>

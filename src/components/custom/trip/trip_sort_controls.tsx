@@ -72,7 +72,7 @@ export default function TripSortControls() {
                   defaultValue={field.value}
                 >
                   <FormControl>
-                    <SelectTrigger className="w-full bg-white dark:bg-gray-800 border-primary/20 hover:border-primary/40 focus:border-primary focus:ring-primary/20">
+                    <SelectTrigger className="w-full bg-background dark:bg-card border-primary/20 hover:border-primary/40 focus:border-primary focus:ring-primary/20">
                       <SelectValue placeholder={t("sortBy")} />
                     </SelectTrigger>
                   </FormControl>
@@ -100,7 +100,7 @@ export default function TripSortControls() {
                   defaultValue={field.value}
                 >
                   <FormControl>
-                    <SelectTrigger className="w-full bg-white dark:bg-gray-800 border-primary/20 hover:border-primary/40 focus:border-primary focus:ring-primary/20">
+                    <SelectTrigger className="w-full bg-background dark:bg-card border-primary/20 hover:border-primary/40 focus:border-primary focus:ring-primary/20">
                       <SelectValue placeholder={t("sortDirection")} />
                     </SelectTrigger>
                   </FormControl>

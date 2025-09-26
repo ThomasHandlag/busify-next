@@ -32,7 +32,7 @@ const ReviewSection = async ({
     <Card>
       <CardHeader>
         <CardTitle className="flex items-center space-x-2">
-          <Star className="w-5 h-5 text-yellow-400" />
+          <Star className="w-5 h-5 text-accent" />
           <span>
             <LocaleText string="reviewTrip" name="Review" />
           </span>
@@ -41,7 +41,7 @@ const ReviewSection = async ({
       <CardContent>
         <div className="flex items-center space-x-3 mb-4">
           <div className="text-center">
-            <div className="text-2xl font-bold text-yellow-500">
+            <div className="text-2xl font-bold text-accent">
               {tripAvgRating(reviews)}
             </div>
             <div className="flex items-center space-x-1">
@@ -50,8 +50,8 @@ const ReviewSection = async ({
                   key={star}
                   className={`w-4 h-4 ${
                     star <= tripAvgRating(reviews)
-                      ? "text-yellow-400 fill-current"
-                      : "text-gray-300"
+                      ? "text-accent fill-current"
+                      : "text-muted"
                   }`}
                 />
               ))}
@@ -102,7 +102,7 @@ const ReviewItem = ({ review }: { review: Review }) => {
     <div key={review.reviewId} className="border-b pb-4 last:border-b-0">
       <div className="flex items-center justify-between mb-2">
         <div className="flex items-center space-x-2">
-          <User className="w-4 h-4 text-gray-400" />
+          <User className="w-4 h-4 text-muted-foreground" />
           <span className="font-medium">{review.customerName}</span>
         </div>
         <div className="flex items-center space-x-1">
@@ -111,15 +111,15 @@ const ReviewItem = ({ review }: { review: Review }) => {
               key={star}
               className={`w-3 h-3 ${
                 star <= review.rating
-                  ? "text-yellow-400 fill-current"
-                  : "text-gray-300"
+                  ? "text-accent fill-current"
+                  : "text-muted"
               }`}
             />
           ))}
         </div>
       </div>
-      <p className="text-gray-600 mb-2">{review.comment}</p>
-      <p className="text-sm text-gray-500">
+      <p className="text-muted-foreground mb-2">{review.comment}</p>
+      <p className="text-sm text-muted-foreground">
         {formatDate(new Date(review.createdAt))}
       </p>
     </div>

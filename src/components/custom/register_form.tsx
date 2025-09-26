@@ -194,20 +194,15 @@ export const RegisterForm = () => {
 
   return (
     <div className="w-full max-w-md mx-auto">
-      <div className="bg-white rounded-3xl shadow-2xl p-6 sm:p-8 border border-gray-100">
+      <div className="bg-background rounded-3xl shadow-2xl p-6 sm:p-8 border border-border">
         {!registrationSuccess ? (
           <>
             {/* Header */}
             <div className="text-center mb-6 sm:mb-8">
-              <div className="w-12 h-12 sm:w-16 sm:h-16 bg-gradient-to-r from-green-500 to-green-600 rounded-full flex items-center justify-center mx-auto mb-4">
-                <span className="text-white text-xl sm:text-2xl font-bold">
-                  B
-                </span>
-              </div>
-              <h2 className="text-2xl sm:text-3xl font-bold text-gray-800 mb-2">
+              <h2 className="text-2xl sm:text-3xl font-bold text-foreground mb-2">
                 {t("Register.title")}
               </h2>
-              <p className="text-sm sm:text-base text-gray-500">
+              <p className="text-sm sm:text-base text-muted-foreground">
                 {t("Register.subtitle")}
               </p>
             </div>
@@ -225,7 +220,7 @@ export const RegisterForm = () => {
                     name="fullName"
                     render={({ field }) => (
                       <FormItem>
-                        <FormLabel className="text-gray-700 font-medium">
+                        <FormLabel className="text-foreground font-medium">
                           {t("fullName")}{" "}
                           <span className="text-red-500">*</span>
                         </FormLabel>
@@ -234,7 +229,7 @@ export const RegisterForm = () => {
                           type="text"
                           placeholder={t("fullName")}
                           required
-                          className="h-12 bg-gray-50 border-gray-200 rounded-xl focus:ring-2 focus:ring-green-500 focus:border-transparent transition-all duration-200"
+                          className="h-12 bg-muted border-border rounded-xl focus:ring-2 focus:ring-accent focus:border-transparent transition-all duration-200"
                         />
                         <FormMessage />
                       </FormItem>
@@ -248,7 +243,7 @@ export const RegisterForm = () => {
                   name="email"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel className="text-gray-700 font-medium">
+                      <FormLabel className="text-foreground font-medium">
                         {t("email")} <span className="text-red-500">*</span>
                       </FormLabel>
                       <Input
@@ -256,7 +251,7 @@ export const RegisterForm = () => {
                         type="email"
                         placeholder={t("email")}
                         required
-                        className="h-12 bg-gray-50 border-gray-200 rounded-xl focus:ring-2 focus:ring-green-500 focus:border-transparent transition-all duration-200"
+                        className="h-12 bg-muted border-border rounded-xl focus:ring-2 focus:ring-primary focus:border-transparent transition-all duration-200"
                       />
                       <FormMessage />
                     </FormItem>
@@ -269,7 +264,7 @@ export const RegisterForm = () => {
                   name="phone"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel className="text-gray-700 font-medium">
+                      <FormLabel className="text-foreground font-medium">
                         {t("phone")}{" "}
                         {isBusOperator && (
                           <span className="text-red-500">*</span>
@@ -283,10 +278,10 @@ export const RegisterForm = () => {
                             ? t("Register.placeholderPhoneOperator")
                             : t("Register.placeholderPhone")
                         }
-                        className="h-12 bg-gray-50 border-gray-200 rounded-xl focus:ring-2 focus:ring-green-500 focus:border-transparent transition-all duration-200"
+                        className="h-12 bg-muted border-border rounded-xl focus:ring-2 focus:ring-accent focus:border-transparent transition-all duration-200"
                       />
                       {isBusOperator && (
-                        <p className="text-xs text-gray-500">
+                        <p className="text-xs text-muted-foreground">
                           {t("Register.phoneOperatorNote")}
                         </p>
                       )}
@@ -302,7 +297,7 @@ export const RegisterForm = () => {
                     name="password"
                     render={({ field }) => (
                       <FormItem>
-                        <FormLabel className="text-gray-700 font-medium">
+                        <FormLabel className="text-foreground font-medium">
                           {t("password")}{" "}
                           <span className="text-red-500">*</span>
                         </FormLabel>
@@ -312,7 +307,7 @@ export const RegisterForm = () => {
                             type={showPassword ? "text" : "password"}
                             placeholder={t("Register.placeholderPassword")}
                             required
-                            className="h-12 bg-gray-50 border-gray-200 rounded-xl focus:ring-2 focus:ring-green-500 focus:border-transparent transition-all duration-200 pr-12"
+                            className="h-12 bg-muted border-border rounded-xl focus:ring-2 focus:ring-accent focus:border-transparent transition-all duration-200 pr-12"
                             onChange={(e) => {
                               field.onChange(e);
                               setPasswordRequirements(
@@ -323,7 +318,7 @@ export const RegisterForm = () => {
                           <button
                             type="button"
                             onClick={() => setShowPassword(!showPassword)}
-                            className="absolute right-4 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-600"
+                            className="absolute right-4 top-1/2 transform -translate-y-1/2 text-muted-foreground hover:text-foreground"
                           >
                             {showPassword ? (
                               <FaEyeSlash size={18} />
@@ -336,7 +331,7 @@ export const RegisterForm = () => {
                           <div className="mt-2">
                             <p className="text-xs">
                               {passwordRequirements.strength >= 3 ? (
-                                <span className="text-green-600">
+                                <span className="text-primary">
                                   {t("Register.passwordStrong")}
                                 </span>
                               ) : (
@@ -368,7 +363,7 @@ export const RegisterForm = () => {
                     name="confirmPassword"
                     render={({ field }) => (
                       <FormItem>
-                        <FormLabel className="text-gray-700 font-medium">
+                        <FormLabel className="text-foreground font-medium">
                           {t("confirmPassword")}{" "}
                           <span className="text-red-500">*</span>
                         </FormLabel>
@@ -378,14 +373,14 @@ export const RegisterForm = () => {
                             type={showConfirmPassword ? "text" : "password"}
                             placeholder={t("confirmPassword")}
                             required
-                            className="h-12 bg-gray-50 border-gray-200 rounded-xl focus:ring-2 focus:ring-green-500 focus:border-transparent transition-all duration-200 pr-12"
+                            className="h-12 bg-muted border-border rounded-xl focus:ring-2 focus:ring-accent focus:border-transparent transition-all duration-200 pr-12"
                           />
                           <button
                             type="button"
                             onClick={() =>
                               setShowConfirmPassword(!showConfirmPassword)
                             }
-                            className="absolute right-4 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-600"
+                            className="absolute right-4 top-1/2 transform -translate-y-1/2 text-muted-foreground hover:text-foreground"
                           >
                             {showConfirmPassword ? (
                               <FaEyeSlash size={18} />
@@ -401,7 +396,7 @@ export const RegisterForm = () => {
                 )}
 
                 {/* Bus Operator Checkbox */}
-                <div className="flex items-start space-x-3 p-4 bg-blue-50 rounded-xl border border-blue-200">
+                <div className="flex items-start space-x-3 p-4 bg-primary/5 rounded-xl border border-primary/20">
                   <Checkbox
                     id="busOperator"
                     checked={isBusOperator}
@@ -413,12 +408,12 @@ export const RegisterForm = () => {
                   <div className="flex-1">
                     <label
                       htmlFor="busOperator"
-                      className="text-sm font-medium text-blue-900 cursor-pointer flex items-center gap-2"
+                      className="text-sm font-medium text-primary cursor-pointer flex items-center gap-2"
                     >
                       <Building2 className="w-4 h-4" />
                       {t("Register.busOperatorLabel")}
                     </label>
-                    <p className="text-xs text-blue-700 mt-1">
+                    <p className="text-xs text-primary mt-1">
                       {t("Register.busOperatorNote")}
                     </p>
                   </div>
@@ -426,8 +421,8 @@ export const RegisterForm = () => {
 
                 {/* Bus Operator Fields - Only show when checkbox is checked */}
                 {isBusOperator && (
-                  <div className="space-y-4 p-4 bg-gray-50 rounded-xl border border-gray-200">
-                    <h3 className="text-lg font-semibold text-gray-800 flex items-center gap-2">
+                  <div className="space-y-4 p-4 bg-muted rounded-xl border border-border">
+                    <h3 className="text-lg font-semibold text-foreground flex items-center gap-2">
                       <Building2 className="w-5 h-5" />
                       {t("Register.contractInfoTitle")}
                     </h3>
@@ -438,14 +433,14 @@ export const RegisterForm = () => {
                       name="address"
                       render={({ field }) => (
                         <FormItem>
-                          <FormLabel className="text-gray-700 font-medium">
+                          <FormLabel className="text-foreground font-medium">
                             {t("Register.addressLabel")}{" "}
                             <span className="text-red-500">*</span>
                           </FormLabel>
                           <Textarea
                             {...field}
                             placeholder={t("Register.addressPlaceholder")}
-                            className="bg-white border-gray-200 rounded-xl focus:ring-2 focus:ring-green-500 focus:border-transparent transition-all duration-200"
+                            className="bg-background border-border rounded-xl focus:ring-2 focus:ring-primary focus:border-transparent transition-all duration-200"
                           />
                           <FormMessage />
                         </FormItem>
@@ -459,7 +454,7 @@ export const RegisterForm = () => {
                         name="startDate"
                         render={({ field }) => (
                           <FormItem className="flex flex-col">
-                            <FormLabel className="text-gray-700 font-medium">
+                            <FormLabel className="text-foreground font-medium">
                               {t("Register.startDateLabel")}{" "}
                               <span className="text-red-500">*</span>
                             </FormLabel>
@@ -469,7 +464,7 @@ export const RegisterForm = () => {
                                   aria-label={t("Register.startDateLabel")}
                                   variant={"outline"}
                                   className={cn(
-                                    "h-12 bg-white border-gray-200 rounded-xl focus:ring-2 focus:ring-green-500 focus:border-transparent transition-all duration-200 justify-start text-left font-normal",
+                                    "h-12 bg-background border-border rounded-xl focus:ring-2 focus:ring-primary focus:border-transparent transition-all duration-200 justify-start text-left font-normal",
                                     !field.value && "text-muted-foreground"
                                   )}
                                 >
@@ -537,7 +532,7 @@ export const RegisterForm = () => {
                                 </div>
                               </PopoverContent>
                             </Popover>
-                            <p className="text-xs text-gray-500">
+                            <p className="text-xs text-muted-foreground">
                               {t("Register.startDateNote")}
                             </p>
                             <FormMessage />
@@ -550,7 +545,7 @@ export const RegisterForm = () => {
                         name="endDate"
                         render={({ field }) => (
                           <FormItem className="flex flex-col">
-                            <FormLabel className="text-gray-700 font-medium">
+                            <FormLabel className="text-foreground font-medium">
                               {t("Register.endDateLabel")}{" "}
                               <span className="text-red-500">*</span>
                             </FormLabel>
@@ -560,7 +555,7 @@ export const RegisterForm = () => {
                                   aria-label={t("Register.endDateLabel")}
                                   variant={"outline"}
                                   className={cn(
-                                    "h-12 bg-white border-gray-200 rounded-xl focus:ring-2 focus:ring-green-500 focus:border-transparent transition-all duration-200 justify-start text-left font-normal",
+                                    "h-12 bg-background border-border rounded-xl focus:ring-2 focus:ring-primary focus:border-transparent transition-all duration-200 justify-start text-left font-normal",
                                     !field.value && "text-muted-foreground"
                                   )}
                                 >
@@ -631,7 +626,7 @@ export const RegisterForm = () => {
                                 </div>
                               </PopoverContent>
                             </Popover>
-                            <p className="text-xs text-gray-500">
+                            <p className="text-xs text-muted-foreground">
                               {t("Register.endDateNote")}
                             </p>
                             <FormMessage />
@@ -646,14 +641,14 @@ export const RegisterForm = () => {
                       name="operationArea"
                       render={({ field }) => (
                         <FormItem>
-                          <FormLabel className="text-gray-700 font-medium">
+                          <FormLabel className="text-foreground font-medium">
                             {t("Register.operationAreaLabel")}{" "}
                             <span className="text-red-500">*</span>
                           </FormLabel>
                           <Input
                             {...field}
                             placeholder={t("Register.operationAreaPlaceholder")}
-                            className="h-12 bg-white border-gray-200 rounded-xl focus:ring-2 focus:ring-green-500 focus:border-transparent transition-all duration-200"
+                            className="h-12 bg-background border-border rounded-xl focus:ring-2 focus:ring-primary focus:border-transparent transition-all duration-200"
                           />
                           <FormMessage />
                         </FormItem>
@@ -666,16 +661,16 @@ export const RegisterForm = () => {
                       name="VATCode"
                       render={({ field }) => (
                         <FormItem>
-                          <FormLabel className="text-gray-700 font-medium">
+                          <FormLabel className="text-foreground font-medium">
                             {t("Register.vatCodeLabel")}{" "}
                             <span className="text-red-500">*</span>
                           </FormLabel>
                           <Input
                             {...field}
                             placeholder={t("Register.vatCodePlaceholder")}
-                            className="h-12 bg-white border-gray-200 rounded-xl focus:ring-2 focus:ring-green-500 focus:border-transparent transition-all duration-200"
+                            className="h-12 bg-background border-border rounded-xl focus:ring-2 focus:ring-primary focus:border-transparent transition-all duration-200"
                           />
-                          <p className="text-xs text-gray-500">
+                          <p className="text-xs text-muted-foreground">
                             {t("Register.vatCodeNote")}
                           </p>
                           <FormMessage />
@@ -689,7 +684,7 @@ export const RegisterForm = () => {
                       name="attachmentUrl"
                       render={({ field }) => (
                         <FormItem>
-                          <FormLabel className="text-gray-700 font-medium">
+                          <FormLabel className="text-foreground font-medium">
                             {t("Register.attachmentLabel")}
                           </FormLabel>
                           <Input
@@ -699,9 +694,9 @@ export const RegisterForm = () => {
                               const file = e.target.files?.[0];
                               field.onChange(file);
                             }}
-                            className="h-12 bg-white border-gray-200 rounded-xl focus:ring-2 focus:ring-green-500 focus:border-transparent transition-all duration-200 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-green-50 file:text-green-700 hover:file:bg-green-100"
+                            className="h-12 bg-background border-border rounded-xl focus:ring-2 focus:ring-primary focus:border-transparent transition-all duration-200 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-accent file:text-accent-foreground hover:file:bg-accent/80"
                           />
-                          <p className="text-xs text-gray-500">
+                          <p className="text-xs text-muted-foreground">
                             {t("Register.attachmentNote")}
                           </p>
                           <FormMessage />
@@ -710,7 +705,7 @@ export const RegisterForm = () => {
                     />
 
                     {/* Policy Checkbox for Bus Operator */}
-                    <div className="flex items-start space-x-3 p-3 bg-white rounded-lg border border-gray-200">
+                    <div className="flex items-start space-x-3 p-3 bg-background rounded-lg border border-border">
                       <Checkbox
                         id="policy"
                         checked={acceptedPolicy}
@@ -719,7 +714,7 @@ export const RegisterForm = () => {
                         }
                         className="mt-1"
                       />
-                      <label htmlFor="policy" className="text-sm text-gray-700">
+                      <label htmlFor="policy" className="text-sm text-foreground">
                         {t("Register.policyAgreement1")}
                         <Policy />
                         {t("Register.policyAgreement2")}
@@ -736,9 +731,9 @@ export const RegisterForm = () => {
                       <input
                         type="checkbox"
                         required
-                        className="w-4 h-4 text-green-600 border-gray-300 rounded focus:ring-green-500 mt-1 flex-shrink-0"
+                        className="w-4 h-4 text-primary border-border rounded focus:ring-primary mt-1 flex-shrink-0"
                       />
-                      <p className="text-xs sm:text-sm text-gray-600 leading-relaxed">
+                      <p className="text-xs sm:text-sm text-muted-foreground leading-relaxed">
                         {t("Register.termsAgreement")}
                       </p>
                     </div>
@@ -747,9 +742,9 @@ export const RegisterForm = () => {
                     <div className="flex items-start space-x-3">
                       <input
                         type="checkbox"
-                        className="w-4 h-4 text-green-600 border-gray-300 rounded focus:ring-green-500 mt-1 flex-shrink-0"
+                        className="w-4 h-4 text-primary border-border rounded focus:ring-primary mt-1 flex-shrink-0"
                       />
-                      <p className="text-xs sm:text-sm text-gray-600">
+                      <p className="text-xs sm:text-sm text-muted-foreground">
                         {t("Register.newsletterText")}
                       </p>
                     </div>
@@ -759,7 +754,7 @@ export const RegisterForm = () => {
                 <Button
                   aria-label={t("Register.creatingAccount")}
                   type="submit"
-                  className="w-full h-12 bg-gradient-to-r from-green-600 to-green-700 hover:from-green-700 hover:to-green-800 text-white font-semibold rounded-xl transition-all duration-200 transform hover:scale-[1.02] shadow-lg disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none"
+                  className="w-full h-12 bg-primary hover:bg-primary/90 text-primary-foreground font-semibold rounded-xl transition-all duration-200 transform hover:scale-[1.02] shadow-lg disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none"
                   disabled={
                     isSubmitting ||
                     (!isBusOperator && !isPasswordStrong) ||
@@ -784,12 +779,12 @@ export const RegisterForm = () => {
 
             {/* Sign in link */}
             <div className="text-center mt-6">
-              <p className="text-sm sm:text-base text-gray-600">
+              <p className="text-sm sm:text-base text-muted-foreground">
                 {t("Register.alreadyHaveAccount")}{" "}
                 <Link
                   href="/login"
                   aria-label="Sign in"
-                  className="text-green-600 hover:text-green-700 font-semibold"
+                  className="text-primary hover:text-primary/80 font-semibold"
                 >
                   {t("Register.signIn")}
                 </Link>
@@ -797,14 +792,14 @@ export const RegisterForm = () => {
             </div>
 
             {/* Security Features */}
-            <div className="mt-6 p-4 bg-green-50 rounded-xl">
-              <div className="flex items-center space-x-2 text-green-700">
+            <div className="mt-6 p-4 bg-accent rounded-xl">
+              <div className="flex items-center space-x-2 text-accent-foreground">
                 <FaCheck size={16} />
                 <span className="text-sm font-medium">
                   {t("Register.securityTitle")}
                 </span>
               </div>
-              <p className="text-xs text-green-600 mt-1">
+              <p className="text-xs text-primary mt-1">
                 {t("Register.securityDesc")}
               </p>
             </div>
@@ -812,9 +807,9 @@ export const RegisterForm = () => {
         ) : (
           /* Success State */
           <div className="text-center">
-            <div className="w-20 h-20 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-6">
+            <div className="w-20 h-20 bg-accent rounded-full flex items-center justify-center mx-auto mb-6">
               <svg
-                className="w-10 h-10 text-green-600"
+                className="w-10 h-10 text-primary"
                 fill="none"
                 stroke="currentColor"
                 viewBox="0 0 24 24"
@@ -827,14 +822,14 @@ export const RegisterForm = () => {
                 />
               </svg>
             </div>
-            <h2 className="text-2xl font-bold text-gray-800 mb-4">
+            <h2 className="text-2xl font-bold text-foreground mb-4">
               {t("Register.successTitle")}
             </h2>
-            <p className="text-gray-600 mb-6">
+            <p className="text-muted-foreground mb-6">
               {t("Register.successSent")} <br />
-              <span className="font-semibold text-gray-800">{userEmail}</span>
+              <span className="font-semibold text-foreground">{userEmail}</span>
             </p>
-            <p className="text-sm text-gray-500 mb-6">
+            <p className="text-sm text-muted-foreground mb-6">
               {t("Register.successInstruction")}
             </p>
             <Button
@@ -846,7 +841,7 @@ export const RegisterForm = () => {
                 form.reset();
               }}
               variant="outline"
-              className="text-green-600 border-green-600 hover:bg-green-50"
+              className="text-primary border-primary hover:bg-accent"
             >
               {t("Register.registerAnother")}
             </Button>

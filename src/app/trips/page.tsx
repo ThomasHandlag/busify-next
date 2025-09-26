@@ -109,12 +109,9 @@ const AppPage = () => {
         </Sheet>
       </div>
       <div className="h-[90vh] w-full bg-background overflow-auto">
-        <div className="container mx-auto px-4 py-6">
+        <div className="container mx-auto px-4">
           <div className="flex flex-col lg:flex-row gap-6">
-            {/* Desktop Sidebar */}
-            {/* Main Content */}
             <div className="flex-1">
-              {/* Results Summary and Sort Controls */}
               <div className="mb-6 flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
                 <div>
                   <h1 className="text-2xl font-bold text-foreground">
@@ -147,7 +144,7 @@ const AppPage = () => {
                     ))}
                   </div>
                 ) : (
-                  <div className="grid grid-cols-1 xl:grid-cols-2 gap-4 overflow-auto">
+                  <div className="grid grid-cols-1 xl:grid-cols-2 gap-4 overflow-auto p-2">
                     {trips.length > 0 ? (
                       trips.map((trip) => (
                         <TripItem key={trip.trip_id} trip={trip} />

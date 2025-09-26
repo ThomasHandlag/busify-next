@@ -57,7 +57,7 @@ const HomeSearchForm = ({ locations }: { locations: FilterLocationType[] }) => {
   return (
     <Form {...form}>
       <form
-        className="flex lg:flex-row flex-col justify-center items-center gap-2"
+        className="flex lg:flex-row flex-col justify-center lg:items-center item-start gap-2"
         onSubmit={form.handleSubmit(onSubmit)}
       >
         <FormField
@@ -131,7 +131,7 @@ const HomeSearchForm = ({ locations }: { locations: FilterLocationType[] }) => {
           <Button
             aria-label="Search"
             type="submit"
-            className="col-span-1 bg-green-600 hover:bg-green-700 text-white px-6 rounded-md font-medium text-sm"
+            className="col-span-1 bg-primary hover:bg-primary/90 text-primary-foreground px-6 rounded-md font-medium text-sm"
             disabled={filter.isLoading}
           >
             <span className="inline-block">

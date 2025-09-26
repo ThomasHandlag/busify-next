@@ -57,7 +57,7 @@ export function OperatorMultiSelect({
           role="combobox"
           aria-expanded={open}
           className={cn(
-            "justify-between bg-green-50 w-full",
+            "justify-between bg-accent w-full",
             !value?.length && "text-muted-foreground"
           )}
         >

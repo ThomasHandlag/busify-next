@@ -3,7 +3,7 @@
 import { Card, CardContent } from "../../ui/card";
 import { Button } from "../../ui/button";
 import { Badge } from "../../ui/badge";
-import { Clock, MapPin, Users, Star, ArrowRight } from "lucide-react";
+import { Clock, MapPin, Users, Star, ArrowRight, Bus } from "lucide-react";
 import { format } from "date-fns";
 import { TripItemProps } from "@/lib/data/trip";
 import Link from "next/link";
@@ -12,9 +12,9 @@ import Image from "next/image";
 
 const TripItem = ({ trip }: { trip: TripItemProps }) => {
   const getAvailabilityColor = (seats: number) => {
-    if (seats <= 5) return "bg-red-100 text-red-700";
-    if (seats <= 10) return "bg-yellow-100 text-yellow-700";
-    return "bg-green-100 text-green-700";
+    if (seats <= 5) return "bg-destructive/10 text-destructive border-destructive/20";
+    if (seats <= 10) return "bg-secondary/10 text-secondary dark:text-secondary-foreground border-secondary/20";
+    return "bg-primary/10 text-primary border-primary/20";
   };
 
   const getAvailabilityText = (seats: number) => {
@@ -53,136 +53,117 @@ const TripItem = ({ trip }: { trip: TripItemProps }) => {
   const departureDate = format(departureDateObj, "dd/MM");
 
   return (
-    <Card
-      className={`hover:shadow-md transition-all duration-200 border-l-4 ${
-        trip.available_seats < 1
-          ? "border-gray-500"
-          : trip.available_seats <= 10
-          ? "border-yellow-500"
-          : "border-green-500"
-      }`}
-    >
-      <CardContent className="p-4">
-        {/* Header Row - Compact */}
-        <div className="flex items-start mb-3 gap-3">
-          {/* Avatar */}
-          {trip.operator_avatar && (
-            <Image
-              src={trip.operator_avatar}
-              alt={trip.operator_name}
-              width={40}
-              height={40}
-              className="w-10 h-10 rounded-full object-cover flex-shrink-0 border border-gray-200"
-            />
-          )}
+    <Card className="relative bg-gradient-to-br from-card to-card backdrop-blur-sm">
 
-          {/* Info */}
-          <div className="flex-1 min-w-0">
-            <h3 className="text-sm font-bold text-foreground mb-1 truncate">
-              {trip.operator_name}
-            </h3>
-            <div className="flex items-center gap-2 text-xs text-muted-foreground">
-              <span className="flex items-center gap-1">
-                <MapPin className="w-3 h-3" />
-                {departureDate}
-              </span>
-              <span className="flex items-center gap-1">
-                <Star className="w-3 h-3 text-yellow-400 fill-current" />
-                {trip.average_rating}
-              </span>
+      <CardContent className="relative p-2">
+        <div className="flex items-start justify-between mb-4">
+          <div className="flex items-center gap-3">
+            <div className="relative">
+              {trip.operator_avatar ? (
+                <Image
+                  src={trip.operator_avatar}
+                  alt={trip.operator_name}
+                  width={48}
+                  height={48}
+                  className="w-12 h-12 rounded-xl object-cover border-2 border-border/50 shadow-sm"
+                />
+              ) : (
+                <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-primary/10 to-accent/10 border-2 border-border/50 flex items-center justify-center">
+                  <Bus className="w-6 h-6 text-primary" />
+                </div>
+              )}
+              <div className="absolute -bottom-1 -right-1 w-4 h-4 bg-green-500 border-2 border-background rounded-full"></div>
+            </div>
+
+            <div>
+              <h3 className="font-semibold text-foreground text-lg leading-tight">
+                {trip.operator_name}
+              </h3>
+              <div className="flex items-center gap-3 mt-1">
+                <div className="flex items-center gap-1 text-sm text-muted-foreground">
+                  <MapPin className="w-4 h-4" />
+                  {departureDate}
+                </div>
+                <div className="flex items-center gap-1 text-sm text-muted-foreground">
+                  <Star className="w-4 h-4 fill-yellow-400 text-yellow-400" />
+                  <span className="font-medium">{trip.average_rating}</span>
+                </div>
+              </div>
             </div>
           </div>
 
-          {/* Price + Seats */}
-          <div className="flex flex-col items-end gap-1">
+          <div className="text-right">
+            <div className="text-2xl font-bold text-foreground mb-2">
+              {new Intl.NumberFormat("vi-VN").format(trip.price_per_seat)}đ
+            </div>
             <Badge
-              className={`${getAvailabilityColor(
-                trip.available_seats
-              )} text-xs px-2 py-1`}
+              variant="outline"
+              className={`${getAvailabilityColor(trip.available_seats)} border text-xs font-medium px-3 py-1 rounded-full`}
             >
               {getAvailabilityText(trip.available_seats)}
             </Badge>
-
-            {/* Price Display Logic */}
-            <div className="text-right">
-              <p className="text-lg font-bold text-primary">
-                {new Intl.NumberFormat("vi-VN").format(trip.price_per_seat)}đ
-              </p>
-            </div>
           </div>
         </div>
 
-        {/* Route Row - Ultra Compact */}
-        <div className="grid grid-cols-5 items-center gap-2 mb-3">
-          <div className="col-span-2 text-left">
-            <p className="text-sm font-semibold text-secondary-foreground">
-              {departure_time}
-            </p>
-            <p className="text-xs text-muted-foreground truncate">
-              {trip.route.start_location}
-            </p>
-          </div>
-
-          <div className="flex items-center justify-center">
-            <div className="flex items-center w-full">
-              <div className="w-1.5 h-1.5 bg-green-500 rounded-full"></div>
-              <div className="flex-1 h-px bg-gray-300 mx-2 relative">
-                <ArrowRight className="w-3 h-3 text-gray-400 absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-white" />
+        <div className="bg-muted/30 rounded-xl p-4 mb-4">
+          <div className="grid grid-cols-5 items-center gap-4">
+            <div className="col-span-2">
+              <div className="text-xl font-bold text-foreground mb-1">
+                {departure_time}
               </div>
-              <div className="w-1.5 h-1.5 bg-green-500 rounded-full"></div>
+              <div className="text-sm text-muted-foreground font-medium truncate">
+                {trip.route.start_location}
+              </div>
             </div>
-          </div>
 
-          <div className="col-span-2 text-right">
-            <p className="text-sm font-semibold text-secondary-foreground">
-              {arrival_time}
-            </p>
-            <p className="text-xs text-gray-500 truncate">
-              {trip.route.end_location}
-            </p>
+            <div className="flex items-center justify-center">
+              <div className="flex items-center w-full relative">
+                <div className="w-3 h-3 bg-primary rounded-full shadow-sm"></div>
+                <div className="flex-1 h-0.5 bg-gradient-to-r from-primary/50 to-primary/50 mx-3 relative">
+                  <div className="absolute inset-0 bg-primary/20 rounded-full"></div>
+                  <ArrowRight className="w-4 h-4 text-primary absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-background rounded-full p-0.5 shadow-sm" />
+                </div>
+                <div className="w-3 h-3 bg-primary rounded-full shadow-sm"></div>
+              </div>
+            </div>
+
+            <div className="col-span-2 text-right">
+              <div className="text-xl font-bold text-foreground mb-1">
+                {arrival_time}
+              </div>
+              <div className="text-sm text-muted-foreground font-medium truncate">
+                {trip.route.end_location}
+              </div>
+            </div>
           </div>
         </div>
 
-        {/* Bottom Row - Info & Actions */}
-        <div className="flex justify-between items-center">
-          <div className="flex items-center gap-3 text-xs text-muted-foreground">
-            <span className="flex items-center gap-1">
-              <Clock className="w-3 h-3" />
-              <span>
-                <LocaleText string="duration" name="Trips.tripItem" />
-              </span>
-              : {duration}
-            </span>
-            <span className="flex items-center gap-1">
-              <Users className="w-3 h-3" />
-              <span>
-                <LocaleText string="seats" name="Trips.tripItem" />
-              </span>
-              : {trip.available_seats}
-            </span>
+        <div className="flex items-center justify-between">
+          <div className="flex items-center gap-4 text-sm text-muted-foreground">
+            <div className="flex items-center gap-1.5">
+              <Clock className="w-4 h-4" />
+              <span className="font-medium">{duration}</span>
+            </div>
+            <div className="flex items-center gap-1.5">
+              <Users className="w-4 h-4" />
+              <span className="font-medium">{trip.available_seats} seats</span>
+            </div>
           </div>
 
-          <div className="flex gap-2">
-            <Link
-              aria-label="View trip details"
-              href={`/trips/${trip.trip_id}`}
-              className="hidden sm:block"
-            ></Link>
-            <Button
-              disabled={trip.available_seats < 1}
-              aria-label="Book Trip"
-              size="sm"
-              className={`text-white text-xs h-7 px-3 cursor-pointer ${
-                trip.available_seats < 1
-                  ? "bg-gray-400 cursor-not-allowed"
-                  : "bg-green-600 hover:bg-green-700"
-              }`}
-            >
-              <Link aria-label="Book trip" href={`/trips/${trip.trip_id}`}>
-                <LocaleText string="bookTrip" name="Trips.tripItem" />
-              </Link>
-            </Button>
-          </div>
+          <Button
+            disabled={trip.available_seats < 1}
+            size="sm"
+            className={`font-semibold px-6 py-2 h-9 rounded-lg transition-all duration-200 ${
+              trip.available_seats < 1
+                ? "bg-muted text-muted-foreground cursor-not-allowed"
+                : "bg-gradient-to-r from-primary to-primary/90 hover:from-primary/90 hover:to-primary text-primary-foreground shadow-md hover:shadow-lg transform hover:scale-105"
+            }`}
+          >
+            <Link href={`/trips/${trip.trip_id}`} className="flex items-center gap-2">
+              <LocaleText string="bookTrip" name="Trips.tripItem" />
+              <ArrowRight className="w-4 h-4" />
+            </Link>
+          </Button>
         </div>
       </CardContent>
     </Card>

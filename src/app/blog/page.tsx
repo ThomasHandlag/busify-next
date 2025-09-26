@@ -142,20 +142,20 @@ export default async function BlogPage({
           <form className="flex items-center max-w-md mx-auto">
             <div className="relative flex-grow">
               <Search
-                className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400"
+                className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground"
                 size={18}
               />
               <Input
                 name="search"
                 defaultValue={search}
-                className="pl-10 pr-4 py-2 rounded-l-md border-r-0 focus-visible:ring-green-500"
+                className="pl-10 pr-4 py-2 rounded-l-md border-r-0 focus-visible:ring-primary"
                 placeholder={t("search.placeholder")}
                 type="search"
               />
             </div>
             <Button
               type="submit"
-              className="rounded-l-none bg-green-600 hover:bg-green-700"
+              className="rounded-l-none bg-primary hover:bg-primary/90"
             >
               {t("search.button")}
             </Button>
@@ -166,7 +166,7 @@ export default async function BlogPage({
         {featuredPosts.length > 0 && (
           <section className="mb-16">
             <h2 className="text-2xl font-bold mb-6 flex items-center">
-              <span className="h-5 w-1 bg-green-600 rounded mr-2"></span>
+              <span className="h-5 w-1 bg-primary rounded mr-2"></span>
               {t("featured.title")}
             </h2>
             <Link href={`/blog/${featuredPosts[0].slug}`}>
@@ -193,13 +193,13 @@ export default async function BlogPage({
                       </Badge>
                     ))}
                   </div>
-                  <h3 className="text-2xl md:text-3xl font-bold mb-2 group-hover:text-green-400 transition-colors">
+                  <h3 className="text-2xl md:text-3xl font-bold mb-2 group-hover:text-primary transition-colors">
                     {featuredPosts[0].title}
                   </h3>
-                  <p className="text-white/90 mb-4 max-w-3xl line-clamp-2">
+                  <p className="text-primary-foreground/90 mb-4 max-w-3xl line-clamp-2">
                     {featuredPosts[0].excerpt}
                   </p>
-                  <div className="flex flex-wrap items-center gap-4 text-sm text-white/80">
+                  <div className="flex flex-wrap items-center gap-4 text-sm text-primary-foreground/80">
                     <div className="flex items-center">
                       <Calendar className="w-4 h-4 mr-1" />
                       <span>{formatDate(featuredPosts[0].publishedAt)}</span>
@@ -223,7 +223,7 @@ export default async function BlogPage({
         {/* Popular Tags */}
         <section className="mb-12">
           <h2 className="text-2xl font-bold mb-4 flex items-center">
-            <span className="h-5 w-1 bg-green-600 rounded mr-2"></span>
+            <span className="h-5 w-1 bg-primary rounded mr-2"></span>
             {t("tags.title")}
           </h2>
           <div className="flex flex-wrap gap-2">
@@ -232,9 +232,9 @@ export default async function BlogPage({
                 variant="outline"
                 className={`rounded-full ${
                   !tag
-                    ? "bg-green-50 dark:bg-gray-800 border-green-500"
+                    ? "bg-accent border-primary"
                     : "bg-transparent border"
-                } hover:bg-green-50 dark:hover:bg-gray-800`}
+                } hover:bg-accent`}
               >
                 {t("tags.all")}
               </Button>
@@ -248,9 +248,9 @@ export default async function BlogPage({
                   variant="outline"
                   className={`rounded-full ${
                     tag === tagName
-                      ? "bg-green-50 dark:bg-gray-800 border-green-500"
+                      ? "bg-accent border-primary"
                       : "bg-transparent border"
-                  } hover:bg-green-50 dark:hover:bg-gray-800`}
+                  } hover:bg-accent`}
                 >
                   {tagName}
                 </Button>
@@ -262,7 +262,7 @@ export default async function BlogPage({
         {/* Latest Posts Grid */}
         <section>
           <h2 className="text-2xl font-bold mb-6 flex items-center">
-            <span className="h-5 w-1 bg-green-600 rounded mr-2"></span>
+            <span className="h-5 w-1 bg-primary rounded mr-2"></span>
             {t("latest.title")}
           </h2>
           {regularPosts.length > 0 ? (
@@ -283,21 +283,21 @@ export default async function BlogPage({
                           className="object-cover group-hover:scale-105 transition-transform duration-500"
                         />
                         <div className="absolute top-2 left-2">
-                          <Badge className="bg-green-600 hover:bg-green-700 text-white">
+                          <Badge className="bg-primary hover:bg-primary/90 text-primary-foreground">
                             {post.tags[0] || "Busify"}
                           </Badge>
                         </div>
                       </div>
                     </CardHeader>
                     <CardContent className="pt-6">
-                      <h3 className="font-bold text-xl mb-2 group-hover:text-green-600 transition-colors line-clamp-2">
+                      <h3 className="font-bold text-xl mb-2 group-hover:text-primary transition-colors line-clamp-2">
                         {post.title}
                       </h3>
-                      <p className="text-gray-600 dark:text-gray-400 mb-4 line-clamp-3">
+                      <p className="text-muted-foreground mb-4 line-clamp-3">
                         {post.excerpt}
                       </p>
                     </CardContent>
-                    <CardFooter className="text-sm text-gray-500 pt-0 flex justify-between items-center">
+                    <CardFooter className="text-sm text-muted-foreground pt-0 flex justify-between items-center">
                       <div className="flex items-center gap-2 flex-wrap">
                         <div className="flex items-center mr-2">
                           <Clock className="w-3 h-3 mr-1" />
@@ -312,7 +312,7 @@ export default async function BlogPage({
                           <span>{formatDate(post.publishedAt)}</span>
                         </div>
                       </div>
-                      <ChevronRight size={16} className="text-green-600" />
+                      <ChevronRight size={16} className="text-primary" />
                     </CardFooter>
                   </Card>
                 </Link>
@@ -320,7 +320,7 @@ export default async function BlogPage({
             </div>
           ) : (
             <div className="text-center py-12">
-              <p className="text-gray-500 dark:text-gray-400 text-lg">
+              <p className="text-muted-foreground text-lg">
                 {t("empty.noResults")}
               </p>
             </div>
@@ -340,7 +340,7 @@ export default async function BlogPage({
                   </Link>
                 )}
 
-                <div className="flex items-center px-4 py-2 bg-gray-100 dark:bg-gray-800 rounded-md">
+                <div className="flex items-center px-4 py-2 bg-muted rounded-md">
                   <span>
                     {t("pagination.info", {
                       page: page + 1,
@@ -364,7 +364,7 @@ export default async function BlogPage({
         </section>
 
         {/* Newsletter Subscription */}
-        <section className="mt-16 bg-gradient-to-r from-green-600 to-blue-600 rounded-xl p-8 text-white text-center">
+        <section className="mt-16 bg-primary rounded-xl p-8 text-white text-center">
           <div className="max-w-2xl mx-auto">
             <h2 className="text-2xl md:text-3xl font-bold mb-4">
               {t("newsletter.title")}
@@ -372,11 +372,11 @@ export default async function BlogPage({
             <p className="mb-6">{t("newsletter.desc")}</p>
             <div className="flex flex-col sm:flex-row gap-2 max-w-md mx-auto">
               <Input
-                className="bg-white text-gray-900 placeholder:text-gray-500 border-0"
+                className="bg-background text-foreground placeholder:text-muted-foreground border"
                 placeholder={t("newsletter.emailPlaceholder")}
                 type="email"
               />
-              <Button className="bg-white text-green-600 hover:bg-gray-100">
+              <Button className="bg-primary text-primary-foreground hover:bg-primary/90">
                 {t("newsletter.subscribeButton")}
               </Button>
             </div>
