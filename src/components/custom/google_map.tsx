@@ -45,6 +45,17 @@ interface RouteMapProps {
   className?: string;
 }
 
+// Định nghĩa bounds của Việt Nam
+const VIETNAM_BOUNDS = L.latLngBounds(
+  L.latLng(8.0, 102.0), // Góc tây nam Việt Nam
+  L.latLng(23.5, 110.0) // Góc đông bắc Việt Nam
+);
+
+// Hàm kiểm tra xem một điểm có nằm trong bounds Việt Nam không
+const isInVietnamBounds = (lat: number, lng: number): boolean => {
+  return VIETNAM_BOUNDS.contains(L.latLng(lat, lng));
+};
+
 // Ghi chú: Tách logic routing ra một component riêng
 const RoutingMachine = ({
   startLocation,
@@ -55,6 +66,20 @@ const RoutingMachine = ({
 
   useEffect(() => {
     if (!map) return;
+
+    // Validation: Kiểm tra tất cả waypoints có nằm trong Việt Nam không
+    const allLocations = [startLocation, ...routeStops, endLocation];
+    const invalidLocations = allLocations.filter(
+      (loc) => !isInVietnamBounds(loc.latitude, loc.longitude)
+    );
+
+    if (invalidLocations.length > 0) {
+      console.warn(
+        "Some locations are outside Vietnam bounds:",
+        invalidLocations
+      );
+      // Có thể hiển thị warning cho user ở đây
+    }
 
     const waypoints = [
       L.latLng(startLocation.latitude, startLocation.longitude),
@@ -73,12 +98,26 @@ const RoutingMachine = ({
       },
       router: L.Routing.osrmv1({
         serviceUrl: "https://router.project-osrm.org/route/v1",
+        profile: "driving",
+        // Note: OSRM không hỗ trợ giới hạn routing theo quốc gia trực tiếp
+        // Để đảm bảo routing chỉ trong Việt Nam, có thể:
+        // 1. Sử dụng OSRM server riêng cho Việt Nam
+        // 2. Thêm validation để kiểm tra tất cả waypoints trong bounds VN
+        // 3. Chuyển sang Google Maps API với region='VN'
       }),
     }).addTo(map);
 
-    // Điều chỉnh khung nhìn
+    // Điều chỉnh khung nhìn - giới hạn trong bounds Việt Nam
     const bounds = L.latLngBounds(waypoints);
-    map.fitBounds(bounds, { padding: [50, 50] });
+    // Đảm bảo bounds không vượt ra ngoài Việt Nam
+    const constrainedBounds = bounds.intersects(VIETNAM_BOUNDS)
+      ? bounds
+      : VIETNAM_BOUNDS; // Nếu waypoints nằm ngoài VN, hiển thị toàn bộ VN
+    map.fitBounds(constrainedBounds, { padding: [50, 50] });
+
+    // Giới hạn zoom và pan trong khu vực Việt Nam
+    map.setMaxBounds(VIETNAM_BOUNDS);
+    map.setMinZoom(6); // Zoom tối thiểu để thấy toàn bộ Việt Nam
 
     // Cleanup function: Xóa control khi component unmount
     return () => {

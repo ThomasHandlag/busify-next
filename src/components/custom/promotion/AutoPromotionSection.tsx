@@ -5,11 +5,7 @@ import { useSession } from "next-auth/react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { CheckCircle, Circle, Gift, Star } from "lucide-react";
-import {
-  getCurrentPromotionCampaigns,
-  type PromotionCampaign,
-  type Promotion as APIPromotion,
-} from "@/lib/data/promotion";
+import { type Promotion as APIPromotion } from "@/lib/data/promotion";
 import { useTranslations } from "next-intl";
 import { BASE_URL } from "@/lib/constants/constants";
 
@@ -36,20 +32,6 @@ interface AutoPromotionSectionProps {
   ) => void;
 }
 
-interface UsedPromotion {
-  userId: number;
-  userEmail: string;
-  promotionId: number;
-  promotionCode: string;
-  discountType: string;
-  discountValue: number;
-  promotionStartDate: string;
-  promotionEndDate: string;
-  claimedAt: string;
-  usedAt: string;
-  isUsed: boolean;
-}
-
 export default function AutoPromotionSection({
   originalPrice,
   onPromotionSelect,
@@ -63,22 +45,24 @@ export default function AutoPromotionSection({
   const [hasAutoSelected, setHasAutoSelected] = useState(false);
 
   const t = useTranslations();
-  // Function to fetch used promotions for the current user
-  const fetchUsedPromotions = useCallback(async (): Promise<number[]> => {
+
+  // Function to fetch auto-eligible promotions for the current user
+  const fetchAutoEligiblePromotions = useCallback(async (): Promise<
+    Promotion[]
+  > => {
     try {
-      // Get session from hook - no need to await
       if (!session?.user?.accessToken) {
         console.log("No session or access token found");
-        return []; // Return empty array if no session
+        return [];
       }
 
       console.log(
-        "Fetching used promotions with token:",
+        "Fetching auto-eligible promotions with token:",
         session.user.accessToken.substring(0, 20) + "..."
       );
 
       const response = await fetch(
-        `${BASE_URL}api/promotions/user/used`,
+        `${BASE_URL}api/promotions/user/auto-eligible`,
         {
           method: "GET",
           headers: {
@@ -88,9 +72,6 @@ export default function AutoPromotionSection({
           credentials: "include",
         }
       );
-
-      console.log("Used promotions response status:", response.status);
-      console.log("Used promotions response:", response);
 
       if (!response.ok) {
         const errorText = await response.text();
@@ -103,49 +84,28 @@ export default function AutoPromotionSection({
       const data = await response.json();
 
       if (data.code === 200 && Array.isArray(data.result)) {
-        // Extract promotionId from used promotions
-        const usedIds = data.result.map(
-          (item: UsedPromotion) => item.promotionId
-        );
-        return usedIds;
+        return data.result.map((promotion: APIPromotion) => ({
+          ...promotion,
+          campaignTitle: undefined, // API này không trả về campaign title
+        }));
       }
 
       return [];
     } catch (error) {
-      console.error("Failed to fetch used promotions:", error);
-      // Return empty array on error to not block the UI
+      console.error("Failed to fetch auto-eligible promotions:", error);
       return [];
     }
-  }, [session?.user?.accessToken]); // Only depend on accessToken
+  }, [session?.user?.accessToken]);
 
   useEffect(() => {
     const fetchAutoPromotions = async () => {
       try {
         setLoading(true);
 
-        // Fetch both campaigns and used promotions in parallel
-        const [campaigns, usedPromotionIds] = await Promise.all([
-          getCurrentPromotionCampaigns(),
-          fetchUsedPromotions(),
-        ]);
+        // Fetch auto-eligible promotions using the new API
+        const allAutoPromotions = await fetchAutoEligiblePromotions();
 
-        // Extract all auto promotions from campaigns
-        const allAutoPromotions: Promotion[] = [];
-
-        campaigns.forEach((campaign: PromotionCampaign) => {
-          campaign.promotions?.forEach((promotion: APIPromotion) => {
-            if (
-              promotion.promotionType === "auto" &&
-              promotion.status === "active" &&
-              !usedPromotionIds.includes(promotion.id) // Filter out used promotions
-            ) {
-              allAutoPromotions.push({
-                ...promotion,
-                campaignTitle: campaign.title,
-              });
-            }
-          });
-        });
+        console.log("Fetched auto-eligible promotions:", allAutoPromotions);
 
         // Sort by discountValue descending to get best promotion first
         allAutoPromotions.sort((a, b) => {
@@ -154,11 +114,50 @@ export default function AutoPromotionSection({
           return discountB - discountA;
         });
 
-        setAutoPromotions(allAutoPromotions);
+        // Fetch promotions that user already used to exclude
+        let usedIds: number[] = [];
+        if (session?.user?.accessToken) {
+          try {
+            const res = await fetch(
+              `http://localhost:8080/api/promotions/user/used`,
+              {
+                method: "GET",
+                headers: {
+                  "Content-Type": "application/json",
+                  Authorization: `Bearer ${session.user.accessToken}`,
+                },
+                credentials: "include",
+              }
+            );
+            if (res.ok) {
+              const data = await res.json();
+              if (data?.code === 200 && Array.isArray(data.result)) {
+                usedIds = data.result.map(
+                  (item: { promotionId: number }) => item.promotionId
+                );
+              } else {
+                usedIds = [];
+              }
+            }
+          } catch {
+            usedIds = [];
+          }
+        } else {
+          usedIds = [];
+        }
+
+        console.log("user Ids", usedIds);
+        // Exclude used promotions
+        const visible = allAutoPromotions.filter(
+          (p) => !usedIds.includes(p.id)
+        );
+
+        console.log("promotion visible", visible);
+        setAutoPromotions(visible);
 
         // Auto-select the best promotion only once when data loads
-        if (allAutoPromotions.length > 0 && !hasAutoSelected) {
-          const bestPromotion = allAutoPromotions[0];
+        if (visible.length > 0 && !hasAutoSelected) {
+          const bestPromotion = visible[0];
           const discountAmount = calculateDiscount(
             bestPromotion,
             originalPrice
@@ -178,7 +177,13 @@ export default function AutoPromotionSection({
     };
 
     fetchAutoPromotions();
-  }, [originalPrice, onPromotionSelect, hasAutoSelected, fetchUsedPromotions]); // Include all dependencies
+  }, [
+    originalPrice,
+    onPromotionSelect,
+    hasAutoSelected,
+    fetchAutoEligiblePromotions,
+    session?.user?.accessToken,
+  ]); // Include all dependencies
 
   const calculateDiscount = (promotion: Promotion, price: number): number => {
     if (price < promotion.minOrderValue) {
@@ -257,7 +262,7 @@ export default function AutoPromotionSection({
       </CardHeader>
       <CardContent className="p-3">
         <div className="space-y-2">
-          {autoPromotions.slice(0, 2).map((promotion, index) => {
+          {autoPromotions.map((promotion, index) => {
             const isSelected = selectedPromotion?.id === promotion.id;
             const discount = calculateDiscount(promotion, originalPrice);
             const isEligible = discount > 0;

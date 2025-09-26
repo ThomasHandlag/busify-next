@@ -16,11 +16,51 @@ import {
 import { Button } from "@/components/ui/button";
 import LocaleText from "@/components/custom/locale_text";
 import Pager from "@/components/custom/trip/pager";
+import TripSortControls from "@/components/custom/trip/trip_sort_controls";
+import { getAllLocationsClient } from "@/lib/data/location";
 import React from "react";
 
 const AppPage = () => {
-  const { trips, isLoading } = useTripFilter();
+  const { trips, isLoading, query } = useTripFilter();
   const [filterOpen, setFilterOpen] = React.useState(false);
+  const [locations, setLocations] = React.useState<{ [key: number]: string }>(
+    {}
+  );
+
+  React.useEffect(() => {
+    const fetchLocations = async () => {
+      try {
+        const locs = await getAllLocationsClient({
+          callback: (message: string) => console.error(message),
+        });
+        const locationMap: { [key: number]: string } = {};
+        locs.forEach((loc) => {
+          locationMap[loc.locationId] = loc.locationName;
+        });
+        setLocations(locationMap);
+      } catch (error) {
+        console.error("Failed to fetch locations:", error);
+      }
+    };
+    fetchLocations();
+  }, []);
+
+  const getLocationName = (id?: number) => {
+    return id ? locations[id] || `Location ${id}` : "";
+  };
+
+  const getTripTitle = () => {
+    if (query?.startLocation && query?.endLocation) {
+      const startName = getLocationName(query.startLocation);
+      const endName = getLocationName(query.endLocation);
+      return (
+        <span>
+          {startName} → {endName}
+        </span>
+      );
+    }
+    return <LocaleText string="available" name="Trips" />;
+  };
 
   return (
     <div className="flex lg:flex-row flex-col md:flex-col items-start">
@@ -74,15 +114,18 @@ const AppPage = () => {
             {/* Desktop Sidebar */}
             {/* Main Content */}
             <div className="flex-1">
-              {/* Results Summary */}
-              <div className="mb-6">
-                <h1 className="text-2xl font-bold text-foreground">
-                  <LocaleText string="available" name="Trips" />
-                </h1>
-                <p className="text-muted-foreground mt-2">
-                  <LocaleText string="found" name="Trips" /> {trips.length}{" "}
-                  <LocaleText string="foundRex" name="Trips" />
-                </p>
+              {/* Results Summary and Sort Controls */}
+              <div className="mb-6 flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
+                <div>
+                  <h1 className="text-2xl font-bold text-foreground">
+                    {getTripTitle()}
+                  </h1>
+                  <p className="text-muted-foreground mt-2">
+                    <LocaleText string="found" name="Trips" /> {trips.length}{" "}
+                    <LocaleText string="foundRex" name="Trips" />
+                  </p>
+                </div>
+                <TripSortControls />
               </div>
 
               {/* Trip Results */}

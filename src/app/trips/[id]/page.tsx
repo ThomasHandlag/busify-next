@@ -80,6 +80,8 @@ export default async function TripDetailPage({
 
   const busLayout = await getBusSeatsLayout(tripDetail.bus.bus_id);
 
+  const isArrival = new Date(tripDetail.arrival_time) < new Date();
+
   // Generate seats with fallback handling
   const busSeats = generateSeats({
     busLayout,
@@ -109,9 +111,7 @@ export default async function TripDetailPage({
             <TripInfoCard tripDetail={tripDetail} />
             <div className="lg:hidden md:hidden block">{bookingBar}</div>
             <OperatorInfoCard id={tripDetail.operator_id} />
-            {tripDetail.departure_time && (
-              <ReviewModal tripId={tripDetail.trip_id} />
-            )}
+            {isArrival && <ReviewModal tripId={tripDetail.trip_id} />}
             {tripStarted && <ReviewSection mockTripDetail={tripDetail} />}
             {/* Moved ComplaintSection to profile - will be implemented later */}
             {/* <ComplaintSection tripId={tripDetail.trip_id} /> */}

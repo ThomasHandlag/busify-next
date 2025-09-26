@@ -45,6 +45,11 @@ const Header = () => {
       label: t("about"),
       icon: () => <HelpCircle className="w-4 h-4" />,
     },
+    {
+      href: "/blog",
+      label: t("blog"),
+      icon: () => <HelpCircle className="w-4 h-4" />,
+    },
   ];
 
   // About section with social links

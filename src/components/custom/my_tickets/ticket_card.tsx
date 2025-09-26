@@ -230,7 +230,9 @@ export const TicketCard = ({
             <h3 className="text-sm font-bold text-foreground mb-1 truncate">
               {booking.route_name}
             </h3>
-            <p className="text-xs text-muted-foreground">{booking.booking_code}</p>
+            <p className="text-xs text-muted-foreground">
+              {booking.booking_code}
+            </p>
           </div>
           <div className="flex flex-col items-end gap-1">
             <Badge
@@ -253,7 +255,7 @@ export const TicketCard = ({
               {formatTime(booking.departure_time)}
             </p>
             <p className="text-xs text-muted-foreground truncate">
-              {booking.departure_address}
+              {booking.departure_name}
             </p>
           </div>
 
@@ -272,7 +274,7 @@ export const TicketCard = ({
               {formatTime(booking.arrival_time)}
             </p>
             <p className="text-xs text-gray-500 truncate">
-              {booking.arrival_address}
+              {booking.arrival_name}
             </p>
           </div>
         </div>
@@ -286,7 +288,7 @@ export const TicketCard = ({
             </span>
             <span className="flex items-center gap-1">
               <Users className="w-3 h-3" />
-              {booking.passenger_count}
+              {booking.ticket_count}
             </span>
           </div>
           <span className="flex items-center gap-1">

@@ -6,14 +6,15 @@ export interface BookingData {
   route_name: string;
   departure_time: string;
   arrival_time: string;
-  departure_address: string;
-  arrival_address: string;
+  departure_name: string;
+  arrival_name: string;
   booking_code: string;
   status: string;
   total_amount: number;
   booking_date: string;
-  passenger_count: number;
+  ticket_count: number;
   payment_method: string;
+  selling_method: string;
 }
 
 export interface BookingResponse {
@@ -26,11 +27,32 @@ export interface BookingResponse {
   hasPrevious: boolean;
 }
 
+export interface RefundResponseDTO {
+  refundId: number;
+  refundAmount: number;
+  cancellationFee: number;
+  netRefundAmount: number;
+  refundReason: string;
+  status: string;
+  refundTransactionCode: string;
+  gatewayRefundId: string;
+  requestedAt: string;
+  processedAt: string;
+  completedAt: string;
+  gatewayResponse: string;
+  notes: string;
+}
+
 export interface BookingDetailResponse {
   trip_id: string;
   passenger_name: string;
   phone: string;
   email: string;
+  address: string;
+  guestFullName: string;
+  guestEmail: string;
+  guestPhone: string;
+  guestAddress: string;
   booking_id: string;
   booking_code: string;
   route_start: {
@@ -60,6 +82,7 @@ export interface BookingDetailResponse {
     method: string;
     timestamp: string;
   };
+  refunds?: RefundResponseDTO[];
 }
 
 export async function getBookingHistory(params: {
@@ -68,15 +91,20 @@ export async function getBookingHistory(params: {
   accessToken: string;
   callback: (message: string) => void;
   localeMessage?: string;
+  status?: string;
 }): Promise<BookingResponse> {
-  const response = await api.get(
-    `api/bookings?page=${params.page}&size=${params.size}`,
-    {
-      headers: {
-        Authorization: `Bearer ${params.accessToken}`,
-      },
-    }
-  );
+  const queryParams = new URLSearchParams({
+    page: params.page.toString(),
+    size: params.size.toString(),
+  });
+  if (params.status) {
+    queryParams.append("status", params.status);
+  }
+  const response = await api.get(`api/bookings?${queryParams.toString()}`, {
+    headers: {
+      Authorization: `Bearer ${params.accessToken}`,
+    },
+  });
   if (response.status !== 200) {
     params.callback(
       response.data.message ??

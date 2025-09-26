@@ -12,6 +12,7 @@ import {
   ChevronRight,
   Home,
   ChevronRight as ChevronRightIcon,
+  ArrowUpDown,
 } from "lucide-react";
 import Link from "next/link";
 import {
@@ -59,6 +60,7 @@ export default function MyTicketsPage() {
 
   const [isLoading, setIsLoading] = useState(false);
   const { data: session } = useSession();
+  const [sortOrder, setSortOrder] = useState<"asc" | "desc">("desc");
 
   const fetchBookings = useCallback(
     async (page: number = 1, size: number = 50) => {
@@ -78,14 +80,7 @@ export default function MyTicketsPage() {
           localeMessage: "Failed to fetch bookings",
         });
 
-        // Sắp xếp dữ liệu theo thời gian đặt gần nhất (booking_date giảm dần)
-        const sortedResult = data.result.sort((a, b) => {
-          const dateA = new Date(a.booking_date).getTime();
-          const dateB = new Date(b.booking_date).getTime();
-          return dateB - dateA; // Giảm dần: mới nhất trước
-        });
-
-        setBookingResponse({ ...data, result: sortedResult });
+        setBookingResponse(data);
       } catch (error) {
         console.error("Error fetching bookings:", error);
         setBookingResponse({
@@ -110,9 +105,18 @@ export default function MyTicketsPage() {
     }
   }, [fetchBookings, session?.user?.accessToken]);
 
+  // Sorted bookings based on sortOrder
+  const sortedBookings = useMemo(() => {
+    return [...bookingResponse.result].sort((a, b) => {
+      const dateA = new Date(a.booking_date).getTime();
+      const dateB = new Date(b.booking_date).getTime();
+      return sortOrder === "desc" ? dateB - dateA : dateA - dateB;
+    });
+  }, [bookingResponse.result, sortOrder]);
+
   const filterBookings = useCallback(
     (status: TabValue) => {
-      return bookingResponse.result.filter((booking) => {
+      return sortedBookings.filter((booking) => {
         if (status === "upcoming") {
           return booking.status === "pending" || booking.status === "confirmed";
         } else if (status === "completed") {
@@ -126,7 +130,7 @@ export default function MyTicketsPage() {
         return true;
       });
     },
-    [bookingResponse.result]
+    [sortedBookings]
   );
 
   // Memoized filtered bookings
@@ -211,22 +215,22 @@ export default function MyTicketsPage() {
   );
 
   const PaginationControls = () => {
-    const { totalItems, hasNext, hasPrevious } = paginatedBookings;
-    // const startItem = (currentPage - 1) * pageSize + 1;
-    // const endItem = Math.min(currentPage * pageSize, totalItems);
+    const { totalItems, hasNext, hasPrevious, currentPage, totalPages } =
+      paginatedBookings;
+    const startItem = (currentPage - 1) * paginatedBookings.pageSize + 1;
+    const endItem = Math.min(
+      currentPage * paginatedBookings.pageSize,
+      totalItems
+    );
 
     if (totalItems === 0) return null;
     return (
       <div className="flex flex-col space-y-3 sm:flex-row sm:items-center sm:justify-between sm:space-y-0 mt-4 sm:mt-6">
         <div className="text-xs sm:text-sm text-muted-foreground text-center sm:text-left">
           {t("pagination.showing", {
-            from:
-              (bookingResponse.pageNumber - 1) * bookingResponse.pageSize + 1,
-            to: Math.min(
-              bookingResponse.pageNumber * bookingResponse.pageSize,
-              bookingResponse.totalRecords
-            ),
-            total: bookingResponse.totalRecords,
+            from: startItem,
+            to: endItem,
+            total: totalItems,
           })}
         </div>
         <div className="flex items-center justify-center gap-2">
@@ -244,8 +248,10 @@ export default function MyTicketsPage() {
             <ChevronLeft className="w-3 h-3 sm:w-4 sm:h-4" />
           </Button>
           <span className="text-xs sm:text-sm font-medium px-2">
-            <span className="hidden sm:inline">{t("pagination.pageLabel")} </span>
-            {bookingResponse.pageNumber} / {bookingResponse.totalPages}
+            <span className="hidden sm:inline">
+              {t("pagination.pageLabel")}{" "}
+            </span>
+            {currentPage} / {totalPages}
           </span>
           <Button
             aria-label="Next Page"
@@ -369,6 +375,21 @@ export default function MyTicketsPage() {
             <p className="text-sm sm:text-base text-muted-foreground mt-1 hidden sm:block">
               <LocaleText string="pageSubtitle" name="MyTickets" />
             </p>
+          </div>
+          <div className="flex items-center gap-2">
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() =>
+                setSortOrder(sortOrder === "desc" ? "asc" : "desc")
+              }
+              className="flex items-center gap-2"
+            >
+              <ArrowUpDown className="w-4 h-4" />
+              <span className="hidden sm:inline">
+                {sortOrder === "desc" ? "Mới nhất" : "Cũ nhất"}
+              </span>
+            </Button>
           </div>
         </div>
       </div>

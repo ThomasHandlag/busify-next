@@ -1,11 +1,19 @@
 "use client";
 
-import { Language, PreferencesContext, Theme } from "@/lib/contexts/PreferenceContext";
+import {
+  Language,
+  PreferencesContext,
+  Theme,
+} from "@/lib/contexts/PreferenceContext";
+import { useTheme } from "next-themes";
 import { ReactNode, useEffect, useState } from "react";
 
 const PreferencesProvider = ({ children }: { children: ReactNode }) => {
+  const storedTheme = useTheme();
   const [language, setLanguage] = useState<Language>("en");
-  const [theme, setTheme] = useState<Theme>("light");
+  const [theme, setTheme] = useState<Theme>(
+    (storedTheme.theme as Theme) || "system"
+  );
   const [isInitialized, setIsInitialized] = useState(false);
   const [initialLanguage, setInitialLanguage] = useState<Language>("en");
 
@@ -34,14 +42,14 @@ const PreferencesProvider = ({ children }: { children: ReactNode }) => {
         setIsInitialized(true);
       }
     }
-    
+
     initializeLanguage();
   }, []);
 
   // Update cookie when language changes (but not on initial load)
   useEffect(() => {
     if (!isInitialized || language === initialLanguage) return;
-    
+
     async function updateLocale() {
       try {
         await fetch("/api/preferences", {
@@ -51,20 +59,20 @@ const PreferencesProvider = ({ children }: { children: ReactNode }) => {
           },
           body: JSON.stringify({ locale: language }),
         });
-        
+
         // Refresh the page to apply new locale
         window.location.reload();
       } catch (error) {
         console.error("Failed to update locale:", error);
       }
     }
-    
+
     updateLocale();
   }, [language, isInitialized, initialLanguage]);
 
   useEffect(() => {
-    localStorage.setItem("theme", theme);
-  }, [theme]);
+    storedTheme.setTheme(theme);
+  }, [theme, storedTheme]);
 
   return (
     <PreferencesContext.Provider value={value}>
