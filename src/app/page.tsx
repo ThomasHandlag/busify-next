@@ -131,17 +131,17 @@ const Home = async () => {
           <h2 className="text-3xl font-bold text-center text-green-700 mb-2">
             <LocaleText string="north" name="Home" />
           </h2>
-          <div className="flex justify-center items-center gap-6">
+          <div className="grid lg:grid-cols-3 grid-cols-1 justify-center items-center gap-6">
             {northTrips?.length < 1 ? (
               <p>
                 <LocaleText string="noTrips" name="Home" />
               </p>
             ) : (
-              northTrips
-                .slice(0, 3)
-                .map((trip: TripItemProps) => (
-                  <TripItem key={trip.trip_id} trip={trip} />
-                ))
+              northTrips.slice(0, 3).map((trip: TripItemProps) => (
+                <div key={trip.trip_id} className="col-span-1">
+                  <TripItem trip={trip} />
+                </div>
+              ))
             )}
           </div>
         </div>
@@ -149,17 +149,17 @@ const Home = async () => {
           <h2 className="text-3xl font-bold text-center text-green-700 mb-2">
             <LocaleText string="central" name="Home" />
           </h2>
-          <div className="flex justify-center items-center gap-6">
+          <div className="grid lg:grid-cols-3 grid-cols-1 justify-center items-center gap-6">
             {centralTrips?.length < 1 ? (
               <p>
                 <LocaleText string="noTrips" name="Home" />
               </p>
             ) : (
-              centralTrips
-                .slice(0, 3)
-                .map((trip: TripItemProps) => (
-                  <TripItem key={trip.trip_id} trip={trip} />
-                ))
+              centralTrips.slice(0, 3).map((trip: TripItemProps) => (
+                <div key={trip.trip_id} className="col-span-1">
+                  <TripItem trip={trip} />
+                </div>
+              ))
             )}
           </div>
         </div>
@@ -167,17 +167,17 @@ const Home = async () => {
           <h2 className="text-3xl font-bold text-center text-green-700 mb-2">
             <LocaleText string="south" name="Home" />
           </h2>
-          <div className="flex justify-center items-center gap-6">
+          <div className="grid lg:grid-cols-3 grid-cols-1 justify-center items-center gap-6">
             {southTrips?.length < 1 ? (
               <p>
                 <LocaleText string="noTrips" name="Home" />
               </p>
             ) : (
-              southTrips
-                .slice(0, 3)
-                .map((trip: TripItemProps) => (
-                  <TripItem key={trip.trip_id} trip={trip} />
-                ))
+              southTrips.slice(0, 3).map((trip: TripItemProps) => (
+                <div key={trip.trip_id} className="col-span-1">
+                  <TripItem trip={trip} />
+                </div>
+              ))
             )}
           </div>
         </div>
