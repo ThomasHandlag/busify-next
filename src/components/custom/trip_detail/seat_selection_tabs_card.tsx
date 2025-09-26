@@ -34,6 +34,12 @@ import { toast } from "sonner";
 import LocaleText from "../locale_text";
 import { useTranslations } from "next-intl";
 import { BASE_URL } from "@/lib/constants/constants";
+import {
+  getCurrentPromotionCampaigns,
+  type PromotionCampaign,
+  calculateDiscountedPrice,
+  getBestPromotionCampaign,
+} from "@/lib/data/promotion";
 
 interface PassengerInfo {
   phone: string;
@@ -58,6 +64,8 @@ export function SeatSelectionTabsCard({
 }: SeatSelectionTabsCardProps) {
   const [selectedSeats, setSelectedSeats] = useState<string[]>([]);
   const [isLoadingProfile, setIsLoadingProfile] = useState(false);
+  const [campaigns, setCampaigns] = useState<PromotionCampaign[]>([]);
+  const [loadingCampaigns, setLoadingCampaigns] = useState(true);
   const t = useTranslations();
   const { data: session } = useSession();
   const router = useRouter();
@@ -126,16 +134,13 @@ export function SeatSelectionTabsCard({
       if (session?.user?.accessToken) {
         setIsLoadingProfile(true);
         try {
-          const response = await fetch(
-            `${BASE_URL}api/users/profile`,
-            {
-              method: "GET",
-              headers: {
-                Authorization: `Bearer ${session.user.accessToken}`,
-                "Content-Type": "application/json",
-              },
-            }
-          );
+          const response = await fetch(`${BASE_URL}api/users/profile`, {
+            method: "GET",
+            headers: {
+              Authorization: `Bearer ${session.user.accessToken}`,
+              "Content-Type": "application/json",
+            },
+          });
 
           if (response.ok) {
             const profileData = await response.json();
@@ -165,6 +170,22 @@ export function SeatSelectionTabsCard({
     fetchUserProfile();
   }, [session?.user?.accessToken, form]);
 
+  useEffect(() => {
+    const fetchCampaigns = async () => {
+      try {
+        const apiCampaigns = await getCurrentPromotionCampaigns();
+        setCampaigns(apiCampaigns);
+      } catch (error) {
+        console.error("Failed to fetch promotion campaigns:", error);
+        setCampaigns([]);
+      } finally {
+        setLoadingCampaigns(false);
+      }
+    };
+
+    fetchCampaigns();
+  }, []);
+
   const allSeats = generateSeatsFromLayout();
 
   const handleSeatClick = (seatNumber: string, seatStatus: string) => {
@@ -175,8 +196,12 @@ export function SeatSelectionTabsCard({
         ? prev.filter((s) => s !== seatNumber)
         : [...prev, seatNumber];
 
-      const totalPrice = newSelection.length * pricePerSeat;
-      onSeatSelection?.(newSelection, totalPrice);
+      const basePrice = newSelection.length * pricePerSeat;
+      const bestCampaign = getBestPromotionCampaign(campaigns, pricePerSeat);
+      const { discountedPrice } = bestCampaign
+        ? calculateDiscountedPrice(basePrice, bestCampaign)
+        : { discountedPrice: basePrice };
+      onSeatSelection?.(newSelection, discountedPrice);
       return newSelection;
     });
   };
@@ -278,20 +303,30 @@ export function SeatSelectionTabsCard({
       return;
     }
 
-    const totalPrice = selectedSeats.length * pricePerSeat;
+    const basePrice = selectedSeats.length * pricePerSeat;
+    const bestCampaign = getBestPromotionCampaign(campaigns, pricePerSeat);
+    const { discountedPrice } = bestCampaign
+      ? calculateDiscountedPrice(basePrice, bestCampaign)
+      : { discountedPrice: basePrice };
 
     const queryParams = new URLSearchParams({
       seats: selectedSeats.join(","),
       fullName: encodeURIComponent(data.fullName),
       phone: encodeURIComponent(data.phone),
       email: encodeURIComponent(data.email),
-      totalPrice: totalPrice.toString(),
+      totalPrice: discountedPrice.toString(),
     });
 
     router.push(`/booking/confirmation/${tripId}?${queryParams.toString()}`);
   };
 
-  const totalPrice = selectedSeats.length * pricePerSeat;
+  const basePrice = selectedSeats.length * pricePerSeat;
+  const bestCampaign = getBestPromotionCampaign(campaigns, pricePerSeat);
+  const { discountedPrice, discountAmount } = bestCampaign
+    ? calculateDiscountedPrice(basePrice, bestCampaign)
+    : { discountedPrice: basePrice, discountAmount: 0 };
+
+  const totalPrice = discountedPrice;
 
   return (
     <Card>
@@ -463,11 +498,22 @@ export function SeatSelectionTabsCard({
               )}
             </div>
             <div className="text-right">
-              <p className="text-lg font-bold text-green-600">
-                {totalPrice?.toLocaleString("vi-VN")}đ
-              </p>
+              {discountAmount > 0 ? (
+                <>
+                  <p className="text-sm text-red-500 line-through">
+                    {basePrice?.toLocaleString("vi-VN")}đ
+                  </p>
+                  <p className="text-lg font-bold text-primary">
+                    {totalPrice?.toLocaleString("vi-VN")}đ
+                  </p>
+                </>
+              ) : (
+                <p className="text-lg font-bold text-primary">
+                  {totalPrice?.toLocaleString("vi-VN")}đ
+                </p>
+              )}
               <p className="text-xs text-gray-500">
-                {selectedSeats.length} ${t("Booking.seats")} ×{" "}
+                {selectedSeats.length} {t("Booking.seats")} ×{" "}
                 {pricePerSeat?.toLocaleString("vi-VN")}đ
               </p>
             </div>
