@@ -254,6 +254,7 @@
     "paymentLinkText": "Thanh Toán",
     "autoPromotion": "Khuyến mãi tự động",
     "specialOffersLoading": "🔥 Ưu đãi đặc biệt",
+    "getMoreDiscountCode": "Kiếm thêm mã giảm giá",
     "hot": "HOT",
     "discountLabel": "GIẢM",
     "saveAmount": "Tiết kiệm",
@@ -509,7 +510,8 @@
     "pickUpText": "Điểm Đón",
     "dropPointText": "Điểm Trả Khách",
     "busImages": "Hình ảnh xe",
-    "noBusImages": "Chưa có hình ảnh xe"
+    "noBusImages": "Chưa có hình ảnh xe",
+    "tripTimeline": "Thời gian chuyến đi"
   },
   "Amenities": {
     "wifi": "Wi-Fi",
@@ -799,6 +801,18 @@
     "complaintSend": "Gửi",
     "confirmCancelDescriptionPercent": "Bạn có chắc chắn muốn hủy vé này không? Hành động này không thể hoàn tác và bạn sẽ được hoàn {percent}% tiền vé.",
     "noRefundNote": "Lưu ý: Không được hoàn tiền do hủy sát giờ khởi hành.",
+    "refundInfo": "Thông Tin Hoàn Tiền",
+    "refund": "Hoàn Tiền",
+    "refundAmount": "Số Tiền Hoàn",
+    "cancellationFee": "Phí Hủy",
+    "netRefundAmount": "Số Tiền Thực Nhận",
+    "refundTransactionCode": "Mã Giao Dịch",
+    "refundReason": "Lý Do",
+    "requestedAt": "Thời Gian Yêu Cầu",
+    "processedAt": "Thời Gian Xử Lý",
+    "completedAt": "Thời Gian Hoàn Thành",
+    "notes": "Ghi Chú",
+    "guestInfo": "Khách",
     "empty": {
       "upcomingTitle": "Không có vé sắp tới",
       "upcomingDesc": "Bạn chưa có chuyến đi nào được lên lịch. Hãy đặt vé ngay để khám phá những điểm đến mới!",
@@ -823,7 +837,6 @@
     "points": "Điểm",
     "exceedLimit": "Điểm của bạn vượt quá giới hạn tính phí. Bạn có thể sử dụng tối đa",
     "enterPoint": "Nhập số điểm",
-    "applying": "Đang Áp Dụng",
     "usePoints": "Sử dụng điểm",
     "youve": "Bạn có",
     "usedPointsLabel": "Sử dụng điểm ({count})",
@@ -869,6 +882,7 @@
     "busType": "Loại Xe",
     "amenities": "Tiện Nghi",
     "reset": "Đặt Lại Bộ Lọc",
+    "applying": "Đang Áp Dụng",
     "startLocation": "Vị Trí Bắt Đầu",
     "endLocation": "Vị Trí Kết Thúc",
     "availableSeats": "Số Ghế Có Sẵn",
@@ -879,7 +893,12 @@
     "searching": "Đang Tìm Kiếm",
     "operatorName": "Tên Nhà Điều Hành",
     "busModels": "Mô Hình Xe Buýt",
-    "clearAll": "Rõ ràng tất cả"
+    "clearAll": "Rõ ràng tất cả",
+    "sortBy": "Sắp Xếp Theo",
+    "sortDirection": "Hướng Sắp Xếp",
+    "price": "Giá",
+    "ascending": "Tăng Dần",
+    "descending": "Giảm Dần"
   },
   "UserPage": {
     "notAuthenticated": "Chưa đăng nhập",

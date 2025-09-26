@@ -39,7 +39,8 @@
     "infoNotFound": "Information not found.",
     "hours": "hours",
     "minutes": "minutes",
-    "processing": "Processing..."
+    "processing": "Processing...",
+    "tripTimeline": "Trip Time Line"
   },
   "Home": {
     "title": "Find and Book Bus Tickets",
@@ -253,6 +254,7 @@
     "paymentLinkText": "Payment",
     "autoPromotion": "Auto promotion",
     "specialOffersLoading": "🔥 Special Offers",
+    "getMoreDiscountCode": "Get more discount code",
     "hot": "HOT",
     "discountLabel": "DISCOUNT",
     "saveAmount": "Save",
@@ -505,7 +507,11 @@
     "distance": "Distance",
     "busImages": "Bus Images",
     "noBusImages": "No bus images available",
-    "tripTimeline": "Trip Timeline"
+    "tripTimeline": "Trip Timeline",
+    "dropPointText": "Drop point",
+    "durationText": "Duration",
+    "pickAndDropText": "Pick up and drop",
+    "pickUpText": "Pick up"
   },
   "Amenities": {
     "wifi": "Wi-Fi",
@@ -795,6 +801,18 @@
     "complaintSend": "Send",
     "confirmCancelDescriptionPercent": "Are you sure you want to cancel this ticket? This action cannot be undone and you will be refunded {percent}% of the ticket price.",
     "noRefundNote": "Note: No refund due to cancellation close to departure time.",
+    "refundInfo": "Refund Information",
+    "refund": "Refund",
+    "refundAmount": "Refund Amount",
+    "cancellationFee": "Cancellation Fee",
+    "netRefundAmount": "Net Refund Amount",
+    "refundTransactionCode": "Transaction Code",
+    "refundReason": "Reason",
+    "requestedAt": "Requested At",
+    "processedAt": "Processed At",
+    "completedAt": "Completed At",
+    "notes": "Notes",
+    "guestInfo": "Guest",
     "empty": {
       "upcomingTitle": "No upcoming tickets",
       "upcomingDesc": "You don’t have any scheduled trips yet. Book now to explore new destinations!",
@@ -819,7 +837,6 @@
     "points": "Points",
     "exceedLimit": "Your point exceed charge limit. You can use maximum",
     "enterPoint": "Enter number of points",
-    "applying": "Applying",
     "usePoints": "Use points",
     "youve": "You have",
     "usedPointsLabel": "Used points ({count})",
@@ -866,6 +883,7 @@
     "busType": "Bus Type",
     "amenities": "Amenities",
     "reset": "Reset filters",
+    "applying": "Applying",
     "startLocation": "Start Location",
     "endLocation": "End Location",
     "availableSeats": "Available Seats",
@@ -875,7 +893,12 @@
     "enterOperator": "Enter operator name",
     "searching": "Searching",
     "operatorName": "Operator Name",
-    "busModels": "Bus Models"
+    "busModels": "Bus Models",
+    "sortBy": "Sort By",
+    "sortDirection": "Sort Direction",
+    "price": "Price",
+    "ascending": "Ascending",
+    "descending": "Descending"
   },
   "UserPage": {
     "notAuthenticated": "Not Authenticated",
@@ -889,5 +912,6 @@
     "completedTrips": "Completed Trips",
     "member": "Member",
     "accountStatus": "Account Status"
-  }
+  },
+  "specialOffers": "Special Offers"
 }

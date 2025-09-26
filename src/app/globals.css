@@ -51,6 +51,7 @@
   --animate-fade-in-right: 2s fade-in-right;
   --animate-fade-in-up: 2s fade-in-up;
   --animate-float: 3s float;
+  --animate-shake: 3s shake 1;
 }
 
 :root {
@@ -180,6 +181,15 @@
   }
 }
 
+@keyframes shake {
+  0%, 100% {
+    transform: translateX(0);
+  }
+  10%, 30%, 50%, 70%, 90% {
+    transform: translateX(-2px);
+  }
+  20%, 40%, 60%, 80% {
+    transform: translateX(2px);
 @keyframes shimmer {
   0% {
     transform: translateX(-100%);
@@ -196,6 +206,8 @@
 .scrollBar {
   -ms-overflow-style: none; /* IE and Edge */
   scrollbar-width: none; /* Firefox */
+}
+  }
 }
 
 /* Enhanced Blog Content Styles */

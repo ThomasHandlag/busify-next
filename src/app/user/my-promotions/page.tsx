@@ -21,6 +21,7 @@ import { Gift, Loader2, Tag } from "lucide-react";
 import Script from "next/script";
 import PromotionRow from "@/components/custom/promotion/PromotionRow";
 import { useTranslations } from "next-intl";
+import { BASE_URL } from "@/lib/constants/constants";
 
 export default function PromotionsPage() {
   const [allPromotions, setAllPromotions] = useState<
@@ -75,7 +76,7 @@ export default function PromotionsPage() {
         if (session?.user?.accessToken) {
           try {
             const res = await fetch(
-              `http://localhost:8080/api/promotions/user/used`,
+              `${BASE_URL}api/promotions/user/used`,
               {
                 method: "GET",
                 headers: {

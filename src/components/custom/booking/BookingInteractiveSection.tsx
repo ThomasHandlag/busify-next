@@ -179,22 +179,20 @@ export default function BookingInteractiveSection({
 
       console.log("Sending booking request:", bookingRequest);
 
-      const bookingResponse = await fetch(
-        `${BASE_URL}api/bookings`,
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${session.user.accessToken}`, // Thêm token
-          },
-          body: JSON.stringify(bookingRequest),
-        }
-      );
+      const bookingResponse = await fetch(`${BASE_URL}api/bookings`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${session.user.accessToken}`, // Thêm token
+        },
+        body: JSON.stringify(bookingRequest),
+      });
 
       if (!bookingResponse.ok) {
         const errorData = await bookingResponse.json().catch(() => null);
-        console.error("Booking API error response:", errorData);
-        throw new Error(t("Booking.error.bookingFailed"));
+        console.log("Booking API error:", errorData);
+        console.error("Booking API error response:", errorData.message);
+        throw new Error(errorData?.message || t("Booking.error.bookingFailed"));
       }
 
       const bookingResult = await bookingResponse.json();
@@ -212,17 +210,14 @@ export default function BookingInteractiveSection({
 
       console.log("Sending payment request:", paymentRequest);
 
-      const paymentResponse = await fetch(
-        `${BASE_URL}api/payments/create`,
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${session.user.accessToken}`, // Thêm token
-          },
-          body: JSON.stringify(paymentRequest),
-        }
-      );
+      const paymentResponse = await fetch(`${BASE_URL}api/payments/create`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${session.user.accessToken}`, // Thêm token
+        },
+        body: JSON.stringify(paymentRequest),
+      });
 
       if (!paymentResponse.ok) {
         const errorData = await paymentResponse.json().catch(() => null);

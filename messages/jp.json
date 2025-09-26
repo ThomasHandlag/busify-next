@@ -39,7 +39,8 @@
     "infoNotFound": "情報が見つかりません。",
     "hours": "時間",
     "minutes": "分",
-    "processing": "処理中..."
+    "processing": "処理中...",
+    "tripTimeline": "Trip Time Line"
   },
   "Home": {
     "title": "バスチケットの検索と予約",
@@ -253,6 +254,7 @@
     "paymentLinkText": "支払い",
     "autoPromotion": "自動プロモーション",
     "specialOffersLoading": "🔥 特別オファー",
+    "getMoreDiscountCode": "追加割引コードを取得",
     "hot": "HOT",
     "discountLabel": "割引",
     "saveAmount": "節約",
@@ -504,7 +506,12 @@
     "distance": "距離",
     "busImages": "バスの画像",
     "noBusImages": "バスの画像はありません",
-    "tripTimeline": "旅程タイムライン"
+    "tripTimeline": "旅程タイムライン",
+    "busType": "Bus Type",
+    "dropPointText": "Drop point",
+    "durationText": "Duration",
+    "pickAndDropText": "Pick up and drop",
+    "pickUpText": "Pick up"
   },
   "Amenities": {
     "wifi": "Wi‑Fi",
@@ -677,9 +684,16 @@
       "placeholder": "ブログ記事を検索...",
       "button": "検索"
     },
-    "featured": { "title": "注目の投稿" },
-    "tags": { "title": "人気のテーマ", "all": "すべて" },
-    "latest": { "title": "最新の投稿" },
+    "featured": {
+      "title": "注目の投稿"
+    },
+    "tags": {
+      "title": "人気のテーマ",
+      "all": "すべて"
+    },
+    "latest": {
+      "title": "最新の投稿"
+    },
     "empty": {
       "noResults": "投稿が見つかりません。別の検索をお試しください。"
     },
@@ -787,6 +801,18 @@
     "complaintSend": "送信",
     "confirmCancelDescriptionPercent": "このチケットをキャンセルしてもよろしいですか？この操作は元に戻せず、チケット代の {percent}% が返金されます。",
     "noRefundNote": "注意: 出発直前のキャンセルのため返金はありません。",
+    "refundInfo": "返金情報",
+    "refund": "返金",
+    "refundAmount": "返金額",
+    "cancellationFee": "キャンセル手数料",
+    "netRefundAmount": "純返金額",
+    "refundTransactionCode": "取引コード",
+    "refundReason": "理由",
+    "requestedAt": "リクエスト時間",
+    "processedAt": "処理時間",
+    "completedAt": "完了時間",
+    "notes": "メモ",
+    "guestInfo": "ゲスト",
     "empty": {
       "upcomingTitle": "今後のチケットはありません",
       "upcomingDesc": "まだ予定された旅程はありません。今すぐ予約して新しい目的地を探索しましょう！",
@@ -811,7 +837,6 @@
     "points": "ポイント",
     "exceedLimit": "ポイントがチャージ制限を超えています。最大で使用できます",
     "enterPoint": "ポイント数を入力してください",
-    "applying": "適用中",
     "usePoints": "ポイントを使用",
     "youve": "あなたは持っています",
     "usedPointsLabel": "使用ポイント ({count})",
@@ -858,6 +883,7 @@
     "busType": "バスタイプ",
     "amenities": "アメニティ",
     "reset": "フィルターをリセット",
+    "applying": "適用中",
     "startLocation": "出発地",
     "endLocation": "到着地",
     "availableSeats": "空席数",
@@ -867,7 +893,12 @@
     "enterOperator": "運営者名を入力",
     "searching": "検索中",
     "operatorName": "運営者名",
-    "busModels": "バスモデル"
+    "busModels": "バスモデル",
+    "price": "価格",
+    "ascending": "昇順",
+    "descending": "降順",
+    "sortDirection": "Sort Direction",
+    "sortBy": "Sort By"
   },
   "UserPage": {
     "notAuthenticated": "未認証",
@@ -881,5 +912,6 @@
     "completedTrips": "完了した旅程",
     "member": "メンバー",
     "accountStatus": "アカウントの状態"
-  }
+  },
+  "specialOffers": "Special Offers"
 }

@@ -39,7 +39,8 @@
     "infoNotFound": "정보를찾을수없습니다.",
     "hours": "시간",
     "minutes": "분",
-    "processing": "처리 중..."
+    "processing": "처리 중...",
+    "tripTimeline": "트립 시간 라인"
   },
   "Home": {
     "title": "버스 티켓 검색 및 예약",
@@ -253,6 +254,7 @@
     "paymentLinkText": "결제",
     "autoPromotion": "자동 프로모션",
     "specialOffersLoading": "🔥 특별 할인",
+    "getMoreDiscountCode": "추가 할인 코드 받기",
     "hot": "HOT",
     "discountLabel": "할인",
     "saveAmount": "절약",
@@ -504,7 +506,12 @@
     "distance": "거리",
     "busImages": "버스 이미지",
     "noBusImages": "버스 이미지가 없습니다",
-    "tripTimeline": "여정 타임라인"
+    "tripTimeline": "여정 타임라인",
+    "durationText": "지속",
+    "pickAndDropText": "집어 들고 떨어 뜨립니다",
+    "pickUpText": "찾다",
+    "busType": "버스 유형",
+    "dropPointText": "드롭 포인트"
   },
   "Amenities": {
     "wifi": "Wi‑Fi",
@@ -677,9 +684,16 @@
       "placeholder": "블로그 게시물 검색...",
       "button": "검색"
     },
-    "featured": { "title": "추천 게시물" },
-    "tags": { "title": "인기 주제", "all": "전체" },
-    "latest": { "title": "최신 게시물" },
+    "featured": {
+      "title": "추천 게시물"
+    },
+    "tags": {
+      "title": "인기 주제",
+      "all": "전체"
+    },
+    "latest": {
+      "title": "최신 게시물"
+    },
     "empty": {
       "noResults": "게시물을 찾을 수 없습니다. 다른 검색어를 시도해 주세요."
     },
@@ -787,6 +801,18 @@
     "complaintSend": "전송",
     "confirmCancelDescriptionPercent": "이 티켓을 취소하시겠습니까? 이 작업은 되돌릴 수 없으며 티켓 가격의 {percent}%가 환불됩니다.",
     "noRefundNote": "주의: 출발 임박 취소로 인해 환불되지 않습니다.",
+    "refundInfo": "환불 정보",
+    "refund": "환불",
+    "refundAmount": "환불 금액",
+    "cancellationFee": "취소 수수료",
+    "netRefundAmount": "순 환불 금액",
+    "refundTransactionCode": "거래 코드",
+    "refundReason": "사유",
+    "requestedAt": "요청 시간",
+    "processedAt": "처리 시간",
+    "completedAt": "완료 시간",
+    "notes": "메모",
+    "guestInfo": "게스트",
     "empty": {
       "upcomingTitle": "예정된 티켓이 없습니다",
       "upcomingDesc": "아직 예정된 여정이 없습니다. 지금 예약하고 새로운 목적지를 탐험해 보세요!",
@@ -811,7 +837,6 @@
     "points": "포인트",
     "exceedLimit": "포인트가 충전 제한을 초과했습니다. 최대 {limit}까지 사용할 수 있습니다.",
     "enterPoint": "포인트 수를 입력하세요",
-    "applying": "적용 중",
     "usePoints": "포인트 사용",
     "youve": "당신은 가지고 있습니다",
     "usedPointsLabel": "사용 포인트 ({count})",
@@ -858,6 +883,7 @@
     "busType": "버스 종류",
     "amenities": "편의 시설",
     "reset": "필터 초기화",
+    "applying": "적용 중",
     "startLocation": "출발지",
     "endLocation": "도착지",
     "availableSeats": "사용 가능한 좌석",
@@ -867,7 +893,12 @@
     "enterOperator": "운영사 입력",
     "searching": "검색 중",
     "operatorName": "운영사 이름",
-    "busModels": "버스 모델"
+    "busModels": "버스 모델",
+    "price": "가격",
+    "ascending": "오름차순",
+    "descending": "내림차순",
+    "sortBy": "정렬",
+    "sortDirection": "정렬 방향"
   },
   "UserPage": {
     "notAuthenticated": "인증되지 않음",
@@ -881,5 +912,6 @@
     "completedTrips": "완료된 여정",
     "member": "회원",
     "accountStatus": "계정 상태"
-  }
+  },
+  "specialOffers": "특별 할인"
 }
