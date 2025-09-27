@@ -9,8 +9,39 @@ import { TripItemProps } from "@/lib/data/trip";
 import Link from "next/link";
 import LocaleText from "../locale_text";
 import Image from "next/image";
+import { useEffect, useState } from "react";
+import {
+  getCurrentPromotionCampaigns,
+  type PromotionCampaign,
+  calculateDiscountedPrice,
+  getBestPromotionCampaign,
+} from "@/lib/data/promotion";
 
 const TripItem = ({ trip }: { trip: TripItemProps }) => {
+  const [campaigns, setCampaigns] = useState<PromotionCampaign[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchCampaigns = async () => {
+      try {
+        const apiCampaigns = await getCurrentPromotionCampaigns();
+        setCampaigns(apiCampaigns);
+      } catch (error) {
+        console.error("Failed to fetch promotion campaigns:", error);
+        setCampaigns([]);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchCampaigns();
+  }, []);
+
+  const bestCampaign = getBestPromotionCampaign(campaigns, trip.price_per_seat);
+  const { discountedPrice, discountAmount } = bestCampaign
+    ? calculateDiscountedPrice(trip.price_per_seat, bestCampaign)
+    : { discountedPrice: trip.price_per_seat, discountAmount: 0 };
+
   const getAvailabilityColor = (seats: number) => {
     if (seats <= 5) return "bg-red-100 text-red-700";
     if (seats <= 10) return "bg-yellow-100 text-yellow-700";
@@ -105,9 +136,21 @@ const TripItem = ({ trip }: { trip: TripItemProps }) => {
 
             {/* Price Display Logic */}
             <div className="text-right">
-              <p className="text-lg font-bold text-primary">
-                {new Intl.NumberFormat("vi-VN").format(trip.price_per_seat)}đ
-              </p>
+              {discountAmount > 0 ? (
+                <>
+                  <p className="text-sm text-red-500 line-through">
+                    {new Intl.NumberFormat("vi-VN").format(trip.price_per_seat)}
+                    đ
+                  </p>
+                  <p className="text-lg font-bold text-primary">
+                    {new Intl.NumberFormat("vi-VN").format(discountedPrice)}đ
+                  </p>
+                </>
+              ) : (
+                <p className="text-lg font-bold text-primary">
+                  {new Intl.NumberFormat("vi-VN").format(trip.price_per_seat)}đ
+                </p>
+              )}
             </div>
           </div>
         </div>
