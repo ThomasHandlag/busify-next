@@ -123,58 +123,60 @@ const SearchFilterSidebar = ({ callback }: { callback?: () => void }) => {
     <div className="space-y-6">
       <Form {...form}>
         <form onSubmit={handleApplyFilters} className="space-y-6">
-          <FormItem>
-            <Button
-              aria-label={t("Filter.applyFilters")}
-              type="button"
-              disabled={isLoading}
-              onClick={() => {
-                const formData = form.getValues();
-                callback?.();
-                onApplyFilters({
-                  ...formData,
-                  timeZone: Intl.DateTimeFormat().resolvedOptions().timeZone,
-                });
-              }}
-            >
-              {isLoading ? (
-                <>
-                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                  {t("Filter.applying")}
-                </>
-              ) : (
-                t("Filter.applyFilters")
-              )}
-            </Button>
-          </FormItem>
-          <FormItem>
-            <Button
-              aria-label={t("Filter.reset")}
-              variant="outline"
-              className="w-full"
-              type="button"
-              disabled={isLoading}
-              onClick={() => {
-                form.reset({
-                  startLocation: undefined,
-                  endLocation: undefined,
-                  departureDate: undefined,
-                  untilTime: undefined,
-                  operatorName: undefined,
-                  busModels: [],
-                  amenities: [],
-                  availableSeats: 1,
-                });
-                callback?.();
-                onApplyFilters({
-                  ...form.getValues(),
-                  timeZone: Intl.DateTimeFormat().resolvedOptions().timeZone,
-                });
-              }}
-            >
-              {t("Filter.reset")}
-            </Button>
-          </FormItem>
+          <div className="top-0 sticky bg-background z-2 flex flex-col gap-2">
+            <FormItem>
+              <Button
+                aria-label={t("Filter.applyFilters")}
+                type="button"
+                disabled={isLoading}
+                onClick={() => {
+                  const formData = form.getValues();
+                  callback?.();
+                  onApplyFilters({
+                    ...formData,
+                    timeZone: Intl.DateTimeFormat().resolvedOptions().timeZone,
+                  });
+                }}
+              >
+                {isLoading ? (
+                  <>
+                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                    {t("Filter.applying")}
+                  </>
+                ) : (
+                  t("Filter.applyFilters")
+                )}
+              </Button>
+            </FormItem>
+            <FormItem>
+              <Button
+                aria-label={t("Filter.reset")}
+                variant="outline"
+                className="w-full"
+                type="button"
+                disabled={isLoading}
+                onClick={() => {
+                  form.reset({
+                    startLocation: undefined,
+                    endLocation: undefined,
+                    departureDate: undefined,
+                    untilTime: undefined,
+                    operatorName: undefined,
+                    busModels: [],
+                    amenities: [],
+                    availableSeats: 1,
+                  });
+                  callback?.();
+                  onApplyFilters({
+                    ...form.getValues(),
+                    timeZone: Intl.DateTimeFormat().resolvedOptions().timeZone,
+                  });
+                }}
+              >
+                {t("Filter.reset")}
+              </Button>
+            </FormItem>
+          </div>
 
           <FormField
             control={form.control}

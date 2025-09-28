@@ -8,6 +8,7 @@ import { CheckCircle, Circle, Gift, Star } from "lucide-react";
 import { type Promotion as APIPromotion } from "@/lib/data/promotion";
 import { useTranslations } from "next-intl";
 import { BASE_URL } from "@/lib/constants/constants";
+import Link from "next/link";
 
 interface Promotion {
   id: number;
@@ -344,6 +345,13 @@ export default function AutoPromotionSection({
             );
           })}
         </div>
+        <Link
+          href="/user/my-promotions"
+          className="flex items-center text-orange-300 hover:text-orange-600 font-bold px-5 py-2.5 transition-all duration-300 text-sm"
+        >
+          <Gift className="w-4 h-4 inline-block mr-2" />
+          <span>{t("Booking.getMoreDiscountCode")}</span>
+        </Link>
 
         {selectedPromotion && (
           <div className="mt-3 p-3 bg-primary/5 border border-primary/20 rounded-lg">

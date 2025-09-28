@@ -33,6 +33,12 @@ import {
 } from "@/components/ui/card";
 import { Armchair, Users, CheckCircle } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
+import {
+  calculateDiscountedPrice,
+  getBestPromotionCampaign,
+  getCurrentPromotionCampaigns,
+  PromotionCampaign,
+} from "@/lib/data/promotion";
 
 interface PassengerInfo {
   phone: string;
@@ -58,6 +64,7 @@ export function SeatSelectionTabsCard({
   const [selectedSeats, setSelectedSeats] = useState<string[]>([]);
   const [isLoadingProfile, setIsLoadingProfile] = useState(false);
 
+  const [campaigns, setCampaigns] = useState<PromotionCampaign[]>([]);
   const t = useTranslations();
   const { data: session } = useSession();
   const router = useRouter();
@@ -178,6 +185,62 @@ export function SeatSelectionTabsCard({
     [pricePerSeat, onSeatSelection]
   );
 
+  // Auto-fill user profile data when logged in
+  useEffect(() => {
+    const fetchUserProfile = async () => {
+      if (session?.user?.accessToken) {
+        setIsLoadingProfile(true);
+        try {
+          const response = await fetch(`${BASE_URL}api/users/profile`, {
+            method: "GET",
+            headers: {
+              Authorization: `Bearer ${session.user.accessToken}`,
+              "Content-Type": "application/json",
+            },
+          });
+
+          if (response.ok) {
+            const profileData = await response.json();
+            console.log("Profile data fetched:", profileData);
+
+            // Auto-fill form with user data
+            if (profileData.result) {
+              const { fullName, phoneNumber, email } = profileData.result;
+
+              form.setValue("fullName", fullName || "");
+              form.setValue("phone", phoneNumber || "");
+              form.setValue("email", email || "");
+
+              console.log("Form auto-filled with user profile data");
+            }
+          } else {
+            console.error("Failed to fetch user profile:", response.status);
+          }
+        } catch (error) {
+          console.error("Error fetching user profile:", error);
+        } finally {
+          setIsLoadingProfile(false);
+        }
+      }
+    };
+
+    fetchUserProfile();
+  }, [session?.user?.accessToken, form]);
+
+  useEffect(() => {
+    const fetchCampaigns = async () => {
+      try {
+        const apiCampaigns = await getCurrentPromotionCampaigns();
+        setCampaigns(apiCampaigns);
+      } catch (error) {
+        console.error("Failed to fetch promotion campaigns:", error);
+        setCampaigns([]);
+      }
+    };
+
+    fetchCampaigns();
+  }, []);
+
   const getSeatsByFloor = (floor: number) => {
     return allSeats.filter((seat) => seat.floor === floor);
   };
@@ -276,20 +339,30 @@ export function SeatSelectionTabsCard({
       return;
     }
 
-    const totalPrice = selectedSeats.length * pricePerSeat;
+    const basePrice = selectedSeats.length * pricePerSeat;
+    const bestCampaign = getBestPromotionCampaign(campaigns, pricePerSeat);
+    const { discountedPrice } = bestCampaign
+      ? calculateDiscountedPrice(basePrice, bestCampaign)
+      : { discountedPrice: basePrice };
 
     const queryParams = new URLSearchParams({
       seats: selectedSeats.join(","),
       fullName: encodeURIComponent(data.fullName),
       phone: encodeURIComponent(data.phone),
       email: encodeURIComponent(data.email),
-      totalPrice: totalPrice.toString(),
+      totalPrice: discountedPrice.toString(),
     });
 
     router.push(`/booking/confirmation/${tripId}?${queryParams.toString()}`);
   };
 
-  const totalPrice = selectedSeats.length * pricePerSeat;
+  const basePrice = selectedSeats.length * pricePerSeat;
+  const bestCampaign = getBestPromotionCampaign(campaigns, pricePerSeat);
+  const { discountedPrice, discountAmount } = bestCampaign
+    ? calculateDiscountedPrice(basePrice, bestCampaign)
+    : { discountedPrice: basePrice, discountAmount: 0 };
+
+  const totalPrice = discountedPrice;
 
   return (
     <Card className="sticky top-20">
@@ -443,6 +516,26 @@ export function SeatSelectionTabsCard({
                   currency: "VND",
                 }).format(totalPrice)}
               </span>
+              <div className="text-right">
+                {discountAmount > 0 ? (
+                  <>
+                    <p className="text-sm text-red-500 line-through">
+                      {basePrice?.toLocaleString("vi-VN")}đ
+                    </p>
+                    <p className="text-lg font-bold text-primary">
+                      {totalPrice?.toLocaleString("vi-VN")}đ
+                    </p>
+                  </>
+                ) : (
+                  <p className="text-lg font-bold text-primary">
+                    {totalPrice?.toLocaleString("vi-VN")}đ
+                  </p>
+                )}
+                <p className="text-xs text-gray-500">
+                  {selectedSeats.length} {t("Booking.seats")} ×{" "}
+                  {pricePerSeat?.toLocaleString("vi-VN")}đ
+                </p>
+              </div>
             </div>
           </div>
 

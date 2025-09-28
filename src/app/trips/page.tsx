@@ -66,8 +66,8 @@ const AppPage = () => {
   return (
     <div className="h-full bg-primary w-full lg:px-4 px-2 py-8">
       <div className="grid grid-cols-1 lg:grid-cols-6 gap-8 max-w-6xl mx-auto">
-        <div className="hidden lg:block col-span-2 shrink-0">
-          <Card className="sticky top-0 h-[90vh] scrollBar overflow-scroll rounded-lg">
+        <div className="hidden lg:block col-span-2">
+          <Card className="sticky top-8 h-[90vh] scrollBar overflow-scroll rounded-lg">
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
                 <Filter className="w-5 h-5" />
@@ -109,7 +109,9 @@ const AppPage = () => {
           </Sheet>
         </div>
         <div className="col-span-4 flex flex-col gap-4">
-          <TripSortControls />
+          <div className="sticky top-8 z-10">
+            <TripSortControls />
+          </div>
           <Card className="h-[90vh] overflow-auto scrollBar p-4 lg:p-2">
             <CardHeader>
               <CardTitle>

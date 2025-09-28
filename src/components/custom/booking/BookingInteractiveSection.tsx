@@ -148,8 +148,9 @@ export default function BookingInteractiveSection({
 
       if (!bookingResponse.ok) {
         const errorData = await bookingResponse.json().catch(() => null);
-        console.error("Booking API error response:", errorData);
-        throw new Error(t("Booking.error.bookingFailed"));
+        console.log("Booking API error:", errorData);
+        console.error("Booking API error response:", errorData.message);
+        throw new Error(errorData?.message || t("Booking.error.bookingFailed"));
       }
 
       const bookingResult = await bookingResponse.json();

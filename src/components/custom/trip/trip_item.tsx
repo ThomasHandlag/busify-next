@@ -9,11 +9,41 @@ import { TripItemProps } from "@/lib/data/trip";
 import Link from "next/link";
 import LocaleText from "../locale_text";
 import Image from "next/image";
+import { useEffect, useState } from "react";
+import {
+  getCurrentPromotionCampaigns,
+  type PromotionCampaign,
+  calculateDiscountedPrice,
+  getBestPromotionCampaign,
+} from "@/lib/data/promotion";
 
 const TripItem = ({ trip }: { trip: TripItemProps }) => {
+  const [campaigns, setCampaigns] = useState<PromotionCampaign[]>([]);
+
+  useEffect(() => {
+    const fetchCampaigns = async () => {
+      try {
+        const apiCampaigns = await getCurrentPromotionCampaigns();
+        setCampaigns(apiCampaigns);
+      } catch (error) {
+        console.error("Failed to fetch promotion campaigns:", error);
+        setCampaigns([]);
+      } 
+    };
+
+    fetchCampaigns();
+  }, []);
+
+  const bestCampaign = getBestPromotionCampaign(campaigns, trip.price_per_seat);
+  const { discountedPrice, discountAmount } = bestCampaign
+    ? calculateDiscountedPrice(trip.price_per_seat, bestCampaign)
+    : { discountedPrice: trip.price_per_seat, discountAmount: 0 };
+
   const getAvailabilityColor = (seats: number) => {
-    if (seats <= 5) return "bg-destructive/10 text-destructive border-destructive/20";
-    if (seats <= 10) return "bg-secondary/10 text-secondary dark:text-secondary-foreground border-secondary/20";
+    if (seats <= 5)
+      return "bg-destructive/10 text-destructive border-destructive/20";
+    if (seats <= 10)
+      return "bg-secondary/10 text-secondary dark:text-secondary-foreground border-secondary/20";
     return "bg-primary/10 text-primary border-primary/20";
   };
 
@@ -53,8 +83,7 @@ const TripItem = ({ trip }: { trip: TripItemProps }) => {
   const departureDate = format(departureDateObj, "dd/MM");
 
   return (
-    <Card className="relative bg-gradient-to-br from-card to-card backdrop-blur-sm">
-
+    <Card>
       <CardContent className="relative p-2">
         <div className="flex items-start justify-between mb-4">
           <div className="flex items-center gap-3">
@@ -98,10 +127,31 @@ const TripItem = ({ trip }: { trip: TripItemProps }) => {
             </div>
             <Badge
               variant="outline"
-              className={`${getAvailabilityColor(trip.available_seats)} border text-xs font-medium px-3 py-1 rounded-full`}
+              className={`${getAvailabilityColor(
+                trip.available_seats
+              )} border text-xs font-medium px-3 py-1 rounded-full`}
             >
               {getAvailabilityText(trip.available_seats)}
             </Badge>
+
+            {/* Price Display Logic */}
+            <div className="text-right">
+              {discountAmount > 0 ? (
+                <>
+                  <p className="text-sm text-red-500 line-through">
+                    {new Intl.NumberFormat("vi-VN").format(trip.price_per_seat)}
+                    đ
+                  </p>
+                  <p className="text-lg font-bold text-primary">
+                    {new Intl.NumberFormat("vi-VN").format(discountedPrice)}đ
+                  </p>
+                </>
+              ) : (
+                <p className="text-lg font-bold text-primary">
+                  {new Intl.NumberFormat("vi-VN").format(trip.price_per_seat)}đ
+                </p>
+              )}
+            </div>
           </div>
         </div>
 
@@ -159,7 +209,10 @@ const TripItem = ({ trip }: { trip: TripItemProps }) => {
                 : "bg-gradient-to-r from-primary to-primary/90 hover:from-primary/90 hover:to-primary text-primary-foreground shadow-md hover:shadow-lg transform hover:scale-105"
             }`}
           >
-            <Link href={`/trips/${trip.trip_id}`} className="flex items-center gap-2">
+            <Link
+              href={`/trips/${trip.trip_id}`}
+              className="flex items-center gap-2"
+            >
               <LocaleText string="bookTrip" name="Trips.tripItem" />
               <ArrowRight className="w-4 h-4" />
             </Link>
