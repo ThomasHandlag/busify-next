@@ -58,13 +58,10 @@ export default function BookingResult() {
     const fetchPaymentDetails = async () => {
       try {
         setLoading(true);
-        const response = await fetch(
-          `${BASE_URL}api/payments/${id}`,
-          {
-            method: "GET",
-            headers: { "Content-Type": "application/json" },
-          }
-        );
+        const response = await fetch(`${BASE_URL}api/payments/${id}`, {
+          method: "GET",
+          headers: { "Content-Type": "application/json" },
+        });
 
         if (!response.ok) {
           throw new Error(t("BookingResult.fetchError"));
@@ -143,22 +140,22 @@ export default function BookingResult() {
       case "success":
       case "completed":
         return {
-          className: "bg-green-500 text-white",
+          className: "bg-primary text-primary-foreground",
           text: t("Booking.confirmed"),
         };
       case "pending":
         return {
-          className: "bg-yellow-500 text-white",
+          className: "bg-secondary text-secondary-foreground",
           text: t("Booking.pending"),
         };
       case "cancelled":
         return {
-          className: "bg-red-500 text-white",
+          className: "bg-destructive text-destructive-foreground",
           text: t("Booking.canceled"),
         };
       default:
         return {
-          className: "bg-gray-500 text-white",
+          className: "bg-muted text-muted-foreground",
           text: t("Booking.unknown"),
         };
     }
@@ -166,12 +163,14 @@ export default function BookingResult() {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-accent flex items-center justify-center w-full">
+      <div className="min-h-screen bg-background flex items-center justify-center w-full">
         <Card>
           <CardContent className="p-6 text-center">
             <div className="flex flex-col items-center space-y-4">
-              <Clock className="w-8 h-8 text-blue-600 animate-spin" />
-              <p className="text-gray-600">{t("BookingResult.loading")}</p>
+              <Clock className="w-8 h-8 text-primary animate-spin" />
+              <p className="text-muted-foreground">
+                {t("BookingResult.loading")}
+              </p>
             </div>
           </CardContent>
         </Card>
@@ -181,19 +180,19 @@ export default function BookingResult() {
 
   if (error || !paymentDetails) {
     return (
-      <div className="min-h-screen bg-accent flex items-center justify-center w-full">
-        <Card className="border-red-200 bg-red-50">
+      <div className="min-h-screen bg-background flex items-center justify-center w-full">
+        <Card className="border-destructive/20 bg-destructive/10">
           <CardContent className="p-6 text-center">
             <div className="flex flex-col items-center space-y-4">
-              <AlertCircle className="w-8 h-8 text-red-600" />
-              <p className="text-red-700">
+              <AlertCircle className="w-8 h-8 text-destructive" />
+              <p className="text-destructive">
                 {error || t("Common.bookingNotFound")}
               </p>
               <Button
                 aria-label="Try Again"
                 onClick={() => window.location.reload()}
                 variant="outline"
-                className="border-red-300 text-red-700 hover:bg-red-100"
+                className="border-destructive/30 text-destructive hover:bg-destructive/10"
               >
                 {t("Error.tryAgain")}
               </Button>
@@ -211,334 +210,278 @@ export default function BookingResult() {
     paymentDetails.status.toLowerCase() === "confirmed";
 
   return (
-    <div className="min-h-screen bg-accent w-full">
-      {/* Header */}
-      <div className="bg-background shadow-sm border-b">
-        <div className="px-4 py-4 w-full">
-          <div className="flex items-center gap-4">
-            <span className="text-gray-600">{t("BookingResult.title")}</span>
-          </div>
-        </div>
-      </div>
-
-      <div className="px-4 py-8 w-full">
-        <div className="space-y-6">
-          {/* Success/Status Message */}
-          <Card
-            className={
-              isSuccess
-                ? "border-green-200 bg-green-50"
-                : "border-yellow-200 bg-yellow-50"
-            }
-          >
-            <CardContent className="p-6 text-center">
-              <div className="flex flex-col items-center space-y-4">
-                <div
-                  className={`w-16 h-16 ${
-                    isSuccess ? "bg-green-500" : "bg-yellow-500"
-                  } rounded-full flex items-center justify-center`}
-                >
-                  {isSuccess ? (
-                    <CheckCircle className="w-8 h-8 text-white" />
-                  ) : (
-                    <Clock className="w-8 h-8 text-white" />
-                  )}
-                </div>
-                <div>
-                  <h1
-                    className={`text-2xl font-bold ${
-                      isSuccess ? "text-green-800" : "text-yellow-800"
-                    } mb-2`}
-                  >
-                    {isSuccess
-                      ? t("BookingResult.successTitle")
-                      : t("BookingResult.processingTitle")}
-                  </h1>
-                  <p
-                    className={isSuccess ? "text-green-700" : "text-yellow-700"}
+    <div className="min-h-screen bg-primary w-full lg:px-4 px-2">
+      <div className="max-w-3xl mx-auto">
+        <Card className="shadow-lg">
+          <CardHeader>
+            <CardTitle>
+              <div className="text-center">
+                <div className="flex flex-col lg:flex-row items-center justify-between">
+                  <div className="flex items-start flex-col">
+                    <h2 className="text-2xl font-bold text-foreground mb-2">
+                      {isSuccess
+                        ? t("BookingResult.successTitle")
+                        : t("BookingResult.processingTitle")}
+                    </h2>
+                    <p className="text-muted-foreground">
+                      {isSuccess ? (
+                        <>
+                          {t("BookingResult.successDesc", {
+                            email: paymentDetails.customerEmail,
+                            phone: paymentDetails.customerPhone,
+                          })}
+                        </>
+                      ) : (
+                        t("BookingResult.processingDesc")
+                      )}
+                    </p>
+                  </div>
+                  <div
+                    className={`w-16 h-16 ${
+                      isSuccess ? "bg-primary" : "bg-secondary"
+                    } rounded-full flex items-center justify-center`}
                   >
                     {isSuccess ? (
-                      <>
-                        {t("BookingResult.successDesc", {
-                          email: paymentDetails.customerEmail,
-                          phone: paymentDetails.customerPhone,
-                        })}
-                      </>
+                      <CheckCircle className="w-8 h-8 text-primary-foreground" />
                     ) : (
-                      t("BookingResult.processingDesc")
+                      <Clock className="w-8 h-8 text-secondary-foreground" />
                     )}
+                  </div>
+                </div>
+              </div>
+            </CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="mb-2 p-4 bg-accent/10 rounded-lg border border-accent/20">
+              <div className="flex items-center justify-between">
+                <div>
+                  <h3 className="text-sm font-medium text-muted-foreground mb-1">
+                    {t("BookingResult.bookingCodeTitle")}
+                  </h3>
+                  <p className="text-2xl font-bold text-primary">
+                    {paymentDetails.bookingDetails.bookingCode}
+                  </p>
+                  <p className="text-sm text-muted-foreground">
+                    {t("BookingResult.bookingCodeHint")}
+                  </p>
+                </div>
+                <Button
+                  aria-label="Copy Booking Code"
+                  variant="outline"
+                  size="sm"
+                  onClick={copyBookingCode}
+                  className="flex items-center gap-2"
+                >
+                  <Copy className="w-4 h-4" />
+                  {copied ? t("BookingResult.copied") : t("BookingResult.copy")}
+                </Button>
+              </div>
+            </div>
+
+            {/* Trip Information Section */}
+            <div className="mb-8">
+              <h3 className="text-lg font-semibold text-foreground mb-4 flex items-center gap-2">
+                <MapPin className="w-5 h-5 text-primary" />
+                {t("BookingResult.tripInfo")}
+              </h3>
+
+              <div className="flex items-center justify-between p-4 bg-muted/30 rounded-lg mb-4">
+                <div className="text-center">
+                  <p className="text-sm text-muted-foreground">
+                    {t("Booking.confirmation.startPoint")}
+                  </p>
+                  <p className="font-semibold text-foreground">
+                    {paymentDetails.bookingDetails.departureName}
+                  </p>
+                  <p className="text-sm text-primary">
+                    {formatTime(paymentDetails.bookingDetails.departureTime)}
+                  </p>
+                </div>
+                <div className="flex-1 flex justify-center">
+                  <ArrowRight className="w-6 h-6 text-primary" />
+                </div>
+                <div className="text-center">
+                  <p className="text-sm text-muted-foreground">
+                    {t("Booking.confirmation.endPoint")}
+                  </p>
+                  <p className="font-semibold text-foreground">
+                    {paymentDetails.bookingDetails.arrivalName}
+                  </p>
+                  <p className="text-sm text-primary">
+                    {formatTime(paymentDetails.bookingDetails.arrivalTime)}
                   </p>
                 </div>
               </div>
-            </CardContent>
-          </Card>
 
-          {/* Booking Details */}
-          <div className="grid md:grid-cols-2 gap-6">
-            {/* Left Column */}
-            <div className="space-y-6">
-              {/* Booking Code */}
-              <Card>
-                <CardHeader>
-                  <CardTitle className="text-lg">
-                    {t("BookingResult.bookingCodeTitle")}
-                  </CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <div className="flex items-center justify-between p-4 bg-gray-50 rounded-lg">
-                    <div>
-                      <p className="text-2xl font-bold text-green-600">
-                        {paymentDetails.bookingDetails.bookingCode}
-                      </p>
-                      <p className="text-sm text-gray-500">
-                        {t("BookingResult.bookingCodeHint")}
-                      </p>
-                    </div>
-                    <Button
-                      aria-label="Copy Booking Code"
-                      variant="outline"
-                      size="sm"
-                      onClick={copyBookingCode}
-                      className="flex items-center gap-2 bg-transparent"
-                    >
-                      <Copy className="w-4 h-4" />
-                      {copied
-                        ? t("BookingResult.copied")
-                        : t("BookingResult.copy")}
-                    </Button>
-                  </div>
-                </CardContent>
-              </Card>
-
-              {/* Trip Info */}
-              <Card>
-                <CardHeader>
-                  <CardTitle className="flex items-center gap-2">
-                    <MapPin className="w-5 h-5 text-blue-600" />
-                    {t("BookingResult.tripInfo")}
-                  </CardTitle>
-                </CardHeader>
-                <CardContent className="space-y-4">
-                  <div className="flex items-center justify-between p-3 bg-blue-50 rounded-lg">
-                    <div className="text-center">
-                      <p className="text-sm text-gray-500">
-                        {t("Booking.confirmation.startPoint")}
-                      </p>
-                      <p className="font-semibold text-blue-800">
-                        {paymentDetails.bookingDetails.departureName}
-                      </p>
-                      <p className="text-sm text-blue-600">
-                        {formatTime(
-                          paymentDetails.bookingDetails.departureTime
-                        )}
-                      </p>
-                    </div>
-                    <div className="flex-1 flex justify-center">
-                      <ArrowRight className="w-6 h-6 text-blue-600" />
-                    </div>
-                    <div className="text-center">
-                      <p className="text-sm text-gray-500">
-                        {t("Booking.confirmation.endPoint")}
-                      </p>
-                      <p className="font-semibold text-blue-800">
-                        {paymentDetails.bookingDetails.arrivalName}
-                      </p>
-                      <p className="text-sm text-blue-600">
-                        {formatTime(paymentDetails.bookingDetails.arrivalTime)}
-                      </p>
-                    </div>
-                  </div>
-
-                  <div className="grid grid-cols-2 gap-4">
-                    <div>
-                      <p className="text-sm text-gray-500">
-                        {t("BookingResult.departureDate")}
-                      </p>
-                      <p className="font-semibold">
-                        {formatDate(
-                          paymentDetails.bookingDetails.departureTime
-                        )}
-                      </p>
-                    </div>
-                    <div>
-                      <p className="text-sm text-gray-500">
-                        {t("BookingResult.arrivalDate")}
-                      </p>
-                      <p className="font-semibold">
-                        {formatDate(paymentDetails.bookingDetails.arrivalTime)}
-                      </p>
-                    </div>
-                  </div>
-                </CardContent>
-              </Card>
+              <div className="grid grid-cols-2 gap-4">
+                <div>
+                  <p className="text-sm text-muted-foreground">
+                    {t("BookingResult.departureDate")}
+                  </p>
+                  <p className="font-semibold text-foreground">
+                    {formatDate(paymentDetails.bookingDetails.departureTime)}
+                  </p>
+                </div>
+                <div>
+                  <p className="text-sm text-muted-foreground">
+                    {t("BookingResult.arrivalDate")}
+                  </p>
+                  <p className="font-semibold text-foreground">
+                    {formatDate(paymentDetails.bookingDetails.arrivalTime)}
+                  </p>
+                </div>
+              </div>
             </div>
 
-            {/* Right Column */}
-            <div className="space-y-6">
+            {/* Details Grid */}
+            <div className="grid md:grid-cols-3 gap-6 mb-8">
               {/* Status */}
-              <Card>
-                <CardHeader>
-                  <CardTitle className="flex items-center gap-2">
-                    <CheckCircle className="w-5 h-5 text-green-600" />
-                    {t("BookingResult.statusTitle")}
-                  </CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <div className="flex items-center justify-between">
-                    <span>{t("BookingResult.status")}</span>
-                    <Badge className={statusBadgeProps.className}>
-                      {statusBadgeProps.text}
-                    </Badge>
-                  </div>
-                </CardContent>
-              </Card>
+              <div>
+                <h4 className="text-sm font-medium text-muted-foreground mb-2 flex items-center gap-2">
+                  <CheckCircle className="w-4 h-4 text-primary" />
+                  {t("BookingResult.statusTitle")}
+                </h4>
+                <Badge className={statusBadgeProps.className}>
+                  {statusBadgeProps.text}
+                </Badge>
+              </div>
 
-              {/* Payment Information */}
-              <Card>
-                <CardHeader>
-                  <CardTitle className="flex items-center gap-2">
-                    <CreditCard className="w-5 h-5 text-blue-600" />
-                    {t("BookingResult.paymentInfoTitle")}
-                  </CardTitle>
-                </CardHeader>
-                <CardContent className="space-y-4">
-                  <div className="space-y-3">
-                    <div>
-                      <p className="text-sm text-gray-500">
-                        {t("BookingResult.paymentMethod")}
-                      </p>
-                      <div className="flex items-center gap-2 mt-1">
-                        <Banknote className="w-4 h-4 text-blue-600" />
-                        <span className="font-semibold">
-                          {paymentDetails.paymentMethod}
-                        </span>
-                      </div>
-                    </div>
+              {/* Payment Method */}
+              <div>
+                <h4 className="text-sm font-medium text-muted-foreground mb-2 flex items-center gap-2">
+                  <CreditCard className="w-4 h-4 text-primary" />
+                  {t("BookingResult.paymentMethod")}
+                </h4>
+                <div className="flex items-center gap-2">
+                  <Banknote className="w-4 h-4 text-primary" />
+                  <span className="font-semibold text-foreground">
+                    {paymentDetails.paymentMethod}
+                  </span>
+                </div>
+              </div>
 
-                    <div>
-                      <p className="text-sm text-gray-500">
-                        {t("BookingResult.amountPaid")}
-                      </p>
-                      <p className="font-semibold text-green-600 text-lg">
-                        {formatCurrency(paymentDetails.amount)}
-                      </p>
-                    </div>
+              {/* Amount */}
+              <div>
+                <h4 className="text-sm font-medium text-muted-foreground mb-2">
+                  {t("BookingResult.amountPaid")}
+                </h4>
+                <p className="font-semibold text-primary text-lg">
+                  {formatCurrency(paymentDetails.amount)}
+                </p>
+              </div>
+            </div>
 
-                    {paymentDetails.paidAt && (
-                      <div>
-                        <p className="text-sm text-gray-500">
-                          {t("BookingResult.paidAt")}
-                        </p>
-                        <p className="font-semibold">
-                          {formatDateTime(paymentDetails.paidAt)}
-                        </p>
-                      </div>
-                    )}
-
-                    <div>
-                      <p className="text-sm text-gray-500">
-                        {t("BookingResult.transactionCode")}
-                      </p>
-                      <p className="font-semibold text-blue-600">
-                        {paymentDetails.transactionCode}
-                      </p>
-                    </div>
-                  </div>
-
-                  {isSuccess && (
-                    <div className="mt-4 p-3 bg-green-50 rounded-lg border border-green-200">
-                      <div className="flex items-center gap-2">
-                        <CheckCircle className="w-4 h-4 text-green-600" />
-                        <span className="text-sm font-medium text-green-800">
-                          {t("Payment.paymentSuccess")}
-                        </span>
-                      </div>
-                    </div>
-                  )}
-                </CardContent>
-              </Card>
-
-              {/* Customer Info */}
-              <Card>
-                <CardHeader>
-                  <CardTitle className="flex items-center gap-2">
-                    <User className="w-5 h-5 text-purple-600" />
-                    {t("BookingResult.customerInfoTitle")}
-                  </CardTitle>
-                </CardHeader>
-                <CardContent className="space-y-3">
+            {/* Additional Details */}
+            <div className="grid md:grid-cols-2 gap-6 mb-8">
+              {/* Customer Information */}
+              <div>
+                <h4 className="text-sm font-medium text-muted-foreground mb-3 flex items-center gap-2">
+                  <User className="w-4 h-4 text-primary" />
+                  {t("BookingResult.customerInfoTitle")}
+                </h4>
+                <div className="space-y-2">
                   <div>
-                    <p className="text-sm text-gray-500">
+                    <p className="text-sm text-muted-foreground">
                       {t("Profile.fullName")}
                     </p>
-                    <p className="font-semibold">
+                    <p className="font-semibold text-foreground">
                       {paymentDetails.customerName}
                     </p>
                   </div>
                   <div>
-                    <p className="text-sm text-gray-500">
+                    <p className="text-sm text-muted-foreground">
                       {t("Booking.phoneNumber")}
                     </p>
                     <div className="flex items-center gap-2">
-                      <Phone className="w-4 h-4 text-gray-400" />
-                      <p className="font-semibold">
+                      <Phone className="w-4 h-4 text-muted-foreground" />
+                      <p className="font-semibold text-foreground">
                         {paymentDetails.customerPhone}
                       </p>
                     </div>
                   </div>
                   <div>
-                    <p className="text-sm text-gray-500">
+                    <p className="text-sm text-muted-foreground">
                       {t("Profile.email")}
                     </p>
                     <div className="flex items-center gap-2">
-                      <Mail className="w-4 h-4 text-gray-400" />
-                      <p className="font-semibold">
+                      <Mail className="w-4 h-4 text-muted-foreground" />
+                      <p className="font-semibold text-foreground">
                         {paymentDetails.customerEmail}
                       </p>
                     </div>
                   </div>
-                </CardContent>
-              </Card>
+                </div>
+              </div>
+
+              {/* Transaction Details */}
+              <div>
+                <h4 className="text-sm font-medium text-muted-foreground mb-3">
+                  {t("BookingResult.transactionCode")}
+                </h4>
+                <p className="font-semibold text-primary mb-4">
+                  {paymentDetails.transactionCode}
+                </p>
+
+                {paymentDetails.paidAt && (
+                  <div>
+                    <p className="text-sm text-muted-foreground">
+                      {t("BookingResult.paidAt")}
+                    </p>
+                    <p className="font-semibold text-foreground">
+                      {formatDateTime(paymentDetails.paidAt)}
+                    </p>
+                  </div>
+                )}
+
+                {isSuccess && (
+                  <div className="mt-4 p-3 bg-primary/10 rounded-lg border border-primary/20">
+                    <div className="flex items-center gap-2">
+                      <CheckCircle className="w-4 h-4 text-primary" />
+                      <span className="text-sm font-medium text-primary">
+                        {t("Payment.paymentSuccess")}
+                      </span>
+                    </div>
+                  </div>
+                )}
+              </div>
             </div>
-          </div>
 
-          {/* Actions */}
-          <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <Link aria-label="View Booking History" href="/user/my-tickets">
-              <Button
-                aria-label="View Booking History"
-                className="bg-green-600 hover:bg-green-700 text-white flex items-center gap-2"
-              >
-                <Calendar className="w-4 h-4" />
-                {t("BookingResult.viewHistory")}
-                <ArrowRight className="w-4 h-4" />
-              </Button>
-            </Link>
-            {!isSuccess && (
-              <Button
-                aria-label="Try Again"
-                onClick={() => window.location.reload()}
-                variant="outline"
-                className="flex items-center gap-2"
-              >
-                <Clock className="w-4 h-4" />
-                {t("BookingResult.checkAgain")}
-              </Button>
-            )}
-          </div>
+            {/* Actions */}
+            <div className="flex flex-col sm:flex-row gap-4 justify-center mb-6">
+              <Link aria-label="View Booking History" href="/user/my-tickets">
+                <Button
+                  aria-label="View Booking History"
+                  className="flex items-center gap-2"
+                >
+                  <Calendar className="w-4 h-4" />
+                  {t("BookingResult.viewHistory")}
+                  <ArrowRight className="w-4 h-4" />
+                </Button>
+              </Link>
+              {!isSuccess && (
+                <Button
+                  aria-label="Try Again"
+                  onClick={() => window.location.reload()}
+                  variant="outline"
+                  className="flex items-center gap-2"
+                >
+                  <Clock className="w-4 h-4" />
+                  {t("BookingResult.checkAgain")}
+                </Button>
+              )}
+            </div>
 
-          {/* Support Info */}
-          <Card className="bg-gray-50">
-            <CardContent className="p-4 text-center">
-              <p className="text-sm text-gray-600">
+            {/* Support Info */}
+            <div className="p-4 bg-muted/30 rounded-lg text-center">
+              <p className="text-sm text-muted-foreground">
                 {t("BookingResult.supportText", {
                   phone: "1900 1234",
                   email: "support@busify.vn",
                 })}
               </p>
-            </CardContent>
-          </Card>
-        </div>
+            </div>
+          </CardContent>
+        </Card>
       </div>
     </div>
   );

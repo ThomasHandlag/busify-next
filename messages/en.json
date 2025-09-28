@@ -261,6 +261,11 @@
     "orderFrom": "Order from",
     "appliedSave": "✅ Applied - Save"
   },
+  "BookingCountdown": {
+    "expired": "Booking session expired. Redirecting...",
+    "sessionExpires": "Booking session expires in:",
+    "autoRedirect": "You will be automatically redirected when time expires"
+  },
   "Trips": {
     "available": "Available Trips",
     "tripItem": {
@@ -442,6 +447,7 @@
     "understood": "Understood"
   },
   "TripDetail": {
+    "to": "to",
     "busLayout": "Bus Layout",
     "selectSeat": "Select Your Seat",
     "selectedSeat": "Selected Seat",
@@ -510,7 +516,10 @@
     "dropPointText": "Drop point",
     "durationText": "Duration",
     "pickAndDropText": "Pick up and drop",
-    "pickUpText": "Pick up"
+    "pickUpText": "Pick up",
+    "busInfo": "Bus Info",
+    "busLicense": "Bus License",
+    "busModel": "Bus Model"
   },
   "Amenities": {
     "wifi": "Wi-Fi",

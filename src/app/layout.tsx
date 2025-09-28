@@ -48,7 +48,7 @@ export default function RootLayout({
         />
       </head>
       <body
-        className={`${geistSans.variable} ${geistMono.variable} ${montserrat.variable} antialiased`}
+        className={`${geistSans.variable} ${geistMono.variable} ${montserrat.variable} antialiased bg-primary`}
       >
         <NextIntlClientProvider>
           <PreferencesProvider>
@@ -63,9 +63,7 @@ export default function RootLayout({
                 <SessionProviderWrapper>
                   <WebSocketProvider>
                     <Header />
-                    <main>
-                      {children}
-                    </main>
+                    <main>{children}</main>
                     <Toaster />
                     <FloatingChatButton />
                     <FloatingAIChatButton />

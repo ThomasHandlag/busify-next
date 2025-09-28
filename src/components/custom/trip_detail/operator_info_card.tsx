@@ -1,6 +1,6 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { getBusOperatorById } from "@/lib/data/bus_operator";
-import { Bus, Star, Phone, MapPin } from "lucide-react";
+import { Star, Phone, MapPin } from "lucide-react";
 import { getTranslations } from "next-intl/server";
 
 import Image from "next/image";
@@ -24,39 +24,44 @@ export async function OperatorInfoCard({ id }: { id: number }) {
     <Card>
       <CardHeader>
         <CardTitle className="flex items-center space-x-2">
-          <Bus className="w-5 h-5" />
           <span>{t("busOperator")}</span>
         </CardTitle>
       </CardHeader>
-      <CardContent>
-        <div className="flex items-center space-x-4 mb-4">
-          <Image aria-label="Image21"
-            src={operatorDetail.logoUrl}
-            alt={operatorDetail.name ?? "Logo"}
-            width={48}
-            height={48}
-            className="w-12 h-12 rounded-lg"
-          />
-          <div>
-            <h3 className="text-lg font-semibold">{operatorDetail.name}</h3>
-            <div className="flex items-center space-x-2">
-              <Star className="w-4 h-4 text-accent fill-current" />
-              <span className="text-sm text-muted-foreground">
-                {operatorDetail.rating}/5 ({operatorDetail.totalReviews} {t("reviews")})
-              </span>
+      <CardContent className="flex justify-between flex-col lg:flex-row gap-2">
+        <div>
+          <div className="flex items-center space-x-4 mb-4">
+            <Image
+              aria-label="Image21"
+              src={operatorDetail.logoUrl ?? "/logo.png"}
+              alt={operatorDetail.name ?? "Logo"}
+              width={48}
+              height={48}
+              className="w-12 h-12 rounded-lg"
+            />
+            <div>
+              <h3 className="text-lg font-semibold">{operatorDetail.name}</h3>
+              <div className="flex items-center space-x-2">
+                <Star className="w-4 h-4 text-accent fill-current" />
+                <span className="text-sm text-muted-foreground">
+                  {operatorDetail.rating}/5 ({operatorDetail.totalReviews}{" "}
+                  {t("reviews")})
+                </span>
+              </div>
             </div>
           </div>
-        </div>
-        <div className="space-y-2">
-          <div className="flex items-center space-x-3">
-            <Phone className="w-5 h-5 text-muted-foreground" />
-            <span className="text-muted-foreground">{operatorDetail.hotline}</span>
-          </div>
-          <div className="flex items-center space-x-3">
-            <MapPin className="w-5 h-5 text-muted-foreground" />
-            <span className="text-muted-foreground">
-              {t("headquarters")} {operatorDetail.address}
-            </span>
+          <div className="space-y-2">
+            <div className="flex items-center space-x-3">
+              <Phone className="w-5 h-5 text-muted-foreground" />
+              <span className="text-muted-foreground">
+                {operatorDetail.hotline}
+              </span>
+            </div>
+            <div className="flex items-center space-x-3">
+              <MapPin className="w-5 h-5 text-muted-foreground" />
+              <span className="text-muted-foreground">
+                {t("headquarters")} {operatorDetail.address}
+              </span>
+            </div>
           </div>
         </div>
         <ViewTripBtn name={operatorDetail.name} />
@@ -64,4 +69,3 @@ export async function OperatorInfoCard({ id }: { id: number }) {
     </Card>
   );
 }
-

@@ -7,6 +7,7 @@ import { usePathname } from "next/navigation";
 import NavMobile from "./nav_mobile";
 import NavDesktop from "./nav_desktop";
 import { useTranslations } from "next-intl";
+import { FaBlog } from "react-icons/fa";
 
 export interface NavItemData {
   href: string;
@@ -46,7 +47,7 @@ const Header = () => {
     {
       href: "/blog",
       label: t("blog"),
-      icon: () => <HelpCircle className="w-4 h-4" />,
+      icon: () => <FaBlog className="w-4 h-4" />,
     },
   ];
 
@@ -80,14 +81,13 @@ const Header = () => {
     return () => window.removeEventListener("scroll", handleScroll);
   }, [lastScrollTop]);
 
-  const isHomePage = pathname === "/";
+  const  isHomePage = pathname === "/";
 
   return (
     <header
-      className={`px-4 py-3 justify-between top-0 ${
-        isHomePage ? "fixed" : "sticky"
-      } z-50 w-full ${
-        isTop && isHomePage
+      className={`px-4 py-3 justify-between top-0 
+        ${isHomePage ? "fixed" : "sticky"} z-50 w-full ${
+        isTop
           ? "bg-transparent"
           : "backdrop-blur-md bg-primary/90 shadow-md"
       } ${

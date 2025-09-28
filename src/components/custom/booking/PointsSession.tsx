@@ -88,14 +88,13 @@ export default function PointsSection({
         />
         <Button
           aria-label="Apply Points"
-          variant="outline"
           onClick={handleApplyPoints}
           disabled={loading || !pointsInput.trim()}
         >
           {loading ? (
             <>
               <Loader2 className="w-4 h-4 mr-2 animate-spin" />
-              {t("Points.applying")}...
+              {t("Points.usePoints")}...
             </>
           ) : (
             t("Points.usePoints")
@@ -103,7 +102,7 @@ export default function PointsSection({
         </Button>
       </div>
 
-      <p className="text-sm text-gray-500">
+      <p className="text-sm text-muted-foreground">
         {t("Points.youve")}{" "}
         <span className="font-semibold">{availablePoints}</span>{" "}
         {t("Points.points")} {t("Points.pointValue")}
@@ -112,8 +111,8 @@ export default function PointsSection({
       {error && <p className="text-red-500 text-sm">{error}</p>}
 
       {usedPoints > 0 && (
-        <div className="bg-blue-50 border border-blue-200 rounded-lg p-3 flex items-center justify-between">
-          <p className="text-blue-700 text-sm">
+        <div className="bg-primary/20 border border-primary/50 rounded-lg p-3 flex items-center justify-between">
+          <p className="text-foreground text-sm">
             {t("Points.usedPoints", {
               points: usedPoints,
               amount: (usedPoints * 1000)?.toLocaleString("vi-VN") + "đ",

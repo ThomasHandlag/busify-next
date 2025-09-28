@@ -135,7 +135,7 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
           __html: JSON.stringify(jsonLd),
         }}
       />
-      <div className="container mx-auto px-4 py-8">
+      <div className="container mx-auto bg-background px-4 py-8">
         {/* Breadcrumbs */}
         <nav className="mb-8 text-sm text-muted-foreground">
           <Link href="/" className="hover:text-primary">

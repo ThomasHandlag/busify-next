@@ -35,7 +35,7 @@ export function UserSidebar() {
     },
   ];
   return (
-    <div className="lg:flex lg:flex-col flex-row sticky gap-2 hidden w-64 p-4">
+    <div className="lg:flex lg:flex-col bg-background flex-row gap-2 hidden p-4 rounded-lg border border-border">
       {userMenuItems.map((item) => (
         <Link
           key={item.title}

@@ -17,7 +17,6 @@ import { TripFilterQuery } from "@/lib/data/trip";
 import { useForm } from "react-hook-form";
 import { Form, FormField, FormItem, FormLabel } from "../ui/form";
 import { Input } from "../ui/input";
-import { Separator } from "../ui/separator";
 import { Loader2 } from "lucide-react";
 import { getAllBusModelsClient } from "@/lib/data/bus";
 import { getAllLocationsClient } from "@/lib/data/location";
@@ -124,62 +123,58 @@ const SearchFilterSidebar = ({ callback }: { callback?: () => void }) => {
     <div className="space-y-6">
       <Form {...form}>
         <form onSubmit={handleApplyFilters} className="space-y-6">
-          {/* Action Buttons - Moved to top for better UX */}
-          <div className="pt-2 pb-4 space-y-3 border-b border-border">
-            <FormItem>
-              <Button
-                aria-label={t("Filter.applyFilters")}
-                className="w-full bg-accent hover:bg-accent/90"
-                type="button"
-                disabled={isLoading}
-                onClick={() => {
-                  const formData = form.getValues();
-                  callback?.();
-                  onApplyFilters({
-                    ...formData,
-                    timeZone: Intl.DateTimeFormat().resolvedOptions().timeZone,
-                  });
-                }}
-              >
-                {isLoading ? (
-                  <>
-                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                    {t("Filter.applying")}
-                  </>
-                ) : (
-                  t("Filter.applyFilters")
-                )}
-              </Button>
-            </FormItem>
-            <FormItem>
-              <Button
-                aria-label={t("Filter.reset")}
-                variant="outline"
-                className="w-full"
-                type="button"
-                disabled={isLoading}
-                onClick={() => {
-                  form.reset({
-                    startLocation: undefined,
-                    endLocation: undefined,
-                    departureDate: undefined,
-                    untilTime: undefined,
-                    operatorName: undefined,
-                    busModels: [],
-                    amenities: [],
-                    availableSeats: 1,
-                  });
-                  callback?.();
-                  onApplyFilters({
-                    ...form.getValues(),
-                    timeZone: Intl.DateTimeFormat().resolvedOptions().timeZone,
-                  });
-                }}
-              >
-                {t("Filter.reset")}
-              </Button>
-            </FormItem>
-          </div>
+          <FormItem>
+            <Button
+              aria-label={t("Filter.applyFilters")}
+              type="button"
+              disabled={isLoading}
+              onClick={() => {
+                const formData = form.getValues();
+                callback?.();
+                onApplyFilters({
+                  ...formData,
+                  timeZone: Intl.DateTimeFormat().resolvedOptions().timeZone,
+                });
+              }}
+            >
+              {isLoading ? (
+                <>
+                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                  {t("Filter.applying")}
+                </>
+              ) : (
+                t("Filter.applyFilters")
+              )}
+            </Button>
+          </FormItem>
+          <FormItem>
+            <Button
+              aria-label={t("Filter.reset")}
+              variant="outline"
+              className="w-full"
+              type="button"
+              disabled={isLoading}
+              onClick={() => {
+                form.reset({
+                  startLocation: undefined,
+                  endLocation: undefined,
+                  departureDate: undefined,
+                  untilTime: undefined,
+                  operatorName: undefined,
+                  busModels: [],
+                  amenities: [],
+                  availableSeats: 1,
+                });
+                callback?.();
+                onApplyFilters({
+                  ...form.getValues(),
+                  timeZone: Intl.DateTimeFormat().resolvedOptions().timeZone,
+                });
+              }}
+            >
+              {t("Filter.reset")}
+            </Button>
+          </FormItem>
 
           <FormField
             control={form.control}
@@ -235,9 +230,6 @@ const SearchFilterSidebar = ({ callback }: { callback?: () => void }) => {
               </FormItem>
             )}
           />
-
-          <Separator />
-
           <FormField
             control={form.control}
             name="departureDate"
@@ -270,9 +262,6 @@ const SearchFilterSidebar = ({ callback }: { callback?: () => void }) => {
               </FormItem>
             )}
           />
-
-          <Separator />
-
           <FormField
             control={form.control}
             name="operatorName"
@@ -287,9 +276,6 @@ const SearchFilterSidebar = ({ callback }: { callback?: () => void }) => {
               </FormItem>
             )}
           />
-
-          <Separator />
-
           <FormField
             control={form.control}
             name="busModels"
@@ -325,9 +311,6 @@ const SearchFilterSidebar = ({ callback }: { callback?: () => void }) => {
               </FormItem>
             )}
           />
-
-          <Separator />
-
           <FormField
             control={form.control}
             name="amenities"
@@ -379,8 +362,6 @@ const SearchFilterSidebar = ({ callback }: { callback?: () => void }) => {
               </FormItem>
             )}
           />
-
-          <Separator />
         </form>
       </Form>
     </div>

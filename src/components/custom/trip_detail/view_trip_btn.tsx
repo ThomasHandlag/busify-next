@@ -12,8 +12,6 @@ export const ViewTripBtn = ({ name }: { name: string }) => {
   return (
     <Button
       aria-label="View all trips"
-      variant="outline"
-      className="w-full mt-4"
       onClick={() => {
         console.log("Filter by operator:", name);
         filter.handleApplyFilters({

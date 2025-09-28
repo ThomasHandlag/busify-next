@@ -261,6 +261,11 @@
     "orderFrom": "Đơn từ",
     "appliedSave": "✅ Đã áp dụng - Tiết kiệm"
   },
+  "BookingCountdown": {
+    "expired": "Phiên đặt vé đã hết hạn. Đang chuyển hướng...",
+    "sessionExpires": "Phiên đặt vé sẽ hết hạn trong:",
+    "autoRedirect": "Bạn sẽ được tự động chuyển hướng khi hết thời gian"
+  },
   "Trips": {
     "available": "Các Chuyến Đi Có Sẵn",
     "tripItem": {
@@ -509,8 +514,12 @@
     "pickUpText": "Điểm Đón",
     "dropPointText": "Điểm Trả Khách",
     "busImages": "Hình ảnh xe",
+    "busInfo": "Thông tin xe",
+    "busLicense": "Biển số xe",
+    "busModel": "Mẫu xe",
     "noBusImages": "Chưa có hình ảnh xe",
-    "tripTimeline": "Thời gian chuyến đi"
+    "tripTimeline": "Thời gian chuyến đi",
+    "to": "đến"
   },
   "Amenities": {
     "wifi": "Wi-Fi",

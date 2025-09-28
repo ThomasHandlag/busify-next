@@ -118,17 +118,14 @@ export default function AutoPromotionSection({
         let usedIds: number[] = [];
         if (session?.user?.accessToken) {
           try {
-            const res = await fetch(
-              `http://localhost:8080/api/promotions/user/used`,
-              {
-                method: "GET",
-                headers: {
-                  "Content-Type": "application/json",
-                  Authorization: `Bearer ${session.user.accessToken}`,
-                },
-                credentials: "include",
-              }
-            );
+            const res = await fetch(`${BASE_URL}api/promotions/user/used`, {
+              method: "GET",
+              headers: {
+                "Content-Type": "application/json",
+                Authorization: `Bearer ${session.user.accessToken}`,
+              },
+              credentials: "include",
+            });
             if (res.ok) {
               const data = await res.json();
               if (data?.code === 200 && Array.isArray(data.result)) {
@@ -226,11 +223,11 @@ export default function AutoPromotionSection({
 
   if (loading) {
     return (
-      <Card className="overflow-hidden">
-        <CardHeader className="bg-gradient-to-r from-orange-50 to-red-50 py-3">
+      <Card>
+        <CardHeader>
           <CardTitle className="flex items-center gap-2 text-base">
-            <Gift className="w-5 h-5 text-orange-600" />
-            <span className="text-orange-600 font-semibold">
+            <Gift className="w-5 h-5 text-primary" />
+            <span className="text-primary font-semibold">
               {t("Booking.specialOffersLoading")}
             </span>
           </CardTitle>
@@ -239,7 +236,7 @@ export default function AutoPromotionSection({
           <div className="space-y-2">
             {[...Array(1)].map((_, i) => (
               <div key={i} className="animate-pulse">
-                <div className="h-16 bg-gradient-to-r from-gray-200 via-gray-100 to-gray-200 rounded-lg"></div>
+                <div className="h-16 bg-gradient-to-r from-muted via-muted/50 to-muted rounded-lg"></div>
               </div>
             ))}
           </div>
@@ -253,14 +250,14 @@ export default function AutoPromotionSection({
   }
 
   return (
-    <Card className="overflow-hidden shadow-md border-0 pt-0">
-      <CardHeader className="bg-gradient-to-r from-orange-300 to-red-300 text-red-400 py-3 px-4">
+    <Card>
+      <CardHeader>
         <CardTitle className="flex items-center gap-2 text-base">
           <Gift className="w-5 h-5" />
           <span className="font-semibold">🎉 {t("Booking.offers")}</span>
         </CardTitle>
       </CardHeader>
-      <CardContent className="p-3">
+      <CardContent>
         <div className="space-y-2">
           {autoPromotions.map((promotion, index) => {
             const isSelected = selectedPromotion?.id === promotion.id;
@@ -273,17 +270,17 @@ export default function AutoPromotionSection({
                 key={promotion.id}
                 className={`relative border rounded-lg p-3 cursor-pointer transition-all duration-200 ${
                   isSelected
-                    ? "border-orange-200 bg-orange-50 shadow-md"
+                    ? "border-primary/30 bg-primary/5 shadow-md"
                     : isEligible
-                    ? "border-gray-200 hover:border-orange-300 bg-white hover:shadow-sm"
-                    : "border-gray-200 bg-gray-50 cursor-not-allowed opacity-60"
-                } ${isBestDeal && isEligible ? "ring-1 ring-orange-300" : ""}`}
+                    ? "border-border hover:border-primary/50 bg-background hover:shadow-sm"
+                    : "border-border bg-muted cursor-not-allowed opacity-60"
+                } ${isBestDeal && isEligible ? "ring-1 ring-primary/50" : ""}`}
                 onClick={() => isEligible && handlePromotionSelect(promotion)}
               >
                 {/* Best Deal Badge */}
                 {isBestDeal && isEligible && (
-                  <div className="absolute -top-2 left-3">
-                    <div className="bg-red-500 text-white px-2 py-1 rounded text-xs font-bold flex items-center gap-1">
+                  <div className="absolute -top-2 right-2">
+                    <div className="bg-accent text-accent-foreground px-2 py-1 rounded-md text-xs font-bold flex items-center gap-1">
                       <Star className="w-3 h-3" />
                       {t("Booking.hot")}
                     </div>
@@ -294,20 +291,20 @@ export default function AutoPromotionSection({
                   {/* Selection indicator */}
                   <div>
                     {isSelected ? (
-                      <CheckCircle className="w-5 h-5 text-orange-600" />
+                      <CheckCircle className="w-5 h-5 text-primary" />
                     ) : (
-                      <Circle className="w-5 h-5 text-gray-300" />
+                      <Circle className="w-5 h-5 text-muted-foreground" />
                     )}
                   </div>
 
                   <div className="flex-1">
-                    <div className="flex items-center gap-2 mb-1">
+                    <div className="flex items-center gap-2">
                       <Badge
                         variant={isEligible ? "default" : "secondary"}
                         className={`text-xs px-2 py-1 ${
                           isEligible
-                            ? "bg-orange-300 text-white"
-                            : "bg-gray-300 text-gray-600"
+                            ? "bg-primary text-primary-foreground"
+                            : "bg-muted text-muted-foreground"
                         }`}
                       >
                         {promotion.discountType === "PERCENTAGE" ? (
@@ -326,14 +323,16 @@ export default function AutoPromotionSection({
 
                     <p
                       className={`text-sm font-medium ${
-                        isEligible ? "text-gray-900" : "text-gray-500"
+                        isEligible ? "text-foreground" : "text-muted-foreground"
                       }`}
                     >
                       {getDiscountDisplay(promotion)}
                     </p>
                     <p
                       className={`text-xs ${
-                        isEligible ? "text-gray-600" : "text-gray-400"
+                        isEligible
+                          ? "text-muted-foreground"
+                          : "text-muted-foreground/70"
                       }`}
                     >
                       {t("Booking.orderFrom")}{" "}
@@ -347,11 +346,11 @@ export default function AutoPromotionSection({
         </div>
 
         {selectedPromotion && (
-          <div className="mt-3 p-3 bg-green-50 border border-green-200 rounded-lg">
+          <div className="mt-3 p-3 bg-primary/5 border border-primary/20 rounded-lg">
             <div className="flex items-center gap-2">
-              <CheckCircle className="w-4 h-4 text-green-600" />
+              <CheckCircle className="w-4 h-4 text-primary" />
               <div className="flex-1">
-                <p className="text-green-700 font-medium text-sm">
+                <p className="text-primary font-medium text-sm">
                   {t("Booking.appliedSave")}{" "}
                   <span className="font-bold">
                     {calculateDiscount(

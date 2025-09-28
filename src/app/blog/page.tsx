@@ -136,7 +136,7 @@ export default async function BlogPage({
           __html: JSON.stringify(jsonLd),
         }}
       />
-      <div className="container mx-auto px-4 py-8">
+      <div className="container mx-auto px-4 py-8 bg-background">
         {/* Page Header with Search */}
         <div className="mb-12 text-center">
           <form className="flex items-center max-w-md mx-auto">

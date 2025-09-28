@@ -130,12 +130,12 @@ const RoutingMachine = ({
   return null; // Component này chỉ để thực thi logic, không render gì
 };
 
-export default function RouteMap({
+const RouteMap = ({
   startLocation,
   endLocation,
   routeStops = [],
   className = "h-64 w-full",
-}: RouteMapProps) {
+}: RouteMapProps) => {
   // Ghi chú: Không cần state isLoading và error ở đây nữa vì dynamic import đã xử lý phần tải.
   // Bạn có thể thêm lại nếu cần xử lý lỗi fetch dữ liệu tọa độ.
 
@@ -255,3 +255,5 @@ export default function RouteMap({
     </div>
   );
 }
+
+export default RouteMap;

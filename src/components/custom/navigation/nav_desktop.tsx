@@ -34,16 +34,18 @@ const NavDesktop = ({ publicMenuItems, isActive }: NavDataProps) => {
           {publicMenuItems.map((item) => {
             return (
               <NavigationMenuItem key={item.href} className="bg-transparent">
-                <NavigationMenuLink
-                  href={item.href}
-                  className={`${navigationMenuTriggerStyle()} bg-transparent hover:after:w-full text-white ${
-                    isActive(item.href)
-                      ? "bg-transparent  after:w-full"
-                      : "after:w-0"
-                  } relative after:absolute after:bottom-0 after:left-1/2 after:h-0.5 after:bg-background after:transition-all after:duration-300 after:-translate-x-1/2 flex items-center space-x-2`}
-                >
-                  {item.icon()}
-                  <span>{item.label}</span>
+                <NavigationMenuLink asChild>
+                  <Link
+                    href={item.href}
+                    className={`${navigationMenuTriggerStyle()} bg-transparent hover:after:w-full text-white ${
+                      isActive(item.href)
+                        ? "bg-transparent  after:w-full"
+                        : "after:w-0"
+                    } relative after:absolute after:bottom-0 after:left-1/2 after:h-0.5 after:bg-background after:transition-all after:duration-300 after:-translate-x-1/2 flex items-center space-x-2`}
+                  >
+                    {item.icon()}
+                    <span>{item.label}</span>
+                  </Link>
                 </NavigationMenuLink>
               </NavigationMenuItem>
             );
@@ -93,12 +95,14 @@ const NavDesktop = ({ publicMenuItems, isActive }: NavDataProps) => {
                       {t("Header.dashboard")}
                     </Link>
                     <hr className="my-1" />
-                    <button
+                    <Button
                       onClick={() => signOut()}
-                      className="w-full text-left px-3 py-2 text-sm rounded-lg hover:bg-accent transition-colors text-destructive"
+                      variant="ghost"
+                      size="sm"
+                      className="w-full justify-start"
                     >
                       {t("Profile.logout")}
-                    </button>
+                    </Button>
                   </div>
                 </div>
               </NavigationMenuContent>

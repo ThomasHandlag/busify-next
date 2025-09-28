@@ -46,19 +46,18 @@ export default function TripSortControls() {
   };
 
   return (
-    <div className="flex flex-col sm:flex-row sm:items-center gap-3 sm:gap-4 p-3 sm:p-4 bg-gradient-to-r from-primary/5 to-primary/10 dark:from-primary/10 dark:to-primary/20 rounded-lg shadow-sm hover:shadow-md transition-shadow duration-200">
-      <div className="flex items-center gap-2">
-        <ArrowUpDown className="w-4 h-4 text-primary flex-shrink-0" />
-        <span className="text-xs sm:text-sm font-medium text-primary">
-          {t("sortBy")}
-        </span>
-      </div>
-
+    <div className="bg-background p-2 rounded-lg shadow-sm">
       <Form {...form}>
         <form
           onSubmit={form.handleSubmit(onSubmit)}
-          className="flex flex-col sm:flex-row gap-3 sm:gap-3 w-full sm:w-auto"
+          className="flex flex-col lg:flex-row items-center justify-evenly"
         >
+          <div className="flex items-center gap-2">
+            <ArrowUpDown className="w-4 h-4 text-primary flex-shrink-0" />
+            <span className="text-xs sm:text-sm font-medium text-primary">
+              {t("sortBy")}
+            </span>
+          </div>
           <FormField
             control={form.control}
             name="sortBy"

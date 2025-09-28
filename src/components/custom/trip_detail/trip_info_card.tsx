@@ -1,26 +1,11 @@
 "use client";
 
 import React, { useState } from "react";
-import { Card, CardContent, CardHeader, CardTitle } from "../../ui/card";
-import {
-  Bus,
-  Clock,
-  Navigation as NavigationIcon,
-  Users,
-  MapPin,
-  ArrowRight,
-  Wifi,
-  Snowflake,
-  Tv,
-  BatteryCharging,
-  Toilet,
-} from "lucide-react";
-import { Separator } from "../../ui/separator";
+import { Clock, ArrowRight } from "lucide-react";
 import { TripDetail } from "@/lib/data/trip";
 import Image from "next/image";
 import dynamic from "next/dynamic";
 import { useTranslations } from "next-intl";
-
 import { Swiper, SwiperSlide } from "swiper/react";
 import { Thumbs } from "swiper/modules";
 import type { Swiper as SwiperType } from "swiper";
@@ -75,348 +60,148 @@ const TripInfoCard = ({ tripDetail }: { tripDetail: TripDetail }) => {
     });
   };
 
-  const amenityMap: Record<
-    string,
-    {
-      icon: React.ComponentType<{ className?: string }>;
-      label: string;
-      color: string;
-    }
-  > = {
-    wifi: { icon: Wifi, label: t("Amenities.wifi"), color: "text-primary" },
-    tv: { icon: Tv, label: t("Amenities.tv"), color: "text-accent-foreground" },
-    toilet: {
-      icon: Toilet,
-      label: t("Amenities.toilet"),
-      color: "text-primary",
-    },
-    charging: {
-      icon: BatteryCharging,
-      label: t("Amenities.charging"),
-      color: "text-primary",
-    },
-    air_conditioner: {
-      icon: Snowflake,
-      label: t("Amenities.air_conditioner"),
-      color: "text-primary",
-    },
-  };
-
-  const renderAmenities = () => {
-    const availableAmenities = tripDetail.bus.amenities
-      .filter((amenity) => amenityMap[amenity])
-      .map((amenity) => {
-        const config = amenityMap[amenity];
-        const IconComponent = config.icon;
-        return (
-          <div key={amenity} className="flex items-center gap-2 text-sm">
-            <IconComponent className={`w-4 h-4 ${config.color}`} />
-            <span>{config.label}</span>
-          </div>
-        );
-      });
-
-    if (availableAmenities.length === 0) {
-      return (
-        <div className="text-sm text-muted-foreground">
-          {t("Amenities.noAmenities")}
-        </div>
-      );
-    }
-
-    return (
-      <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
-        {availableAmenities}
-      </div>
-    );
-  };
-
-  const renderRouteTimeline = () => {
-    const routeStops = tripDetail.route_stops || [];
-    const allStops = [
-      tripDetail.route.start_location,
-      ...routeStops,
-      tripDetail.route.end_location,
-    ];
-
-    return (
-      <div className="w-full overflow-x-auto scrollbar-thin scrollbar-thumb-muted-foreground scrollbar-track-muted">
-        <div className="flex items-center min-w-max px-4 py-2">
-          {allStops.map((stop, index) => {
-            const isStart = index === 0;
-            const isEnd = index === allStops.length - 1;
-            const isLast = index === allStops.length - 1;
-
-            return (
-              <React.Fragment key={index}>
-                {/* Stop point */}
-                <div className="flex flex-col items-center text-center flex-shrink-0 relative gap-y-2">
-                  <div
-                    className={`w-5 h-5 sm:w-6 sm:h-6 rounded-full border-2 transition-all duration-200 flex-shrink-0
-                    ${
-                      isStart
-                        ? "bg-primary border-primary shadow-lg shadow-primary/20"
-                        : isEnd
-                        ? "bg-destructive border-destructive shadow-lg shadow-destructive/20"
-                        : "bg-accent border-accent shadow-lg shadow-accent/20"
-                    }`}
-                  />
-                  <div className="inline-block whitespace-nowrap">
-                    <p className="text-xs sm:text-sm font-medium text-foreground">
-                      {stop.address || stop.name}
-                    </p>
-                    <p className="text-xs text-muted-foreground mt-0.5">{stop.city}</p>
-                  </div>
-                </div>
-
-                {/* Connection line */}
-                {!isLast && (
-                  <div className="flex items-center mx-3 sm:mx-4 min-w-[60px] sm:min-w-[80px]">
-                    <div className="h-px bg-border flex-1" />
-                    <ArrowRight className="w-4 h-4 text-muted-foreground mx-2 flex-shrink-0" />
-                    <div className="h-px bg-border flex-1" />
-                  </div>
-                )}
-              </React.Fragment>
-            );
-          })}
-        </div>
-      </div>
-    );
-  };
-
   return (
-    <Card className="px-4 py-6">
-      <CardHeader className="lg:px-6 md:px-6 px-0 sm:px-4">
-        <CardTitle className="flex items-center space-x-2">
-          <Bus className="w-5 h-5" />
-          <span>{t("TripDetail.tripInfo")}</span>
-        </CardTitle>
-      </CardHeader>
-      <CardContent className="lg:px-6 md:px-6 px-0 sm:px-4 space-y-6">
-        {/* Route & Schedule */}
-        <div className="bg-secondary rounded-lg p-4">
-          <h3 className="font-semibold mb-4 flex items-center gap-2">
-            <MapPin className="w-4 h-4" />
-            {t("TripDetail.routeAndTime")}
-          </h3>
-
-          <div className="grid grid-cols-3 gap-4 items-center mb-4">
-            <div className="text-center">
-              <div className="bg-primary text-primary-foreground p-3 rounded-lg mb-2">
-                <p className="text-lg font-bold">
-                  {formatTime(tripDetail.departure_time)}
-                </p>
-                <p className="text-xs opacity-90">
-                  {formatDate(tripDetail.departure_time)}
-                </p>
-              </div>
-              <p className="text-sm font-medium">
-                {tripDetail.route.start_location.name}
+    <div className="lg:px-6 md:px-6 px-0 sm:px-4 space-y-6 w-full">
+      {/* Route & Schedule */}
+      <div className="bg-background grid grid-cols-1 items-center">
+        <div className="text-center">
+          <h1 className="text-xl font-bold">
+            {tripDetail.route.start_location.city} {t("TripDetail.to")}{" "}
+            {tripDetail.route.end_location.city}
+          </h1>
+        </div>
+        <div className="grid grid-cols-3 gap-4 items-center">
+          <div className="text-center">
+            <div className="bg-background text-foreground p-3 rounded-lg mb-2">
+              <p className="text-lg font-bold">
+                {formatTime(tripDetail.departure_time)}
               </p>
-              <p className="text-xs text-muted-foreground">
-                {t("Booking.confirmation.startPoint")}
+              <p className="text-xs opacity-90">
+                {formatDate(tripDetail.departure_time)}
               </p>
             </div>
+            <p className="text-sm font-medium">
+              {tripDetail.route.start_location.name}
+            </p>
+            <p className="text-xs text-muted-foreground">
+              {t("Booking.confirmation.startPoint")}
+            </p>
+          </div>
 
-            <div className="text-center">
-              <div className="flex items-center justify-center mb-2">
-                <div className="w-2 h-2 bg-primary rounded-full"></div>
-                <div className="flex-1 h-px bg-border mx-2 relative">
-                  <ArrowRight className="w-4 h-4 text-muted-foreground absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-muted" />
-                </div>
-                <div className="w-2 h-2 bg-destructive rounded-full"></div>
+          <div className="text-center">
+            <div className="flex items-center justify-center mb-2">
+              <div className="w-2 h-2 bg-primary rounded-full"></div>
+              <div className="flex-1 h-px bg-border mx-2 relative w-px">
+                <ArrowRight className="w-4 h-4 text-muted-foreground absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-muted" />
               </div>
-              <div className="flex items-center justify-center text-sm text-muted-foreground">
-                <Clock className="w-4 h-4 mr-1" />
-                {formatDuration(Number(tripDetail.route.estimated_duration))}
-              </div>
+              <div className="w-2 h-2 bg-destructive rounded-full"></div>
             </div>
-
-            <div className="text-center">
-              <div className="bg-destructive text-destructive-foreground p-3 rounded-lg mb-2">
-                <p className="text-lg font-bold">
-                  {formatTime(tripDetail.arrival_time)}
-                </p>
-                <p className="text-xs opacity-90">
-                  {formatDate(tripDetail.arrival_time)}
-                </p>
-              </div>
-              <p className="text-sm font-medium">
-                {tripDetail.route.end_location.name}
-              </p>
-              <p className="text-xs text-muted-foreground">
-                {t("Booking.confirmation.endPoint")}
-              </p>
+            <div className="flex items-center justify-center text-sm text-muted-foreground">
+              <Clock className="w-4 h-4 mr-1" />
+              {formatDuration(Number(tripDetail.route.estimated_duration))}
             </div>
           </div>
+
+          <div className="text-center">
+            <div className="bg-background text-destructive-foreground p-3 rounded-lg mb-2">
+              <p className="text-lg font-bold">
+                {formatTime(tripDetail.arrival_time)}
+              </p>
+              <p className="text-xs opacity-90">
+                {formatDate(tripDetail.arrival_time)}
+              </p>
+            </div>
+            <p className="text-sm font-medium">
+              {tripDetail.route.end_location.name}
+            </p>
+            <p className="text-xs text-muted-foreground">
+              {t("Booking.confirmation.endPoint")}
+            </p>
+          </div>
+          <div className="text-start grid grid-cols-2 col-span-3 mt-2 items-center">
+            <span className="">{tripDetail.route.start_location.address}</span>
+            <span className="">{tripDetail.route.end_location.address}</span>
+          </div>
         </div>
+      </div>
 
-        <Separator />
-
-        {/* Trip Details */}
+      <div className="space-y-4">
         <div>
-          <h3 className="font-semibold mb-4 flex items-center gap-2">
-            <Bus className="w-4 h-4" />
-            {t("TripDetail.tripDetails")}
-          </h3>
+          <h4 className="font-semibold text-foreground mb-3">
+            {t("TripDetail.busImages")}
+          </h4>
+          {busImages.length > 0 ? (
+            <>
+              {/* Main gallery */}
+              <Swiper
+                modules={[Thumbs]}
+                spaceBetween={16}
+                loop
+                thumbs={{ swiper: thumbsSwiper }}
+                className="rounded-lg overflow-hidden mb-4"
+              >
+                {busImages.map((url, index) => (
+                  <SwiperSlide key={index}>
+                    <Image
+                      src={url}
+                      alt={tripDetail.bus.name ?? "Bus Image"}
+                      width={800}
+                      height={450}
+                      className="w-full h-50 md:h-100 object-cover rounded-lg"
+                      loading={index === 0 ? "eager" : "lazy"}
+                      placeholder="blur"
+                      blurDataURL="data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD..."
+                    />
+                  </SwiperSlide>
+                ))}
+              </Swiper>
 
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
-            <div className="flex items-center space-x-3 p-3 bg-accent rounded-lg">
-              <Bus className="w-5 h-5 text-primary" />
-              <div>
-                <p className="font-medium">{tripDetail.bus.name}</p>
-                <p className="text-sm text-muted-foreground">
-                  {t("TripDetail.busType")}
-                </p>
-              </div>
-            </div>
-
-            <div className="flex items-center space-x-3 p-3 bg-accent rounded-lg">
-              <Users className="w-5 h-5 text-accent-foreground" />
-              <div>
-                <p className="font-medium">
-                  {tripDetail.available_seats}/{tripDetail.bus.total_seats}{" "}
-                  {t("Trips.tripItem.seats")}
-                </p>
-                <p className="text-sm text-muted-foreground">
-                  {t("TripDetail.seatsAvailableTotal")}
-                </p>
-              </div>
-            </div>
-
-            <div className="flex items-center space-x-3 p-3 bg-accent rounded-lg">
-              <NavigationIcon className="w-5 h-5 text-secondary-foreground" />
-              <div>
-                <p className="font-medium">{t("Booking.confirmation.route")}</p>
-                <p className="text-sm text-muted-foreground">
-                  {t("TripDetail.distance")}
-                </p>
-              </div>
-            </div>
-
-            <div className="flex items-center space-x-3 p-3 bg-accent rounded-lg">
-              <Clock className="w-5 h-5 text-muted-foreground" />
-              <div>
-                <p className="font-medium">
-                  {formatDuration(Number(tripDetail.route.estimated_duration))}
-                </p>
-                <p className="text-sm text-muted-foreground">
-                  {t("TripDetail.duration")}
-                </p>
-              </div>
-            </div>
-          </div>
+              {/* Thumbnails */}
+              <Swiper
+                modules={[Thumbs]}
+                onSwiper={setThumbsSwiper}
+                spaceBetween={10}
+                freeMode
+                watchSlidesProgress
+                breakpoints={{
+                  320: { slidesPerView: 2 }, // mobile
+                  640: { slidesPerView: 3 }, // tablet
+                  1024: { slidesPerView: 4 }, // desktop
+                }}
+                className="cursor-pointer"
+              >
+                {busImages.map((url, index) => (
+                  <SwiperSlide key={index} className="!w-24">
+                    <Image
+                      src={url}
+                      alt={`Thumbnail ${index + 1}`}
+                      width={100}
+                      height={60}
+                      className="w-full h-16 object-cover rounded-md border border-border"
+                    />
+                  </SwiperSlide>
+                ))}
+              </Swiper>
+            </>
+          ) : (
+            <p className="text-sm text-muted-foreground">
+              {t("TripDetail.noBusImages")}
+            </p>
+          )}
         </div>
-
-        {/* Bus Images and Amenities */}
-        <div className="space-y-4">
-          <Separator />
-          {/* Bus Images */}
-          <div>
-            <h4 className="font-semibold text-foreground mb-3">
-              {t("TripDetail.busImages")}
-            </h4>
-            {busImages.length > 0 ? (
-              <>
-                {/* Main gallery */}
-                <Swiper
-                  modules={[Thumbs]}
-                  spaceBetween={16}
-                  loop
-                  thumbs={{ swiper: thumbsSwiper }}
-                  className="rounded-lg overflow-hidden mb-4"
-                >
-                  {busImages.map((url, index) => (
-                    <SwiperSlide key={index}>
-                      <Image
-                        src={url}
-                        alt={tripDetail.bus.name ?? "Bus Image"}
-                        width={800}
-                        height={450}
-                        className="w-full h-50 md:h-100 object-cover rounded-lg"
-                        loading={index === 0 ? "eager" : "lazy"}
-                        placeholder="blur"
-                        blurDataURL="data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD..."
-                      />
-                    </SwiperSlide>
-                  ))}
-                </Swiper>
-
-                {/* Thumbnails */}
-                <Swiper
-                  modules={[Thumbs]}
-                  onSwiper={setThumbsSwiper}
-                  spaceBetween={10}
-                  freeMode
-                  watchSlidesProgress
-                  breakpoints={{
-                    320: { slidesPerView: 2 }, // mobile
-                    640: { slidesPerView: 3 }, // tablet
-                    1024: { slidesPerView: 4 }, // desktop
-                  }}
-                  className="cursor-pointer"
-                >
-                  {busImages.map((url, index) => (
-                    <SwiperSlide key={index} className="!w-24">
-                      <Image
-                        src={url}
-                        alt={`Thumbnail ${index + 1}`}
-                        width={100}
-                        height={60}
-                        className="w-full h-16 object-cover rounded-md border border-border"
-                      />
-                    </SwiperSlide>
-                  ))}
-                </Swiper>
-              </>
-            ) : (
-              <p className="text-sm text-muted-foreground">
-                {t("TripDetail.noBusImages")}
-              </p>
-            )}
-          </div>
-
-          <Separator />
-
-          {/* Route Map */}
-          <div>
-            <h4 className="font-semibold text-foreground mb-3">
-              {t("TripDetail.journeyMap")}
-            </h4>
-            <RouteMap
-              startLocation={tripDetail.route.start_location}
-              endLocation={tripDetail.route.end_location}
-              routeStops={tripDetail.route_stops || []}
-              className="h-80 w-full rounded-lg"
-            />
-          </div>
-
-          <Separator />
-
-          {/* Amenities */}
-          <div>
-            <h4 className="font-semibold text-foreground mb-3">
-              {t("TripDetail.amenities")}
-            </h4>
-            {renderAmenities()}
-          </div>
-
-          <Separator />
-        </div>
-
         <div>
-          <h3 className="font-semibold mb-4 flex items-center gap-2">
-            <MapPin className="w-4 h-4" />
-            {t("TripDetail.tripTimeline")}
-          </h3>
-
-          <div className="bg-accent rounded-lg p-4 overflow-x-auto">
-            {renderRouteTimeline()}
-          </div>
+          <h4 className="font-semibold text-foreground mb-3">
+            {t("TripDetail.journeyMap")}
+          </h4>
+          <RouteMap
+            startLocation={tripDetail.route.start_location}
+            endLocation={tripDetail.route.end_location}
+            routeStops={tripDetail.route_stops || []}
+            className="h-80 w-full rounded-lg"
+          />
         </div>
-      </CardContent>
-    </Card>
+      </div>
+    </div>
   );
 };
 

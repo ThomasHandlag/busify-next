@@ -24,7 +24,7 @@ type PreferencesFormValues = {
   theme: Theme;
 };
 
-const PreferencesForm = () => {
+const PreferencesForm = ({noLabel} : {noLabel?: boolean}) => {
   const pref = usePreferences();
   const themes = useTheme();
 
@@ -45,7 +45,7 @@ const PreferencesForm = () => {
           control={form.control}
           render={({ field }) => (
             <FormItem>
-              <FormLabel>{t("language")}</FormLabel>
+              {!noLabel && <FormLabel>{t("language")}</FormLabel>}
               <Select
                 {...field}
                 onValueChange={(value: Language) => {
@@ -55,7 +55,7 @@ const PreferencesForm = () => {
                   }
                 }}
               >
-                <SelectTrigger className="w-[150px]">
+                <SelectTrigger>
                   <SelectValue placeholder={t("selectLanguage")} />
                 </SelectTrigger>
                 <SelectContent>
@@ -76,7 +76,7 @@ const PreferencesForm = () => {
           control={form.control}
           render={({ field }) => (
             <FormItem>
-              <FormLabel>{t("theme")}</FormLabel>
+              {!noLabel && <FormLabel>{t("theme")}</FormLabel>}
               <Select
                 {...field}
                 onValueChange={(value: Theme) => {
@@ -87,7 +87,7 @@ const PreferencesForm = () => {
                   }
                 }}
               >
-                <SelectTrigger className="w-[150px]">
+                <SelectTrigger>
                   <SelectValue placeholder={t("selectTheme")} />
                 </SelectTrigger>
                 <SelectContent>

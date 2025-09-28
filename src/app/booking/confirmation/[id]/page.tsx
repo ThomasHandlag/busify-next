@@ -1,16 +1,24 @@
 "use client";
 
 import { useSearchParams } from "next/navigation";
-import { useEffect, useState, useMemo } from "react";
+import { useEffect, useState, useMemo, useCallback } from "react";
 import BookingInteractiveSection from "@/components/custom/booking/BookingInteractiveSection";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { MapPin, Clock, User } from "lucide-react";
+import { ArrowRight, Book, Clock, User } from "lucide-react";
 import { Label } from "@radix-ui/react-label";
 import React from "react";
 import { toast } from "sonner";
 import { useTranslations } from "next-intl";
 import { BASE_URL } from "@/lib/constants/constants";
+import { DiscountInfo } from "@/lib/data/discount";
+import { useSession } from "next-auth/react";
+import PromoCodeSection from "@/components/custom/booking/PromoCodeSection";
+import PointsSection from "@/components/custom/booking/PointsSession";
+import AutoPromotionSection from "@/components/custom/promotion/AutoPromotionSection";
+import { getScore } from "@/lib/data/score";
+import { Separator } from "@/components/ui/separator";
+import BookingCountdown from "@/components/custom/booking/booking_countdown";
 
 interface TripApiResponse {
   code: number;
@@ -94,10 +102,67 @@ export default function BookingConfirmation({ params }: PageProps) {
   const email = searchParams.get("email") || "";
   const totalPriceFromParams = Number(searchParams.get("totalPrice")) || 0;
 
+  const { data: session } = useSession();
+  const [discount, setDiscount] = useState(0);
+  const [discountInfo, setDiscountInfo] = useState<DiscountInfo | null>(null);
+  const [autoPromotionDiscount, setAutoPromotionDiscount] = useState(0);
+  const [selectedAutoPromotion, setSelectedAutoPromotion] = useState<{
+    id: number;
+    code: string | null;
+    discountType: string;
+    discountValue: number;
+  } | null>(null);
+  const [usedPoints, setUsedPoints] = useState(0);
+  const [pointsDiscount, setPointsDiscount] = useState(0);
+  const [availablePoints, setAvailablePoints] = useState(0);
+
   // State để lưu dữ liệu
   const [bookingData, setBookingData] = useState<BookingData | null>(null);
   const [loading, setLoading] = useState(true);
   const t = useTranslations();
+
+  const handleAutoPromotionSelect = useCallback(
+    (
+      promotion: {
+        id: number;
+        code: string | null;
+        discountType: string;
+        discountValue: number;
+      } | null,
+      discountAmount: number
+    ) => {
+      setSelectedAutoPromotion(promotion);
+      setAutoPromotionDiscount(discountAmount);
+      // No longer reset manual discount when auto promotion is selected
+      // Both can be applied together now
+    },
+    []
+  );
+
+  const handleDiscountChange = (
+    newDiscount: number,
+    newDiscountInfo: DiscountInfo | null
+  ) => {
+    setDiscount(newDiscount);
+    setDiscountInfo(newDiscountInfo);
+  };
+
+  const handlePointsChange = (points: number, discountAmount: number) => {
+    setUsedPoints(points);
+    setPointsDiscount(discountAmount);
+  };
+
+  useEffect(() => {
+    async function loadScore() {
+      try {
+        const score = await getScore();
+        setAvailablePoints(score.points);
+      } catch (error) {
+        console.error("Failed to load score:", error);
+      }
+    }
+    loadScore();
+  }, []);
 
   useEffect(() => {
     // Kiểm tra query params
@@ -111,12 +176,9 @@ export default function BookingConfirmation({ params }: PageProps) {
     const fetchTripData = async () => {
       setLoading(true);
       try {
-        const response = await fetch(
-          `${BASE_URL}api/trips/${tripId}`,
-          {
-            cache: "no-store",
-          }
-        );
+        const response = await fetch(`${BASE_URL}api/trips/${tripId}`, {
+          cache: "no-store",
+        });
 
         if (!response.ok) {
           if (response.status === 404) {
@@ -205,132 +267,144 @@ export default function BookingConfirmation({ params }: PageProps) {
     );
 
   return (
-    <div className="min-h-screen bg-accent w-full">
-      <div className="bg-background shadow-sm border-b w-full">
-        <div className="px-4 py-4">
-          <div className="flex items-center gap-4">
-            <span className="text-foreground">
-              {t("Booking.confirmation.title")}
-            </span>
+    <div className="h-full bg-primary w-full lg:px-4 px-2 py-8">
+      <div className="grid grid-cols-1 lg:grid-cols-6 gap-8 lg:max-w-6xl mx-auto">
+        <div className="lg:sticky lg:top-4 col-span-2">
+          <div className="rounded-lg scrollBar space-y-6">
+            <BookingCountdown tripId={tripId} />
+            <AutoPromotionSection
+              originalPrice={bookingData.pricing.totalPrice}
+              onPromotionSelect={handleAutoPromotionSelect}
+            />
+
+            <Card className="shadow-lg overflow-hidden">
+              <CardHeader>
+                <CardTitle className="text-foreground text-lg">
+                  {t("Booking.promoCode")}
+                </CardTitle>
+              </CardHeader>
+              <CardContent className="flex flex-col gap-6">
+                <PromoCodeSection
+                  initialDiscount={discount}
+                  onDiscountChange={handleDiscountChange}
+                  originalPrice={bookingData.pricing.totalPrice}
+                />
+                <div className="flex flex-col items-start gap-4">
+                  <div className="text-lg font-semibold">
+                    {t("Points.usePoints")}
+                  </div>
+                  <PointsSection
+                    availablePoints={availablePoints}
+                    onPointsChange={handlePointsChange}
+                    originalPrice={bookingData.pricing.totalPrice}
+                    discountAmount={discount}
+                  />
+                </div>
+              </CardContent>
+            </Card>
           </div>
         </div>
-      </div>
-
-      <div className="px-4 py-8">
-        <div className="grid lg:grid-cols-3 gap-8">
-          <div className="lg:col-span-2 space-y-6">
-            <Card>
-              <CardHeader>
-                <CardTitle className="flex items-center gap-2">
-                  <MapPin className="w-5 h-5 text-green-600" />
-                  {t("Booking.confirmation.tripDetails")}
-                </CardTitle>
-              </CardHeader>
-              <CardContent className="space-y-4">
-                <div className="flex items-center justify-between">
-                  <div>
-                    <h3 className="font-semibold text-lg">
-                      {bookingData.trip.route}
-                    </h3>
-                    <p className="text-gray-600">{bookingData.trip.operator}</p>
-                  </div>
-                  <Badge
-                    variant="outline"
-                    className="text-green-600 border-green-600"
-                  >
-                    {bookingData.trip.duration}
-                  </Badge>
-                </div>
-                <div className="grid md:grid-cols-2 gap-4">
-                  <div className="flex items-center gap-3">
-                    <Clock className="w-4 h-4 text-gray-500" />
-                    <div>
-                      <p className="text-sm text-gray-500">
-                        {t("Booking.departure")}
-                      </p>
-                      <p className="font-medium">
-                        {bookingData.trip.departureTime} -
-                        {bookingData.trip.date}
-                      </p>
-                    </div>
-                  </div>
-                  <div className="flex items-center gap-3">
-                    <Clock className="w-4 h-4 text-gray-500" />
-                    <div>
-                      <p className="text-sm text-gray-500">
-                        {t("Booking.arrival")}
-                      </p>
-                      <p className="font-medium">
-                        {bookingData.trip.arrivalTime} - {bookingData.trip.date}
-                      </p>
-                    </div>
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
-
-            <Card>
-              <CardHeader>
-                <CardTitle>{t("Booking.seatSelected")}</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <div className="flex gap-2">
-                  {bookingData.selectedSeats.map((seat) => (
-                    <Badge
-                      key={seat}
-                      variant="secondary"
-                      className="bg-green-100 text-green-700"
-                    >
-                      {t("Booking.seats")} {seat}
-                    </Badge>
-                  ))}
-                </div>
-              </CardContent>
-            </Card>
-
-            <Card>
-              <CardHeader>
-                <CardTitle className="flex items-center gap-2">
-                  <User className="w-5 h-5 text-green-600" />
-                  {t("MyTickets.passengerInfo")}
-                </CardTitle>
-              </CardHeader>
-              <CardContent className="space-y-3">
+        <Card className="lg:col-span-4 col-span-1">
+          <CardHeader>
+            <CardTitle className="flex lg:flex-row flex-col items-center justify-between gap-2">
+              <h3 className="text-xl">{t("Booking.confirmation.title")}</h3>
+              <h3 className="font-semibold text-lg">
+                {bookingData.trip.route}
+              </h3>
+            </CardTitle>
+          </CardHeader>
+          <CardContent className="space-y-4">
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-muted-foreground">
+                  {bookingData.trip.operator}
+                </p>
+              </div>
+            </div>
+            <div className="grid md:grid-cols-3 grid-cols-1 gap-4">
+              <div className="flex items-center gap-3">
+                <Clock className="w-4 h-4 text-muted-foreground" />
                 <div>
-                  <Label className="text-sm text-gray-500">
-                    {t("Form.fullName")}
-                  </Label>
+                  <p className="text-sm text-muted-foreground">
+                    {t("Booking.departure")}
+                  </p>
                   <p className="font-medium">
-                    {bookingData.passenger.fullName}
+                    {bookingData.trip.departureTime} - {bookingData.trip.date}
                   </p>
                 </div>
-                <div>
-                  <Label className="text-sm text-gray-500">
-                    {t("Form.phone")}
-                  </Label>
-                  <p className="font-medium">{bookingData.passenger.phone}</p>
+              </div>
+              <div className="lg:flex hidden items-center gap-3 ">
+                <Badge variant="outline">{bookingData.trip.duration}</Badge>
+                <ArrowRight className="w-5 h-5 text-muted-foreground" />
+              </div>
+              <div>
+                <div className="flex items-center gap-3">
+                  <Clock className="w-4 h-4 text-muted-foreground" />
+                  <div>
+                    <p className="text-sm text-muted-foreground">
+                      {t("Booking.arrival")}
+                    </p>
+                    <p className="font-medium">
+                      {bookingData.trip.arrivalTime} - {bookingData.trip.date}
+                    </p>
+                  </div>
                 </div>
-                <div>
-                  <Label className="text-sm text-gray-500">
-                    {t("Form.email")}
-                  </Label>
-                  <p className="font-medium">{bookingData.passenger.email}</p>
-                </div>
-              </CardContent>
-            </Card>
-          </div>
-
-          {/* Sidebar với sticky position và scroll */}
-          <div className="lg:sticky lg:top-4 lg:self-start">
-            <div className="max-h-[calc(100vh-4rem)] overflow-y-auto space-y-6 pr-2">
+              </div>
+            </div>
+            <div className="flex flex-col lg:flex-row gap-2">
+              <div className="capitalize">{t("Booking.seatSelected")}</div>
+              <div className="flex gap-2">
+                {bookingData.selectedSeats.map((seat) => (
+                  <Badge
+                    key={seat}
+                    variant="secondary"
+                    className="bg-primary/10 text-primary"
+                  >
+                    {t("Booking.seats")} {seat}
+                  </Badge>
+                ))}
+              </div>
+            </div>
+            <div className="flex items-center gap-2">
+              <User className="w-5 h-5 text-foreground" />
+              {t("MyTickets.passengerInfo")}
+            </div>
+            <div className="flex gap-6 items-start flex-col lg:flex-row">
+              <div>
+                <Label className="text-sm text-muted-foreground">
+                  {t("Form.fullName")}
+                </Label>
+                <p className="font-medium">{bookingData.passenger.fullName}</p>
+              </div>
+              <div>
+                <Label className="text-sm text-muted-foreground">
+                  {t("Form.phone")}
+                </Label>
+                <p className="font-medium">{bookingData.passenger.phone}</p>
+              </div>
+              <div>
+                <Label className="text-sm text-muted-foreground">
+                  {t("Form.email")}
+                </Label>
+                <p className="font-medium">{bookingData.passenger.email}</p>
+              </div>
+            </div>
+            <Separator />
+            <div className="flex flex-col gap-4">
               <BookingInteractiveSection
-                initialTotalPrice={bookingData.pricing.totalPrice}
+                autoPromotionDiscount={autoPromotionDiscount}
+                discountInfo={discountInfo}
                 mockData={bookingData}
+                pointsDiscount={pointsDiscount}
+                selectedAutoPromotion={selectedAutoPromotion}
+                usedPoints={usedPoints}
                 tripId={tripId}
+                initialTotalPrice={bookingData.pricing.totalPrice}
+                discount={discount + autoPromotionDiscount + pointsDiscount}
               />
             </div>
-          </div>
-        </div>
+          </CardContent>
+        </Card>
       </div>
     </div>
   );

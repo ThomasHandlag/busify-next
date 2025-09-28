@@ -9,7 +9,7 @@ import {
   SheetTrigger,
 } from "@/components/ui/sheet";
 
-import { MenuIcon, Bus, Users, User, Calendar, Ticket } from "lucide-react";
+import { MenuIcon, Users, User, Calendar, Ticket } from "lucide-react";
 import { signOut, useSession } from "next-auth/react";
 import Logo from "@/components/custom/logo";
 import { useTranslations } from "next-intl";
@@ -154,7 +154,6 @@ const NavMobile = ({ publicMenuItems, isActive }: NavDataProps) => {
       </Sheet>
 
       <div className="flex items-center space-x-2">
-        <Bus className="w-6 h-6 text-primary" />
         <span className="text-xl font-bold text-white">Busify</span>
       </div>
 

@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect, useCallback, useMemo } from "react";
-import { Card, CardContent } from "@/components/ui/card";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Button } from "@/components/ui/button";
 import {
@@ -10,8 +10,6 @@ import {
   XCircle,
   ChevronLeft,
   ChevronRight,
-  Home,
-  ChevronRight as ChevronRightIcon,
   ArrowUpDown,
 } from "lucide-react";
 import Link from "next/link";
@@ -27,6 +25,7 @@ import { useSession } from "next-auth/react";
 import { toast } from "sonner";
 import LocaleText from "@/components/custom/locale_text";
 import { useTranslations } from "next-intl";
+import Loading from "@/app/loading";
 
 type TabValue = "upcoming" | "completed" | "canceled";
 
@@ -299,12 +298,7 @@ export default function MyTicketsPage() {
     const hasBookings = bookingsToShow.length > 0;
 
     if (isLoading) {
-      return (
-        <div className="text-center py-8 sm:py-12">
-          <div className="animate-spin rounded-full h-6 w-6 sm:h-8 sm:w-8 border-b-2 border-green-600 mx-auto"></div>
-          <p className="mt-2 text-sm sm:text-base text-gray-600">Đang tải...</p>
-        </div>
-      );
+      return <Loading />;
     }
 
     if (!hasBookings) {
@@ -316,12 +310,7 @@ export default function MyTicketsPage() {
             "Bạn chưa có chuyến đi nào được lên lịch. Hãy đặt vé ngay để khám phá những điểm đến mới!",
           actionButton: (
             <Link aria-label="Book a Ticket" href="/trips">
-              <Button
-                aria-label="Book a Ticket"
-                className="bg-green-600 hover:bg-green-700 text-sm sm:text-base"
-              >
-                Đặt vé ngay
-              </Button>
+              <Button aria-label="Book a Ticket">Đặt vé ngay</Button>
             </Link>
           ),
         },
@@ -351,51 +340,38 @@ export default function MyTicketsPage() {
   };
 
   return (
-    <div className="w-full">
-      {/* Breadcrumb */}
-      <div className="bg-background border-b px-4 py-3">
-        <nav className="flex items-center space-x-2 text-sm text-muted-foreground">
-          <Link href="/user" className="hover:text-foreground">
-            <Home className="w-4 h-4" />
-          </Link>
-          <ChevronRightIcon className="w-4 h-4" />
-          <span className="font-medium text-foreground">
-            <LocaleText string="breadcrumb" name="MyTickets" />
-          </span>
-        </nav>
-      </div>
-
-      {/* Header */}
-      <div className="bg-background shadow-sm border-b px-4 py-6">
-        <div className="flex flex-col space-y-4 lg:flex-row lg:items-center lg:justify-between lg:space-y-0 gap-4">
-          <div className="min-w-0 flex-1">
-            <h1 className="text-xl sm:text-2xl font-bold text-foreground truncate">
-              <LocaleText string="pageTitle" name="MyTickets" />
-            </h1>
-            <p className="text-sm sm:text-base text-muted-foreground mt-1 hidden sm:block">
-              <LocaleText string="pageSubtitle" name="MyTickets" />
-            </p>
+    <Card>
+      <CardHeader>
+        <CardTitle className="px-4">
+          <div className="flex space-y-4 flex-row lg:items-center lg:justify-between lg:space-y-0 gap-4">
+            <div className="min-w-0 flex-1">
+              <h1 className="text-xl sm:text-2xl font-bold text-foreground truncate">
+                <LocaleText string="pageTitle" name="MyTickets" />
+              </h1>
+              <p className="text-sm sm:text-base text-muted-foreground mt-1 hidden sm:block">
+                <LocaleText string="pageSubtitle" name="MyTickets" />
+              </p>
+            </div>
+            <div className="flex items-center gap-2">
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() =>
+                  setSortOrder(sortOrder === "desc" ? "asc" : "desc")
+                }
+                className="flex items-center gap-2"
+              >
+                <ArrowUpDown className="w-4 h-4" />
+                <span className="hidden sm:inline">
+                  {sortOrder === "desc" ? "Mới nhất" : "Cũ nhất"}
+                </span>
+              </Button>
+            </div>
           </div>
-          <div className="flex items-center gap-2">
-            <Button
-              variant="outline"
-              size="sm"
-              onClick={() =>
-                setSortOrder(sortOrder === "desc" ? "asc" : "desc")
-              }
-              className="flex items-center gap-2"
-            >
-              <ArrowUpDown className="w-4 h-4" />
-              <span className="hidden sm:inline">
-                {sortOrder === "desc" ? "Mới nhất" : "Cũ nhất"}
-              </span>
-            </Button>
-          </div>
-        </div>
-      </div>
+        </CardTitle>
+      </CardHeader>
 
-      {/* Main Content */}
-      <div className="px-4 py-6">
+      <CardContent className="px-4">
         <Tabs
           value={activeTab}
           onValueChange={(value: string) => handleTabChange(value)}
@@ -463,7 +439,7 @@ export default function MyTicketsPage() {
             <TabContent tabType="canceled" />
           </TabsContent>
         </Tabs>
-      </div>
+      </CardContent>
 
       {/* Booking Detail Sheet */}
       {selectedBookingDetail && (
@@ -474,6 +450,6 @@ export default function MyTicketsPage() {
           onBookingCancelled={() => fetchBookings()}
         />
       )}
-    </div>
+    </Card>
   );
 }

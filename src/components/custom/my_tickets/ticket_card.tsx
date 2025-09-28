@@ -97,21 +97,21 @@ export const TicketCard = ({
           label: t("Booking.confirmed"),
           variant: "default" as const,
           icon: CheckCircle,
-          color: "text-green-500",
+          color: "text-primary",
         };
       case "pending":
         return {
           label: t("Booking.pending"),
           variant: "secondary" as const,
           icon: AlertCircle,
-          color: "text-yellow-600",
+          color: "text-accent",
         };
       case "completed":
         return {
           label: t("Booking.completed"),
           variant: "default" as const,
           icon: CheckCircle,
-          color: "text-blue-600",
+          color: "text-primary",
         };
       case "canceled_by_user":
       case "canceled_by_operator":
@@ -222,7 +222,7 @@ export const TicketCard = ({
   };
 
   return (
-    <Card className="hover:shadow-md transition-all duration-200 border-l-4 border-l-green-500 overflow-hidden">
+    <Card className="hover:shadow-md transition-all duration-200 border-l-4 border-l-primary overflow-hidden">
       <CardContent className="p-4">
         {/* Header Row */}
         <div className="flex justify-between items-start mb-3">
@@ -242,7 +242,7 @@ export const TicketCard = ({
               <StatusIcon className="w-3 h-3" />
               {statusInfo.label}
             </Badge>
-            <p className="text-sm font-bold text-green-600">
+            <p className="text-sm font-bold text-primary">
               {formatCurrency(booking.total_amount)}
             </p>
           </div>
@@ -261,26 +261,26 @@ export const TicketCard = ({
 
           <div className="flex items-center justify-center">
             <div className="flex items-center w-full">
-              <div className="w-1.5 h-1.5 bg-green-500 rounded-full"></div>
-              <div className="flex-1 h-px bg-gray-300 mx-2 relative">
-                <Navigation className="w-3 h-3 text-gray-400 absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-white" />
+              <div className="w-1.5 h-1.5 bg-primary rounded-full"></div>
+              <div className="flex-1 h-px bg-muted mx-2 relative">
+                <Navigation className="w-3 h-3 text-muted-foreground absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-background" />
               </div>
-              <div className="w-1.5 h-1.5 bg-green-500 rounded-full"></div>
+              <div className="w-1.5 h-1.5 bg-primary rounded-full"></div>
             </div>
           </div>
 
           <div className="col-span-2 text-right">
-            <p className="text-sm font-semibold text-gray-900">
+            <p className="text-sm font-semibold text-foreground">
               {formatTime(booking.arrival_time)}
             </p>
-            <p className="text-xs text-gray-500 truncate">
+            <p className="text-xs text-muted-foreground truncate">
               {booking.arrival_name}
             </p>
           </div>
         </div>
 
         {/* Info Row - Compact */}
-        <div className="flex justify-between items-center text-xs text-gray-500 mb-3">
+        <div className="flex justify-between items-center text-xs text-muted-foreground mb-3">
           <div className="flex items-center gap-3">
             <span className="flex items-center gap-1">
               <Calendar className="w-3 h-3" />
@@ -336,7 +336,7 @@ export const TicketCard = ({
                 aria-label="Rate Trip"
                 size="sm"
                 onClick={() => router.push(`/trips/${booking.trip_id}`)} // Thêm onClick để redirect đến /trips/{id}
-                className="bg-green-600 hover:bg-green-700 h-8 px-3 text-xs"
+                className="bg-primary hover:bg-primary/90 h-8 px-3 text-xs"
               >
                 {t("TripDetail.rateTrip")}
               </Button>
