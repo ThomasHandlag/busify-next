@@ -63,7 +63,7 @@
 
 @keyframes clip-bg-move {
   from {
-    clip-path: polygon(70% 0%, 100% 0%, 100% 100%, 70% 100%, 65% 50%);
+    clip-path: polygon(90% 0%, 100% 0%, 100% 100%, 90% 100%, 75% 50%);
   }
   to {
     clip-path: polygon(65% 0%, 100% 0%, 100% 100%, 65% 100%, 60% 50%);
