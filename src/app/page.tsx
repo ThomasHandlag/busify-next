@@ -57,25 +57,25 @@ const Home = async () => {
 
   return (
     <div className="h-full w-full bg-primary">
-      <div className="bg-background w-full h-full absolute clip-bg lg:block hidden"></div>
+      <div className="bg-background w-full h-full absolute clip-bg lg:block hidden animate-clip-bg-move"></div>
       <div className="py-4 z-30 h-screen flex flex-col items-center justify-center">
         <div className="grid grid-cols-1 lg:grid-cols-2 mx-auto items-center justify-center gap-6 md:gap-8 mb-6">
           <div className="text-wrap text-white">
             <h1 className="lg:text-8xl text-4xl font-extrabold mb-4 drop-shadow-lg font-[montserrat]">
-              <FadeinWrapper effect="fade-in-left">Bustify</FadeinWrapper>
+              <FadeinWrapper effect="animate-fade-in-left">Bustify</FadeinWrapper>
             </h1>
             <div className="text-2xl md:text-3xl font-bold drop-shadow-lg leading-tight">
-              <FadeinWrapper effect="fade-in-l300">
+              <FadeinWrapper effect="animate-fade-in-l300">
                 <LocaleText string="slogan" name="Home" />
               </FadeinWrapper>
             </div>
             <div className="text-lg md:text-xl font-semibold drop-shadow-md leading-tight">
-              <FadeinWrapper effect="fade-in-l400">
+              <FadeinWrapper effect="animate-fade-in-l400">
                 <LocaleText string="slogan2" name="Home" />
               </FadeinWrapper>
             </div>
           </div>
-          <div className="relative aspect-video">
+          <div className="relative aspect-video animate-bg-fade-in-right-half">
             <Image
               aria-label="background image2"
               src="/bus_img.png"

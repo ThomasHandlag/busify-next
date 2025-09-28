@@ -5,7 +5,7 @@ import { useEffect, useState, useMemo, useCallback } from "react";
 import BookingInteractiveSection from "@/components/custom/booking/BookingInteractiveSection";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { ArrowRight, Book, Clock, User } from "lucide-react";
+import { ArrowRight, Clock, User } from "lucide-react";
 import { Label } from "@radix-ui/react-label";
 import React from "react";
 import { toast } from "sonner";
@@ -102,7 +102,6 @@ export default function BookingConfirmation({ params }: PageProps) {
   const email = searchParams.get("email") || "";
   const totalPriceFromParams = Number(searchParams.get("totalPrice")) || 0;
 
-  const { data: session } = useSession();
   const [discount, setDiscount] = useState(0);
   const [discountInfo, setDiscountInfo] = useState<DiscountInfo | null>(null);
   const [autoPromotionDiscount, setAutoPromotionDiscount] = useState(0);
