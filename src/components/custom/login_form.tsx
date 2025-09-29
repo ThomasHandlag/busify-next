@@ -14,6 +14,7 @@ import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 import { useTranslations } from "next-intl";
 import { BASE_URL } from "@/lib/constants/constants";
+import LoginSvg from "./login_svg";
 
 const LoginForm = () => {
   const t = useTranslations();
@@ -80,16 +81,13 @@ const LoginForm = () => {
     try {
       setResendStatus("loading");
 
-      const response = await fetch(
-        `${BASE_URL}api/auth/resend-verification`,
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({ email: resendEmail }),
-        }
-      );
+      const response = await fetch(`${BASE_URL}api/auth/resend-verification`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ email: resendEmail }),
+      });
 
       if (response.ok) {
         setResendStatus("success");
@@ -113,9 +111,11 @@ const LoginForm = () => {
   };
 
   return (
-    <div className="w-full max-w-md mx-auto">
-      <div className="bg-card rounded-3xl shadow-2xl p-6 sm:p-8 border border-border">
-        {/* Header */}
+    <div className="w-full mx-auto flex flex-col lg:flex-row justify-center items-center gap-6">
+      <div className="hidden lg:block">
+        <LoginSvg />
+      </div>
+      <div className="bg-background p-6 rounded-3xl shadow-lg w-full max-w-md lg:max-w-lg">
         <div className="text-center mb-6 sm:mb-8">
           <h2 className="text-2xl sm:text-3xl font-bold text-foreground mb-2">
             {t("Auth.login.title")}
@@ -124,10 +124,6 @@ const LoginForm = () => {
             {t("Auth.login.subtitle")}
           </p>
         </div>
-
-        {/* Social Login Buttons */}
-
-        {/* Login Form */}
         <Form {...form}>
           <form onSubmit={handleSubmit} className="space-y-4 sm:space-y-5">
             <FormField
