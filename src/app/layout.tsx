@@ -66,7 +66,7 @@ export default function RootLayout({
                     <main>{children}</main>
                     <Toaster />
                     <FloatingChatButton />
-                    <FloatingAIChatButton />
+                    {/* <FloatingAIChatButton /> */}
                   </WebSocketProvider>
                 </SessionProviderWrapper>
               </TripFilterProvider>

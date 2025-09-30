@@ -81,10 +81,10 @@ const AppPage = () => {
           </Card>
         </div>
 
-        <div className="lg:hidden mb-4">
+        <div className="lg:hidden">
           <Sheet open={filterOpen} onOpenChange={setFilterOpen}>
             <SheetTrigger asChild>
-              <Button aria-label="Open Filter" variant="ghost">
+              <Button aria-label="Open Filter" variant={"outline"}>
                 <Filter className="w-5 h-5 mr-2" />
                 <LocaleText string="filter" name="Trips" />
               </Button>
@@ -112,7 +112,7 @@ const AppPage = () => {
           <div className="sticky top-8 z-10">
             <TripSortControls />
           </div>
-          <Card className="h-[90vh] overflow-auto scrollBar p-4 lg:p-2">
+          <Card className="h-[90vh] overflow-auto scrollBar">
             <CardHeader>
               <CardTitle>
                 <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
@@ -139,7 +139,7 @@ const AppPage = () => {
               {isLoading ? (
                 <Loading />
               ) : (
-                <div className="grid grid-cols-1 xl:grid-cols-2 gap-4 overflow-auto p-2">
+                <div className="grid grid-cols-1 xl:grid-cols-2 gap-4 overflow-auto">
                   {trips.length > 0 ? (
                     trips.map((trip) => (
                       <TripItem key={trip.trip_id} trip={trip} />

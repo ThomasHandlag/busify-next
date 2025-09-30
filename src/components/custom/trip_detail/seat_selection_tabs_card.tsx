@@ -510,12 +510,7 @@ export function SeatSelectionTabsCard({
             </div>
             <div className="flex justify-between items-center w-full">
               <span>{t("Booking.totalAmount")}</span>
-              <span>
-                {new Intl.NumberFormat("vi-VN", {
-                  style: "currency",
-                  currency: "VND",
-                }).format(totalPrice)}
-              </span>
+
               <div className="text-right">
                 {discountAmount > 0 ? (
                   <>
@@ -527,9 +522,12 @@ export function SeatSelectionTabsCard({
                     </p>
                   </>
                 ) : (
-                  <p className="text-lg font-bold text-primary">
-                    {totalPrice?.toLocaleString("vi-VN")}đ
-                  </p>
+                  <span>
+                    {new Intl.NumberFormat("vi-VN", {
+                      style: "currency",
+                      currency: "VND",
+                    }).format(totalPrice)}
+                  </span>
                 )}
                 <p className="text-xs text-gray-500">
                   {selectedSeats.length} {t("Booking.seats")} ×{" "}
