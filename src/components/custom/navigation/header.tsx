@@ -4,10 +4,10 @@ import React, { useState, useEffect } from "react";
 
 import { Bus, HelpCircle } from "lucide-react";
 import { usePathname } from "next/navigation";
-import { SiFacebook, SiZalo, SiDiscord } from "react-icons/si";
 import NavMobile from "./nav_mobile";
 import NavDesktop from "./nav_desktop";
 import { useTranslations } from "next-intl";
+import { FaBlog } from "react-icons/fa";
 
 export interface NavItemData {
   href: string;
@@ -22,7 +22,6 @@ export interface MenuItemData {
 }
 
 export interface NavDataProps {
-  contactMenuItems: NavItemData[];
   publicMenuItems: NavItemData[];
   isActive: (href: string) => boolean;
 }
@@ -48,26 +47,7 @@ const Header = () => {
     {
       href: "/blog",
       label: t("blog"),
-      icon: () => <HelpCircle className="w-4 h-4" />,
-    },
-  ];
-
-  // About section with social links
-  const contactMenuItems: NavItemData[] = [
-    {
-      href: "https://facebook.com/busify",
-      label: "facebook",
-      icon: () => <SiFacebook className="w-4 h-4" />,
-    },
-    {
-      href: "https://discord.com/invite/busify",
-      label: "discord",
-      icon: () => <SiDiscord className="w-4 h-4" />,
-    },
-    {
-      href: "https://zalo.me/busify",
-      label: "zalo",
-      icon: () => <SiZalo className="w-4 h-4" />,
+      icon: () => <FaBlog className="w-4 h-4" />,
     },
   ];
 
@@ -101,27 +81,24 @@ const Header = () => {
     return () => window.removeEventListener("scroll", handleScroll);
   }, [lastScrollTop]);
 
+  const  isHomePage = pathname === "/";
+
   return (
     <header
-      className={`px-4 py-3 bg-background border-b border-border justify-between text-navtext shadow-sm top-0 inset-0 sticky z-50 w-full ${
-        isTop ? "flex" : "fixed"
+      className={`px-4 py-3 justify-between top-0 
+        ${isHomePage ? "fixed" : "sticky"} z-50 w-full ${
+        isTop
+          ? "bg-transparent"
+          : "backdrop-blur-md bg-primary/90 shadow-md"
       } ${
         isScrollUp ? "translate-y-0" : "-translate-y-full"
       } transition-transform duration-300`}
     >
       {/* Desktop Navigation */}
-      <NavDesktop
-        publicMenuItems={publicNavigationItems}
-        contactMenuItems={contactMenuItems}
-        isActive={isActive}
-      />
+      <NavDesktop publicMenuItems={publicNavigationItems} isActive={isActive} />
 
       {/* Mobile Navigation */}
-      <NavMobile
-        contactMenuItems={contactMenuItems}
-        publicMenuItems={publicNavigationItems}
-        isActive={isActive}
-      />
+      <NavMobile publicMenuItems={publicNavigationItems} isActive={isActive} />
     </header>
   );
 };

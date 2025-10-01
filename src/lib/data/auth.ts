@@ -69,10 +69,10 @@ export const verification = async (token: string): Promise<ResponseError> => {
 };
 
 /**
- * Thêm Authorized JavaScript origins trong Google Cloud Console
+ * Thêm Authorized JavaScript origins trong Google Cloud console
  * For production: https://{YOUR_DOMAIN}
  * For development: http://localhost:3000
- * và Authorized redirect URIs trong Google Cloud Console
+ * và Authorized redirect URIs trong Google Cloud console
  * For production: https://{YOUR_DOMAIN}/api/auth/callback/google
  * For development: http://localhost:3000/api/auth/callback/google
  */

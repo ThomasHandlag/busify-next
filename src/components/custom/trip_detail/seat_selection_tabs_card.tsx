@@ -1,9 +1,5 @@
 "use client";
 
-import { Input } from "@/components/ui/input";
-import { useForm } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
-import * as z from "zod";
 import {
   Form,
   FormControl,
@@ -12,8 +8,20 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
-import { useState, useEffect } from "react";
+import { Input } from "@/components/ui/input";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { BASE_URL } from "@/lib/constants/constants";
+import { BusLayout } from "@/lib/data/bus";
+import { Seat } from "@/lib/data/trip_seats";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { useTranslations } from "next-intl";
 import { useSession } from "next-auth/react";
+import { useRouter } from "next/navigation";
+import { useEffect, useState, useMemo, useCallback } from "react";
+import { useForm } from "react-hook-form";
+import { toast } from "sonner";
+import { z } from "zod";
+import LocaleText from "../locale_text";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -23,22 +31,13 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Armchair, Users, CheckCircle } from "lucide-react";
-import { Seat } from "@/lib/data/trip_seats";
-import { BusLayout } from "@/lib/data/bus";
 import { Badge } from "@/components/ui/badge";
-
-import { useRouter } from "next/navigation";
-import { toast } from "sonner";
-import LocaleText from "../locale_text";
-import { useTranslations } from "next-intl";
-import { BASE_URL } from "@/lib/constants/constants";
 import {
-  getCurrentPromotionCampaigns,
-  type PromotionCampaign,
   calculateDiscountedPrice,
   getBestPromotionCampaign,
+  getCurrentPromotionCampaigns,
+  PromotionCampaign,
 } from "@/lib/data/promotion";
 
 interface PassengerInfo {
@@ -64,14 +63,74 @@ export function SeatSelectionTabsCard({
 }: SeatSelectionTabsCardProps) {
   const [selectedSeats, setSelectedSeats] = useState<string[]>([]);
   const [isLoadingProfile, setIsLoadingProfile] = useState(false);
+
   const [campaigns, setCampaigns] = useState<PromotionCampaign[]>([]);
-  const [loadingCampaigns, setLoadingCampaigns] = useState(true);
   const t = useTranslations();
   const { data: session } = useSession();
   const router = useRouter();
 
-  // Generate seats based on layout
-  const generateSeatsFromLayout = () => {
+  const passengerSchema = z.object({
+    phone: z
+      .string()
+      .min(1, "Vui lòng nhập số điện thoại")
+      .regex(/^\d{10}$/, "Số điện thoại phải gồm 10 số"),
+    fullName: z.string().min(1, "Vui lòng nhập họ tên"),
+    email: z.email("Email không hợp lệ"),
+  });
+
+  const form = useForm<PassengerInfo>({
+    resolver: zodResolver(passengerSchema),
+    defaultValues: {
+      phone: "",
+      fullName: "",
+      email: "",
+    },
+  });
+
+  // Auto-fill user profile data when logged in
+  useEffect(() => {
+    const fetchUserProfile = async () => {
+      if (session?.user?.accessToken) {
+        setIsLoadingProfile(true);
+
+        try {
+          const response = await fetch(`${BASE_URL}api/users/profile`, {
+            method: "GET",
+            headers: {
+              Authorization: `Bearer ${session.user.accessToken}`,
+              "Content-Type": "application/json",
+            },
+          });
+
+          if (response.ok) {
+            const profileData = await response.json();
+            console.log("Profile data fetched:", profileData);
+
+            // Auto-fill form with user data
+            if (profileData.result) {
+              const { fullName, phoneNumber, email } = profileData.result;
+
+              form.setValue("fullName", fullName || "");
+              form.setValue("phone", phoneNumber || "");
+              form.setValue("email", email || "");
+
+              console.log("Form auto-filled with user profile data");
+            }
+          } else {
+            console.error("Failed to fetch user profile:", response.status);
+          }
+        } catch (error) {
+          console.error("Error fetching user profile:", error);
+        } finally {
+          setIsLoadingProfile(false);
+        }
+      }
+    };
+
+    fetchUserProfile();
+  }, [session?.user?.accessToken, form]);
+
+  const allSeats = useMemo(() => {
     const generatedSeats: Seat[] = [];
 
     // Return the provided seats if layout is null
@@ -108,25 +167,23 @@ export function SeatSelectionTabsCard({
     }
 
     return generatedSeats;
-  };
+  }, [seats, layout, pricePerSeat]);
 
-  const passengerSchema = z.object({
-    phone: z
-      .string()
-      .min(1, "Vui lòng nhập số điện thoại")
-      .regex(/^\d{10}$/, "Số điện thoại phải gồm 10 số"),
-    fullName: z.string().min(1, "Vui lòng nhập họ tên"),
-    email: z.email("Email không hợp lệ"),
-  });
+  const handleSeatClick = useCallback(
+    (seatNumber: string, seatStatus: string) => {
+      if (seatStatus === "booked" || seatStatus === "locked") return;
+      setSelectedSeats((prev) => {
+        const newSelection = prev.includes(seatNumber)
+          ? prev.filter((s) => s !== seatNumber)
+          : [...prev, seatNumber];
 
-  const form = useForm<PassengerInfo>({
-    resolver: zodResolver(passengerSchema),
-    defaultValues: {
-      phone: "",
-      fullName: "",
-      email: "",
+        const totalPrice = newSelection.length * pricePerSeat;
+        onSeatSelection?.(newSelection, totalPrice);
+        return newSelection;
+      });
     },
-  });
+    [pricePerSeat, onSeatSelection]
+  );
 
   // Auto-fill user profile data when logged in
   useEffect(() => {
@@ -178,33 +235,11 @@ export function SeatSelectionTabsCard({
       } catch (error) {
         console.error("Failed to fetch promotion campaigns:", error);
         setCampaigns([]);
-      } finally {
-        setLoadingCampaigns(false);
       }
     };
 
     fetchCampaigns();
   }, []);
-
-  const allSeats = generateSeatsFromLayout();
-
-  const handleSeatClick = (seatNumber: string, seatStatus: string) => {
-    if (seatStatus === "booked" || seatStatus === "locked") return;
-
-    setSelectedSeats((prev) => {
-      const newSelection = prev.includes(seatNumber)
-        ? prev.filter((s) => s !== seatNumber)
-        : [...prev, seatNumber];
-
-      const basePrice = newSelection.length * pricePerSeat;
-      const bestCampaign = getBestPromotionCampaign(campaigns, pricePerSeat);
-      const { discountedPrice } = bestCampaign
-        ? calculateDiscountedPrice(basePrice, bestCampaign)
-        : { discountedPrice: basePrice };
-      onSeatSelection?.(newSelection, discountedPrice);
-      return newSelection;
-    });
-  };
 
   const getSeatsByFloor = (floor: number) => {
     return allSeats.filter((seat) => seat.floor === floor);
@@ -235,7 +270,7 @@ export function SeatSelectionTabsCard({
           <div className="absolute inset-x-0 -top-6 flex justify-center z-20">
             <Badge
               variant="outline"
-              className="bg-green-50 text-green-700 z-20"
+              className="bg-accent text-accent-foreground z-20"
             >
               <Users className="w-4 h-4 mr-1" />
               {floorSeats.filter((s) => s.status === "available").length}{" "}
@@ -264,19 +299,19 @@ export function SeatSelectionTabsCard({
                         relative z-0 w-10 h-10 rounded-lg border-2 flex items-center justify-center text-xs font-medium transition-all
                         ${
                           isBooked
-                            ? "bg-gray-200 border-gray-300 text-gray-500 cursor-not-allowed"
+                            ? "bg-muted border-muted text-muted-foreground cursor-not-allowed"
                             : isLocked
-                            ? "bg-yellow-100 border-yellow-200 text-yellow-700 cursor-not-allowed"
+                            ? "bg-secondary border-secondary text-secondary-foreground cursor-not-allowed"
                             : isSelected
-                            ? "bg-green-500 border-green-600 text-white shadow-lg scale-105"
+                            ? "bg-primary border-primary text-primary-foreground shadow-lg scale-105"
                             : isAvailable
-                            ? "bg-white border-green-300 text-green-700 hover:border-green-500 hover:bg-green-50"
-                            : "bg-gray-100 border-gray-200 text-gray-400"
+                            ? "bg-background border-accent text-accent-foreground hover:border-accent hover:bg-accent"
+                            : "bg-muted border-muted text-muted-foreground"
                         }
                       `}
                     >
                       {/* Icon ghế giữ nguyên */}
-                      <Armchair className="w-5 h-5 text-gray-600" />
+                      <Armchair className="w-5 h-5 text-muted-foreground" />
 
                       {/* Số ghế đặt ở phía dưới icon trong cùng ô */}
                       <span className="absolute bottom-0 text-[10px] font-semibold text-muted-foreground">
@@ -297,7 +332,8 @@ export function SeatSelectionTabsCard({
     );
   };
 
-  const onSubmit = async (data: PassengerInfo) => {
+  const onSubmit = (data: PassengerInfo) => {
+    console.log("Passenger Info Submitted:", selectedSeats);
     if (selectedSeats.length === 0) {
       toast.error("Vui lòng chọn ghế trước khi tiếp tục");
       return;
@@ -329,49 +365,36 @@ export function SeatSelectionTabsCard({
   const totalPrice = discountedPrice;
 
   return (
-    <Card>
+    <Card className="sticky top-20">
       <CardHeader>
         <CardTitle className="flex items-center space-x-2">
           <Armchair className="w-5 h-5" />
-          <span>
-            <LocaleText string="selectSeat" name="TripDetail" />
-          </span>
+          <span>{t("TripDetail.selectSeat")}</span>
         </CardTitle>
-        <CardDescription>
-          <LocaleText string="selectSeatDesc" name="TripDetail" />
-        </CardDescription>
+        <CardDescription>{t("TripDetail.selectSeatDesc")}</CardDescription>
       </CardHeader>
 
       <CardContent className="space-y-6">
         {/* Seat Legend */}
         <div className="grid grid-cols-2 gap-x-6 gap-y-2 text-sm justify-items-start">
           <div className="flex items-center gap-2">
-            <div className="w-4 h-4 bg-white border-2 border-green-300 rounded"></div>
-            <span>
-              <LocaleText string="empty" name="TripDetail" />
-            </span>
+            <div className="w-4 h-4 bg-white border-2 border-accent rounded"></div>
+            <span>{t("TripDetail.empty")}</span>
           </div>
           <div className="flex items-center gap-2">
-            <div className="w-4 h-4 bg-green-500 border-2 border-green-600 rounded"></div>
-            <span>
-              <LocaleText string="selected" name="TripDetail" />
-            </span>
+            <div className="w-4 h-4 bg-primary border-2 border-primary rounded"></div>
+            <span>{t("TripDetail.selected")}</span>
           </div>
           <div className="flex items-center gap-2">
-            <div className="w-4 h-4 bg-yellow-500 border-2 border-yellow-200 rounded"></div>
-            <span>
-              <LocaleText string="selecting" name="TripDetail" />
-            </span>
+            <div className="w-4 h-4 bg-muted border-2 border-muted rounded"></div>
+            <span>{t("TripDetail.selecting")}</span>
           </div>
           <div className="flex items-center gap-2">
-            <div className="w-4 h-4 bg-gray-200 border-2 border-gray-300 rounded"></div>
-            <span>
-              <LocaleText string="booked" name="TripDetail" />
-            </span>
+            <div className="w-4 h-4 bg-secondary border-2 border-secondary rounded"></div>
+            <span>{t("TripDetail.booked")}</span>
           </div>
         </div>
 
-        {/* Floor Tabs */}
         {layout && layout.floors > 1 ? (
           <Tabs defaultValue="1" className="w-full">
             <TabsList className="grid w-full grid-cols-2">
@@ -391,7 +414,7 @@ export function SeatSelectionTabsCard({
                   value={floor.toString()}
                   className="space-y-4"
                 >
-                  <div className="border rounded-lg p-4 bg-accent">
+                  <div className="border rounded-lg p-4 bg-background">
                     {renderSeatGrid(getSeatsByFloor(floor))}
                   </div>
                 </TabsContent>
@@ -399,36 +422,29 @@ export function SeatSelectionTabsCard({
             )}
           </Tabs>
         ) : (
-          <div className="border rounded-lg p-4 bg-accent">
+          <div className="border rounded-lg p-4 bg-background">
             {renderSeatGrid(allSeats)}
           </div>
         )}
 
-        {/* Passenger Information Form */}
         <div className="border-t pt-6">
-          <div className="flex items-center justify-between mb-4">
-            <h3 className="font-semibold">{t("MyTickets.passengerInfo")}</h3>
-            {session?.user && isLoadingProfile && (
-              <span className="text-sm text-gray-500">
-                {t("Common.loading")}
-              </span>
-            )}
-            {session?.user && !isLoadingProfile}
-            {session?.user && !isLoadingProfile}
-          </div>
           <Form {...form}>
-            <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+            <form
+              id="passenger-info-form"
+              onSubmit={form.handleSubmit(onSubmit)}
+              className="space-y-4"
+            >
               <FormField
                 control={form.control}
                 name="fullName"
                 render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>
-                      <LocaleText string="fullName" name="Form" />
-                    </FormLabel>
+                  <FormItem
+                    className={`${isLoadingProfile ? "animate-pulse" : ""}`}
+                  >
+                    <FormLabel>{t("Form.fullName")}</FormLabel>
                     <FormControl>
                       <Input
-                        placeholder={`${t("Form.fullName")}`}
+                        placeholder={t("Form.fullName")}
                         {...field}
                         disabled={isLoadingProfile}
                       />
@@ -437,37 +453,33 @@ export function SeatSelectionTabsCard({
                   </FormItem>
                 )}
               />
-
-              <FormField
-                control={form.control}
-                name="phone"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>
-                      <LocaleText string="phone" name="Form" />
-                    </FormLabel>
-                    <FormControl>
-                      <Input
-                        placeholder={`${t("Form.phone")}`}
-                        {...field}
-                        disabled={isLoadingProfile}
-                      />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-
               <FormField
                 control={form.control}
                 name="email"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Email</FormLabel>
+                    <FormLabel>{t("Form.email")}</FormLabel>
                     <FormControl>
                       <Input
-                        placeholder={`${t("Form.email")}`}
                         type="email"
+                        placeholder={t("Form.email")}
+                        {...field}
+                        disabled={isLoadingProfile}
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name="phone"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>{t("Form.phone")}</FormLabel>
+                    <FormControl>
+                      <Input
+                        placeholder={t("Form.phone")}
                         {...field}
                         disabled={isLoadingProfile}
                       />
@@ -481,10 +493,9 @@ export function SeatSelectionTabsCard({
         </div>
       </CardContent>
 
-      <CardFooter className="bg-accent border-t">
+      <CardFooter className="border-t p-4">
         <div className="w-full space-y-4">
-          {/* Selection Summary */}
-          <div className="flex justify-between items-center">
+          <div className="flex flex-col justify-between items-start font-semibold text-lg">
             <div className="text-sm text-foreground">
               {selectedSeats.length > 0 ? (
                 <span>
@@ -497,35 +508,43 @@ export function SeatSelectionTabsCard({
                 </span>
               )}
             </div>
-            <div className="text-right">
-              {discountAmount > 0 ? (
-                <>
-                  <p className="text-sm text-red-500 line-through">
-                    {basePrice?.toLocaleString("vi-VN")}đ
-                  </p>
-                  <p className="text-lg font-bold text-primary">
-                    {totalPrice?.toLocaleString("vi-VN")}đ
-                  </p>
-                </>
-              ) : (
-                <p className="text-lg font-bold text-primary">
-                  {totalPrice?.toLocaleString("vi-VN")}đ
+            <div className="flex justify-between items-center w-full">
+              <span>{t("Booking.totalAmount")}</span>
+
+              <div className="text-right">
+                {discountAmount > 0 ? (
+                  <>
+                    <p className="text-sm text-red-500 line-through">
+                      {basePrice?.toLocaleString("vi-VN")}đ
+                    </p>
+                    <p className="text-lg font-bold text-primary">
+                      {totalPrice?.toLocaleString("vi-VN")}đ
+                    </p>
+                  </>
+                ) : (
+                  <span>
+                    {new Intl.NumberFormat("vi-VN", {
+                      style: "currency",
+                      currency: "VND",
+                    }).format(totalPrice)}
+                  </span>
+                )}
+                <p className="text-xs text-gray-500">
+                  {selectedSeats.length} {t("Booking.seats")} ×{" "}
+                  {pricePerSeat?.toLocaleString("vi-VN")}đ
                 </p>
-              )}
-              <p className="text-xs text-gray-500">
-                {selectedSeats.length} {t("Booking.seats")} ×{" "}
-                {pricePerSeat?.toLocaleString("vi-VN")}đ
-              </p>
+              </div>
             </div>
           </div>
 
           <Button
             aria-label="Continue to booking"
-            className="w-full bg-green-600 hover:bg-green-700"
             onClick={form.handleSubmit(onSubmit)}
+            form="passenger-info-form"
+            className="w-full"
             disabled={selectedSeats.length === 0}
           >
-            <LocaleText string="continueBooking" name="TripDetail" />
+            {t("TripDetail.continueBooking")}
           </Button>
         </div>
       </CardFooter>

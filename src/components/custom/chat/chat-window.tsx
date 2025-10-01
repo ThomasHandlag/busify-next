@@ -288,7 +288,7 @@ export function ChatWindow({ onClose, onNewMessage }: ChatWindowProps) {
     return (
       <div className="fixed bottom-24 right-6 w-80 h-96 bg-white rounded-lg shadow-xl flex flex-col border border-gray-200 z-50 items-center justify-center p-4 text-center">
         <h3 className="font-semibold mb-2">Trò chuyện với Busify</h3>
-        <p className="text-sm text-gray-600 mb-4">
+        <p className="text-sm text-muted-foreground mb-4">
           Vui lòng đăng nhập để bắt đầu trò chuyện với nhân viên hỗ trợ.
         </p>
         <Button aria-label="Close Chat" variant="outline" onClick={onClose}>
@@ -301,14 +301,14 @@ export function ChatWindow({ onClose, onNewMessage }: ChatWindowProps) {
   return (
     <div className="fixed bottom-24 right-6 w-80 h-96 bg-white rounded-lg shadow-xl flex flex-col border border-gray-200 z-50">
       {/* Header */}
-      <div className="p-3 border-b bg-green-600 text-white rounded-t-lg flex items-center justify-between">
+      <div className="p-3 border-b bg-primary text-primary-foreground rounded-t-lg flex items-center justify-between">
         <h3 className="font-semibold">Trò chuyện với Busify</h3>
         <Button
           aria-label="Close Chat"
           variant="ghost"
           size="icon"
           onClick={onClose}
-          className="hover:bg-green-700 text-white"
+          className="hover:bg-primary/90 text-primary-foreground"
         >
           <X className="h-5 w-5" />
         </Button>
@@ -326,8 +326,8 @@ export function ChatWindow({ onClose, onNewMessage }: ChatWindowProps) {
             <div
               className={`max-w-[80%] rounded-lg p-2 ${
                 msg.isUser
-                  ? "bg-green-600 text-white"
-                  : "bg-gray-100 text-gray-800"
+                  ? "bg-primary text-primary-foreground"
+                  : "bg-muted text-muted-foreground"
               }`}
             >
               {!msg.isUser && (
@@ -335,7 +335,7 @@ export function ChatWindow({ onClose, onNewMessage }: ChatWindowProps) {
               )}
               <p className="text-sm">{msg.text}</p>
             </div>
-            <span className="text-xs text-gray-400 px-1 pt-1">
+            <span className="text-xs text-muted-foreground px-1 pt-1">
               {msg.timestamp.toLocaleTimeString([], {
                 hour: "2-digit",
                 minute: "2-digit",
@@ -363,7 +363,7 @@ export function ChatWindow({ onClose, onNewMessage }: ChatWindowProps) {
             disabled={
               loading || !message.trim() || !isConnected // Sử dụng isConnected
             }
-            className="bg-green-600 hover:bg-green-700"
+            className="bg-primary hover:bg-primary/90"
           >
             {loading ? (
               <Loader2 className="h-4 w-4 animate-spin" />

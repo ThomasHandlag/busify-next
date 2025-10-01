@@ -17,7 +17,6 @@ import { TripFilterQuery } from "@/lib/data/trip";
 import { useForm } from "react-hook-form";
 import { Form, FormField, FormItem, FormLabel } from "../ui/form";
 import { Input } from "../ui/input";
-import { Separator } from "../ui/separator";
 import { Loader2 } from "lucide-react";
 import { getAllBusModelsClient } from "@/lib/data/bus";
 import { getAllLocationsClient } from "@/lib/data/location";
@@ -124,12 +123,10 @@ const SearchFilterSidebar = ({ callback }: { callback?: () => void }) => {
     <div className="space-y-6">
       <Form {...form}>
         <form onSubmit={handleApplyFilters} className="space-y-6">
-          {/* Action Buttons - Moved to top for better UX */}
-          <div className="pt-2 pb-4 space-y-3 border-b border-gray-200">
+          <div className="top-0 sticky bg-background z-2 flex flex-col gap-2">
             <FormItem>
               <Button
                 aria-label={t("Filter.applyFilters")}
-                className="w-full bg-green-600 hover:bg-green-700"
                 type="button"
                 disabled={isLoading}
                 onClick={() => {
@@ -191,7 +188,7 @@ const SearchFilterSidebar = ({ callback }: { callback?: () => void }) => {
                   value={field.value?.toString() || ""}
                   onValueChange={field.onChange}
                 >
-                  <SelectTrigger className="bg-gray-50 w-full">
+                  <SelectTrigger className="bg-muted w-full">
                     <SelectValue placeholder="Select Location" />
                   </SelectTrigger>
                   <SelectContent>
@@ -218,7 +215,7 @@ const SearchFilterSidebar = ({ callback }: { callback?: () => void }) => {
                   value={field.value?.toString() || ""}
                   onValueChange={field.onChange}
                 >
-                  <SelectTrigger className="bg-gray-50 w-full">
+                  <SelectTrigger className="bg-muted w-full">
                     <SelectValue placeholder={`${t("Filter.startLocation")}`} />
                   </SelectTrigger>
                   <SelectContent>
@@ -235,9 +232,6 @@ const SearchFilterSidebar = ({ callback }: { callback?: () => void }) => {
               </FormItem>
             )}
           />
-
-          <Separator />
-
           <FormField
             control={form.control}
             name="departureDate"
@@ -270,9 +264,6 @@ const SearchFilterSidebar = ({ callback }: { callback?: () => void }) => {
               </FormItem>
             )}
           />
-
-          <Separator />
-
           <FormField
             control={form.control}
             name="operatorName"
@@ -287,9 +278,6 @@ const SearchFilterSidebar = ({ callback }: { callback?: () => void }) => {
               </FormItem>
             )}
           />
-
-          <Separator />
-
           <FormField
             control={form.control}
             name="busModels"
@@ -325,9 +313,6 @@ const SearchFilterSidebar = ({ callback }: { callback?: () => void }) => {
               </FormItem>
             )}
           />
-
-          <Separator />
-
           <FormField
             control={form.control}
             name="amenities"
@@ -379,8 +364,6 @@ const SearchFilterSidebar = ({ callback }: { callback?: () => void }) => {
               </FormItem>
             )}
           />
-
-          <Separator />
         </form>
       </Form>
     </div>

@@ -262,6 +262,11 @@
     "orderFrom": "주문 최소",
     "appliedSave": "✅ 적용됨 - 절약"
   },
+  "BookingCountdown": {
+    "expired": "예약 세션이 만료되었습니다. 리디렉션 중...",
+    "sessionExpires": "예약 세션 만료까지:",
+    "autoRedirect": "시간이 만료되면 자동으로 리디렉션됩니다"
+  },
   "Trips": {
     "available": "이용 가능한 여정",
     "tripItem": {
@@ -511,7 +516,11 @@
     "pickAndDropText": "집어 들고 떨어 뜨립니다",
     "pickUpText": "찾다",
     "busType": "버스 유형",
-    "dropPointText": "드롭 포인트"
+    "dropPointText": "드롭 포인트",
+    "to": "에게",
+    "busInfo": "버스 정보",
+    "busLicense": "버스 라이센스",
+    "busModel": "버스 모델"
   },
   "Amenities": {
     "wifi": "Wi‑Fi",

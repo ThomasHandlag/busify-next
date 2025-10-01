@@ -66,7 +66,7 @@ export function Combobox({
           variant="outline"
           role="combobox"
           aria-expanded={open}
-          className={cn(" justify-between w-[300px] text-ellipsis", className)}
+          className={cn(" justify-between min-w-[300px] text-ellipsis", className)}
           disabled={disabled}
         >
           {selectedOption ? selectedOption.label : placeholder}

@@ -92,7 +92,7 @@ const RoutingMachine = ({
       routeWhileDragging: false,
       show: false,
       lineOptions: {
-        styles: [{ color: "#10B981", weight: 4, opacity: 0.8 }],
+        styles: [{ color: "#3B82F6", weight: 4, opacity: 0.8 }],
         extendToWaypoints: true,
         missingRouteTolerance: 0,
       },
@@ -130,18 +130,18 @@ const RoutingMachine = ({
   return null; // Component này chỉ để thực thi logic, không render gì
 };
 
-export default function RouteMap({
+const RouteMap = ({
   startLocation,
   endLocation,
   routeStops = [],
   className = "h-64 w-full",
-}: RouteMapProps) {
+}: RouteMapProps) => {
   // Ghi chú: Không cần state isLoading và error ở đây nữa vì dynamic import đã xử lý phần tải.
   // Bạn có thể thêm lại nếu cần xử lý lỗi fetch dữ liệu tọa độ.
 
   const startIcon = L.divIcon({
     className: "custom-icon",
-    html: `<svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="12" cy="12" r="10" fill="#10B981" stroke="white" stroke-width="2"/><circle cx="12" cy="12" r="4" fill="white"/></svg>`,
+    html: `<svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="12" cy="12" r="10" fill="#3B82F6" stroke="white" stroke-width="2"/><circle cx="12" cy="12" r="4" fill="white"/></svg>`,
     iconSize: [24, 24],
     iconAnchor: [12, 12],
   });
@@ -185,9 +185,9 @@ export default function RouteMap({
         >
           <Popup>
             <div className="p-2 max-w-[200px]">
-              <div className="font-bold text-green-600 mb-1">Điểm đón</div>
+              <div className="font-bold text-primary mb-1">Điểm đón</div>
               <div className="text-sm">{startLocation.address}</div>
-              <div className="text-xs text-gray-500">{startLocation.city}</div>
+              <div className="text-xs text-muted-foreground">{startLocation.city}</div>
             </div>
           </Popup>
         </Marker>
@@ -201,11 +201,11 @@ export default function RouteMap({
           >
             <Popup>
               <div className="p-2 max-w-[200px]">
-                <div className="font-bold text-yellow-600 mb-1">
+                <div className="font-bold text-accent mb-1">
                   Điểm dừng {index + 1}
                 </div>
                 <div className="text-sm">{stop.address}</div>
-                <div className="text-xs text-gray-500">{stop.city}</div>
+                <div className="text-xs text-muted-foreground">{stop.city}</div>
               </div>
             </Popup>
           </Marker>
@@ -218,9 +218,9 @@ export default function RouteMap({
         >
           <Popup>
             <div className="p-2 max-w-[200px]">
-              <div className="font-bold text-red-600 mb-1">Điểm trả</div>
+              <div className="font-bold text-destructive mb-1">Điểm trả</div>
               <div className="text-sm">{endLocation.address}</div>
-              <div className="text-xs text-gray-500">{endLocation.city}</div>
+              <div className="text-xs text-muted-foreground">{endLocation.city}</div>
             </div>
           </Popup>
         </Marker>
@@ -237,17 +237,17 @@ export default function RouteMap({
       <div className="absolute top-4 left-4 bg-white rounded-lg shadow-lg p-3 text-sm z-[15]">
         <div className="space-y-2">
           <div className="flex items-center space-x-2">
-            <div className="w-3 h-3 bg-green-500 rounded-full"></div>
+            <div className="w-3 h-3 bg-primary rounded-full"></div>
             <span>Điểm đón</span>
           </div>
           {routeStops.length > 0 && (
             <div className="flex items-center space-x-2">
-              <div className="w-3 h-3 bg-yellow-500 rounded-full"></div>
+              <div className="w-3 h-3 bg-accent rounded-full"></div>
               <span>Điểm dừng</span>
             </div>
           )}
           <div className="flex items-center space-x-2">
-            <div className="w-3 h-3 bg-red-500 rounded-full"></div>
+            <div className="w-3 h-3 bg-destructive rounded-full"></div>
             <span>Điểm trả</span>
           </div>
         </div>
@@ -255,3 +255,5 @@ export default function RouteMap({
     </div>
   );
 }
+
+export default RouteMap;

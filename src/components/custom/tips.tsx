@@ -12,19 +12,19 @@ const Tips = () => {
   return (
     <section className="py-16 bg-white">
       <div className="max-w-6xl mx-auto px-4">
-        <h2 className="text-3xl font-bold text-center text-green-700 mb-12">
+        <h2 className="text-3xl font-bold text-center text-primary mb-12">
           Travel Tips & Guides
         </h2>
 
         <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
           <Card className="hover:shadow-lg transition-shadow">
-            <div className="relative h-48 bg-green-100">
+            <div className="relative h-48 bg-accent">
               <div className="absolute inset-0 flex items-center justify-center">
-                <Calendar className="w-16 h-16 text-green-600" />
+                <Calendar className="w-16 h-16 text-primary" />
               </div>
             </div>
             <CardHeader>
-              <CardTitle className="text-green-700">
+              <CardTitle className="text-primary">
                 Best Time to Travel
               </CardTitle>
               <CardDescription>
@@ -36,7 +36,7 @@ const Tips = () => {
               <Button
                 aria-label="Read more about the best time to travel"
                 variant="outline"
-                className="w-full border-green-600 text-green-600 hover:bg-green-600 hover:text-white"
+                className="w-full border-primary text-primary hover:bg-primary hover:text-primary-foreground"
               >
                 Read More
               </Button>
@@ -44,13 +44,13 @@ const Tips = () => {
           </Card>
 
           <Card className="hover:shadow-lg transition-shadow">
-            <div className="relative h-48 bg-green-100">
+            <div className="relative h-48 bg-accent/10">
               <div className="absolute inset-0 flex items-center justify-center">
-                <Shield className="w-16 h-16 text-green-600" />
+                <Shield className="w-16 h-16 text-accent" />
               </div>
             </div>
             <CardHeader>
-              <CardTitle className="text-green-700">
+              <CardTitle className="text-accent">
                 Safety Guidelines
               </CardTitle>
               <CardDescription>
@@ -62,7 +62,7 @@ const Tips = () => {
               <Button
                 aria-label="Read more about safety guidelines"
                 variant="outline"
-                className="w-full border-green-600 text-green-600 hover:bg-green-600 hover:text-white"
+                className="w-full border-accent text-accent hover:bg-accent hover:text-accent-foreground"
               >
                 Read More
               </Button>
@@ -70,13 +70,13 @@ const Tips = () => {
           </Card>
 
           <Card className="hover:shadow-lg transition-shadow">
-            <div className="relative h-48 bg-green-100">
+            <div className="relative h-48 bg-accent/10">
               <div className="absolute inset-0 flex items-center justify-center">
-                <MapPin className="w-16 h-16 text-green-600" />
+                <MapPin className="w-16 h-16 text-accent" />
               </div>
             </div>
             <CardHeader>
-              <CardTitle className="text-green-700">
+              <CardTitle className="text-accent">
                 Destination Guides
               </CardTitle>
               <CardDescription>
@@ -88,7 +88,7 @@ const Tips = () => {
               <Button
                 aria-label="Read more about destination guides"
                 variant="outline"
-                className="w-full border-green-600 text-green-600 hover:bg-green-600 hover:text-white"
+                className="w-full border-accent text-accent hover:bg-accent hover:text-accent-foreground"
               >
                 Read More
               </Button>

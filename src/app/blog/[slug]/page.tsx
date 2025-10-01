@@ -135,18 +135,18 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
           __html: JSON.stringify(jsonLd),
         }}
       />
-      <div className="container mx-auto px-4 py-8">
+      <div className="container mx-auto bg-background px-4 py-8">
         {/* Breadcrumbs */}
-        <nav className="mb-8 text-sm text-gray-600 dark:text-gray-400">
-          <Link href="/" className="hover:text-blue-600">
+        <nav className="mb-8 text-sm text-muted-foreground">
+          <Link href="/" className="hover:text-primary">
             {t("breadcrumb.home")}
           </Link>
           <span className="mx-2">/</span>
-          <Link href="/blog" className="hover:text-blue-600">
+          <Link href="/blog" className="hover:text-primary">
             {t("breadcrumb.blog")}
           </Link>
           <span className="mx-2">/</span>
-          <span className="text-gray-900 dark:text-white">{post.title}</span>
+          <span className="text-foreground">{post.title}</span>
         </nav>
 
         <article className="max-w-4xl mx-auto">
@@ -165,17 +165,17 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
                 <Link key={tag} href={`/blog?tag=${encodeURIComponent(tag)}`}>
                   <Badge
                     variant="secondary"
-                    className="mr-2 mb-2 cursor-pointer hover:bg-green-100"
+                    className="mr-2 mb-2 cursor-pointer hover:bg-accent"
                   >
                     {tag}
                   </Badge>
                 </Link>
               ))}
             </div>
-            <h1 className="text-4xl md:text-5xl font-extrabold tracking-tight text-gray-900 dark:text-white mb-4">
+            <h1 className="text-4xl md:text-5xl font-extrabold tracking-tight text-foreground mb-4">
               {post.title}
             </h1>
-            <div className="flex flex-wrap items-center gap-4 text-gray-600 dark:text-gray-400 mb-6">
+            <div className="flex flex-wrap items-center gap-4 text-muted-foreground mb-6">
               <div className="flex items-center">
                 <User className="w-4 h-4 mr-2" />
                 <span>{post.author.name}</span>
@@ -211,7 +211,7 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
 
           <Card>
             <CardContent
-              className="prose prose-lg dark:prose-invert max-w-none p-6 prose-img:rounded-lg prose-headings:text-gray-900 dark:prose-headings:text-white prose-a:text-blue-600 prose-a:no-underline hover:prose-a:underline blog-content"
+              className="prose prose-lg dark:prose-invert max-w-none p-6 prose-img:rounded-lg prose-headings:text-foreground prose-a:text-primary prose-a:no-underline hover:prose-a:underline blog-content"
               dangerouslySetInnerHTML={{
                 __html:
                   post.content ||
@@ -235,7 +235,7 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
                   <h3 className="text-xl font-semibold mb-2">
                     {t("author.aboutTitle", { name: post.author.name })}
                   </h3>
-                  <p className="text-gray-600 dark:text-gray-400">
+                  <p className="text-muted-foreground">
                     {post.author.bio ||
                       `${post.author.name} là người viết bài cho Busify, chuyên chia sẻ các thông tin hữu ích về du lịch và trải nghiệm đi xe khách tại Việt Nam.`}
                   </p>
@@ -268,10 +268,10 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
                         <h3 className="font-semibold text-sm line-clamp-2 mb-2">
                           {relatedPost.title}
                         </h3>
-                        <p className="text-xs text-gray-600 dark:text-gray-400 line-clamp-2">
+                        <p className="text-xs text-muted-foreground line-clamp-2">
                           {relatedPost.excerpt}
                         </p>
-                        <div className="flex items-center gap-2 mt-2 text-xs text-gray-500">
+                        <div className="flex items-center gap-2 mt-2 text-xs text-muted-foreground">
                           <Eye className="w-3 h-3" />
                           <span>
                             {t("meta.views", { count: relatedPost.viewCount })}
@@ -286,12 +286,12 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
           )}
 
           {/* Call to Action */}
-          <div className="mt-12 bg-gradient-to-r from-green-500 to-blue-600 rounded-lg p-8 text-center text-white">
+          <div className="mt-12 bg-gradient-to-r from-primary to-secondary rounded-lg p-8 text-center text-primary-foreground">
             <h2 className="text-2xl font-bold mb-4">{t("post.cta.title")}</h2>
             <p className="text-lg mb-6 opacity-90">{t("post.cta.desc")}</p>
             <Button
               asChild
-              className="bg-white text-blue-600 hover:bg-gray-100"
+              className="bg-background text-primary hover:bg-accent"
             >
               <Link href="/trips">{t("post.cta.button")}</Link>
             </Button>

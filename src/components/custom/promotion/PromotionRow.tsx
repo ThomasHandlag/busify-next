@@ -212,7 +212,7 @@ const PromotionRow = ({
         claimedToastShownRef.current = true;
       }
     }
-  }, [conditions, localProgress, serverProgress, isClaimed]);
+  }, [conditions, localProgress, serverProgress, isClaimed, t]);
 
   useEffect(() => {
     return () => {

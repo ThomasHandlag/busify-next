@@ -262,6 +262,11 @@
     "orderFrom": "最低注文額",
     "appliedSave": "✅ 適用済み - 節約"
   },
+  "BookingCountdown": {
+    "expired": "予約セッションが期限切れです。リダイレクト中...",
+    "sessionExpires": "予約セッションの期限切れまで:",
+    "autoRedirect": "時間が切れると自動的にリダイレクトされます"
+  },
   "Trips": {
     "available": "利用可能な旅程",
     "tripItem": {
@@ -511,7 +516,11 @@
     "dropPointText": "Drop point",
     "durationText": "Duration",
     "pickAndDropText": "Pick up and drop",
-    "pickUpText": "Pick up"
+    "pickUpText": "Pick up",
+    "to": "to",
+    "busInfo": "Bus Info",
+    "busLicense": "Bus License",
+    "busModel": "Bus Model"
   },
   "Amenities": {
     "wifi": "Wi‑Fi",

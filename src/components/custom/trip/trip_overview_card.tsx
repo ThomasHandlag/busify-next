@@ -20,7 +20,7 @@ import LocaleText from "../locale_text";
 
 const RouteMap = dynamic(() => import("../google_map"), {
   ssr: false,
-  loading: () => <div className="h-80 w-full bg-gray-200 animate-pulse" />,
+  loading: () => <div className="h-80 w-full bg-muted animate-pulse" />,
 });
 
 export interface BusProps {
@@ -60,43 +60,43 @@ const TripOverviewCard = ({ tripDetail }: { tripDetail: TripDetail }) => {
       <CardContent className="lg:px-6 md:px-6 px-0 sm:px-4">
         <div className="grid grid-cols-1 lg:grid-cols-2 md:grid-cols-2 gap-4 mb-6 ">
           <div className="flex items-center space-x-2">
-            <Clock className="w-4 h-4 text-gray-400" />
+            <Clock className="w-4 h-4 text-muted-foreground" />
             <div>
-              <p className="text-xs text-gray-500">
+              <p className="text-xs text-muted-foreground">
                 {formatTime(tripDetail.departure_time)}
               </p>
-              <p className="text-xs text-gray-500">
+              <p className="text-xs text-muted-foreground">
                 {formatDate(tripDetail.departure_time)}
               </p>
             </div>
           </div>
           <div className="flex items-center space-x-2">
-            <Navigation className="w-4 h-4 text-gray-400" />
+            <Navigation className="w-4 h-4 text-muted-foreground" />
             <div>
               <p className="text-sm font-medium">
                 {tripDetail.route.estimated_duration}
               </p>
-              <p className="text-xs text-gray-500">
+              <p className="text-xs text-muted-foreground">
                 <LocaleText string="duration" name="TripDetail" />
               </p>
             </div>
           </div>
           <div className="flex items-center space-x-2">
-            <Bus className="w-4 h-4 text-gray-400" />
+            <Bus className="w-4 h-4 text-muted-foreground" />
             <div>
               <p className="text-sm font-medium">{tripDetail.bus.name}</p>
-              <p className="text-xs text-gray-500">
+              <p className="text-xs text-muted-foreground">
                 <LocaleText string="busType" name="TripDetail" />
               </p>
             </div>
           </div>
           <div className="flex items-center space-x-2">
-            <Users className="w-4 h-4 text-gray-400" />
+            <Users className="w-4 h-4 text-muted-foreground" />
             <div>
               <p className="text-sm font-medium">
                 {tripDetail.available_seats}/{tripDetail.bus.total_seats}
               </p>
-              <p className="text-xs text-gray-500">
+              <p className="text-xs text-muted-foreground">
                 <LocaleText string="empty" name="TripDetail" />
               </p>
             </div>
@@ -123,29 +123,29 @@ const TripOverviewCard = ({ tripDetail }: { tripDetail: TripDetail }) => {
           </h3>
           <div className="space-y-4">
             <div className="flex items-start space-x-3">
-              <div className="w-3 h-3 bg-green-500 rounded-full mt-2"></div>
+              <div className="w-3 h-3 bg-primary rounded-full mt-2"></div>
               <div>
                 <p className="font-medium">
                   <LocaleText string="pickUp" name="TripDetail" />
                 </p>
-                <p className="text-gray-600">
+                <p className="text-foreground">
                   {tripDetail.route.start_location.address}
                 </p>
-                <p className="text-sm text-gray-500">
+                <p className="text-sm text-muted-foreground">
                   {tripDetail.route.start_location.city}
                 </p>
               </div>
             </div>
             <div className="flex items-start space-x-3">
-              <div className="w-3 h-3 bg-red-500 rounded-full mt-2"></div>
+              <div className="w-3 h-3 bg-destructive rounded-full mt-2"></div>
               <div>
                 <p className="font-medium">
                   <LocaleText string="dropOff" name="TripDetail" />
                 </p>
-                <p className="text-gray-600">
+                <p className="text-foreground">
                   {tripDetail.route.end_location.address}
                 </p>
-                <p className="text-sm text-gray-500">
+                <p className="text-sm text-muted-foreground">
                   {tripDetail.route.end_location.city}
                 </p>
               </div>

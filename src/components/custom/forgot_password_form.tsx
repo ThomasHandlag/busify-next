@@ -109,20 +109,20 @@ const ForgotPasswordForm = () => {
             <Link
               aria-label={t("Auth.backToLogin")}
               href="/login"
-              className="flex items-center text-gray-600 hover:text-gray-800 transition-colors duration-200"
+              className="flex items-center text-muted-foreground hover:text-foreground transition-colors duration-200"
             >
               <FaArrowLeft className="mr-2" size={16} />
               <span className="text-sm font-medium">{t("Auth.backToLogin")}</span>
             </Link>
           </div>
 
-          <div className="w-12 h-12 sm:w-16 sm:h-16 bg-gradient-to-r from-orange-500 to-red-500 rounded-full flex items-center justify-center mx-auto mb-4">
+          <div className="w-12 h-12 sm:w-16 sm:h-16 bg-gradient-to-r from-primary to-accent rounded-full flex items-center justify-center mx-auto mb-4">
             <FaEnvelope className="text-white text-lg sm:text-xl" />
           </div>
-          <h2 className="text-2xl sm:text-3xl font-bold text-gray-800 mb-2">
+          <h2 className="text-2xl sm:text-3xl font-bold text-foreground mb-2">
             {t("Auth.forgot.title")}
           </h2>
-          <p className="text-sm sm:text-base text-gray-500">
+          <p className="text-sm sm:text-base text-muted-foreground">
             {t("Auth.forgot.subtitle")}
           </p>
         </div>
@@ -138,7 +138,7 @@ const ForgotPasswordForm = () => {
               name="email"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel className="text-gray-700 font-medium">
+                  <FormLabel className="text-foreground font-medium">
                     {t("Auth.emailAddress")}
                   </FormLabel>
                   <Input
@@ -146,7 +146,7 @@ const ForgotPasswordForm = () => {
                     type="email"
                     placeholder={t("Home.emailPlaceholder")}
                     required
-                    className="h-12 bg-gray-50 border-gray-200 rounded-xl focus:ring-2 focus:ring-orange-500 focus:border-transparent transition-all duration-200"
+                    className="h-12 bg-muted border-input rounded-xl focus:ring-2 focus:ring-primary focus:border-transparent transition-all duration-200"
                   />
                   <FormMessage />
                 </FormItem>
@@ -158,14 +158,14 @@ const ForgotPasswordForm = () => {
               <div
                 className={`p-4 rounded-xl text-sm ${
                   isSuccess
-                    ? "bg-green-50 text-green-700 border border-green-200"
-                    : "bg-red-50 text-red-700 border border-red-200"
+                    ? "bg-accent text-accent-foreground border border-accent"
+                    : "bg-destructive text-destructive-foreground border border-destructive"
                 }`}
               >
                 <div className="flex items-start">
                   <div
                     className={`flex-shrink-0 mr-2 ${
-                      isSuccess ? "text-green-500" : "text-red-500"
+                      isSuccess ? "text-accent" : "text-destructive"
                     }`}
                   >
                     {isSuccess ? (
@@ -238,20 +238,20 @@ const ForgotPasswordForm = () => {
 
         {/* Additional help text */}
         <div className="text-center mt-6">
-          <p className="text-sm text-gray-600">
+          <p className="text-sm text-muted-foreground">
             {t("Auth.forgot.notReceived")} {" "}
-            <span className="text-gray-500">{t("Auth.forgot.checkSpam")}</span>
+            <span className="text-muted-foreground">{t("Auth.forgot.checkSpam")}</span>
           </p>
         </div>
 
         {/* Back to login link */}
         <div className="text-center mt-4">
-          <p className="text-sm text-gray-600">
+          <p className="text-sm text-muted-foreground">
             {t("Auth.forgot.remembered")} {" "}
             <Link
               aria-label={t("Auth.backToLogin")}
               href="/login"
-              className="text-orange-600 hover:text-orange-700 font-semibold"
+              className="text-primary hover:text-primary/90 font-semibold"
             >
               {t("Auth.login.signIn")}
             </Link>

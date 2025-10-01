@@ -74,7 +74,7 @@ const UpdateProfileDialog = ({ userProfile }: UpdateProfileDialogProps) => {
       <DialogTrigger asChild>
         <Button
           aria-label="Edit Profile"
-          className="bg-green-600 hover:bg-green-700"
+          className="bg-primary hover:bg-primary/90"
         >
           <Edit className="w-4 h-4 mr-2" />
           {t("editProfile")}
@@ -132,7 +132,7 @@ const UpdateProfileDialog = ({ userProfile }: UpdateProfileDialogProps) => {
             <Button
               aria-label="Update Profile"
               type="submit"
-              className="bg-green-600 hover:bg-green-700"
+              className="bg-primary hover:bg-primary/90"
               disabled={isLoading}
             >
               {isLoading && <Loader2 className="animate-spin mr-2" />}

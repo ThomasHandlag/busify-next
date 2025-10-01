@@ -11,11 +11,6 @@ export default function PaymentMethods({
 }: {
   paymentMethod: string;
   onPaymentMethodChange: (value: string) => void;
-
-  mockData: {
-    trip: { route: string };
-    selectedSeats: string[];
-  };
 }) {
   const t = useTranslations();
   return (
@@ -24,7 +19,7 @@ export default function PaymentMethods({
         {t("Booking.paymentMethod")}
       </Label>
       <RadioGroup value={paymentMethod} onValueChange={onPaymentMethodChange}>
-        <div className="grid grid-cols-1 gap-3">
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-3">
           <div className="flex items-center space-x-2 p-3 border rounded-lg hover:bg-accent">
             <RadioGroupItem value="momo" id="momo" />
             <Label

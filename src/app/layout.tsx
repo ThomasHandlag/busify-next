@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
+import { Geist, Geist_Mono, Montserrat } from "next/font/google";
 import Header from "@/components/custom/navigation/header";
 import { Toaster } from "sonner";
 import SessionProviderWrapper from "@/components/providers/SessionProvider";
@@ -22,6 +22,13 @@ const geistMono = Geist_Mono({
   subsets: ["latin"],
 });
 
+const montserrat = Montserrat({
+  variable: "--font-montserrat",
+  subsets: ["latin"],
+  weight: ["400", "700", "900"],
+  style: ["normal", "italic"],
+});
+
 export const metadata: Metadata = {
   title: "Busify",
   description: "All in one platform",
@@ -35,14 +42,13 @@ export default function RootLayout({
   return (
     <html lang="en" suppressHydrationWarning>
       <head>
-        <meta name="viewport" content="width=device-width, initial-scale=1" />
         <meta
           name="description"
           content="All in one platform for bus ticket booking and management"
         />
       </head>
       <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
+        className={`${geistSans.variable} ${geistMono.variable} ${montserrat.variable} antialiased bg-primary`}
       >
         <NextIntlClientProvider>
           <PreferencesProvider>
@@ -57,13 +63,10 @@ export default function RootLayout({
                 <SessionProviderWrapper>
                   <WebSocketProvider>
                     <Header />
-                    <main className="flex flex-col gap-[32px] row-start-2 items-center sm:items-start">
-                      {children}
-                    </main>
-                    <footer className="row-start-3 flex gap-[24px] flex-wrap items-center justify-center"></footer>
+                    <main>{children}</main>
                     <Toaster />
                     <FloatingChatButton />
-                    <FloatingAIChatButton />
+                    {/* <FloatingAIChatButton /> */}
                   </WebSocketProvider>
                 </SessionProviderWrapper>
               </TripFilterProvider>

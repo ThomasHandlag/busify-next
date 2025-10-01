@@ -19,7 +19,6 @@ import {
 
 const TripItem = ({ trip }: { trip: TripItemProps }) => {
   const [campaigns, setCampaigns] = useState<PromotionCampaign[]>([]);
-  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const fetchCampaigns = async () => {
@@ -29,8 +28,6 @@ const TripItem = ({ trip }: { trip: TripItemProps }) => {
       } catch (error) {
         console.error("Failed to fetch promotion campaigns:", error);
         setCampaigns([]);
-      } finally {
-        setLoading(false);
       }
     };
 
@@ -43,9 +40,11 @@ const TripItem = ({ trip }: { trip: TripItemProps }) => {
     : { discountedPrice: trip.price_per_seat, discountAmount: 0 };
 
   const getAvailabilityColor = (seats: number) => {
-    if (seats <= 5) return "bg-red-100 text-red-700";
-    if (seats <= 10) return "bg-yellow-100 text-yellow-700";
-    return "bg-green-100 text-green-700";
+    if (seats <= 5)
+      return "bg-destructive/10 text-destructive border-destructive/20";
+    if (seats <= 10)
+      return "bg-secondary/10 text-secondary dark:text-secondary-foreground border-secondary/20";
+    return "bg-primary/10 text-primary border-primary/20";
   };
 
   const getAvailabilityText = (seats: number) => {
@@ -90,7 +89,7 @@ const TripItem = ({ trip }: { trip: TripItemProps }) => {
           ? "border-gray-500"
           : trip.available_seats <= 10
           ? "border-yellow-500"
-          : "border-green-500"
+          : "border-primary"
       }`}
     >
       <CardContent className="p-4">
@@ -168,11 +167,11 @@ const TripItem = ({ trip }: { trip: TripItemProps }) => {
 
           <div className="flex items-center justify-center">
             <div className="flex items-center w-full">
-              <div className="w-1.5 h-1.5 bg-green-500 rounded-full"></div>
+              <div className="w-1.5 h-1.5  rounded-full"></div>
               <div className="flex-1 h-px bg-gray-300 mx-2 relative">
                 <ArrowRight className="w-3 h-3 text-gray-400 absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-white" />
               </div>
-              <div className="w-1.5 h-1.5 bg-green-500 rounded-full"></div>
+              <div className="w-1.5 h-1.5 rounded-full"></div>
             </div>
           </div>
 
@@ -218,7 +217,7 @@ const TripItem = ({ trip }: { trip: TripItemProps }) => {
               className={`text-white text-xs h-7 px-3 cursor-pointer ${
                 trip.available_seats < 1
                   ? "bg-gray-400 cursor-not-allowed"
-                  : "bg-green-600 hover:bg-green-700"
+                  : "bg-primary hover:bg-primary/90"
               }`}
             >
               <Link aria-label="Book trip" href={`/trips/${trip.trip_id}`}>

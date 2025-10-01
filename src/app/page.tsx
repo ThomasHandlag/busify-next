@@ -36,6 +36,7 @@ import LocaleText from "@/components/custom/locale_text";
 import DiscountSlider from "@/components/custom/discount_slider";
 import { getTripsByRegions, TripItemProps } from "@/lib/data/trip";
 import TripItem from "@/components/custom/trip/trip_item";
+import { FadeinWrapper } from "@/components/custom/animation/fadein_wrapper";
 
 // export const dynamic = 'force-static';
 // export const revalidate = 3600; // Revalidate every hour
@@ -55,64 +56,47 @@ const Home = async () => {
   const southTrips = trips?.SOUTH || [];
 
   return (
-    <div className="h-full w-full">
-      <section className="w-full relative">
-        <section className="relative overflow-hidden h-screen">
-          {/* Background Image with Enhanced Effects */}
-          <div className="absolute inset-0 overflow-hidden">
+    <div className="h-full w-full bg-primary">
+      <div className="bg-background w-full h-full absolute clip-bg lg:block hidden animate-clip-bg-move"></div>
+      <div className="py-4 z-30 h-screen flex flex-col items-center justify-center">
+        <div className="grid grid-cols-1 lg:grid-cols-2 mx-auto items-center justify-center gap-6 md:gap-8 mb-6">
+          <div className="text-wrap text-white">
+            <h1 className="lg:text-8xl text-4xl font-extrabold mb-4 drop-shadow-lg font-[montserrat]">
+              <FadeinWrapper effect="animate-fade-in-left">Bustify</FadeinWrapper>
+            </h1>
+            <div className="text-2xl md:text-3xl font-bold drop-shadow-lg leading-tight">
+              <FadeinWrapper effect="animate-fade-in-l300">
+                <LocaleText string="slogan" name="Home" />
+              </FadeinWrapper>
+            </div>
+            <div className="text-lg md:text-xl font-semibold drop-shadow-md leading-tight">
+              <FadeinWrapper effect="animate-fade-in-l400">
+                <LocaleText string="slogan2" name="Home" />
+              </FadeinWrapper>
+            </div>
+          </div>
+          <div className="relative aspect-video animate-bg-fade-in-right-half">
             <Image
               aria-label="background image2"
-              src="/bus-photo.jpg"
+              src="/bus_img.png"
               fill
               // fetchPriority="high"
               loading="eager"
               placeholder="blur"
               blurDataURL="..."
               alt="Bus platform background"
-              className="object-cover scale-105 transition-transform duration-700 hover:scale-110"
-              style={{
-                filter: "brightness(0.8) contrast(1.1) saturate(1.2)",
-              }}
             />
           </div>
-          <div className="relative py-4 z-30 h-screen flex items-center justify-center">
-            <div className="max-w-6xl mx-auto px-4">
-              <div className="flex flex-col md:flex-row items-center justify-center gap-6 md:gap-8 mb-12">
-                <div className="relative">
-                  <span className="text-4xl md:text-8xl font-black bg-green-500 bg-clip-text text-transparent drop-shadow-2xl tracking-tight">
-                    Busify
-                  </span>
-                  {/* Logo glow effect */}
-                  <div className="absolute -inset-2 bg-gradient-to-r from-green-400/20 to-blue-400/20 rounded-2xl blur-xl -z-10"></div>
-                </div>
+        </div>
+        <Card className="border-primary bg-background/95 backdrop-blur-sm shadow-2xl w-full max-w-5xl">
+          <CardContent>
+            <HomeSearchForm locations={locations} />
+          </CardContent>
+        </Card>
+      </div>
 
-                <div className="hidden md:block w-px h-16 bg-gradient-to-b from-white/60 to-transparent"></div>
-
-                <div className="text-center md:text-left space-y-1 text-green-200">
-                  <div className="text-2xl md:text-3xl font-bold drop-shadow-lg leading-tight">
-                    <LocaleText string="slogan" name="Home" />
-                  </div>
-                  <div className="text-lg md:text-xl font-semibold drop-shadow-md leading-tight">
-                    <LocaleText string="slogan2" name="Home" />
-                  </div>
-                </div>
-              </div>
-              <div className="relative">
-                <div className="absolute -inset-1 bg-gradient-to-r from-green-400 via-blue-500 to-green-400 rounded-xl blur opacity-20 animate-pulse"></div>
-                <Card className="p-0 relative bg-accent/70 backdrop-blur-xl shadow-2xl shadow-green-500/20 border-2 border-white/30 rounded-xl overflow-hidden">
-                  <CardContent className="relative p-4 md:p-8">
-                    <HomeSearchForm locations={locations} />
-                  </CardContent>
-                </Card>
-              </div>
-            </div>
-          </div>
-        </section>
-      </section>
-
-      {/* Discount Campaigns Slider Section */}
-      <section className="py-16 bg-gradient-to-b from-background to-secondary">
-        <div className="max-w-7xl mx-auto px-4">
+      <section className="py-16 bg-background">
+        <div className="max-w-6xl mx-auto px-4">
           <div className="text-center mb-12">
             <h2 className="text-4xl font-bold text-foreground mb-4">
               🎉 <LocaleText string="discountCampaigns" name="Home" />
@@ -125,13 +109,12 @@ const Home = async () => {
         </div>
       </section>
 
-      {/* Trips By Regions */}
-      <section className="py-16">
-        <div className="max-w-6xl mx-auto p-4">
-          <h2 className="text-3xl font-bold text-center text-green-700 mb-2">
+      <section className="grid grid-cols-1 lg:grid-cols-3 justify-center gap-6 w-full max-w-6xl mx-auto py-16 px-4 ">
+        <div className="max-w-6xl mx-auto p-4 text-white">
+          <h2 className="text-3xl font-bold text-center mb-2">
             <LocaleText string="north" name="Home" />
           </h2>
-          <div className="grid lg:grid-cols-3 grid-cols-1 justify-center items-center gap-6">
+          <div className="flex flex-col justify-center items-center gap-6">
             {northTrips?.length < 1 ? (
               <p>
                 <LocaleText string="noTrips" name="Home" />
@@ -145,11 +128,11 @@ const Home = async () => {
             )}
           </div>
         </div>
-        <div className="max-w-6xl mx-auto p-4">
-          <h2 className="text-3xl font-bold text-center text-green-700 mb-2">
+        <div className="max-w-6xl mx-auto p-4 text-white">
+          <h2 className="text-3xl font-bold text-center  mb-2">
             <LocaleText string="central" name="Home" />
           </h2>
-          <div className="grid lg:grid-cols-3 grid-cols-1 justify-center items-center gap-6">
+          <div className="flex flex-col justify-center items-center gap-6">
             {centralTrips?.length < 1 ? (
               <p>
                 <LocaleText string="noTrips" name="Home" />
@@ -163,11 +146,11 @@ const Home = async () => {
             )}
           </div>
         </div>
-        <div className="max-w-6xl mx-auto p-4">
-          <h2 className="text-3xl font-bold text-center text-green-700 mb-2">
+        <div className="max-w-6xl mx-auto p-4 text-white">
+          <h2 className="text-3xl font-bold text-center mb-2">
             <LocaleText string="south" name="Home" />
           </h2>
-          <div className="grid lg:grid-cols-3 grid-cols-1 justify-center items-center gap-6">
+          <div className="flex flex-col justify-center items-center gap-6">
             {southTrips?.length < 1 ? (
               <p>
                 <LocaleText string="noTrips" name="Home" />
@@ -181,12 +164,11 @@ const Home = async () => {
             )}
           </div>
         </div>
-        <div className="text-center mt-12">
+        <div className="text-center mt-12 col-span-full">
           <Button
             aria-label="See More Trips"
             size="lg"
             variant="outline"
-            className="border-primary text-primary hover:bg-primary hover:text-white bg-transparent"
             asChild
           >
             <Link href="/trips">
@@ -197,11 +179,11 @@ const Home = async () => {
       </section>
 
       {/* Mobile App Section */}
-      <section className="py-16 bg-primary/10">
+      <section className="py-16 bg-background">
         <div className="max-w-6xl mx-auto px-4">
           <div className="grid lg:grid-cols-2 gap-12 items-center">
             <div>
-              <h2 className="text-3xl font-bold text-green-700 mb-6">
+              <h2 className="text-3xl font-bold text-primary mb-6">
                 <LocaleText string="recommendText1" name="Home" />
               </h2>
               <p className="text-lg text-foreground mb-8">
@@ -247,7 +229,7 @@ const Home = async () => {
                 </Button>
                 <Button
                   aria-label="Get it on Google Play"
-                  className="bg-primary text-foreground hover:bg-green-700 flex items-center justify-center space-x-2 px-6 py-3 rounded-lg transition-colors"
+                  className="bg-primary text-foreground hover:bg-primary/90 flex items-center justify-center space-x-2 px-6 py-3 rounded-lg transition-colors"
                 >
                   <Download className="w-5 h-5" />
                   <span>
@@ -258,14 +240,14 @@ const Home = async () => {
             </div>
 
             <div className="relative lg:pl-8">
-              <div className="bg-gradient-to-br from-green-500 to-green-700 rounded-2xl p-8 shadow-2xl">
+              <div className="bg-gradient-to-br from-primary to-primary/80 rounded-2xl p-8 shadow-2xl">
                 <div className="bg-background rounded-xl p-6 shadow-lg">
                   <div className="flex items-center space-x-3 mb-4">
-                    <div className="w-12 h-12 bg-gradient-to-br from-green-500 to-primary rounded-lg flex items-center justify-center shadow-md">
+                    <div className="w-12 h-12 bg-gradient-to-br from-primary to-accent rounded-lg flex items-center justify-center shadow-md">
                       <Smartphone className="w-6 h-6 text-foreground" />
                     </div>
                     <div>
-                      <h3 className="font-bold text-green-800 text-lg">
+                      <h3 className="font-bold text-primary text-lg">
                         Busify Mobile
                       </h3>
                       <p className="text-sm text-foreground">
@@ -296,26 +278,26 @@ const Home = async () => {
       </section>
 
       {/* Testimonials Section */}
-      <section className="bg-gradient-to-b from-background to-accent py-16">
+      <section className="bg-primary py-16">
         <div className="max-w-6xl mx-auto px-4">
-          <h2 className="text-3xl font-bold text-center text-primary mb-12">
+          <h2 className="text-3xl font-bold text-center text-white mb-12">
             <LocaleText string="customerReviews" name="Home" />
           </h2>
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
-            <Card className="border-green-200 bg-background shadow-lg hover:shadow-xl transition-shadow duration-300">
+            <Card className="border-primary/20 bg-background shadow-lg hover:shadow-xl transition-shadow duration-300">
               <CardHeader>
                 <div className="flex items-center space-x-4">
-                  <Avatar className="ring-2 ring-green-200">
+                  <Avatar className="ring-2 ring-primary/20">
                     <AvatarImage alt="User Avatar" src="/avatar-holder.png" />
-                    <AvatarFallback className="bg-green-100 text-green-800 font-semibold">
+                    <AvatarFallback className="bg-primary/10 text-primary font-semibold">
                       JD
                     </AvatarFallback>
                   </Avatar>
                   <div>
-                    <CardTitle className="text-lg text-green-900">
+                    <CardTitle className="text-lg text-primary">
                       John Doe
                     </CardTitle>
-                    <CardDescription className="text-green-700">
+                    <CardDescription className="text-primary/80">
                       Frequent Traveler
                     </CardDescription>
                   </div>
@@ -326,7 +308,7 @@ const Home = async () => {
                   {[...Array(5)].map((_, i) => (
                     <Star
                       key={`testimonial1-star-${i}`}
-                      className="w-4 h-4 fill-yellow-400 text-yellow-400"
+                      className="w-4 h-4 fill-accent text-accent"
                     />
                   ))}
                 </div>
@@ -338,20 +320,20 @@ const Home = async () => {
               </CardContent>
             </Card>
 
-            <Card className="border-green-200 bg-background shadow-lg hover:shadow-xl transition-shadow duration-300">
+            <Card className="border-primary/20 bg-background shadow-lg hover:shadow-xl transition-shadow duration-300">
               <CardHeader>
                 <div className="flex items-center space-x-4">
-                  <Avatar className="ring-2 ring-green-200">
+                  <Avatar className="ring-2 ring-primary/20">
                     <AvatarImage alt="User Avatar" src="/avatar-holder.png" />
-                    <AvatarFallback className="bg-green-100 text-green-800 font-semibold">
+                    <AvatarFallback className="bg-primary/10 text-primary font-semibold">
                       SM
                     </AvatarFallback>
                   </Avatar>
                   <div>
-                    <CardTitle className="text-lg text-green-900">
+                    <CardTitle className="text-lg text-primary">
                       Sarah Miller
                     </CardTitle>
-                    <CardDescription className="text-green-700">
+                    <CardDescription className="text-primary/80">
                       Bus Provider Owner
                     </CardDescription>
                   </div>
@@ -362,7 +344,7 @@ const Home = async () => {
                   {[...Array(5)].map((_, i) => (
                     <Star
                       key={`testimonial2-star-${i}`}
-                      className="w-4 h-4 fill-yellow-400 text-yellow-400"
+                      className="w-4 h-4 fill-accent text-accent"
                     />
                   ))}
                 </div>
@@ -374,20 +356,20 @@ const Home = async () => {
               </CardContent>
             </Card>
 
-            <Card className="border-green-200 bg-background shadow-lg hover:shadow-xl transition-shadow duration-300">
+            <Card className="border-primary/20 bg-background shadow-lg hover:shadow-xl transition-shadow duration-300">
               <CardHeader>
                 <div className="flex items-center space-x-4">
-                  <Avatar className="ring-2 ring-green-200">
+                  <Avatar className="ring-2 ring-primary/20">
                     <AvatarImage alt="User Avatar" src="/avatar-holder.png" />
-                    <AvatarFallback className="bg-green-100 text-green-800 font-semibold">
+                    <AvatarFallback className="bg-primary/10 text-primary font-semibold">
                       MJ
                     </AvatarFallback>
                   </Avatar>
                   <div>
-                    <CardTitle className="text-lg text-green-900">
+                    <CardTitle className="text-lg text-primary">
                       Mike Johnson
                     </CardTitle>
-                    <CardDescription className="text-green-700">
+                    <CardDescription className="text-primary/80">
                       Regular Commuter
                     </CardDescription>
                   </div>
@@ -398,7 +380,7 @@ const Home = async () => {
                   {[...Array(5)].map((_, i) => (
                     <Star
                       key={`testimonial3-star-${i}`}
-                      className="w-4 h-4 fill-yellow-400 text-yellow-400"
+                      className="w-4 h-4 fill-accent text-accent"
                     />
                   ))}
                 </div>
@@ -478,7 +460,7 @@ const Home = async () => {
       </section>
 
       {/* Newsletter Signup Section */}
-      <section className="py-16 bg-gradient-to-r from-green-700 via-primary to-green-700 text-foreground relative overflow-hidden">
+      <section className="py-16 text-foreground relative overflow-hidden">
         {/* Background pattern */}
         <div className="absolute inset-0 opacity-10">
           <div className="absolute top-0 left-0 w-full h-full bg-gradient-to-br from-transparent via-white/10 to-transparent"></div>
@@ -488,14 +470,14 @@ const Home = async () => {
           <h2 className="text-3xl font-bold mb-4 text-white">
             <LocaleText string="getUpdate" name="Home" />
           </h2>
-          <p className="text-lg text-green-50 mb-8">
+          <p className="text-lg text-primary-foreground/80 mb-8">
             <LocaleText string="getUpdateDesc" name="Home" />
           </p>
 
           <div className="flex flex-col sm:flex-row gap-4 max-w-md mx-auto">
             <Input
               placeholder="Enter your email address"
-              className="text-foreground bg-background border-0 flex-1 placeholder:text-secondary-foreground focus:bg-background transition-colors"
+              className="bg-background text-foreground flex-1"
             />
             <Button
               aria-label="Subscribe to Newsletter"
@@ -505,7 +487,7 @@ const Home = async () => {
             </Button>
           </div>
 
-          <p className="text-sm text-green-100 mt-6">
+          <p className="text-sm text-primary-foreground/60 mt-6">
             <LocaleText string="subscribeTerm" name="Home" />
           </p>
         </div>
