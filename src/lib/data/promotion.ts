@@ -26,6 +26,8 @@ export interface PromotionCampaign {
   priority: number | null;
   promotionCount: number;
   deleted: boolean;
+  discountValue: number;
+  discountType: string;
   promotions: Promotion[];
 }
 
@@ -230,4 +232,48 @@ export async function getUserConditionProgress(
 
   const data: ApiResponse<UserConditionProgress[]> = await res.json();
   return data.result || [];
+}
+
+export function calculateDiscountedPrice(
+  originalPrice: number,
+  campaign: PromotionCampaign
+): { discountedPrice: number; discountAmount: number } {
+  let discountAmount = 0;
+
+  if (campaign.discountType === "PERCENTAGE") {
+    discountAmount = (originalPrice * campaign.discountValue) / 100;
+  } else if (campaign.discountType === "FIXED_AMOUNT") {
+    discountAmount = campaign.discountValue;
+  }
+
+  // Ensure discount doesn't exceed original price
+  discountAmount = Math.min(discountAmount, originalPrice);
+
+  const discountedPrice = originalPrice - discountAmount;
+
+  return { discountedPrice, discountAmount };
+}
+
+export function getBestPromotionCampaign(
+  campaigns: PromotionCampaign[],
+  originalPrice: number
+): PromotionCampaign | null {
+  if (campaigns.length === 0) return null;
+
+  // Calculate discount for each campaign and find the one with highest discount amount
+  let bestCampaign = campaigns[0];
+  let maxDiscount = 0;
+
+  for (const campaign of campaigns) {
+    const { discountAmount } = calculateDiscountedPrice(
+      originalPrice,
+      campaign
+    );
+    if (discountAmount > maxDiscount) {
+      maxDiscount = discountAmount;
+      bestCampaign = campaign;
+    }
+  }
+
+  return bestCampaign;
 }
