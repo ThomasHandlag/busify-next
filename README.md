@@ -8,6 +8,8 @@
 
 [Bustify backend](https://github.com/ThomasHandlag/busify-be)
 
+# Notice⚠️: app.bustify.dev had been shut down
+
 # Bustify Next - Booking page
 
 A modern web application for bus management built with Next.js 15, React 19, and TypeScript. This project is part of the Busify ecosystem that provides comprehensive bus booking and bus management solutions.
